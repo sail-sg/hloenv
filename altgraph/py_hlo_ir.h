@@ -12,6 +12,7 @@
 #include <utility>
 #include <vector>
 
+#include "altgraph/py_hlo_graph.h"
 #include "tensorflow/compiler/xla/literal.h"
 #include "tensorflow/compiler/xla/literal_util.h"
 #include "tensorflow/compiler/xla/pjrt/cpu_device.h"
@@ -25,7 +26,6 @@
 #include "tensorflow/compiler/xla/tools/hlo_module_loader.h"
 #include "tensorflow/core/platform/init_main.h"
 #include "tensorflow/core/platform/logging.h"
-#include "altgraph/py_hlo_graph.h"
 
 namespace py = pybind11;
 

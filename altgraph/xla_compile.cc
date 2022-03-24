@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 
+#include "altgraph/hlo_graph.h"
 #include "tensorflow/compiler/xla/literal.h"
 #include "tensorflow/compiler/xla/literal_util.h"
 #include "tensorflow/compiler/xla/pjrt/cpu_device.h"
@@ -24,7 +25,6 @@
 #include "tensorflow/compiler/xla/tools/hlo_module_loader.h"
 #include "tensorflow/core/platform/init_main.h"
 #include "tensorflow/core/platform/logging.h"
-#include "altgraph/hlo_graph.h"
 
 DEFINE_string(hlo, "-", "hlo text file");  // by default read from stdin
 DEFINE_string(dry, "", "which pass to dry run");
