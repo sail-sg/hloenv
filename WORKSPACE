@@ -22,6 +22,11 @@ git_repository(
     tag = "jaxlib-v0.3.0",
 )
 
+# local_repository(
+#     name = "org_tensorflow",
+#     path = "/home/aiops/ohcy/tf_graph/tensorflow",
+# )
+
 http_archive(
     name = "pocketfft",
     build_file = "@jax//third_party/pocketfft:BUILD.bazel",
