@@ -11,4 +11,3 @@ yapf:
 
 clang-format:
 	clang-format-11 --style=Google -i ${CPP_FILES}
-ca
