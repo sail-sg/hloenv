@@ -3,11 +3,31 @@ workspace(name = "org_altgraph")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+http_archive(
+    name = "rules_python",
+    sha256 = "954aa89b491be4a083304a2cb838019c8b8c3720a7abb9c4cb81ac7a24230cea",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_python/releases/download/0.4.0/rules_python-0.4.0.tar.gz",
+        "https://github.com/bazelbuild/rules_python/releases/download/0.4.0/rules_python-0.4.0.tar.gz",
+    ],
+)
+
+load("@rules_python//python:pip.bzl", "pip_install")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+
 git_repository(
     name = "third_party",
     branch = "main",
     remote = "https://linmin:HdD2m3njejen6axwztYz@git.insea.io/sail/gameai/third_party.git",
 )
+
+load("@third_party//py:workspace0.bzl", workspace0 = "workspace")
+
+workspace0()
+
+load("@third_party//py:workspace1.bzl", workspace1 = "workspace")
+
+workspace1()
 
 # TODO: clean up internal tensorflow/main, and switch to main
 git_repository(
