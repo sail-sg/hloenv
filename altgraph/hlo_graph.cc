@@ -9,6 +9,7 @@
 #include "tensorflow/compiler/xla/service/hlo_opcode.h"
 #include "tensorflow/compiler/xla/types.h"
 #include "tensorflow/core/lib/core/status.h"
+#include "tensorflow/core/lib/hash/hash.h"
 #include "tensorflow/core/platform/types.h"
 
 namespace xla {
@@ -28,197 +29,134 @@ void HloGraph::Clear() {
   operand_list_offsets.clear();
   user_list_indices.clear();
   operand_list_indices.clear();
-  alternative_indices_.clear();
-  uid_to_node_ind_.clear();
+  uid_to_node_idx_.clear();
   uid_to_inst_.clear();
+  alternative_indices_.clear();
 }
 
-bool HloGraph::Build(const HloModule* m) {
+void HloGraph::BuildGraphTopology(const HloModule* m) {
   int gid = -1;
   int node_ind = 0;
-  Clear();
 
-  std::vector<HloInstruction*> inst_list;
-
-  // Since CSR/CSC is a flatten linear structure where each item's
-  // global index needs to be decided first before values being
-  // filled up. We need to first compute the sizes/offsets, then
-  // put indices into the neighbor list array (xxx_indices).
-  for (auto c : m->MakeComputationPostOrder()) {
+  for (auto c : m->MakeComputationSorted()) {
     gid++;
     for (auto inst : c->MakeInstructionPostOrder()) {
       inst_list.push_back(inst);
       int uid = inst->unique_id();
       std::string name = inst->name();
 
-      // Add to node_feats
+      // Add to basic node_feats
       node_feats.uids.push_back(uid);
       node_feats.names.push_back(name);
       node_feats.gids.push_back(gid);
 
-      // Add to offsets
-      user_list_offsets.push_back(inst->user_count());
-      if (inst->called_computations().empty()) {
-        operand_list_offsets.push_back(inst->operand_count());
-      } else {
-        // if instruction calls computation(s), it should have
-        // no operand other than that computation's root instruction.
-        // current operands will all point to that computation's
-        // params.
-        operand_list_offsets.push_back(0);
-      }
-
       // add uid to node id hash map
       // when we build neighbor list we will need these indices.
-      uid_to_node_ind_.insert({uid, node_ind++});
+      uid_to_node_idx_.insert({uid, node_ind++});
       uid_to_inst_.insert({uid, inst});
     }
   }
 
-  // For instruction that calls computations, we:
-  // 1) add instruction as its computation's root inst's extra user
-  // 2) connect instruction's operands to its called computation's params in
-  // order
-  //    2.1) for instruction's each operand, add one user
-  //    2.2) for each called computation's param, add one operand
+  int num_nodes = inst_list.size();
+  in_edge_lists.resize(num_nodes);
+  out_edge_lists.resize(num_nodes);
+  user_list_offsets.resize(num_nodes+1);
+  operand_list_offsets.resize(num_nodes+1);
 
-  // Update user/operand count
-  for (auto inst : inst_list) {
-    int uid = inst->unique_id();
-    auto called_comps = inst->called_computations();
-    if (called_comps.size() > 0) {
-      // for kCall and kFusion, called_comps.size() should be 1
-      // for kWhile and kCondition, called_comps.size() should be 2
-      // and body_func/cond_func in kWhile and cond_true/cond_false func
-      // in kCondition share the same set of param.
-      // So it's safe to apply operand of current instruction to
-      // both computations's params.
-
-      // add one operand count to current instruction (from called comp).
-      operand_list_offsets[uid_to_node_ind_[uid]]++;
-      for (auto cc : called_comps) {
-        int cc_uid = cc->root_instruction()->unique_id();
-        user_list_offsets[uid_to_node_ind_[cc_uid]]++;
-        for (auto param : cc->parameter_instructions()) {
-          int param_uid = param->unique_id();
-          // add operand count to called comp's each parameter instruction.
-          operand_list_offsets[uid_to_node_ind_[param_uid]]++;
-        }
+  // Build in/out edge list.
+  for (auto idx = 0; idx < inst_list.size(); ++idx) {
+    auto inst = inst_list[idx];
+    // handle node's in_edges
+    if (inst->called_computations().empty()) {
+      for (auto operand : inst->operands()) {
+        size_t op_idx = uid_to_node_idx_[operand->unique_id()];
+        in_edge_lists[idx].push_back(op_idx);
       }
-    }
-  }
-
-  // running offsets are used to keep track of inserting indices
-  // when creating column indices arrays.
-  std::vector<int> running_user_offset;
-  std::vector<int> running_operand_offset;
-  size_t user_offset = 0;
-  size_t operand_offset = 0;
-
-  // compute exclusive prefix sum
-  for (int i = 0; i < user_list_offsets.size(); ++i) {
-    auto inst = uid_to_inst_[node_feats.uids[i]];
-    size_t ucount = user_list_offsets[i];
-    size_t opcount = operand_list_offsets[i];
-    node_feats.num_users.push_back(ucount);
-    node_feats.num_operands.push_back(opcount);
-    user_list_offsets[i] = user_offset;
-    operand_list_offsets[i] = operand_offset;
-    running_user_offset.push_back(user_offset);
-    running_operand_offset.push_back(operand_offset);
-    user_offset += ucount;
-    operand_offset += opcount;
-  }
-  user_list_offsets.push_back(user_offset);
-  operand_list_offsets.push_back(operand_offset);
-  user_list_indices.resize(user_offset);
-  operand_list_indices.resize(operand_offset);
-
-  // prepare column indices
-  for (auto inst : inst_list) {
-    // find current node's index in offsets lists
-    // and insert node indices of its users and operands
-    // to according indices lists.
-    int uid = inst->unique_id();
-    int node_idx = uid_to_node_ind_[uid];
-    int empty_comp_ucount = 0;
-
-    // Handle cases when instruction's called computation is empty.
-    auto called_comps = inst->called_computations();
-    for (auto u : inst->users()) {
-      if (u->called_computations().empty()) {
-        user_list_indices[running_user_offset[node_idx]++] =
-            uid_to_node_ind_[u->unique_id()];
-      }
-    }
-    if (called_comps.empty()) {
-      for (auto u : inst->operands()) {
-        operand_list_indices[running_operand_offset[node_idx]++] =
-            uid_to_node_ind_[u->unique_id()];
-      }
-    }
-
-    // Handle cases when instruction with called_computations:
-    auto operands = inst->operands();
-    if (called_comps.size() > 0) {
-      for (auto cc : called_comps) {
+    } else {
+      for (auto cc : inst->called_computations()) {
+        size_t op_idx = uid_to_node_idx_[cc->root_instruction()->unique_id()];
+        in_edge_lists[idx].push_back(op_idx);
         auto params = cc->parameter_instructions();
-        // 1. make sure number of operands of current instruction equals to
-        // each called_computation's parameter count. (as mentioned above they
-        // should have a one-to-one mapping)
+        auto operands = inst->operands();
         CHECK_EQ(params.size(), operands.size());
 
-        // 2. at each index, add comp's param as user to inst's operand
-        // 3. at each index, add inst's operand as operand to comp's param
-        for (int idx = 0; idx < params.size(); ++idx) {
-          int operand_inst_idx = uid_to_node_ind_[operands[idx]->unique_id()];
-          int param_inst_idx = uid_to_node_ind_[params[idx]->unique_id()];
-          user_list_indices[running_user_offset[operand_inst_idx]++] =
-              param_inst_idx;
-          operand_list_indices[running_operand_offset[param_inst_idx]++] =
-              operand_inst_idx;
+        for (int i = 0; i < params.size(); ++i) {
+          size_t operand_idx = uid_to_node_idx_[operands[i]->unique_id()];
+          size_t param_idx = uid_to_node_idx_[params[i]->unique_id()];
+          // at each index, add inst's operand as operand to comp's param
+          in_edge_lists[param_idx].push_back(operand_idx);
+          // at each index, add comp's param as user to inst's operand
+          out_edge_lists[operand_idx].push_back(param_idx);
         }
+        out_edge_lists[op_idx].push_back(idx);
       }
-      // 4. for root instruction of each computation, add curent node index
-      // to their user list indices.
-      for (auto cc : called_comps) {
-        int cc_uid = cc->root_instruction()->unique_id();
-        int cc_root_inst_idx = uid_to_node_ind_[cc_uid];
-
-        // 5. for current node, add each computation's root instruction as its
-        // operand. add current instruction as computation's root instruction's
-        // user.
-        user_list_indices[running_user_offset[cc_root_inst_idx]++] = node_idx;
-        operand_list_indices[running_operand_offset[node_idx]++] =
-            cc_root_inst_idx;
+    }
+    // handle node's out_edges
+    for (auto user : inst->users()) {
+      if (user->called_computations().empty()) {
+        size_t user_idx = uid_to_node_idx_[user->unique_id()];
+        out_edge_lists[idx].push_back(user_idx);
       }
     }
   }
+}
 
-  // add to edge features
-  // uids, srcs, dsts, shapes, layouts, dtypes
-  auto genuid = [](int src_uid, int dst_uid) -> int64_t {
-    int64_t suid = absl::bit_cast<int>(src_uid);
-    int64_t duid = absl::bit_cast<int>(dst_uid);
-    return (suid << 32) | duid;
+void HloGraph::BuildRaggedTensors() {
+  user_list_offsets[0] = 0;
+  operand_list_offsets[0] = 0;
+  for (int i = 1; i <= in_edge_lists.size(); ++i) {
+    // build offset arrays
+    int ucount = out_edge_lists[i-1].size();
+    int opcount = in_edge_lists[i-1].size();
+    operand_list_offsets[i] = operand_list_offsets[i-1] + opcount;
+    user_list_offsets[i] = user_list_offsets[i-1] + ucount;
+    // build indices arrays
+    user_list_indices.insert(user_list_indices.end(),
+      out_edge_lists[i-1].begin(), out_edge_lists[i-1].end());
+    operand_list_indices.insert(operand_list_indices.end(),
+      in_edge_lists[i-1].begin(), in_edge_lists[i-1].end());
+  }
+}
+
+void HloGraph::PrepareFeatures() {
+
+  auto genuid = [] (int src_uid, int dst_uid) -> int64_t
+  {
+      int64_t suid = absl::bit_cast<int>(src_uid);
+      int64_t duid = absl::bit_cast<int>(dst_uid);
+      return (suid << 32) | duid;
   };
-  for (int i = 0; i < user_list_offsets.size() - 1; ++i) {
+
+  int num_nodes = inst_list.size();
+  node_feats.has_max_in_tensor.assign(num_nodes, false);
+  node_feats.has_max_out_tensor.assign(num_nodes, false);
+  node_feats.is_alternative.assign(num_nodes, false);
+  for (int i = 0; i < num_nodes; ++i) {
     size_t user_offset = user_list_offsets[i];
     size_t operand_offset = operand_list_offsets[i];
+    int ucount = user_list_offsets[i+1] - user_offset;
+    int opcount = operand_list_offsets[i+1] - operand_offset;
     int cur_uid = node_feats.uids[i];
     auto cur_inst = uid_to_inst_[cur_uid];
 
+    // add to node features
     if (cur_inst->opcode() == HloOpcode::kAlternatives) {
+      node_feats.is_alternative[i] = true;
       alternative_indices_.push_back(i);
     }
-    for (int s = user_offset; s < user_list_offsets[i + 1]; ++s) {
+    node_feats.num_users.push_back(ucount);
+    node_feats.num_operands.push_back(opcount);
+
+    // add to out edge features
+    int64_t out_tensor_size = 0;
+    for (int s = user_offset; s < user_list_offsets[i+1]; ++s) {
       int user_node_idx = user_list_indices[s];
       int user_uid = node_feats.uids[user_node_idx];
       auto user_inst = uid_to_inst_[user_uid];
 
-      // add to out edge features
       int64_t euid = genuid(cur_uid, user_uid);
       out_edge_feats.uids.push_back(euid);
+      uid_to_out_edge_idx_.insert({euid, s});
       out_edge_feats.srcs.push_back(i);
       out_edge_feats.dsts.push_back(user_node_idx);
       // put in shapes, layouts, and dtypes for cur_inst
@@ -234,16 +172,21 @@ bool HloGraph::Build(const HloModule* m) {
           out_edge_feats.layouts.push_back(-1);
         }
       }
+      out_tensor_size += out_edge_feats.GetTensorSize(s);
       out_edge_feats.dtypes.push_back(shape.element_type());
     }
-    for (int s = operand_offset; s < operand_list_offsets[i + 1]; ++s) {
+    node_feats.out_tensor_sizes.push_back(out_tensor_size);
+
+    // add to in edge features
+    int64_t in_tensor_size = 0;
+    for (int s = operand_offset; s < operand_list_offsets[i+1]; ++s) {
       int operand_node_idx = operand_list_indices[s];
       int operand_uid = node_feats.uids[operand_node_idx];
       auto operand_inst = uid_to_inst_[operand_uid];
 
-      // add to out edge features
       int64_t euid = genuid(operand_uid, cur_uid);
       in_edge_feats.uids.push_back(euid);
+      uid_to_in_edge_idx_.insert({euid, s});
       in_edge_feats.srcs.push_back(operand_node_idx);
       in_edge_feats.dsts.push_back(i);
       // put in shapes, layouts, and dtypes for operand_inst
@@ -259,20 +202,70 @@ bool HloGraph::Build(const HloModule* m) {
           in_edge_feats.layouts.push_back(-1);
         }
       }
+      in_tensor_size += in_edge_feats.GetTensorSize(s);
       in_edge_feats.dtypes.push_back(shape.element_type());
     }
+    node_feats.in_tensor_sizes.push_back(in_tensor_size);
   }
+  auto max_input_tensor_size = std::max_element(node_feats.in_tensor_sizes.begin(),
+    node_feats.in_tensor_sizes.end());
+  auto max_output_tensor_size = std::max_element(node_feats.out_tensor_sizes.begin(),
+    node_feats.out_tensor_sizes.end());
+  for (int i = 0; i < num_nodes; ++i) {
+    if (node_feats.in_tensor_sizes[i] == *max_input_tensor_size) {
+      node_feats.has_max_in_tensor[i] = true;
+    }
+    if (node_feats.out_tensor_sizes[i] == *max_output_tensor_size) {
+      node_feats.has_max_out_tensor[i] = true;
+    }
+  }
+}
 
+bool HloGraph::Build(const HloModule* m) {
+  Clear();
+  BuildGraphTopology(m);
+  BuildRaggedTensors();
+  PrepareFeatures();
   // final touch, add the root_index
   int entry_root_uid = m->entry_computation()->root_instruction()->unique_id();
-  root_index_ = uid_to_node_ind_[entry_root_uid];
+  root_index = uid_to_node_idx_[entry_root_uid];
 
   LOG(ERROR) << "HloGraph build finished";
+
+  uint64_t hlograph_hash = Hash();
+  uint64_t hlomodule_hash = parent_hlo_module_->CalledComputationHash();
+  if (hlograph_hash == hlomodule_hash) {
+    LOG(ERROR) << "HloGraph build verified.";
+  }
 
   return true;
 }
 
-void HloGraph::ShowStats() {
+uint64_t HloGraph::Hash() {
+  // only consider if cross-computation edges are correctly built.
+  // Since all operands and users are added properly by calling
+  // HloInstruction's operands() and users() function.
+  uint64_t hash_value = parent_hlo_module_->entry_computation_layout().Hash();
+  for (int i = 0; i < in_edge_feats.uids.size(); ++i) {
+    // add euid of cross computation edge to hash_value
+    int src = in_edge_feats.srcs[i];
+    int dst = in_edge_feats.dsts[i];
+    if (node_feats.gids[src] != node_feats.gids[dst]) {
+      hash_value = tensorflow::Hash64CombineUnordered(hash_value, in_edge_feats.uids[i]);
+    }
+  }
+  for (int i = 0; i < out_edge_feats.uids.size(); ++i) {
+    // add euid of cross computation edge to hash_value
+    int src = out_edge_feats.srcs[i];
+    int dst = out_edge_feats.dsts[i];
+    if (node_feats.gids[src] != node_feats.gids[dst]) {
+      hash_value = tensorflow::Hash64CombineUnordered(hash_value, out_edge_feats.uids[i]);
+    }
+  }
+  return hash_value;
+}
+
+void HloGraph::ShowStats()  {
   auto oedge_offsets = get_out_edge_offsets();
   auto iedge_offsets = get_in_edge_offsets();
   auto oedge_indices = get_out_edge_indices();
