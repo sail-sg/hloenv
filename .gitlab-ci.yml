@@ -8,6 +8,9 @@ default:
 
 stages:
   - lint
+  - build
+  - test
+  - deploy
 
 flake8:
   stage: lint
@@ -29,3 +32,31 @@ buildifier:
   script:
     - buildifier -r -lint warn altgraph/
 
+
+build:
+  stage: build
+  script:
+    - mkdir ./dist
+    - bazel build --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //:setup
+    - bazel run --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //:setup
+    - ls bazel-bin/setup.runfiles/org_altgraph/dist/*.whl
+    - cp "$(ls bazel-bin/setup.runfiles/org_altgraph/dist/*.whl)" "./dist/"
+    - touch "./dist/$CI_COMMIT_SHA"
+    - tar cf dist.tar dist
+  artifacts:
+    paths:
+      - dist.tar
+
+test:
+  stage: test
+  script:
+    - bazel test --test_output=all --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //tests/...
+
+whl:
+  stage: deploy
+  only:
+    - main
+  before_script:
+    - pip3 install twine
+  script:
+    - /tools/deploy_to_pypi.sh dist.tar
