@@ -8,9 +8,9 @@ py_binary(
     ],
     args = [
         "--main-pkg",
-        "hlo",
+        "altgraph",
         "--name",
-        "hlo",
+        "altgraph",
         "--bdist",
     ],
     data = [
@@ -19,7 +19,7 @@ py_binary(
     main = "@third_party//setup:setup.py",
     python_version = "PY3",
     deps = [
-        "//hlo",
+        "//altgraph",
         requirement("setuptools"),
     ],
 )

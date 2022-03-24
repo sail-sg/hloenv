@@ -5,7 +5,7 @@ py_test(
     srcs = ["hlo_ir_test.py"],
     data = ["hlo_test.txt"],
     deps = [
-        "//hlo",
+        "//altgraph",
         requirement("absl-py"),
     ],
 )

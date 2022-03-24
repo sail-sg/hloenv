@@ -7,7 +7,7 @@ check_install_extra = python3 -c "import $(1)" || pip3 install $(2) --upgrade
 
 yapf:
 	$(call check_install, yapf)
-	yapf -r -i hlo/ hlo_tests/ altgraph/
+	yapf -r -i altgraph/ tests/
 
 clang-format:
 	clang-format-11 --style=Google -i ${CPP_FILES}

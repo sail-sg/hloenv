@@ -1,3 +1,4 @@
+import os 
 from absl import logging
 from absl.testing import absltest
 
@@ -9,14 +10,16 @@ class HloIRTest(absltest.TestCase):
   def setUp(self) -> None:
     logging.set_verbosity(logging.INFO)
     logging.info("setting up")
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    self.hlo_file = dir_path + "/hlo_test.txt"
 
   def test_import(self) -> None:
-    import hlo
-    logging.info("hlo module imported at %s", hlo)
+    import altgraph
+    logging.info("altgraph module imported at %s", altgraph)
 
   def test_graph_interfaces(self) -> None:
-    from hlo import PyHloIr
-    hlo_ir = PyHloIr("./hlo_tests/hlo_test.txt", "gpu")
+    from altgraph import PyHloIr
+    hlo_ir = PyHloIr(self.hlo_file, "gpu")
     hlo_graph = hlo_ir.get_hlo_graph()
 
     _ = hlo_graph.get_out_edge_offsets()
@@ -50,11 +53,11 @@ class HloIRTest(absltest.TestCase):
     _ = out_edge_features.dtypes
 
   def test_basic(self) -> None:
-    from hlo import PyHloIr
+    from altgraph import PyHloIr
     from random import randrange
     import numpy as np
 
-    hlo_ir = PyHloIr("./hlo_tests/hlo_test.txt", "gpu")
+    hlo_ir = PyHloIr(self.hlo_file, "gpu")
 
     hlo_ir.pre_fusion_optimizations()
     hlo_graph = hlo_ir.get_hlo_graph()

@@ -82,3 +82,9 @@ pybind_extension(
         "@org_tensorflow//tensorflow/python:pybind11_lib",
     ],
 )
+
+py_library(
+    name = "altgraph",
+    srcs = ["__init__.py"],
+    data = ["hlo_ir.so"],
+)
