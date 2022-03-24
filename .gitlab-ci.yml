@@ -1,0 +1,31 @@
+default:
+  image: harbor.seacloud.garenanow.com/sail/python_bazel_golden:latest
+  tags:
+    - sail
+  before_script:
+    - python3 -m pip config set global.index-url http://pypi.ai.seacloud.garenanow.com/root/dev
+    - python3 -m pip config set global.trusted-host pypi.ai.seacloud.garenanow.com
+
+stages:
+  - lint
+
+flake8:
+  stage: lint
+  script:
+    - flake8 altgraph/ --count --show-source --statistics
+
+cpplint:
+  stage: lint
+  script:
+    - cpplint --root=. --recursive altgraph/
+
+clang-format:
+  stage: lint
+  script:
+    - clang-format-11 --style=Google -i $(find altgraph/ -regex ".*\.\(proto\|cpp\|c\|cc\|cxx\|hpp\|h\|hxx\)$") -n -Werror
+
+buildifier:
+  stage: lint
+  script:
+    - buildifier -r -lint warn altgraph/
+
