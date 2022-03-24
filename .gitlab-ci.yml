@@ -8,8 +8,7 @@ default:
 
 stages:
   - lint
-  - build
-  - test
+  - build_and_test
   - deploy
 
 flake8:
@@ -33,12 +32,13 @@ buildifier:
     - buildifier -r -lint warn altgraph/
 
 
-build:
-  stage: build
+build_and_test:
+  stage: build_and_test
   script:
     - mkdir ./dist
     - bazel build --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //:setup
     - bazel run --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //:setup
+    - bazel test --test_env=GITLAB_CI="True" --test_output=all --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //tests/...
     - ls bazel-bin/setup.runfiles/org_altgraph/dist/*.whl
     - cp "$(ls bazel-bin/setup.runfiles/org_altgraph/dist/*.whl)" "./dist/"
     - touch "./dist/$CI_COMMIT_SHA"
@@ -46,11 +46,6 @@ build:
   artifacts:
     paths:
       - dist.tar
-
-test:
-  stage: test
-  script:
-    - bazel test --action_env=GITLAB_CI="True" --test_output=all --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //tests/...
 
 whl:
   stage: deploy
