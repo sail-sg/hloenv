@@ -12,6 +12,7 @@ py_binary(
         "--name",
         "altgraph",
         "--bdist",
+        "--release",
     ],
     data = [
         "setup.cfg",
