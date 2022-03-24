@@ -1,7 +1,7 @@
 // Copyright 2021 Garena Online Private Limited
 
-#ifndef TENSORFLOW_XLA_STANDALONE_PY_HLO_GRAPH_H_
-#define TENSORFLOW_XLA_STANDALONE_PY_HLO_GRAPH_H_
+#ifndef ALTGRAPH_PY_HLO_GRAPH_H_
+#define ALTGRAPH_PY_HLO_GRAPH_H_
 
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
@@ -60,4 +60,4 @@ class PyHloGraph : public xla::HloGraph {
   }
 };
 
-#endif  // TENSORFLOW_XLA_STANDALONE_PY_HLO_GRAPH_H_
+#endif  // ALTGRAPH_PY_HLO_GRAPH_H_

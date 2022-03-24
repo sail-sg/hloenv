@@ -1,7 +1,7 @@
 // Copyright 2021 Garena Online Private Limited
 
-#ifndef TENSORFLOW_XLA_STANDALONE_PY_HLO_IR_H_
-#define TENSORFLOW_XLA_STANDALONE_PY_HLO_IR_H_
+#ifndef ALTGRAPH_PY_HLO_IR_H_
+#define ALTGRAPH_PY_HLO_IR_H_
 
 #include <pybind11/pybind11.h>
 
@@ -55,4 +55,4 @@ class PyHloIr {
   void ApplyAlternatives(py::array_t<size_t> decisions);
 };
 
-#endif  // TENSORFLOW_XLA_STANDALONE_PY_HLO_IR_H_
+#endif  // ALTGRAPH_PY_HLO_IR_H_

@@ -1,7 +1,7 @@
 // Copyright 2021 Garena Online Private Limited
 
-#ifndef TENSORFLOW_XLA_STANDALONE_HLO_GRAPH_H_
-#define TENSORFLOW_XLA_STANDALONE_HLO_GRAPH_H_
+#ifndef ALTGRAPH_HLO_GRAPH_H_
+#define ALTGRAPH_HLO_GRAPH_H_
 
 #include <cstdio>
 #include <iostream>
@@ -187,4 +187,4 @@ class HloGraph {
 
 }  // namespace xla
 
-#endif  // TENSORFLOW_XLA_STANDALONE_HLO_GRAPH_H_
+#endif  // ALTGRAPH_HLO_GRAPH_H_
