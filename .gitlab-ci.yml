@@ -50,7 +50,7 @@ build:
 test:
   stage: test
   script:
-    - bazel test --test_output=all --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //tests/...
+    - bazel test --action_env=GITLAB_CI="True" --test_output=all --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //tests/...
 
 whl:
   stage: deploy

@@ -1,4 +1,4 @@
-import os 
+import os
 from absl import logging
 from absl.testing import absltest
 
@@ -17,6 +17,7 @@ class HloIRTest(absltest.TestCase):
     import altgraph
     logging.info("altgraph module imported at %s", altgraph)
 
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_graph_interfaces(self) -> None:
     from altgraph import PyHloIr
     hlo_ir = PyHloIr(self.hlo_file, "gpu")
@@ -52,6 +53,7 @@ class HloIRTest(absltest.TestCase):
     _ = out_edge_features.layouts
     _ = out_edge_features.dtypes
 
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_basic(self) -> None:
     from altgraph import PyHloIr
     from random import randrange
