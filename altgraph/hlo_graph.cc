@@ -25,6 +25,7 @@ void HloGraph::Clear() {
   node_feats.Clear();
   in_edge_feats.Clear();
   out_edge_feats.Clear();
+  inst_list.clear();
   user_list_offsets.clear();
   operand_list_offsets.clear();
   user_list_indices.clear();
@@ -32,6 +33,8 @@ void HloGraph::Clear() {
   uid_to_node_idx_.clear();
   uid_to_inst_.clear();
   alternative_indices_.clear();
+  in_edge_lists.clear();
+  out_edge_lists.clear();
 }
 
 void HloGraph::BuildGraphTopology(const HloModule* m) {

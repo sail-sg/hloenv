@@ -50,6 +50,10 @@ struct NodeFeats {
     num_users.clear();
     num_operands.clear();
     is_alternative.clear();
+    in_tensor_sizes.clear();
+    out_tensor_sizes.clear();
+    has_max_in_tensor.clear();
+    has_max_out_tensor.clear();
   }
 };
 

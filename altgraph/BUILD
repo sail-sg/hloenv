@@ -11,7 +11,6 @@ tf_cc_binary(
     ],
     deps = [
         ":hlo_graph",
-        "@com_github_gflags_gflags//:gflags",
         "@org_tensorflow//tensorflow/compiler/jit:xla_gpu_jit",
         "@org_tensorflow//tensorflow/compiler/xla:literal",
         "@org_tensorflow//tensorflow/compiler/xla:literal_util",
