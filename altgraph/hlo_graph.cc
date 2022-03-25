@@ -63,8 +63,8 @@ void HloGraph::BuildGraphTopology(const HloModule* m) {
   int num_nodes = inst_list.size();
   in_edge_lists.resize(num_nodes);
   out_edge_lists.resize(num_nodes);
-  user_list_offsets.resize(num_nodes+1);
-  operand_list_offsets.resize(num_nodes+1);
+  user_list_offsets.resize(num_nodes + 1);
+  operand_list_offsets.resize(num_nodes + 1);
 
   // Build in/out edge list.
   for (auto idx = 0; idx < inst_list.size(); ++idx) {
@@ -109,25 +109,25 @@ void HloGraph::BuildRaggedTensors() {
   operand_list_offsets[0] = 0;
   for (int i = 1; i <= in_edge_lists.size(); ++i) {
     // build offset arrays
-    int ucount = out_edge_lists[i-1].size();
-    int opcount = in_edge_lists[i-1].size();
-    operand_list_offsets[i] = operand_list_offsets[i-1] + opcount;
-    user_list_offsets[i] = user_list_offsets[i-1] + ucount;
+    int ucount = out_edge_lists[i - 1].size();
+    int opcount = in_edge_lists[i - 1].size();
+    operand_list_offsets[i] = operand_list_offsets[i - 1] + opcount;
+    user_list_offsets[i] = user_list_offsets[i - 1] + ucount;
     // build indices arrays
     user_list_indices.insert(user_list_indices.end(),
-      out_edge_lists[i-1].begin(), out_edge_lists[i-1].end());
+                             out_edge_lists[i - 1].begin(),
+                             out_edge_lists[i - 1].end());
     operand_list_indices.insert(operand_list_indices.end(),
-      in_edge_lists[i-1].begin(), in_edge_lists[i-1].end());
+                                in_edge_lists[i - 1].begin(),
+                                in_edge_lists[i - 1].end());
   }
 }
 
 void HloGraph::PrepareFeatures() {
-
-  auto genuid = [] (int src_uid, int dst_uid) -> int64_t
-  {
-      int64_t suid = absl::bit_cast<int>(src_uid);
-      int64_t duid = absl::bit_cast<int>(dst_uid);
-      return (suid << 32) | duid;
+  auto genuid = [](int src_uid, int dst_uid) -> int64_t {
+    int64_t suid = absl::bit_cast<int>(src_uid);
+    int64_t duid = absl::bit_cast<int>(dst_uid);
+    return (suid << 32) | duid;
   };
 
   int num_nodes = inst_list.size();
@@ -137,8 +137,8 @@ void HloGraph::PrepareFeatures() {
   for (int i = 0; i < num_nodes; ++i) {
     size_t user_offset = user_list_offsets[i];
     size_t operand_offset = operand_list_offsets[i];
-    int ucount = user_list_offsets[i+1] - user_offset;
-    int opcount = operand_list_offsets[i+1] - operand_offset;
+    int ucount = user_list_offsets[i + 1] - user_offset;
+    int opcount = operand_list_offsets[i + 1] - operand_offset;
     int cur_uid = node_feats.uids[i];
     auto cur_inst = uid_to_inst_[cur_uid];
 
@@ -152,7 +152,7 @@ void HloGraph::PrepareFeatures() {
 
     // add to out edge features
     int64_t out_tensor_size = 0;
-    for (int s = user_offset; s < user_list_offsets[i+1]; ++s) {
+    for (int s = user_offset; s < user_list_offsets[i + 1]; ++s) {
       int user_node_idx = user_list_indices[s];
       int user_uid = node_feats.uids[user_node_idx];
       auto user_inst = uid_to_inst_[user_uid];
@@ -182,7 +182,7 @@ void HloGraph::PrepareFeatures() {
 
     // add to in edge features
     int64_t in_tensor_size = 0;
-    for (int s = operand_offset; s < operand_list_offsets[i+1]; ++s) {
+    for (int s = operand_offset; s < operand_list_offsets[i + 1]; ++s) {
       int operand_node_idx = operand_list_indices[s];
       int operand_uid = node_feats.uids[operand_node_idx];
       auto operand_inst = uid_to_inst_[operand_uid];
@@ -210,10 +210,10 @@ void HloGraph::PrepareFeatures() {
     }
     node_feats.in_tensor_sizes.push_back(in_tensor_size);
   }
-  auto max_input_tensor_size = std::max_element(node_feats.in_tensor_sizes.begin(),
-    node_feats.in_tensor_sizes.end());
-  auto max_output_tensor_size = std::max_element(node_feats.out_tensor_sizes.begin(),
-    node_feats.out_tensor_sizes.end());
+  auto max_input_tensor_size = std::max_element(
+      node_feats.in_tensor_sizes.begin(), node_feats.in_tensor_sizes.end());
+  auto max_output_tensor_size = std::max_element(
+      node_feats.out_tensor_sizes.begin(), node_feats.out_tensor_sizes.end());
   for (int i = 0; i < num_nodes; ++i) {
     if (node_feats.in_tensor_sizes[i] == *max_input_tensor_size) {
       node_feats.has_max_in_tensor[i] = true;
@@ -254,7 +254,8 @@ uint64_t HloGraph::Hash() {
     int src = in_edge_feats.srcs[i];
     int dst = in_edge_feats.dsts[i];
     if (node_feats.gids[src] != node_feats.gids[dst]) {
-      hash_value = tensorflow::Hash64CombineUnordered(hash_value, in_edge_feats.uids[i]);
+      hash_value =
+          tensorflow::Hash64CombineUnordered(hash_value, in_edge_feats.uids[i]);
     }
   }
   for (int i = 0; i < out_edge_feats.uids.size(); ++i) {
@@ -262,13 +263,14 @@ uint64_t HloGraph::Hash() {
     int src = out_edge_feats.srcs[i];
     int dst = out_edge_feats.dsts[i];
     if (node_feats.gids[src] != node_feats.gids[dst]) {
-      hash_value = tensorflow::Hash64CombineUnordered(hash_value, out_edge_feats.uids[i]);
+      hash_value = tensorflow::Hash64CombineUnordered(hash_value,
+                                                      out_edge_feats.uids[i]);
     }
   }
   return hash_value;
 }
 
-void HloGraph::ShowStats()  {
+void HloGraph::ShowStats() {
   auto oedge_offsets = get_out_edge_offsets();
   auto iedge_offsets = get_in_edge_offsets();
   auto oedge_indices = get_out_edge_indices();

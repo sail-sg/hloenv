@@ -13,8 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-#include "hlo_graph.h"
+#include "altgraph/hlo_graph.h"
 
+#include <memory>
 #include <unordered_map>
 
 #include "absl/memory/memory.h"
@@ -65,7 +66,7 @@ TEST_F(HloGraphTest, OneComputationPostOrder) {
   // Create a module with a single computation.
   auto module = CreateNewVerifiedModule();
   auto computation = module->AddEntryComputation(CreateConstantComputation());
-	HloGraph graph(module.get());
+  HloGraph graph(module.get());
 
   EXPECT_EQ(graph.Hash(), module->CalledComputationHash());
 }
@@ -76,10 +77,9 @@ TEST_F(HloGraphTest, TwoComputationsPostOrder) {
   auto computation1 = module->AddEntryComputation(CreateConstantComputation());
   auto computation2 =
       module->AddEmbeddedComputation(CreateConstantComputation());
-	HloGraph graph(module.get());
+  HloGraph graph(module.get());
 
   EXPECT_EQ(graph.Hash(), module->CalledComputationHash());
-
 }
 
 }  // namespace

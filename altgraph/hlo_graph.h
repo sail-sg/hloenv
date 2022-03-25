@@ -99,7 +99,7 @@ struct EdgeFeats {
 
   int64_t GetTensorSize(size_t idx) {
     int64_t res = 1;
-    for (int i = idx*8; i < idx*8+8; ++i) {
+    for (int i = idx * 8; i < idx * 8 + 8; ++i) {
       res *= dims[i];
     }
     return abs(res);
@@ -173,45 +173,43 @@ class HloGraph {
   }
 
  protected:
-
   void BuildGraphTopology(const HloModule* m);
   void BuildRaggedTensors();
   void PrepareFeatures();
 
  private:
+  HloModule* parent_hlo_module_;
+  int uid_;
+  std::string name_;
 
-   HloModule* parent_hlo_module_;
-   int uid_;
-   std::string name_;
+  std::vector<HloInstruction*> inst_list;
+  std::vector<std::vector<size_t> > in_edge_lists;
+  std::vector<std::vector<size_t> > out_edge_lists;
+  // Use CSR to represent graph (and CSC inverse graph) topology
+  std::vector<size_t> user_list_offsets;
+  std::vector<size_t> user_list_indices;
+  std::vector<size_t> operand_list_offsets;
+  std::vector<size_t> operand_list_indices;
 
-   std::vector<HloInstruction*> inst_list;
-   std::vector<std::vector<size_t> > in_edge_lists;
-   std::vector<std::vector<size_t> > out_edge_lists;
-   // Use CSR to represent graph (and CSC inverse graph) topology
-   std::vector<size_t> user_list_offsets;
-   std::vector<size_t> user_list_indices;
-   std::vector<size_t> operand_list_offsets;
-   std::vector<size_t> operand_list_indices;
+  // Ignore control deps for now
+  // utility to lookup node and its neighbor
+  absl::flat_hash_map<int, int> uid_to_node_idx_;
+  absl::flat_hash_map<int, HloInstruction*> uid_to_inst_;
+  absl::flat_hash_map<int64_t, int> uid_to_in_edge_idx_;
+  absl::flat_hash_map<int64_t, int> uid_to_out_edge_idx_;
 
-   // Ignore control deps for now
-   // utility to lookup node and its neighbor
-   absl::flat_hash_map<int, int> uid_to_node_idx_;
-   absl::flat_hash_map<int, HloInstruction*> uid_to_inst_;
-   absl::flat_hash_map<int64_t, int> uid_to_in_edge_idx_;
-   absl::flat_hash_map<int64_t, int> uid_to_out_edge_idx_;
+  // Indices of alternative nodes
+  std::vector<int> alternative_indices_;
 
-   // Indices of alternative nodes
-   std::vector<int> alternative_indices_;
+  // index of root instruction of entry computation
+  int root_index;
 
-   // index of root instruction of entry computation
-   int root_index;
+  // Node features
+  NodeFeats node_feats;
 
-   // Node features
-   NodeFeats node_feats;
-
-   // Edge features
-   EdgeFeats in_edge_feats;
-   EdgeFeats out_edge_feats;
+  // Edge features
+  EdgeFeats in_edge_feats;
+  EdgeFeats out_edge_feats;
 };
 
 }  // namespace xla
