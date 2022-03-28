@@ -47,19 +47,12 @@ tf_cc_test(
     srcs = ["hlo_graph_test.cc"],
     deps = [
         ":hlo_graph",
-        "@org_tensorflow//tensorflow/compiler/xla/service:hlo",
-        "@org_tensorflow//tensorflow/compiler/xla/service:hlo_matchers",
-        "@org_tensorflow//tensorflow/compiler/xla/service:hlo_memory_scheduler",
         "@org_tensorflow//tensorflow/compiler/xla:literal",
+        "@org_tensorflow//tensorflow/compiler/xla:literal_util",
         "@org_tensorflow//tensorflow/compiler/xla:shape_util",
-        "@org_tensorflow//tensorflow/compiler/xla:test",
-        "@org_tensorflow//tensorflow/compiler/xla:util",
-        "@org_tensorflow//tensorflow/compiler/xla:xla_data_proto_cc",
-        "@org_tensorflow//tensorflow/compiler/xla/tests:hlo_test_base",
-        "@org_tensorflow//tensorflow/compiler/xla/tests:xla_internal_test_main",
-        "@org_tensorflow//tensorflow/core:lib",
-        "@org_tensorflow//tensorflow/core:test",
+        "@com_google_googletest//:gtest_main",
     ],
+    linkstatic = 1,
 )
 
 
@@ -109,3 +102,4 @@ py_library(
     srcs = ["__init__.py"],
     data = ["hlo_ir.so"],
 )
+

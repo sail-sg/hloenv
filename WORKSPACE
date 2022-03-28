@@ -48,6 +48,12 @@ git_repository(
 # )
 
 http_archive(
+  name = "com_google_googletest",
+  urls = ["https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip"],
+  strip_prefix = "googletest-609281088cfefc76f9d0ce82e1ff6c30cc3591e5",
+)
+
+http_archive(
     name = "pocketfft",
     build_file = "@jax//third_party/pocketfft:BUILD.bazel",
     sha256 = "66eda977b195965d27aeb9d74f46e0029a6a02e75fbbc47bb554aad68615a260",
