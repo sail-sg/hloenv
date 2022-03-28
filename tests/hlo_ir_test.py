@@ -29,6 +29,7 @@ class HloIRTest(absltest.TestCase):
     _ = hlo_graph.get_in_edge_indices()
 
     _ = hlo_graph.get_alternative_indices()
+    _ = hlo_graph.hash()
     node_features = hlo_graph.get_node_features()
     in_edge_features = hlo_graph.get_in_edge_features()
     out_edge_features = hlo_graph.get_out_edge_features()
@@ -38,6 +39,11 @@ class HloIRTest(absltest.TestCase):
     _ = node_features.gids
     _ = node_features.num_users
     _ = node_features.num_operands
+    _ = node_features.is_alternative
+    _ = node_features.in_tensor_sizes
+    _ = node_features.out_tensor_sizes
+    _ = node_features.has_max_in_tensor
+    _ = node_features.has_max_out_tensor
 
     _ = in_edge_features.uids
     _ = in_edge_features.srcs
@@ -45,6 +51,7 @@ class HloIRTest(absltest.TestCase):
     _ = in_edge_features.dims
     _ = in_edge_features.layouts
     _ = in_edge_features.dtypes
+    _ = in_edge_features.get_tensor_size(0)
 
     _ = out_edge_features.uids
     _ = out_edge_features.srcs

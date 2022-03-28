@@ -138,6 +138,7 @@ PYBIND11_MODULE(hlo_ir, m) {
   // TODO(ohcy) Change PyHloGraph and PyHloIr names to remove the Py prefix
   py::class_<PyHloGraph> py_hlo_graph(m, "PyHloGraph");
   py_hlo_graph.def(py::init<const xla::HloModule*>())
+      .def("hash", &PyHloGraph::py_hash)
       .def("get_out_edge_offsets", &PyHloGraph::py_get_out_edge_offsets)
       .def("get_out_edge_indices", &PyHloGraph::py_get_out_edge_indices)
       .def("get_in_edge_offsets", &PyHloGraph::py_get_in_edge_offsets)
@@ -153,7 +154,12 @@ PYBIND11_MODULE(hlo_ir, m) {
       .def_readwrite("names", &xla::NodeFeats::names)
       .def_readwrite("gids", &xla::NodeFeats::gids)
       .def_readwrite("num_users", &xla::NodeFeats::num_users)
-      .def_readwrite("num_operands", &xla::NodeFeats::num_operands);
+      .def_readwrite("num_operands", &xla::NodeFeats::num_operands)
+      .def_readwrite("is_alternative", &xla::NodeFeats::is_alternative)
+      .def_readwrite("in_tensor_sizes", &xla::NodeFeats::in_tensor_sizes)
+      .def_readwrite("out_tensor_sizes", &xla::NodeFeats::out_tensor_sizes)
+      .def_readwrite("has_max_in_tensor", &xla::NodeFeats::has_max_in_tensor)
+      .def_readwrite("has_max_out_tensor", &xla::NodeFeats::has_max_out_tensor);
 
   py::enum_<xla::PrimitiveType>(py_hlo_graph, "PrimitiveType")
       .value("S16", xla::PrimitiveType::S16)
@@ -173,6 +179,7 @@ PYBIND11_MODULE(hlo_ir, m) {
 
   // TODO(ohcy): write this without copy as nparray
   py::class_<xla::EdgeFeats>(m, "EdgeFeats")
+      .def("get_tensor_size", &xla::EdgeFeats::GetTensorSize)
       .def_readwrite("uids", &xla::EdgeFeats::uids)
       .def_readwrite("srcs", &xla::EdgeFeats::srcs)
       .def_readwrite("dsts", &xla::EdgeFeats::dsts)

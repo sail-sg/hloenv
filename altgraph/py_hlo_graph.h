@@ -55,6 +55,8 @@ class PyHloGraph : public xla::HloGraph {
   xla::EdgeFeats& py_get_in_edge_feats() { return get_in_edge_feats(); }
   xla::EdgeFeats& py_get_out_edge_feats() { return get_out_edge_feats(); }
 
+  uint64_t py_hash() { return Hash(); }
+
   std::vector<int>& py_get_alternative_indices() {
     return get_alternative_indices();
   }
