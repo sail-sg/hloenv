@@ -11,7 +11,6 @@ tf_cc_binary(
     ],
     deps = [
         ":hlo_graph",
-        "@com_github_gflags_gflags//:gflags",
         "@org_tensorflow//tensorflow/compiler/jit:xla_gpu_jit",
         "@org_tensorflow//tensorflow/compiler/xla:literal",
         "@org_tensorflow//tensorflow/compiler/xla:literal_util",
@@ -24,6 +23,7 @@ tf_cc_binary(
         "@org_tensorflow//tensorflow/compiler/xla/service:hlo_pass_pipeline",
         "@org_tensorflow//tensorflow/compiler/xla/service:hlo_proto_cc",
         "@org_tensorflow//tensorflow/compiler/xla/tools:hlo_module_loader",
+        "@com_github_gflags_gflags//:gflags",
     ],
 )
 
@@ -32,13 +32,13 @@ cc_library(
     srcs = ["hlo_graph.cc"],
     hdrs = ["hlo_graph.h"],
     deps = [
-        "@com_google_absl//absl/base",
-        "@com_google_absl//absl/container:flat_hash_map",
+        "@org_tensorflow//tensorflow/compiler/xla/service:hlo",
         "@org_tensorflow//tensorflow/compiler/xla:types",
         "@org_tensorflow//tensorflow/compiler/xla:util",
-        "@org_tensorflow//tensorflow/compiler/xla/service:hlo",
         "@org_tensorflow//tensorflow/core:lib",
         "@org_tensorflow//tensorflow/core:lib_internal",
+        "@com_google_absl//absl/base",
+        "@com_google_absl//absl/container:flat_hash_map",
     ],
 )
 
@@ -88,3 +88,4 @@ py_library(
     srcs = ["__init__.py"],
     data = ["hlo_ir.so"],
 )
+

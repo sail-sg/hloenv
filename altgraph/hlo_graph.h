@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "absl/container/flat_hash_map.h"
+#include "absl/container/flat_hash_set.h"
 #include "absl/container/inlined_vector.h"
 #include "tensorflow/compiler/xla/service/hlo_computation.h"
 #include "tensorflow/compiler/xla/service/hlo_instruction.h"
@@ -23,12 +24,25 @@ namespace xla {
 // gids: sub-computation id HloInstruction belongs to
 // num_users: number of outgoing edges (users and called computations)
 // num_operands: number of incoming edges (operands)
+// is_alternative: whether the node is kAlternative
+// in_tensor_sizes: sum of input tensor sizes
+// out_tensor_sizes: sum of output tensor sizes
+// has_max_in_tensor: if has the largest input tensor size
+// has_max_out_tensor: if has the largest output tensor size
 struct NodeFeats {
+  // basic node feats
   std::vector<int> uids;
   std::vector<std::string> names;
   std::vector<size_t> gids;
+
+  // advanced node feats
   std::vector<int> num_users;
   std::vector<int> num_operands;
+  std::vector<bool> is_alternative;
+  std::vector<int64_t> in_tensor_sizes;
+  std::vector<int64_t> out_tensor_sizes;
+  std::vector<bool> has_max_in_tensor;
+  std::vector<bool> has_max_out_tensor;
 
   void Clear() {
     uids.clear();
@@ -36,6 +50,11 @@ struct NodeFeats {
     gids.clear();
     num_users.clear();
     num_operands.clear();
+    is_alternative.clear();
+    in_tensor_sizes.clear();
+    out_tensor_sizes.clear();
+    has_max_in_tensor.clear();
+    has_max_out_tensor.clear();
   }
 };
 
@@ -78,12 +97,18 @@ struct EdgeFeats {
     layouts.clear();
     dtypes.clear();
   }
+
+  int64_t GetTensorSize(size_t idx) {
+    int64_t res = 1;
+    for (int i = idx * 8; i < idx * 8 + 8; ++i) {
+      res *= dims[i];
+    }
+    return abs(res);
+  }
 };
 
 // A class for representing a HLO graph in the module
-//
 // To make things simpler, only string, f32, i32, and i64 are allowed as dtype.
-//
 class HloGraph {
  public:
   HloGraph() {}
@@ -92,6 +117,8 @@ class HloGraph {
   bool Build(const HloModule* m);
 
   void Clear();
+
+  uint64_t Hash();
 
   void ShowStats();
 
@@ -146,19 +173,19 @@ class HloGraph {
     return uid_to_inst_;
   }
 
-  // TODO(wangyzh): add more utility functions
-
-  // something I can think of now:
-  // get neighbors (up to some layers with samples)
-  // see if one edge is cross computation
-  // a lot of others we need to decide whether to do them in python
-  // or here. Since a lot of them are filters with different
-  // pre-conditions.
+ protected:
+  void BuildGraphTopology(const HloComputation* c, int gid);
+  void BuildRaggedTensors();
+  void PrepareFeatures();
 
  private:
   HloModule* parent_hlo_module_;
   int uid_;
   std::string name_;
+
+  std::vector<HloInstruction*> inst_list;
+  absl::flat_hash_map<int, std::vector<int> > in_edge_lists;
+  absl::flat_hash_map<int, std::vector<int> > out_edge_lists;
   // Use CSR to represent graph (and CSC inverse graph) topology
   std::vector<size_t> user_list_offsets;
   std::vector<size_t> user_list_indices;
@@ -167,15 +194,17 @@ class HloGraph {
 
   // Ignore control deps for now
   // utility to lookup node and its neighbor
-  absl::flat_hash_map<int, int> uid_to_node_ind_;
+  absl::flat_hash_set<int> uid_set_;
+  absl::flat_hash_map<int, int> uid_to_node_idx_;
   absl::flat_hash_map<int, HloInstruction*> uid_to_inst_;
+  absl::flat_hash_map<int64_t, int> uid_to_in_edge_idx_;
+  absl::flat_hash_map<int64_t, int> uid_to_out_edge_idx_;
 
- private:
   // Indices of alternative nodes
   std::vector<int> alternative_indices_;
 
   // index of root instruction of entry computation
-  int root_index_;
+  int root_index;
 
   // Node features
   NodeFeats node_feats;
