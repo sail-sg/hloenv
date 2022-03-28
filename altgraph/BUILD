@@ -1,4 +1,4 @@
-load("@org_tensorflow//tensorflow:tensorflow.bzl", "pybind_extension", "tf_cc_binary", "tf_cc_test")
+load("@org_tensorflow//tensorflow:tensorflow.bzl", "pybind_extension", "tf_cc_binary")
 load("@pybind11_bazel//:build_defs.bzl", "pybind_library")
 
 package(default_visibility = ["//visibility:public"])
@@ -41,20 +41,6 @@ cc_library(
         "@com_google_absl//absl/container:flat_hash_map",
     ],
 )
-
-tf_cc_test(
-    name = "hlo_graph_test",
-    srcs = ["hlo_graph_test.cc"],
-    deps = [
-        ":hlo_graph",
-        "@org_tensorflow//tensorflow/compiler/xla:literal",
-        "@org_tensorflow//tensorflow/compiler/xla:literal_util",
-        "@org_tensorflow//tensorflow/compiler/xla:shape_util",
-        "@com_google_googletest//:gtest_main",
-    ],
-    linkstatic = 1,
-)
-
 
 pybind_library(
     name = "py_hlo_graph",
