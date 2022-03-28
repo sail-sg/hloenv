@@ -15,13 +15,13 @@ limitations under the License.
 
 #include "altgraph/hlo_graph.h"
 
+#include "gtest/gtest.h"
 #include "tensorflow/compiler/xla/literal.h"
 #include "tensorflow/compiler/xla/literal_util.h"
 #include "tensorflow/compiler/xla/service/hlo_computation.h"
 #include "tensorflow/compiler/xla/service/hlo_instruction.h"
 #include "tensorflow/compiler/xla/shape_util.h"
 #include "tensorflow/compiler/xla/xla_data.pb.h"
-#include "gtest/gtest.h"
 
 namespace xla {
 
@@ -47,8 +47,7 @@ std::unique_ptr<HloComputation> CreateCallComputation(
     absl::Span<HloComputation* const> computations) {
   auto builder = HloComputation::Builder("Call");
   for (auto computation : computations) {
-    builder.AddInstruction(
-        HloInstruction::CreateCall(r0f32_, {}, computation));
+    builder.AddInstruction(HloInstruction::CreateCall(r0f32_, {}, computation));
   }
   return builder.Build();
 }
@@ -76,4 +75,3 @@ TEST(HloGraphTest, TwoComputationsPostOrder) {
 }  // namespace
 
 }  // namespace xla
-

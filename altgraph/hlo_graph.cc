@@ -31,95 +31,102 @@ void HloGraph::Clear() {
   user_list_indices.clear();
   operand_list_indices.clear();
   uid_to_node_idx_.clear();
+  uid_set_.clear();
   uid_to_inst_.clear();
   alternative_indices_.clear();
   in_edge_lists.clear();
   out_edge_lists.clear();
 }
 
-void HloGraph::BuildGraphTopology(const HloModule* m) {
-  int gid = -1;
-  int node_ind = 0;
-
-  for (auto c : m->MakeComputationSorted()) {
-    gid++;
-    for (auto inst : c->MakeInstructionPostOrder()) {
-      inst_list.push_back(inst);
-      int uid = inst->unique_id();
-      std::string name = inst->name();
-
-      // Add to basic node_feats
-      node_feats.uids.push_back(uid);
-      node_feats.names.push_back(name);
-      node_feats.gids.push_back(gid);
-
-      // add uid to node id hash map
-      // when we build neighbor list we will need these indices.
-      uid_to_node_idx_.insert({uid, node_ind++});
-      uid_to_inst_.insert({uid, inst});
+void HloGraph::BuildGraphTopology(const HloComputation* c, int gid) {
+  // build in/out edge lists with toposort order.
+  for (auto inst : c->MakeInstructionPostOrder()) {
+    int uid = inst->unique_id();
+    if (uid_set_.contains(uid)) {
+      continue;
     }
-  }
+    uid_set_.insert(uid);
 
-  int num_nodes = inst_list.size();
-  in_edge_lists.resize(num_nodes);
-  out_edge_lists.resize(num_nodes);
-  user_list_offsets.resize(num_nodes + 1);
-  operand_list_offsets.resize(num_nodes + 1);
-
-  // Build in/out edge list.
-  for (auto idx = 0; idx < inst_list.size(); ++idx) {
-    auto inst = inst_list[idx];
-    // handle node's in_edges
+    // add into in edge lists
     if (inst->called_computations().empty()) {
+      // normal instruction, put operands and users to its in_edge_lists
+      // and out_edge_lists.
       for (auto operand : inst->operands()) {
-        size_t op_idx = uid_to_node_idx_[operand->unique_id()];
-        in_edge_lists[idx].push_back(op_idx);
+        size_t op_uid = operand->unique_id();
+        in_edge_lists[uid].push_back(op_uid);
       }
     } else {
-      for (auto cc : inst->called_computations()) {
-        size_t op_idx = uid_to_node_idx_[cc->root_instruction()->unique_id()];
-        in_edge_lists[idx].push_back(op_idx);
-        auto params = cc->parameter_instructions();
-        auto operands = inst->operands();
+      // instruction's in edges will be called computation's root insts.
+      auto operands = inst->operands();
+      for (auto c : inst->called_computations()) {
+        BuildGraphTopology(c, gid + 1);
+        auto params = c->parameter_instructions();
         CHECK_EQ(params.size(), operands.size());
-
         for (int i = 0; i < params.size(); ++i) {
-          size_t operand_idx = uid_to_node_idx_[operands[i]->unique_id()];
-          size_t param_idx = uid_to_node_idx_[params[i]->unique_id()];
-          // at each index, add inst's operand as operand to comp's param
-          in_edge_lists[param_idx].push_back(operand_idx);
-          // at each index, add comp's param as user to inst's operand
-          out_edge_lists[operand_idx].push_back(param_idx);
+          int op_uid = operands[i]->unique_id();
+          int param_uid = params[i]->unique_id();
+          out_edge_lists[op_uid].push_back(param_uid);
+          in_edge_lists[param_uid].push_back(op_uid);
         }
-        out_edge_lists[op_idx].push_back(idx);
+        size_t root_uid = c->root_instruction()->unique_id();
+        in_edge_lists[uid].push_back(root_uid);
+        out_edge_lists[root_uid].push_back(uid);
       }
     }
-    // handle node's out_edges
+
+    // add into out edge lists
     for (auto user : inst->users()) {
       if (user->called_computations().empty()) {
-        size_t user_idx = uid_to_node_idx_[user->unique_id()];
-        out_edge_lists[idx].push_back(user_idx);
+        size_t user_uid = user->unique_id();
+        out_edge_lists[uid].push_back(user_uid);
       }
     }
+
+    inst_list.push_back(inst);
+    std::string name = inst->name();
+    // Add to basic node_feats
+    node_feats.uids.push_back(uid);
+    node_feats.names.push_back(name);
+    node_feats.gids.push_back(gid);
+    uid_to_inst_.insert({uid, inst});
   }
+  return;
 }
 
 void HloGraph::BuildRaggedTensors() {
+  int num_nodes = node_feats.uids.size();
+  user_list_offsets.resize(num_nodes + 1);
+  operand_list_offsets.resize(num_nodes + 1);
+
+  for (int ii = 0; ii < num_nodes; ++ii) {
+    uid_to_node_idx_[node_feats.uids[ii]] = ii;
+  }
+
   user_list_offsets[0] = 0;
   operand_list_offsets[0] = 0;
-  for (int i = 1; i <= in_edge_lists.size(); ++i) {
+  for (int i = 1; i <= node_feats.uids.size(); ++i) {
     // build offset arrays
-    int ucount = out_edge_lists[i - 1].size();
-    int opcount = in_edge_lists[i - 1].size();
+    int uid = node_feats.uids[i - 1];
+    int ucount = (out_edge_lists.find(uid) == out_edge_lists.end())
+                     ? 0
+                     : out_edge_lists[uid].size();
+    int opcount = (in_edge_lists.find(uid) == in_edge_lists.end())
+                      ? 0
+                      : in_edge_lists[uid].size();
+
     operand_list_offsets[i] = operand_list_offsets[i - 1] + opcount;
     user_list_offsets[i] = user_list_offsets[i - 1] + ucount;
     // build indices arrays
-    user_list_indices.insert(user_list_indices.end(),
-                             out_edge_lists[i - 1].begin(),
-                             out_edge_lists[i - 1].end());
-    operand_list_indices.insert(operand_list_indices.end(),
-                                in_edge_lists[i - 1].begin(),
-                                in_edge_lists[i - 1].end());
+    if (ucount > 0) {
+      for (int neighbor_uid : out_edge_lists[uid]) {
+        user_list_indices.push_back(uid_to_node_idx_[neighbor_uid]);
+      }
+    }
+    if (opcount > 0) {
+      for (int neighbor_uid : in_edge_lists[uid]) {
+        operand_list_indices.push_back(uid_to_node_idx_[neighbor_uid]);
+      }
+    }
   }
 }
 
@@ -155,7 +162,6 @@ void HloGraph::PrepareFeatures() {
     for (int s = user_offset; s < user_list_offsets[i + 1]; ++s) {
       int user_node_idx = user_list_indices[s];
       int user_uid = node_feats.uids[user_node_idx];
-      auto user_inst = uid_to_inst_[user_uid];
 
       int64_t euid = genuid(cur_uid, user_uid);
       out_edge_feats.uids.push_back(euid);
@@ -226,7 +232,7 @@ void HloGraph::PrepareFeatures() {
 
 bool HloGraph::Build(const HloModule* m) {
   Clear();
-  BuildGraphTopology(m);
+  BuildGraphTopology(m->entry_computation(), 0);
   BuildRaggedTensors();
   PrepareFeatures();
   // final touch, add the root_index

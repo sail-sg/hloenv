@@ -38,3 +38,10 @@ xcuserdata
 
 # For Sublime SFTP
 *sftp-config.json
+
+# For trunk.io
+.flake8
+.isort.cfg
+.markdownlint.yaml
+.shellcheckrc
+.trunk/

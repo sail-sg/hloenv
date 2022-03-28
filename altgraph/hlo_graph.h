@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "absl/container/flat_hash_map.h"
+#include "absl/container/flat_hash_set.h"
 #include "absl/container/inlined_vector.h"
 #include "tensorflow/compiler/xla/service/hlo_computation.h"
 #include "tensorflow/compiler/xla/service/hlo_instruction.h"
@@ -173,7 +174,7 @@ class HloGraph {
   }
 
  protected:
-  void BuildGraphTopology(const HloModule* m);
+  void BuildGraphTopology(const HloComputation* c, int gid);
   void BuildRaggedTensors();
   void PrepareFeatures();
 
@@ -183,8 +184,8 @@ class HloGraph {
   std::string name_;
 
   std::vector<HloInstruction*> inst_list;
-  std::vector<std::vector<size_t> > in_edge_lists;
-  std::vector<std::vector<size_t> > out_edge_lists;
+  absl::flat_hash_map<int, std::vector<int> > in_edge_lists;
+  absl::flat_hash_map<int, std::vector<int> > out_edge_lists;
   // Use CSR to represent graph (and CSC inverse graph) topology
   std::vector<size_t> user_list_offsets;
   std::vector<size_t> user_list_indices;
@@ -193,6 +194,7 @@ class HloGraph {
 
   // Ignore control deps for now
   // utility to lookup node and its neighbor
+  absl::flat_hash_set<int> uid_set_;
   absl::flat_hash_map<int, int> uid_to_node_idx_;
   absl::flat_hash_map<int, HloInstruction*> uid_to_inst_;
   absl::flat_hash_map<int64_t, int> uid_to_in_edge_idx_;
