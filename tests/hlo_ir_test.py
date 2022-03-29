@@ -23,16 +23,16 @@ class HloIRTest(absltest.TestCase):
     hlo_ir = PyHloIr(self.hlo_file, "gpu")
     hlo_graph = hlo_ir.get_hlo_graph()
 
-    _ = hlo_graph.get_out_edge_offsets()
-    _ = hlo_graph.get_out_edge_indices()
-    _ = hlo_graph.get_in_edge_offsets()
-    _ = hlo_graph.get_in_edge_indices()
+    _ = hlo_graph.out_edge_offsets
+    _ = hlo_graph.out_edge_indices
+    _ = hlo_graph.in_edge_offsets
+    _ = hlo_graph.in_edge_indices
 
-    _ = hlo_graph.get_alternative_indices()
+    _ = hlo_graph.alternative_indices
     _ = hlo_graph.hash()
-    node_features = hlo_graph.get_node_features()
-    in_edge_features = hlo_graph.get_in_edge_features()
-    out_edge_features = hlo_graph.get_out_edge_features()
+    node_features = hlo_graph.node_features
+    in_edge_features = hlo_graph.in_edge_features
+    out_edge_features = hlo_graph.out_edge_features
 
     _ = node_features.uids
     _ = node_features.names
@@ -69,7 +69,6 @@ class HloIRTest(absltest.TestCase):
     hlo_ir = PyHloIr(self.hlo_file, "gpu")
 
     hlo_ir.pre_fusion_optimizations()
-    hlo_graph = hlo_ir.get_hlo_graph()
     num_alts = 1
     count = 1
     while num_alts > 0:
@@ -78,14 +77,14 @@ class HloIRTest(absltest.TestCase):
       logging.info("Running fusion dry run")
       hlo_ir.fusion_dry_run()
       hlo_graph = hlo_ir.get_hlo_graph()
-      node_features = hlo_graph.get_node_features()
+      node_features = hlo_graph.node_features
       num_operands = node_features.num_operands
-      num_alts = len(hlo_graph.get_alternative_indices())
+      num_alts = len(hlo_graph.alternative_indices)
 
       if num_alts > 0:
         logging.info("Generating decisions...")
         decisions = []
-        for alt_idx in hlo_graph.get_alternative_indices():
+        for alt_idx in hlo_graph.alternative_indices:
           decisions.append([alt_idx, randrange(num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)

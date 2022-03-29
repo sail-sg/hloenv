@@ -91,7 +91,7 @@ PyHloGraph& PyHloIr::GetHloGraph() { return py_hlo_graph_; }
 // tuples rather than (node_idx, decision) 2D array?
 void PyHloIr::ApplyAlternatives(py::array_t<size_t> decisions) {
   if (platform_ == "gpu") {
-    xla::NodeFeats& node_feats = py_hlo_graph_.py_get_node_feats();
+    xla::NodeFeats& node_feats = py_hlo_graph_.py_get_node_features();
 
     py::buffer_info decisions_buf = decisions.request();
     size_t* decisions_ptr = static_cast<size_t*>(decisions_buf.ptr);
@@ -126,7 +126,7 @@ void PyHloIr::ApplyAlternatives(py::array_t<size_t> decisions) {
 
     for (xla::HloComputation* computation :
          gpu_intercept_.module.get()->MakeNonfusionComputations()) {
-      // Remove the residues
+      // Remove the residue
       computation->Prune();
     }
 
@@ -139,27 +139,27 @@ PYBIND11_MODULE(hlo_ir, m) {
   py::class_<PyHloGraph> py_hlo_graph(m, "PyHloGraph");
   py_hlo_graph.def(py::init<const xla::HloModule*>())
       .def("hash", &PyHloGraph::py_hash)
-      .def("get_out_edge_offsets", &PyHloGraph::py_get_out_edge_offsets)
-      .def("get_out_edge_indices", &PyHloGraph::py_get_out_edge_indices)
-      .def("get_in_edge_offsets", &PyHloGraph::py_get_in_edge_offsets)
-      .def("get_in_edge_indices", &PyHloGraph::py_get_in_edge_indices)
-      .def("get_alternative_indices", &PyHloGraph::py_get_alternative_indices)
-      .def("get_node_features", &PyHloGraph::py_get_node_feats)
-      .def("get_in_edge_features", &PyHloGraph::py_get_in_edge_feats)
-      .def("get_out_edge_features", &PyHloGraph::py_get_out_edge_feats);
+      .DEF_PYBIND_READONLY(PyHloGraph, out_edge_offsets)
+      .DEF_PYBIND_READONLY(PyHloGraph, out_edge_indices)
+      .DEF_PYBIND_READONLY(PyHloGraph, in_edge_offsets)
+      .DEF_PYBIND_READONLY(PyHloGraph, in_edge_indices)
+      .DEF_PYBIND_READONLY(PyHloGraph, alternative_indices)
+      .DEF_PYBIND_READONLY(PyHloGraph, node_features)
+      .DEF_PYBIND_READONLY(PyHloGraph, in_edge_features)
+      .DEF_PYBIND_READONLY(PyHloGraph, out_edge_features);
 
   // TODO(ohcy): write this without copy as nparray
-  py::class_<xla::NodeFeats>(m, "NodeFeats")
-      .def_readwrite("uids", &xla::NodeFeats::uids)
-      .def_readwrite("names", &xla::NodeFeats::names)
-      .def_readwrite("gids", &xla::NodeFeats::gids)
-      .def_readwrite("num_users", &xla::NodeFeats::num_users)
-      .def_readwrite("num_operands", &xla::NodeFeats::num_operands)
-      .def_readwrite("is_alternative", &xla::NodeFeats::is_alternative)
-      .def_readwrite("in_tensor_sizes", &xla::NodeFeats::in_tensor_sizes)
-      .def_readwrite("out_tensor_sizes", &xla::NodeFeats::out_tensor_sizes)
-      .def_readwrite("has_max_in_tensor", &xla::NodeFeats::has_max_in_tensor)
-      .def_readwrite("has_max_out_tensor", &xla::NodeFeats::has_max_out_tensor);
+  py::class_<PyNodeFeats>(m, "NodeFeats")
+      .DEF_PYBIND_READONLY(PyNodeFeats, uids)
+      .DEF_PYBIND_READONLY(PyNodeFeats, names)
+      .DEF_PYBIND_READONLY(PyNodeFeats, gids)
+      .DEF_PYBIND_READONLY(PyNodeFeats, num_users)
+      .DEF_PYBIND_READONLY(PyNodeFeats, num_operands)
+      .DEF_PYBIND_READONLY(PyNodeFeats, is_alternative)
+      .DEF_PYBIND_READONLY(PyNodeFeats, in_tensor_sizes)
+      .DEF_PYBIND_READONLY(PyNodeFeats, out_tensor_sizes)
+      .DEF_PYBIND_READONLY(PyNodeFeats, has_max_in_tensor)
+      .DEF_PYBIND_READONLY(PyNodeFeats, has_max_out_tensor);
 
   py::enum_<xla::PrimitiveType>(py_hlo_graph, "PrimitiveType")
       .value("S16", xla::PrimitiveType::S16)
@@ -178,14 +178,14 @@ PYBIND11_MODULE(hlo_ir, m) {
       .export_values();
 
   // TODO(ohcy): write this without copy as nparray
-  py::class_<xla::EdgeFeats>(m, "EdgeFeats")
-      .def("get_tensor_size", &xla::EdgeFeats::GetTensorSize)
-      .def_readwrite("uids", &xla::EdgeFeats::uids)
-      .def_readwrite("srcs", &xla::EdgeFeats::srcs)
-      .def_readwrite("dsts", &xla::EdgeFeats::dsts)
-      .def_readwrite("dims", &xla::EdgeFeats::dims)
-      .def_readwrite("layouts", &xla::EdgeFeats::layouts)
-      .def_readwrite("dtypes", &xla::EdgeFeats::dtypes);
+  py::class_<PyEdgeFeats>(m, "EdgeFeats")
+      .def("get_tensor_size", &PyEdgeFeats::GetTensorSize)
+      .DEF_PYBIND_READONLY(PyEdgeFeats, uids)
+      .DEF_PYBIND_READONLY(PyEdgeFeats, srcs)
+      .DEF_PYBIND_READONLY(PyEdgeFeats, dsts)
+      .DEF_PYBIND_READONLY(PyEdgeFeats, dims)
+      .DEF_PYBIND_READONLY(PyEdgeFeats, layouts)
+      .DEF_PYBIND_READONLY(PyEdgeFeats, dtypes);
 
   py::class_<PyHloIr>(m, "PyHloIr")
       .def(py::init<const std::string&, const std::string&>())

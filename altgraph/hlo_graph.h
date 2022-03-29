@@ -38,11 +38,14 @@ struct NodeFeats {
   // advanced node feats
   std::vector<int> num_users;
   std::vector<int> num_operands;
-  std::vector<bool> is_alternative;
+  std::vector<uint8_t> is_alternative;
   std::vector<int64_t> in_tensor_sizes;
   std::vector<int64_t> out_tensor_sizes;
-  std::vector<bool> has_max_in_tensor;
-  std::vector<bool> has_max_out_tensor;
+  std::vector<uint8_t> has_max_in_tensor;
+  std::vector<uint8_t> has_max_out_tensor;
+
+  NodeFeats() {}
+  // NodeFeats(const NodeFeats&) {}
 
   void Clear() {
     uids.clear();
@@ -88,6 +91,9 @@ struct EdgeFeats {
   std::vector<int64_t> layouts;
   // PrimitiveType as is defined in xla_data.proto.
   std::vector<PrimitiveType> dtypes;
+
+  EdgeFeats() {}
+  // EdgeFeats(const EdgeFeats&) {}
 
   void Clear() {
     uids.clear();
