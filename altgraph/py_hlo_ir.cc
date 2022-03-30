@@ -99,7 +99,7 @@ void PyHloIr::ApplyAlternatives(py::array_t<size_t> decisions) {
 
     // OCYTEMP -> sanity checks while debugging
     if (decisions_buf.shape[0] !=
-        py_hlo_graph_.get_alternative_indices().size()) {
+        py_hlo_graph_.get_alternative_indices_ptr()->size()) {
       LOG(FATAL) << "Decisions length != num alternatives length!";
     }
     if (decisions_buf.shape[1] != 2) {
@@ -112,7 +112,7 @@ void PyHloIr::ApplyAlternatives(py::array_t<size_t> decisions) {
          decisions_idx += 2) {
       size_t node_idx = decisions_ptr[decisions_idx];
       size_t decision = decisions_ptr[decisions_idx + 1];
-      int uid = node_feats.uids[node_idx];
+      int uid = node_feats.uids->at(node_idx);
 
       xla::HloInstruction* instruction = uid_to_inst.at(uid);
 

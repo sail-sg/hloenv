@@ -5,6 +5,7 @@
 
 #include <cstdio>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -31,33 +32,43 @@ namespace xla {
 // has_max_out_tensor: if has the largest output tensor size
 struct NodeFeats {
   // basic node feats
-  std::vector<int> uids;
-  std::vector<std::string> names;
-  std::vector<size_t> gids;
+  std::shared_ptr<std::vector<int>> uids;
+  std::shared_ptr<std::vector<std::string>> names;
+  std::shared_ptr<std::vector<size_t>> gids;
 
   // advanced node feats
-  std::vector<int> num_users;
-  std::vector<int> num_operands;
-  std::vector<uint8_t> is_alternative;
-  std::vector<int64_t> in_tensor_sizes;
-  std::vector<int64_t> out_tensor_sizes;
-  std::vector<uint8_t> has_max_in_tensor;
-  std::vector<uint8_t> has_max_out_tensor;
+  std::shared_ptr<std::vector<int>> num_users;
+  std::shared_ptr<std::vector<int>> num_operands;
+  std::shared_ptr<std::vector<uint8_t>> is_alternative;
+  std::shared_ptr<std::vector<int64_t>> in_tensor_sizes;
+  std::shared_ptr<std::vector<int64_t>> out_tensor_sizes;
+  std::shared_ptr<std::vector<uint8_t>> has_max_in_tensor;
+  std::shared_ptr<std::vector<uint8_t>> has_max_out_tensor;
 
-  NodeFeats() {}
-  // NodeFeats(const NodeFeats&) {}
+  NodeFeats() {
+    uids = std::make_shared<std::vector<int>>();
+    names = std::make_shared<std::vector<std::string>>();
+    gids = std::make_shared<std::vector<size_t>>();
+    num_users = std::make_shared<std::vector<int>>();
+    num_operands = std::make_shared<std::vector<int>>();
+    is_alternative = std::make_shared<std::vector<uint8_t>>();
+    in_tensor_sizes = std::make_shared<std::vector<int64_t>>();
+    out_tensor_sizes = std::make_shared<std::vector<int64_t>>();
+    has_max_in_tensor = std::make_shared<std::vector<uint8_t>>();
+    has_max_out_tensor = std::make_shared<std::vector<uint8_t>>();
+  }
 
   void Clear() {
-    uids.clear();
-    names.clear();
-    gids.clear();
-    num_users.clear();
-    num_operands.clear();
-    is_alternative.clear();
-    in_tensor_sizes.clear();
-    out_tensor_sizes.clear();
-    has_max_in_tensor.clear();
-    has_max_out_tensor.clear();
+    uids->clear();
+    names->clear();
+    gids->clear();
+    num_users->clear();
+    num_operands->clear();
+    is_alternative->clear();
+    in_tensor_sizes->clear();
+    out_tensor_sizes->clear();
+    has_max_in_tensor->clear();
+    has_max_out_tensor->clear();
   }
 };
 
@@ -84,30 +95,36 @@ struct NodeFeats {
 //   C128
 // };
 struct EdgeFeats {
-  std::vector<int64_t> uids;
-  std::vector<int> srcs;
-  std::vector<int> dsts;
-  std::vector<int64_t> dims;
-  std::vector<int64_t> layouts;
+  std::shared_ptr<std::vector<int64_t>> uids;
+  std::shared_ptr<std::vector<int>> srcs;
+  std::shared_ptr<std::vector<int>> dsts;
+  std::shared_ptr<std::vector<int64_t>> dims;
+  std::shared_ptr<std::vector<int64_t>> layouts;
   // PrimitiveType as is defined in xla_data.proto.
-  std::vector<PrimitiveType> dtypes;
+  std::shared_ptr<std::vector<PrimitiveType>> dtypes;
 
-  EdgeFeats() {}
-  // EdgeFeats(const EdgeFeats&) {}
+  EdgeFeats() {
+    uids = std::make_shared<std::vector<int64_t>>();
+    srcs = std::make_shared<std::vector<int>>();
+    dsts = std::make_shared<std::vector<int>>();
+    dims = std::make_shared<std::vector<int64_t>>();
+    layouts = std::make_shared<std::vector<int64_t>>();
+    dtypes = std::make_shared<std::vector<PrimitiveType>>();
+  }
 
   void Clear() {
-    uids.clear();
-    srcs.clear();
-    dsts.clear();
-    dims.clear();
-    layouts.clear();
-    dtypes.clear();
+    uids->clear();
+    srcs->clear();
+    dsts->clear();
+    dims->clear();
+    layouts->clear();
+    dtypes->clear();
   }
 
   int64_t GetTensorSize(size_t idx) {
     int64_t res = 1;
     for (int i = idx * 8; i < idx * 8 + 8; ++i) {
-      res *= dims[i];
+      res *= dims->at(i);
     }
     return abs(res);
   }
@@ -129,52 +146,68 @@ class HloGraph {
   void ShowStats();
 
   // return CSR/CSC
-  std::vector<size_t>& get_out_edge_offsets() { return user_list_offsets; }
-  std::vector<size_t>& get_out_edge_indices() { return user_list_indices; }
-  std::vector<size_t>& get_in_edge_offsets() { return operand_list_offsets; }
-  std::vector<size_t>& get_in_edge_indices() { return operand_list_indices; }
+  std::shared_ptr<std::vector<size_t>> get_out_edge_offsets_ptr() {
+    return user_list_offsets_;
+  }
+  std::shared_ptr<std::vector<size_t>> get_out_edge_indices_ptr() {
+    return user_list_indices_;
+  }
+  std::shared_ptr<std::vector<size_t>> get_in_edge_offsets_ptr() {
+    return operand_list_offsets_;
+  }
+  std::shared_ptr<std::vector<size_t>> get_in_edge_indices_ptr() {
+    return operand_list_indices_;
+  }
 
   // return node features.
-  const std::vector<int>& get_node_uids() { return node_feats.uids; }
-  const std::vector<std::string>& get_node_names() { return node_feats.names; }
-  const std::vector<size_t>& get_gids() { return node_feats.gids; }
-  const std::vector<int>& get_user_counts() { return node_feats.num_users; }
+  const std::vector<int>& get_node_uids() { return *node_feats_.uids; }
+  const std::vector<std::string>& get_node_names() {
+    return *node_feats_.names;
+  }
+  const std::vector<size_t>& get_gids() { return *node_feats_.gids; }
+  const std::vector<int>& get_user_counts() { return *node_feats_.num_users; }
   const std::vector<int>& get_operand_counts() {
-    return node_feats.num_operands;
+    return *node_feats_.num_operands;
   }
 
   // return edge features.
-  const std::vector<int64_t>& get_in_edge_uids() { return in_edge_feats.uids; }
-  const std::vector<int>& get_in_edge_srcs() { return in_edge_feats.srcs; }
-  const std::vector<int>& get_in_edge_dsts() { return in_edge_feats.dsts; }
-  const std::vector<int64_t>& get_in_edge_dims() { return in_edge_feats.dims; }
+  const std::vector<int64_t>& get_in_edge_uids() {
+    return *in_edge_feats_.uids;
+  }
+  const std::vector<int>& get_in_edge_srcs() { return *in_edge_feats_.srcs; }
+  const std::vector<int>& get_in_edge_dsts() { return *in_edge_feats_.dsts; }
+  const std::vector<int64_t>& get_in_edge_dims() {
+    return *in_edge_feats_.dims;
+  }
   const std::vector<int64_t>& get_in_edge_layouts() {
-    return in_edge_feats.layouts;
+    return *in_edge_feats_.layouts;
   }
   const std::vector<PrimitiveType>& get_in_edge_dtypes() {
-    return in_edge_feats.dtypes;
+    return *in_edge_feats_.dtypes;
   }
 
   const std::vector<int64_t>& get_out_edge_uids() {
-    return out_edge_feats.uids;
+    return *out_edge_feats_.uids;
   }
-  const std::vector<int>& get_out_edge_srcs() { return out_edge_feats.srcs; }
-  const std::vector<int>& get_out_edge_dsts() { return out_edge_feats.dsts; }
+  const std::vector<int>& get_out_edge_srcs() { return *out_edge_feats_.srcs; }
+  const std::vector<int>& get_out_edge_dsts() { return *out_edge_feats_.dsts; }
   const std::vector<int64_t>& get_out_edge_dims() {
-    return out_edge_feats.dims;
+    return *out_edge_feats_.dims;
   }
   const std::vector<int64_t>& get_out_edge_layouts() {
-    return out_edge_feats.layouts;
+    return *out_edge_feats_.layouts;
   }
   const std::vector<PrimitiveType>& get_out_edge_dtypes() {
-    return out_edge_feats.dtypes;
+    return *out_edge_feats_.dtypes;
   }
 
-  NodeFeats& get_node_feats() { return node_feats; }
-  EdgeFeats& get_in_edge_feats() { return in_edge_feats; }
-  EdgeFeats& get_out_edge_feats() { return out_edge_feats; }
+  const NodeFeats& get_node_feats() { return node_feats_; }
+  const EdgeFeats& get_in_edge_feats() { return in_edge_feats_; }
+  const EdgeFeats& get_out_edge_feats() { return out_edge_feats_; }
 
-  std::vector<int>& get_alternative_indices() { return alternative_indices_; }
+  std::shared_ptr<std::vector<int>> get_alternative_indices_ptr() {
+    return alternative_indices_;
+  }
   absl::flat_hash_map<int, HloInstruction*>& get_uid_to_inst() {
     return uid_to_inst_;
   }
@@ -189,14 +222,9 @@ class HloGraph {
   int uid_;
   std::string name_;
 
-  std::vector<HloInstruction*> inst_list;
-  absl::flat_hash_map<int, std::vector<int> > in_edge_lists;
-  absl::flat_hash_map<int, std::vector<int> > out_edge_lists;
-  // Use CSR to represent graph (and CSC inverse graph) topology
-  std::vector<size_t> user_list_offsets;
-  std::vector<size_t> user_list_indices;
-  std::vector<size_t> operand_list_offsets;
-  std::vector<size_t> operand_list_indices;
+  std::vector<HloInstruction*> inst_list_;
+  absl::flat_hash_map<int, std::vector<int>> in_edge_lists_;
+  absl::flat_hash_map<int, std::vector<int>> out_edge_lists_;
 
   // Ignore control deps for now
   // utility to lookup node and its neighbor
@@ -206,18 +234,24 @@ class HloGraph {
   absl::flat_hash_map<int64_t, int> uid_to_in_edge_idx_;
   absl::flat_hash_map<int64_t, int> uid_to_out_edge_idx_;
 
+  // Use CSR to represent graph (and CSC inverse graph) topology
+  std::shared_ptr<std::vector<size_t>> user_list_offsets_;
+  std::shared_ptr<std::vector<size_t>> user_list_indices_;
+  std::shared_ptr<std::vector<size_t>> operand_list_offsets_;
+  std::shared_ptr<std::vector<size_t>> operand_list_indices_;
+
   // Indices of alternative nodes
-  std::vector<int> alternative_indices_;
+  std::shared_ptr<std::vector<int>> alternative_indices_;
 
   // index of root instruction of entry computation
-  int root_index;
+  int root_index_;
 
   // Node features
-  NodeFeats node_feats;
+  NodeFeats node_feats_;
 
   // Edge features
-  EdgeFeats in_edge_feats;
-  EdgeFeats out_edge_feats;
+  EdgeFeats in_edge_feats_;
+  EdgeFeats out_edge_feats_;
 };
 
 }  // namespace xla

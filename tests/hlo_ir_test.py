@@ -19,8 +19,8 @@ class HloIRTest(absltest.TestCase):
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_graph_interfaces(self) -> None:
-    from altgraph import PyHloIr
-    hlo_ir = PyHloIr(self.hlo_file, "gpu")
+    from altgraph import HloIr
+    hlo_ir = HloIr(self.hlo_file, "gpu")
     hlo_graph = hlo_ir.get_hlo_graph()
 
     _ = hlo_graph.out_edge_offsets
@@ -62,11 +62,11 @@ class HloIRTest(absltest.TestCase):
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_basic(self) -> None:
-    from altgraph import PyHloIr
+    from altgraph import HloIr
     from random import randrange
     import numpy as np
 
-    hlo_ir = PyHloIr(self.hlo_file, "gpu")
+    hlo_ir = HloIr(self.hlo_file, "gpu")
 
     hlo_ir.pre_fusion_optimizations()
     num_alts = 1

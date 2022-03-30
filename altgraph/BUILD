@@ -44,8 +44,7 @@ cc_library(
 
 pybind_library(
     name = "py_hlo_graph",
-    srcs = ["py_hlo_graph.cc"],
-    hdrs = ["py_hlo_graph.h"],
+    srcs = ["py_hlo_graph.h"],
     deps = [
         ":hlo_graph",
     ],
