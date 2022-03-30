@@ -87,6 +87,9 @@ class HloIRTest(absltest.TestCase):
         hlo_ir.apply_alternatives(decisions)
       else:
         logging.info("No more alternatives, ending run...")
+      eval_time_ns = hlo_ir.evaluate(10)
+      assert eval_time_ns > 0;
+      logging.info("Running time estimation: %d ns", eval_time_ns / 10)
 
       count += 1
 

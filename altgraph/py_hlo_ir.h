@@ -12,6 +12,7 @@
 #include <utility>
 #include <vector>
 
+#include "altgraph/evaluation/evaluator.h"
 #include "altgraph/py_hlo_graph.h"
 #include "tensorflow/compiler/xla/literal.h"
 #include "tensorflow/compiler/xla/literal_util.h"
@@ -39,10 +40,13 @@ class PyHloIr {
   PyHloGraph py_hlo_graph_;
   const std::string platform_;
   std::unique_ptr<xla::PjRtClient> client_;
+  xla::Evaluator evaluator_;
 
  public:
   explicit PyHloIr(const std::string& hlo_filepath,
                    const std::string& platform);
+
+  uint64_t Evaluate(int times);
 
   void PreFusionOptimizations();
 

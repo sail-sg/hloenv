@@ -39,6 +39,16 @@ PyHloIr::PyHloIr(const std::string& hlo_filepath, const std::string& platform)
   }
 }
 
+uint64_t PyHloIr::Evaluate(int times) {
+  if (platform_ == "gpu") {
+    evaluator_.Compile(gpu_intercept_.module->ToProto(),
+                       /* rerun_hlo = */ false, client_.get());
+    auto ret = evaluator_.Evaluate(times);
+    return ret.duration / absl::Nanoseconds(1);
+  }
+  return 0;
+}
+
 void PyHloIr::PreFusionOptimizations() {
   if (platform_ == "gpu") {
     gpu_intercept_.compiler->OptimizeHloModulePreFusion(
@@ -172,6 +182,7 @@ PYBIND11_MODULE(hlo_ir, m) {
 
   py::class_<PyHloIr>(m, "PyHloIr")
       .def(py::init<const std::string&, const std::string&>())
+      .def("evaluate", &PyHloIr::Evaluate)
       .def("get_hlo_graph", &PyHloIr::GetHloGraph)
       .def("pre_fusion_optimizations", &PyHloIr::PreFusionOptimizations)
       .def("fusion_dry_run", &PyHloIr::FusionDryRun)

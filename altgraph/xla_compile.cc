@@ -38,8 +38,8 @@ int main(int argc, char** argv) {
   xla::HloPassPipeline::dry_sandwich_set =
       xla::HloPassPipeline::ExtractDrySandwichSetFromEnv();
 
-  xla::Intercept<xla::cpu::CpuCompiler> _cpu_intercept;
-  xla::Intercept<xla::gpu::GpuCompiler> _gpu_intercept;
+  xla::Intercept<xla::cpu::CpuCompiler> cpu_intercept;
+  xla::Intercept<xla::gpu::GpuCompiler> gpu_intercept;
 
   std::function<void(xla::HloModuleConfig*)> config_modifier_hook =
       [](xla::HloModuleConfig* config) { config->set_seed(42); };

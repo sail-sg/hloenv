@@ -66,6 +66,7 @@ pybind_extension(
     module_name = "hlo_ir",
     deps = [
         ":py_hlo_graph",
+        "//altgraph/evaluation:evaluator",
         "@org_tensorflow//tensorflow/compiler/jit:xla_cpu_jit",
         "@org_tensorflow//tensorflow/compiler/jit:xla_gpu_jit",
         "@org_tensorflow//tensorflow/compiler/xla:literal",
