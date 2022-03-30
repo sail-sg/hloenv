@@ -23,10 +23,10 @@ class HloIRTest(absltest.TestCase):
     hlo_ir = HloIr(self.hlo_file, "gpu")
     hlo_graph = hlo_ir.get_hlo_graph()
 
-    _ = hlo_graph.out_edge_offsets
-    _ = hlo_graph.out_edge_indices
-    _ = hlo_graph.in_edge_offsets
-    _ = hlo_graph.in_edge_indices
+    assert(len(hlo_graph.out_edge_offsets) > 0)
+    assert(len(hlo_graph.out_edge_indices) > 0)
+    assert(len(hlo_graph.in_edge_offsets) > 0)
+    assert(len(hlo_graph.in_edge_indices) > 0)
 
     _ = hlo_graph.alternative_indices
     _ = hlo_graph.hash()
@@ -34,31 +34,34 @@ class HloIRTest(absltest.TestCase):
     in_edge_features = hlo_graph.in_edge_features
     out_edge_features = hlo_graph.out_edge_features
 
-    _ = node_features.uids
-    _ = node_features.names
-    _ = node_features.gids
-    _ = node_features.num_users
-    _ = node_features.num_operands
-    _ = node_features.is_alternative
-    _ = node_features.in_tensor_sizes
-    _ = node_features.out_tensor_sizes
+    num_nodes = len(node_features.uids)
+    assert(num_nodes > 0)
+    assert(len(node_features.names) == num_nodes)
+    assert(len(node_features.gids) == num_nodes)
+    assert(len(node_features.num_users) == num_nodes)
+    assert(len(node_features.num_operands) == num_nodes)
+    assert(len(node_features.is_alternative) == num_nodes)
+    assert(len(node_features.in_tensor_sizes) == num_nodes)
+    assert(len(node_features.out_tensor_sizes) == num_nodes)
     _ = node_features.has_max_in_tensor
     _ = node_features.has_max_out_tensor
 
-    _ = in_edge_features.uids
-    _ = in_edge_features.srcs
-    _ = in_edge_features.dsts
-    _ = in_edge_features.dims
-    _ = in_edge_features.layouts
-    _ = in_edge_features.dtypes
+    num_in_edges = len(in_edge_features.uids)
+    assert(num_in_edges > 0)
+    assert(len(in_edge_features.srcs) == num_in_edges)
+    assert(len(in_edge_features.dsts) == num_in_edges)
+    assert(len(in_edge_features.dims) == num_in_edges * 8)
+    assert(len(in_edge_features.layouts) == num_in_edges * 8)
+    assert(len(in_edge_features.dtypes) == num_in_edges)
     _ = in_edge_features.get_tensor_size(0)
 
-    _ = out_edge_features.uids
-    _ = out_edge_features.srcs
-    _ = out_edge_features.dsts
-    _ = out_edge_features.dims
-    _ = out_edge_features.layouts
-    _ = out_edge_features.dtypes
+    num_out_edges = len(out_edge_features.uids)
+    assert(num_out_edges == num_out_edges)
+    assert(len(out_edge_features.srcs) == num_out_edges)
+    assert(len(out_edge_features.dsts) == num_out_edges)
+    assert(len(out_edge_features.dims) == num_out_edges * 8)
+    assert(len(out_edge_features.layouts) == num_out_edges * 8)
+    assert(len(out_edge_features.dtypes) == num_out_edges)
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_basic(self) -> None:
