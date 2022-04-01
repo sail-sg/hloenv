@@ -92,10 +92,12 @@ void HloGraph::BuildGraphTopology(const HloComputation* c, int gid) {
 
     inst_list_.push_back(inst);
     std::string name = inst->name();
+    int opcode = static_cast<int>(inst->opcode());
     // Add to basic node_feats_
     node_feats_.uids->push_back(uid);
     node_feats_.names->push_back(name);
     node_feats_.gids->push_back(gid);
+    node_feats_.opcodes->push_back(opcode);
     uid_to_inst_.insert({uid, inst});
   }
   return;
@@ -312,6 +314,7 @@ void HloGraph::ShowStats() {
   auto gids = get_gids();
   auto ucounts = get_user_counts();
   auto opcounts = get_operand_counts();
+  auto opcodes = get_opcodes();
 
   auto oedge_uids = get_out_edge_uids();
   auto oedge_srcs = get_out_edge_srcs();
@@ -333,6 +336,7 @@ void HloGraph::ShowStats() {
     LOG(ERROR) << "gid: " << gids[i];
     LOG(ERROR) << "user_count: " << ucounts[i];
     LOG(ERROR) << "operand_count: " << opcounts[i];
+    LOG(ERROR) << "opcode: " << opcodes[i];
     int start_idx = oedge_offsets[i];
     int end_idx = oedge_offsets[i + 1];
     for (int ii = start_idx; ii < end_idx; ++ii) {

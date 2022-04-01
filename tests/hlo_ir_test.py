@@ -40,6 +40,7 @@ class HloIRTest(absltest.TestCase):
     assert(len(node_features.gids) == num_nodes)
     assert(len(node_features.num_users) == num_nodes)
     assert(len(node_features.num_operands) == num_nodes)
+    assert(len(node_features.opcodes) == num_nodes)
     assert(len(node_features.is_alternative) == num_nodes)
     assert(len(node_features.in_tensor_sizes) == num_nodes)
     assert(len(node_features.out_tensor_sizes) == num_nodes)
@@ -109,3 +110,4 @@ class HloIRTest(absltest.TestCase):
 
 if __name__ == "__main__":
   absltest.main()
+

@@ -16,6 +16,7 @@
 #include "tensorflow/compiler/xla/service/hlo_computation.h"
 #include "tensorflow/compiler/xla/service/hlo_instruction.h"
 #include "tensorflow/compiler/xla/service/hlo_module.h"
+#include "tensorflow/compiler/xla/service/hlo_opcode.h"
 
 namespace xla {
 
@@ -39,6 +40,9 @@ struct NodeFeats {
   // advanced node feats
   std::shared_ptr<std::vector<int>> num_users;
   std::shared_ptr<std::vector<int>> num_operands;
+  // opcode enum is defined here:
+  // https://git.insea.io/sail/aisys/tensorflow/-/blob/main/tensorflow/compiler/xla/service/hlo_opcode.h#L46
+  std::shared_ptr<std::vector<int>> opcodes;
   std::shared_ptr<std::vector<uint8_t>> is_alternative;
   std::shared_ptr<std::vector<int64_t>> in_tensor_sizes;
   std::shared_ptr<std::vector<int64_t>> out_tensor_sizes;
@@ -51,6 +55,7 @@ struct NodeFeats {
     gids = std::make_shared<std::vector<size_t>>();
     num_users = std::make_shared<std::vector<int>>();
     num_operands = std::make_shared<std::vector<int>>();
+    opcodes = std::make_shared<std::vector<int>>();
     is_alternative = std::make_shared<std::vector<uint8_t>>();
     in_tensor_sizes = std::make_shared<std::vector<int64_t>>();
     out_tensor_sizes = std::make_shared<std::vector<int64_t>>();
@@ -64,6 +69,7 @@ struct NodeFeats {
     gids->clear();
     num_users->clear();
     num_operands->clear();
+    opcodes->clear();
     is_alternative->clear();
     in_tensor_sizes->clear();
     out_tensor_sizes->clear();
@@ -169,6 +175,7 @@ class HloGraph {
   const std::vector<int>& get_operand_counts() {
     return *node_feats_.num_operands;
   }
+  const std::vector<int>& get_opcodes() { return *node_feats_.opcodes; }
 
   // return edge features.
   const std::vector<int64_t>& get_in_edge_uids() {
