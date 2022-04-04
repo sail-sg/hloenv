@@ -84,9 +84,12 @@ struct NodeFeats {
 // dsts: indices of destination nodes
 // dims: a fixed-length (8) array to present tensor shape
 // layouts: a fixed-length (8) array to present tensor layout
-// dtypes: tensor dtype
+// dtypes: tensor dtype, integer mapping to xla_data primitivetype:
 // enum PrimitiveType {
-//   S16 = 0,
+//   PRIMITIVE_TYPE_INVALID = 0,
+//   PRED,
+//   S8,
+//   S16,
 //   S32,
 //   S64,
 //   U8,
@@ -94,10 +97,13 @@ struct NodeFeats {
 //   U32,
 //   U64,
 //   F16,
-//   BF16,
 //   F32,
 //   F64,
+//   TUPLE,
+//   OPAQUE_TYPE,
 //   C64,
+//   BF16,
+//   TOKEN,
 //   C128
 // };
 struct EdgeFeats {
@@ -107,7 +113,7 @@ struct EdgeFeats {
   std::shared_ptr<std::vector<int64_t>> dims;
   std::shared_ptr<std::vector<int64_t>> layouts;
   // PrimitiveType as is defined in xla_data.proto.
-  std::shared_ptr<std::vector<PrimitiveType>> dtypes;
+  std::shared_ptr<std::vector<int>> dtypes;
 
   EdgeFeats() {
     uids = std::make_shared<std::vector<int64_t>>();
@@ -115,7 +121,7 @@ struct EdgeFeats {
     dsts = std::make_shared<std::vector<int>>();
     dims = std::make_shared<std::vector<int64_t>>();
     layouts = std::make_shared<std::vector<int64_t>>();
-    dtypes = std::make_shared<std::vector<PrimitiveType>>();
+    dtypes = std::make_shared<std::vector<int>>();
   }
 
   void Clear() {
@@ -189,7 +195,7 @@ class HloGraph {
   const std::vector<int64_t>& get_in_edge_layouts() {
     return *in_edge_feats_.layouts;
   }
-  const std::vector<PrimitiveType>& get_in_edge_dtypes() {
+  const std::vector<int>& get_in_edge_dtypes() {
     return *in_edge_feats_.dtypes;
   }
 
@@ -204,7 +210,7 @@ class HloGraph {
   const std::vector<int64_t>& get_out_edge_layouts() {
     return *out_edge_feats_.layouts;
   }
-  const std::vector<PrimitiveType>& get_out_edge_dtypes() {
+  const std::vector<int>& get_out_edge_dtypes() {
     return *out_edge_feats_.dtypes;
   }
 

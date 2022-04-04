@@ -61,7 +61,7 @@ struct PyEdgeFeats : public xla::EdgeFeats {
   SHARED_VEC_TO_PYARRAY(dsts, int, dsts);
   SHARED_VEC_TO_PYARRAY(dims, int64_t, dims);
   SHARED_VEC_TO_PYARRAY(layouts, int64_t, layouts);
-  std::vector<xla::PrimitiveType>& py_get_dtypes() { return *dtypes; }
+  SHARED_VEC_TO_PYARRAY(dtypes, int, dtypes);
 
   PyEdgeFeats() {}
   explicit PyEdgeFeats(const xla::EdgeFeats& edge_feats)

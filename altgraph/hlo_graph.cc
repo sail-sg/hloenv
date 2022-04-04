@@ -192,7 +192,7 @@ void HloGraph::PrepareFeatures() {
         }
       }
       out_tensor_size += out_edge_feats_.GetTensorSize(s);
-      out_edge_feats_.dtypes->push_back(shape.element_type());
+      out_edge_feats_.dtypes->push_back(static_cast<int>(shape.element_type()));
     }
     node_feats_.out_tensor_sizes->push_back(out_tensor_size);
 
@@ -222,7 +222,7 @@ void HloGraph::PrepareFeatures() {
         }
       }
       in_tensor_size += in_edge_feats_.GetTensorSize(s);
-      in_edge_feats_.dtypes->push_back(shape.element_type());
+      in_edge_feats_.dtypes->push_back(static_cast<int>(shape.element_type()));
     }
     node_feats_.in_tensor_sizes->push_back(in_tensor_size);
   }

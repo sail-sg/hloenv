@@ -162,22 +162,6 @@ PYBIND11_MODULE(hlo_ir, m) {
       .DEF_PYBIND_READONLY(PyNodeFeats, has_max_in_tensor)
       .DEF_PYBIND_READONLY(PyNodeFeats, has_max_out_tensor);
 
-  py::enum_<xla::PrimitiveType>(py_hlo_graph, "PrimitiveType")
-      .value("S16", xla::PrimitiveType::S16)
-      .value("S32", xla::PrimitiveType::S32)
-      .value("S64", xla::PrimitiveType::S64)
-      .value("U8", xla::PrimitiveType::U8)
-      .value("U16", xla::PrimitiveType::U16)
-      .value("U32", xla::PrimitiveType::U32)
-      .value("U64", xla::PrimitiveType::U64)
-      .value("F16", xla::PrimitiveType::F16)
-      .value("BF16", xla::PrimitiveType::BF16)
-      .value("F32", xla::PrimitiveType::F32)
-      .value("F64", xla::PrimitiveType::F64)
-      .value("C64", xla::PrimitiveType::C64)
-      .value("C128", xla::PrimitiveType::C128)
-      .export_values();
-
   // TODO(ohcy): write this without copy as nparray
   py::class_<PyEdgeFeats>(m, "EdgeFeats")
       .def("get_tensor_size", &PyEdgeFeats::GetTensorSize)
