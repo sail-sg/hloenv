@@ -36,7 +36,9 @@ TEST(EvaluatorTestBase, Basic) {
   for (int seed : seeds) {
     evaluator.GenerateParameters(seed);
     auto result = evaluator.Evaluate();
-    EXPECT_GT(result.duration, absl::Nanoseconds(1));
+    for (absl::Duration duration : result.durations) {
+      EXPECT_GT(duration, absl::Nanoseconds(1));
+    }
     auto literal = result.output[0][0]->ToLiteral().ValueOrDie();
     if (seed_to_results.count(seed)) {
       EXPECT_EQ(*literal, *seed_to_results[seed]);

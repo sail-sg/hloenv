@@ -5,6 +5,7 @@
 
 #include <pybind11/pybind11.h>
 
+#include <algorithm>
 #include <iostream>
 #include <memory>
 #include <sstream>
@@ -19,6 +20,7 @@
 #include "tensorflow/compiler/xla/pjrt/cpu_device.h"
 #include "tensorflow/compiler/xla/pjrt/gpu_device.h"
 #include "tensorflow/compiler/xla/pjrt/pjrt_client.h"
+#include "tensorflow/compiler/xla/python/types.h"
 #include "tensorflow/compiler/xla/service/cpu/cpu_compiler.h"
 #include "tensorflow/compiler/xla/service/gpu/gpu_compiler.h"
 #include "tensorflow/compiler/xla/service/hlo_instructions.h"
@@ -32,12 +34,15 @@ namespace py = pybind11;
 
 class PyHloIr {
  public:
-  std::unique_ptr<xla::HloModule> hlo_module_;
+  struct EvaluationResult {
+    std::vector<uint64_t> durations;
+    std::vector<std::vector<py::object>> output;
+  };
 
  private:
+  std::shared_ptr<xla::HloModule> hlo_module_;
   xla::Intercept<xla::cpu::CpuCompiler> cpu_intercept_;
   xla::Intercept<xla::gpu::GpuCompiler> gpu_intercept_;
-  PyHloGraph py_hlo_graph_;
   const std::string platform_;
   std::unique_ptr<xla::PjRtClient> client_;
   xla::Evaluator evaluator_;
@@ -46,7 +51,13 @@ class PyHloIr {
   explicit PyHloIr(const std::string& hlo_filepath,
                    const std::string& platform);
 
-  uint64_t Evaluate(int times);
+  std::shared_ptr<xla::HloModule> SaveHloModule();
+
+  void RestoreHloModule(std::shared_ptr<xla::HloModule> saved_hlo_module);
+
+  std::string ExportHloModuleToStr();
+
+  EvaluationResult Evaluate(int times);
 
   void PreFusionOptimizations();
 
@@ -54,7 +65,7 @@ class PyHloIr {
 
   void PostFusionOptimizations();
 
-  PyHloGraph& GetHloGraph();
+  PyHloGraph GetHloGraph();
 
   void ApplyAlternatives(py::array_t<size_t> decisions);
 };

@@ -83,6 +83,6 @@ int main(int argc, char** argv) {
           : xla::GetCpuClient(true).ValueOrDie();
   evaluator.Compile(test_module->ToProto(), rerun_hlo, client.get());
   auto result = evaluator.Evaluate(times);
-  LOG(INFO) << "run time:" << result.duration << std::endl;
+  LOG(INFO) << "run time:" << result.durations << std::endl;
   return 0;
 }

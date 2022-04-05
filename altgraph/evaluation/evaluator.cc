@@ -113,13 +113,10 @@ Evaluator::EvaluationResult Evaluator::Evaluate(int times) {
     }
   }
 
-  auto start = absl::Now();
+  absl::Time start;
   BufferPack result;
   for (int i = 0; i < times + 1; i++) {
-    // Timer starts on 2nd run.
-    if (i == 1) {
-      start = absl::Now();
-    }
+    start = absl::Now();
     // TODO(wanxy): Not sure whether this is async yet
     // Might need to make sure the execution is complete after function returns
     result = std::move(
@@ -129,10 +126,12 @@ Evaluator::EvaluationResult Evaluator::Evaluate(int times) {
         pp->BlockHostUntilReady();
       }
     }
+    if (i >= 1) {
+      // Timer starts on 2nd run.
+      ret.durations.push_back(absl::Now() - start);
+    }
   }
 
-  auto end = absl::Now();
-  ret.duration = end - start;
   for (auto& p : result) {
     ret.output.emplace_back();
     for (auto& pp : p) {

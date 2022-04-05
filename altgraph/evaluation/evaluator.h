@@ -25,7 +25,7 @@ class Evaluator {
 
   typedef std::vector<std::vector<std::unique_ptr<xla::PjRtBuffer>>> BufferPack;
   struct EvaluationResult {
-    absl::Duration duration;
+    std::vector<absl::Duration> durations;
 
     BufferPack output;
     uint64_t memory_consumed;

@@ -71,10 +71,6 @@ http_archive(
     urls = ["https://github.com/pybind/pybind11_bazel/archive/26973c0ff320cb4b39e45bc3e4297b82bc3a6c09.zip"],
 )
 
-load("@pybind11_bazel//:python_configure.bzl", "python_configure")
-
-python_configure(name = "local_config_python")
-
 # ***************************************************************
 # TensorFlow Initialization
 # ***************************************************************

@@ -14,6 +14,13 @@ install: build
 test:
 	bazel --output_user_root=/tmp/altgraph test --test_output=all --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //tests/...
 
+format: yapf clang-format
+
+lint:
+	flake8 altgraph/ --count --show-source --statistics
+	cpplint --root=. --recursive altgraph/
+	clang-format-11 --style=Google -i ${CPP_FILES} -n -Werror
+
 yapf:
 	$(call check_install, yapf)
 	yapf -r -i altgraph/ tests/

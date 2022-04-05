@@ -242,6 +242,10 @@ void HloGraph::PrepareFeatures() {
 }
 
 bool HloGraph::Build(const HloModule* m) {
+  parent_hlo_module_ = const_cast<HloModule*>(m);
+  uid_ = m->unique_id();
+  name_ = m->name();
+
   Clear();
   BuildGraphTopology(m->entry_computation(), 0);
   BuildRaggedTensors();
@@ -257,6 +261,8 @@ bool HloGraph::Build(const HloModule* m) {
   uint64_t hlomodule_hash = parent_hlo_module_->CalledComputationHash();
   if (hlograph_hash == hlomodule_hash) {
     LOG(ERROR) << "HloGraph build verified.";
+  } else {
+    LOG(ERROR) << "HloGraph hash NOT verified.";
   }
 
   return true;
