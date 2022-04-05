@@ -22,11 +22,8 @@ package(default_visibility = ["//visibility:public"])
 tf_cc_binary(
     name = "main",
     srcs = ["main.cc"],
-    linkopts = ["-llapack", "-llapacke", "-lblas"],
     deps = [
         ":evaluator",
-        "@jax//jaxlib:gpu_kernels",
-        "@jax//jaxlib:cpu_kernels",
         "@org_tensorflow//tensorflow/compiler/jit:xla_gpu_jit",
         "@org_tensorflow//tensorflow/compiler/xla:literal",
         "@org_tensorflow//tensorflow/compiler/xla:literal_util",
@@ -47,7 +44,10 @@ cc_library(
     name = "evaluator",
     srcs = ["evaluator.cc"],
     hdrs = ["evaluator.h"],
+    linkopts = ["-llapack", "-llapacke", "-lblas"],
     deps = [
+        "@jax//jaxlib:gpu_kernels",
+        "@jax//jaxlib:cpu_kernels",
         "@org_tensorflow//tensorflow/compiler/xla:literal",
         "@org_tensorflow//tensorflow/compiler/xla:literal_util",
         "@org_tensorflow//tensorflow/compiler/xla/pjrt:pjrt_client",
