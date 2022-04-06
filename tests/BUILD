@@ -42,5 +42,5 @@ tf_cc_test(
 
 filegroup(
     name = "test_data",
-    srcs = glob(["*.txt"]),
+    srcs = glob(["*.txt", "hlo_texts/*.txt", "hlo_texts/test_hlos/*.txt"]),
 )

@@ -67,6 +67,7 @@ pybind_extension(
         "@org_tensorflow//tensorflow/compiler/jit:xla_cpu_jit",
         "@org_tensorflow//tensorflow/compiler/jit:xla_gpu_jit",
         "@org_tensorflow//tensorflow/compiler/xla:literal",
+        "@org_tensorflow//tensorflow/compiler/xla:literal_comparison",
         "@org_tensorflow//tensorflow/compiler/xla:literal_util",
         "@org_tensorflow//tensorflow/compiler/xla:shape_util",
         "@org_tensorflow//tensorflow/compiler/xla:status",

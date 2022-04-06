@@ -10,8 +10,13 @@ class HloIRTest(absltest.TestCase):
   def setUp(self) -> None:
     logging.set_verbosity(logging.INFO)
     logging.info("setting up")
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    self.hlo_file = dir_path + "/hlo_test.txt"
+    dir_path = os.path.dirname(os.path.realpath(__file__)) + "/hlo_texts"
+    all_dir_path = dir_path + "/test_hlos"
+    self.hlo_test_files = [
+      os.path.join(all_dir_path, filename)
+      for filename in os.listdir(all_dir_path)
+    ]
+    self.hlo_main_test_file = dir_path + "/hlo_test.txt"
 
   def test_import(self) -> None:
     import tensorflow
@@ -21,7 +26,7 @@ class HloIRTest(absltest.TestCase):
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_graph_interfaces(self) -> None:
     from altgraph import HloIr
-    hlo_ir = HloIr(self.hlo_file, "gpu")
+    hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
     hlo_graph = hlo_ir.get_hlo_graph()
 
     assert (len(hlo_graph.out_edge_offsets) > 0)
@@ -72,7 +77,7 @@ class HloIRTest(absltest.TestCase):
     from random import randrange
     import numpy as np
 
-    hlo_ir = HloIr(self.hlo_file, "gpu")
+    hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
 
     hlo_ir.pre_fusion_optimizations()
 
@@ -113,7 +118,7 @@ class HloIRTest(absltest.TestCase):
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_save_restore(self) -> None:
     from altgraph import HloIr
-    hlo_ir = HloIr(self.hlo_file, "gpu")
+    hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
 
     init_hlo_str = hlo_ir.export_hlo_to_str()
     saved_hlo_module = hlo_ir.save_hlo()
@@ -125,15 +130,22 @@ class HloIRTest(absltest.TestCase):
     assert (init_hlo_str == restored_hlo_str)
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
-  def test_validation(self) -> None:
+  def test_evaluation(self) -> None:
     from altgraph import HloIr
     from random import randrange
     import numpy as np
 
-    hlo_ir = HloIr(self.hlo_file, "gpu")
+    hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
 
     hlo_ir.pre_fusion_optimizations()
     saved_hlo_module = hlo_ir.save_hlo()
+    # Restore back to original, where we only did pre_fusion_optimizations
+    hlo_ir.post_fusion_optimizations()
+
+    orig_res = hlo_ir.evaluate(1)
+    orig_post_opt_module = hlo_ir.save_hlo()
+
+    hlo_ir.restore_hlo(saved_hlo_module)
 
     num_alts = 1
     while num_alts > 0:
@@ -153,12 +165,7 @@ class HloIRTest(absltest.TestCase):
 
     hlo_ir.post_fusion_optimizations()
     mod_res = hlo_ir.evaluate(1)
-
-    # Restore back to original, where we only did pre_fusion_optimizations
-    hlo_ir.restore_hlo(saved_hlo_module)
-    hlo_ir.post_fusion_optimizations()
-
-    orig_res = hlo_ir.evaluate(1)
+    assert (hlo_ir.has_equal_output_as(orig_post_opt_module))
 
     est_time_orig = sum(orig_res.durations) / len(orig_res.durations)
     est_time_mod = sum(mod_res.durations) / len(mod_res.durations)
@@ -167,6 +174,7 @@ class HloIRTest(absltest.TestCase):
       "Running time estimation: orig: %d ns, altgraph: %d ns", est_time_orig,
       est_time_mod
     )
+
     assert (len(orig_res.output) == len(mod_res.output))
     for i in range(len(orig_res.output)):
       assert (len(orig_res.output[i]) == len(mod_res.output[i]))
@@ -176,6 +184,47 @@ class HloIRTest(absltest.TestCase):
           assert (
             np.allclose(mod_res.output[i][j][k], orig_res.output[i][j][k])
           )
+
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_validation(self) -> None:
+    from altgraph import HloIr
+    from random import randrange
+    import numpy as np
+
+    for filepath in self.hlo_test_files:
+      logging.info("Testing validation for file: " + filepath)
+      hlo_ir = HloIr(filepath, "gpu")
+
+      hlo_ir.pre_fusion_optimizations()
+      saved_hlo_module = hlo_ir.save_hlo()
+      hlo_ir.post_fusion_optimizations()
+
+      # Save a valid copy of the original module
+      orig_post_opt_module = hlo_ir.save_hlo()
+
+      hlo_ir.restore_hlo(saved_hlo_module)
+
+      num_alts = 1
+      while num_alts > 0:
+        hlo_ir.fusion_dry_run()
+        hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
+        node_features = hlo_graph.node_features
+        num_operands = node_features.num_operands
+        num_alts = len(hlo_graph.alternative_indices)
+
+        if num_alts > 0:
+          decisions = []
+          for alt_idx in hlo_graph.alternative_indices:
+            decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+
+          decisions = np.asarray(decisions)
+          hlo_ir.apply_alternatives(decisions)
+
+      hlo_ir.post_fusion_optimizations()
+      post_fusion_module = hlo_ir.save_hlo()
+      assert (
+        hlo_ir.has_equal_output(post_fusion_module, orig_post_opt_module)
+      )
 
 
 if __name__ == "__main__":

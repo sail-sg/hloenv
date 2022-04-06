@@ -1,0 +1,169 @@
+HloModule jit_train_step.151
+
+%primitive_computation_add__6.23 (parameter.24: f32[], parameter.25: f32[]) -> f32[] {
+  %constant.26 = pred[] constant(false)
+  %parameter.24 = f32[] parameter(0)
+  %parameter.25 = f32[] parameter(1)
+  ROOT %add.27 = f32[] add(f32[] %parameter.24, f32[] %parameter.25), metadata={op_type="add" op_name="add" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+}
+
+%primitive_computation_add__7.36 (parameter.37: f32[], parameter.38: f32[]) -> f32[] {
+  %constant.39 = pred[] constant(false)
+  %parameter.37 = f32[] parameter(0)
+  %parameter.38 = f32[] parameter(1)
+  ROOT %add.40 = f32[] add(f32[] %parameter.37, f32[] %parameter.38), metadata={op_type="add" op_name="add" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+}
+
+%primitive_computation_add__8.48 (parameter.49: f32[], parameter.50: f32[]) -> f32[] {
+  %constant.51 = pred[] constant(false)
+  %parameter.49 = f32[] parameter(0)
+  %parameter.50 = f32[] parameter(1)
+  ROOT %add.52 = f32[] add(f32[] %parameter.49, f32[] %parameter.50), metadata={op_type="add" op_name="add" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+}
+
+%primitive_computation_add__9.60 (parameter.61: f32[], parameter.62: f32[]) -> f32[] {
+  %constant.63 = pred[] constant(false)
+  %parameter.61 = f32[] parameter(0)
+  %parameter.62 = f32[] parameter(1)
+  ROOT %add.64 = f32[] add(f32[] %parameter.61, f32[] %parameter.62), metadata={op_type="add" op_name="add" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+}
+
+%primitive_computation_add__10.75 (parameter.76: f32[], parameter.77: f32[]) -> f32[] {
+  %constant.78 = pred[] constant(false)
+  %parameter.76 = f32[] parameter(0)
+  %parameter.77 = f32[] parameter(1)
+  ROOT %add.79 = f32[] add(f32[] %parameter.76, f32[] %parameter.77), metadata={op_type="add" op_name="add" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+}
+
+%primitive_computation_add__11.108 (parameter.109: f32[], parameter.110: f32[]) -> f32[] {
+  %constant.111 = pred[] constant(false)
+  %parameter.109 = f32[] parameter(0)
+  %parameter.110 = f32[] parameter(1)
+  ROOT %add.112 = f32[] add(f32[] %parameter.109, f32[] %parameter.110), metadata={op_type="add" op_name="add" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=184}
+}
+
+%primitive_computation_add__12.124 (parameter.125: f32[], parameter.126: f32[]) -> f32[] {
+  %constant.127 = pred[] constant(false)
+  %parameter.125 = f32[] parameter(0)
+  %parameter.126 = f32[] parameter(1)
+  ROOT %add.128 = f32[] add(f32[] %parameter.125, f32[] %parameter.126), metadata={op_type="add" op_name="add" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=184}
+}
+
+ENTRY %jit_train_step.151 (parameter.1: f32[128], parameter.2: f32[1,128], parameter.3: f32[1], parameter.4: f32[128,1], parameter.5: f32[200,1], parameter.6: f32[200,1]) -> (f32[128], f32[1,128], f32[1], f32[128,1]) {
+  %constant.7 = pred[] constant(false)
+  %parameter.5 = f32[200,1]{1,0} parameter(4)
+  %parameter.2 = f32[1,128]{1,0} parameter(1)
+  %dot.8 = f32[200,128]{1,0} dot(f32[200,1]{1,0} %parameter.5, f32[1,128]{1,0} %parameter.2), lhs_contracting_dims={1}, rhs_contracting_dims={0}, metadata={op_type="dot_general" op_name="jit(train_step)/dot_general[\n  dimension_numbers=(((1,), (0,)), ((), ()))\n  precision=None\n  preferred_element_type=None\n]" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=180}
+  %parameter.1 = f32[128]{0} parameter(0)
+  %broadcast.9 = f32[200,128]{1,0} broadcast(f32[128]{0} %parameter.1), dimensions={1}, metadata={op_type="broadcast_in_dim" op_name="jit(train_step)/broadcast_in_dim[broadcast_dimensions=(1,) shape=(200, 128)]" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=184}
+  %add.10 = f32[200,128]{1,0} add(f32[200,128]{1,0} %dot.8, f32[200,128]{1,0} %broadcast.9), metadata={op_type="add" op_name="jit(train_step)/add" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=185}
+  %tanh.11 = f32[200,128]{1,0} tanh(f32[200,128]{1,0} %add.10), metadata={op_type="tanh" op_name="jit(train_step)/tanh" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=127}
+  %parameter.4 = f32[128,1]{1,0} parameter(3)
+  %dot.15 = f32[200,1]{1,0} dot(f32[200,128]{1,0} %tanh.11, f32[128,1]{1,0} %parameter.4), lhs_contracting_dims={1}, rhs_contracting_dims={0}, metadata={op_type="dot_general" op_name="jit(train_step)/dot_general[\n  dimension_numbers=(((1,), (0,)), ((), ()))\n  precision=None\n  preferred_element_type=None\n]" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=180}
+  %parameter.3 = f32[1]{0} parameter(2)
+  %broadcast.16 = f32[200,1]{1,0} broadcast(f32[1]{0} %parameter.3), dimensions={1}, metadata={op_type="broadcast_in_dim" op_name="jit(train_step)/broadcast_in_dim[broadcast_dimensions=(1,) shape=(200, 1)]" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=184}
+  %add.17 = f32[200,1]{1,0} add(f32[200,1]{1,0} %dot.15, f32[200,1]{1,0} %broadcast.16), metadata={op_type="add" op_name="jit(train_step)/add" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=185}
+  %parameter.6 = f32[200,1]{1,0} parameter(5)
+  %subtract.69 = f32[200,1]{1,0} subtract(f32[200,1]{1,0} %add.17, f32[200,1]{1,0} %parameter.6), metadata={op_type="sub" op_name="jit(train_step)/sub" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %multiply.70 = f32[200,1]{1,0} multiply(f32[200,1]{1,0} %subtract.69, f32[200,1]{1,0} %subtract.69), metadata={op_type="integer_pow" op_name="jit(train_step)/integer_pow[y=2]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %constant.74 = f32[] constant(0), metadata={op_type="reduce_sum" op_name="jit(train_step)/reduce_sum[axes=(0, 1)]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %reduce.80 = f32[] reduce(f32[200,1]{1,0} %multiply.70, f32[] %constant.74), dimensions={0,1}, to_apply=%primitive_computation_add__10.75, metadata={op_type="reduce_sum" op_name="jit(train_step)/reduce_sum[axes=(0, 1)]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %constant.81 = f32[] constant(200), metadata={op_type="div" op_name="jit(train_step)/div" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %divide.82 = f32[] divide(f32[] %reduce.80, f32[] %constant.81), metadata={op_type="div" op_name="jit(train_step)/div" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %negate.83 = f32[] negate(f32[] %divide.82), metadata={op_type="neg" op_name="jit(train_step)/neg" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %constant.84 = f32[] constant(0.5), metadata={op_type="div" op_name="jit(train_step)/div" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %divide.85 = f32[] divide(f32[] %negate.83, f32[] %constant.84), metadata={op_type="div" op_name="jit(train_step)/div" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %multiply.18 = f32[128]{0} multiply(f32[128]{0} %parameter.1, f32[128]{0} %parameter.1), metadata={op_type="integer_pow" op_name="jit(train_step)/integer_pow[y=2]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %constant.22 = f32[] constant(0), metadata={op_type="reduce_sum" op_name="jit(train_step)/reduce_sum[axes=(0,)]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %reduce.28 = f32[] reduce(f32[128]{0} %multiply.18, f32[] %constant.22), dimensions={0}, to_apply=%primitive_computation_add__6.23, metadata={op_type="reduce_sum" op_name="jit(train_step)/reduce_sum[axes=(0,)]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %constant.29 = f32[] constant(0), metadata={op_type="add" op_name="jit(train_step)/add" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %add.30 = f32[] add(f32[] %reduce.28, f32[] %constant.29), metadata={op_type="add" op_name="jit(train_step)/add" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %multiply.31 = f32[1,128]{1,0} multiply(f32[1,128]{1,0} %parameter.2, f32[1,128]{1,0} %parameter.2), metadata={op_type="integer_pow" op_name="jit(train_step)/integer_pow[y=2]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %constant.35 = f32[] constant(0), metadata={op_type="reduce_sum" op_name="jit(train_step)/reduce_sum[axes=(0, 1)]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %reduce.41 = f32[] reduce(f32[1,128]{1,0} %multiply.31, f32[] %constant.35), dimensions={0,1}, to_apply=%primitive_computation_add__7.36, metadata={op_type="reduce_sum" op_name="jit(train_step)/reduce_sum[axes=(0, 1)]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %add.42 = f32[] add(f32[] %add.30, f32[] %reduce.41), metadata={op_type="add" op_name="jit(train_step)/add" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %multiply.43 = f32[1]{0} multiply(f32[1]{0} %parameter.3, f32[1]{0} %parameter.3), metadata={op_type="integer_pow" op_name="jit(train_step)/integer_pow[y=2]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %constant.47 = f32[] constant(0), metadata={op_type="reduce_sum" op_name="jit(train_step)/reduce_sum[axes=(0,)]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %reduce.53 = f32[] reduce(f32[1]{0} %multiply.43, f32[] %constant.47), dimensions={0}, to_apply=%primitive_computation_add__8.48, metadata={op_type="reduce_sum" op_name="jit(train_step)/reduce_sum[axes=(0,)]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %add.54 = f32[] add(f32[] %add.42, f32[] %reduce.53), metadata={op_type="add" op_name="jit(train_step)/add" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %multiply.55 = f32[128,1]{1,0} multiply(f32[128,1]{1,0} %parameter.4, f32[128,1]{1,0} %parameter.4), metadata={op_type="integer_pow" op_name="jit(train_step)/integer_pow[y=2]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %constant.59 = f32[] constant(0), metadata={op_type="reduce_sum" op_name="jit(train_step)/reduce_sum[axes=(0, 1)]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %reduce.65 = f32[] reduce(f32[128,1]{1,0} %multiply.55, f32[] %constant.59), dimensions={0,1}, to_apply=%primitive_computation_add__9.60, metadata={op_type="reduce_sum" op_name="jit(train_step)/reduce_sum[axes=(0, 1)]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %add.66 = f32[] add(f32[] %add.54, f32[] %reduce.65), metadata={op_type="add" op_name="jit(train_step)/add" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %constant.67 = f32[] constant(-0), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %multiply.68 = f32[] multiply(f32[] %add.66, f32[] %constant.67), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %add.86 = f32[] add(f32[] %divide.85, f32[] %multiply.68), metadata={op_type="add" op_name="jit(train_step)/add" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=63}
+  %negate.87 = f32[] negate(f32[] %add.86), metadata={op_type="neg" op_name="jit(train_step)/neg" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=66}
+  %constant.88 = f32[] constant(1), metadata={op_type="neg" op_name="jit(train_step)/neg" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=66}
+  %negate.89 = f32[] negate(f32[] %constant.88), metadata={op_type="neg" op_name="jit(train_step)/neg" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=66}
+  %constant.90 = f32[] constant(-0), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %multiply.91 = f32[] multiply(f32[] %negate.89, f32[] %constant.90), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %broadcast.98 = f32[128]{0} broadcast(f32[] %multiply.91), dimensions={}, metadata={op_type="broadcast_in_dim" op_name="jit(train_step)/broadcast_in_dim[broadcast_dimensions=() shape=(128,)]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %constant.19 = f32[] constant(2), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %broadcast.20 = f32[128]{0} broadcast(f32[] %constant.19), dimensions={}, metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %multiply.21 = f32[128]{0} multiply(f32[128]{0} %broadcast.20, f32[128]{0} %parameter.1), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %multiply.99 = f32[128]{0} multiply(f32[128]{0} %broadcast.98, f32[128]{0} %multiply.21), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %constant.100 = f32[] constant(0.5), metadata={op_type="div" op_name="jit(train_step)/div" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %divide.101 = f32[] divide(f32[] %negate.89, f32[] %constant.100), metadata={op_type="div" op_name="jit(train_step)/div" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %negate.102 = f32[] negate(f32[] %divide.101), metadata={op_type="neg" op_name="jit(train_step)/neg" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %constant.103 = f32[] constant(200), metadata={op_type="div" op_name="jit(train_step)/div" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %divide.104 = f32[] divide(f32[] %negate.102, f32[] %constant.103), metadata={op_type="div" op_name="jit(train_step)/div" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %broadcast.105 = f32[200,1]{1,0} broadcast(f32[] %divide.104), dimensions={}, metadata={op_type="broadcast_in_dim" op_name="jit(train_step)/broadcast_in_dim[broadcast_dimensions=() shape=(200, 1)]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %constant.71 = f32[] constant(2), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %broadcast.72 = f32[200,1]{1,0} broadcast(f32[] %constant.71), dimensions={}, metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %multiply.73 = f32[200,1]{1,0} multiply(f32[200,1]{1,0} %broadcast.72, f32[200,1]{1,0} %subtract.69), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %multiply.106 = f32[200,1]{1,0} multiply(f32[200,1]{1,0} %broadcast.105, f32[200,1]{1,0} %multiply.73), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=62}
+  %dot.118 = f32[200,128]{1,0} dot(f32[200,1]{1,0} %multiply.106, f32[128,1]{1,0} %parameter.4), lhs_contracting_dims={1}, rhs_contracting_dims={1}, metadata={op_type="dot_general" op_name="jit(train_step)/dot_general[\n  dimension_numbers=(((1,), (1,)), ((), ()))\n  precision=None\n  preferred_element_type=None\n]" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=180}
+  %constant.12 = f32[] constant(1), metadata={op_type="sub" op_name="jit(train_step)/sub" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=127}
+  %broadcast.13 = f32[200,128]{1,0} broadcast(f32[] %constant.12), dimensions={}, metadata={op_type="sub" op_name="jit(train_step)/sub" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=127}
+  %subtract.14 = f32[200,128]{1,0} subtract(f32[200,128]{1,0} %broadcast.13, f32[200,128]{1,0} %tanh.11), metadata={op_type="sub" op_name="jit(train_step)/sub" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=127}
+  %multiply.120 = f32[200,128]{1,0} multiply(f32[200,128]{1,0} %dot.118, f32[200,128]{1,0} %subtract.14), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=127}
+  %multiply.121 = f32[200,128]{1,0} multiply(f32[200,128]{1,0} %multiply.120, f32[200,128]{1,0} %tanh.11), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=127}
+  %add.122 = f32[200,128]{1,0} add(f32[200,128]{1,0} %multiply.120, f32[200,128]{1,0} %multiply.121), metadata={op_type="add_any" op_name="jit(train_step)/add_any" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=127}
+  %constant.123 = f32[] constant(0), metadata={op_type="reduce_sum" op_name="jit(train_step)/reduce_sum[axes=(0,)]" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=184}
+  %reduce.129 = f32[128]{0} reduce(f32[200,128]{1,0} %add.122, f32[] %constant.123), dimensions={0}, to_apply=%primitive_computation_add__12.124, metadata={op_type="reduce_sum" op_name="jit(train_step)/reduce_sum[axes=(0,)]" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=184}
+  %add.130 = f32[128]{0} add(f32[128]{0} %multiply.99, f32[128]{0} %reduce.129), metadata={op_type="add_any" op_name="jit(train_step)/add_any" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=71}
+  %constant.134 = f32[] constant(0.001), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=72}
+  %broadcast.135 = f32[128]{0} broadcast(f32[] %constant.134), dimensions={}, metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=72}
+  %multiply.136 = f32[128]{0} multiply(f32[128]{0} %add.130, f32[128]{0} %broadcast.135), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=72}
+  %subtract.137 = f32[128]{0} subtract(f32[128]{0} %parameter.1, f32[128]{0} %multiply.136), metadata={op_type="sub" op_name="jit(train_step)/sub" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=72}
+  %broadcast.96 = f32[1,128]{1,0} broadcast(f32[] %multiply.91), dimensions={}, metadata={op_type="broadcast_in_dim" op_name="jit(train_step)/broadcast_in_dim[broadcast_dimensions=() shape=(1, 128)]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %constant.32 = f32[] constant(2), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %broadcast.33 = f32[1,128]{1,0} broadcast(f32[] %constant.32), dimensions={}, metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %multiply.34 = f32[1,128]{1,0} multiply(f32[1,128]{1,0} %broadcast.33, f32[1,128]{1,0} %parameter.2), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %multiply.97 = f32[1,128]{1,0} multiply(f32[1,128]{1,0} %broadcast.96, f32[1,128]{1,0} %multiply.34), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %dot.131 = f32[128,1]{1,0} dot(f32[200,128]{1,0} %add.122, f32[200,1]{1,0} %parameter.5), lhs_contracting_dims={0}, rhs_contracting_dims={0}, metadata={op_type="dot_general" op_name="jit(train_step)/dot_general[\n  dimension_numbers=(((0,), (0,)), ((), ()))\n  precision=None\n  preferred_element_type=None\n]" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=180}
+  %transpose.132 = f32[1,128]{0,1} transpose(f32[128,1]{1,0} %dot.131), dimensions={1,0}, metadata={op_type="transpose" op_name="jit(train_step)/transpose[permutation=(1, 0)]" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=180}
+  %add.133 = f32[1,128]{1,0} add(f32[1,128]{1,0} %multiply.97, f32[1,128]{0,1} %transpose.132), metadata={op_type="add_any" op_name="jit(train_step)/add_any" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=71}
+  %constant.138 = f32[] constant(0.001), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=72}
+  %broadcast.139 = f32[1,128]{1,0} broadcast(f32[] %constant.138), dimensions={}, metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=72}
+  %multiply.140 = f32[1,128]{1,0} multiply(f32[1,128]{1,0} %add.133, f32[1,128]{1,0} %broadcast.139), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=72}
+  %subtract.141 = f32[1,128]{1,0} subtract(f32[1,128]{1,0} %parameter.2, f32[1,128]{1,0} %multiply.140), metadata={op_type="sub" op_name="jit(train_step)/sub" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=72}
+  %broadcast.94 = f32[1]{0} broadcast(f32[] %multiply.91), dimensions={}, metadata={op_type="broadcast_in_dim" op_name="jit(train_step)/broadcast_in_dim[broadcast_dimensions=() shape=(1,)]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %constant.44 = f32[] constant(2), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %broadcast.45 = f32[1]{0} broadcast(f32[] %constant.44), dimensions={}, metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %multiply.46 = f32[1]{0} multiply(f32[1]{0} %broadcast.45, f32[1]{0} %parameter.3), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %multiply.95 = f32[1]{0} multiply(f32[1]{0} %broadcast.94, f32[1]{0} %multiply.46), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %constant.107 = f32[] constant(0), metadata={op_type="reduce_sum" op_name="jit(train_step)/reduce_sum[axes=(0, 1)]" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=184}
+  %reduce.113 = f32[] reduce(f32[200,1]{1,0} %multiply.106, f32[] %constant.107), dimensions={0,1}, to_apply=%primitive_computation_add__11.108, metadata={op_type="reduce_sum" op_name="jit(train_step)/reduce_sum[axes=(0, 1)]" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=184}
+  %broadcast.114 = f32[1]{0} broadcast(f32[] %reduce.113), dimensions={}, metadata={op_type="broadcast_in_dim" op_name="jit(train_step)/broadcast_in_dim[broadcast_dimensions=() shape=(1,)]" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=184}
+  %add.115 = f32[1]{0} add(f32[1]{0} %multiply.95, f32[1]{0} %broadcast.114), metadata={op_type="add_any" op_name="jit(train_step)/add_any" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=71}
+  %constant.142 = f32[] constant(0.001), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=72}
+  %broadcast.143 = f32[1]{0} broadcast(f32[] %constant.142), dimensions={}, metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=72}
+  %multiply.144 = f32[1]{0} multiply(f32[1]{0} %add.115, f32[1]{0} %broadcast.143), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=72}
+  %subtract.145 = f32[1]{0} subtract(f32[1]{0} %parameter.3, f32[1]{0} %multiply.144), metadata={op_type="sub" op_name="jit(train_step)/sub" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=72}
+  %broadcast.92 = f32[128,1]{1,0} broadcast(f32[] %multiply.91), dimensions={}, metadata={op_type="broadcast_in_dim" op_name="jit(train_step)/broadcast_in_dim[broadcast_dimensions=() shape=(128, 1)]" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %constant.56 = f32[] constant(2), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %broadcast.57 = f32[128,1]{1,0} broadcast(f32[] %constant.56), dimensions={}, metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %multiply.58 = f32[128,1]{1,0} multiply(f32[128,1]{1,0} %broadcast.57, f32[128,1]{1,0} %parameter.4), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %multiply.93 = f32[128,1]{1,0} multiply(f32[128,1]{1,0} %broadcast.92, f32[128,1]{1,0} %multiply.58), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=60}
+  %dot.116 = f32[1,128]{1,0} dot(f32[200,1]{1,0} %multiply.106, f32[200,128]{1,0} %tanh.11), lhs_contracting_dims={0}, rhs_contracting_dims={0}, metadata={op_type="dot_general" op_name="jit(train_step)/dot_general[\n  dimension_numbers=(((0,), (0,)), ((), ()))\n  precision=None\n  preferred_element_type=None\n]" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=180}
+  %transpose.117 = f32[128,1]{0,1} transpose(f32[1,128]{1,0} %dot.116), dimensions={1,0}, metadata={op_type="transpose" op_name="jit(train_step)/transpose[permutation=(1, 0)]" source_file="/mnt/home/linmin/g/lib/python3.8/site-packages/haiku/_src/basic.py" source_line=180}
+  %add.119 = f32[128,1]{1,0} add(f32[128,1]{1,0} %multiply.93, f32[128,1]{0,1} %transpose.117), metadata={op_type="add_any" op_name="jit(train_step)/add_any" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=71}
+  %constant.146 = f32[] constant(0.001), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=72}
+  %broadcast.147 = f32[128,1]{1,0} broadcast(f32[] %constant.146), dimensions={}, metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=72}
+  %multiply.148 = f32[128,1]{1,0} multiply(f32[128,1]{1,0} %add.119, f32[128,1]{1,0} %broadcast.147), metadata={op_type="mul" op_name="jit(train_step)/mul" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=72}
+  %subtract.149 = f32[128,1]{1,0} subtract(f32[128,1]{1,0} %parameter.4, f32[128,1]{1,0} %multiply.148), metadata={op_type="sub" op_name="jit(train_step)/sub" source_file="examples/deep/nn_regression/mlp_regression.py" source_line=72}
+  ROOT %tuple.150 = (f32[128]{0}, f32[1,128]{1,0}, f32[1]{0}, f32[128,1]{1,0}) tuple(f32[128]{0} %subtract.137, f32[1,128]{1,0} %subtract.141, f32[1]{0} %subtract.145, f32[128,1]{1,0} %subtract.149)
+}
+

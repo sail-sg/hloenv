@@ -16,6 +16,7 @@
 #include "altgraph/evaluation/evaluator.h"
 #include "altgraph/py_hlo_graph.h"
 #include "tensorflow/compiler/xla/literal.h"
+#include "tensorflow/compiler/xla/literal_comparison.h"
 #include "tensorflow/compiler/xla/literal_util.h"
 #include "tensorflow/compiler/xla/pjrt/cpu_device.h"
 #include "tensorflow/compiler/xla/pjrt/gpu_device.h"
@@ -58,6 +59,13 @@ class PyHloIr {
   std::string ExportHloModuleToStr();
 
   EvaluationResult Evaluate(int times);
+
+  bool HasEqualOutputAs(std::shared_ptr<xla::HloModule> other_module,
+                        int times = 1);
+
+  bool HasEqualOutput(std::shared_ptr<xla::HloModule> first_module,
+                      std::shared_ptr<xla::HloModule> second_module,
+                      int times = 1);
 
   void PreFusionOptimizations();
 

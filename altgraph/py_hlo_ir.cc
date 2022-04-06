@@ -17,7 +17,7 @@ PyHloIr::PyHloIr(const std::string& hlo_filepath, const std::string& platform)
     client_ = xla::GetGpuClient(/*asynchronous=*/true,
                                 xla::GpuAllocatorConfig(), nullptr, 0)
                   .ValueOrDie();
-  } else if (platform == "cpu") {
+  } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
     // client = GetCpuClient(/*asynchronous=*/true).ValueOrDie();
   } else {
@@ -36,6 +36,81 @@ PyHloIr::PyHloIr(const std::string& hlo_filepath, const std::string& platform)
   } catch (xla::Intercept<xla::gpu::GpuCompiler>& e) {
     gpu_intercept_ = std::move(e);
     hlo_module_ = std::move(gpu_intercept_.module);
+  }
+}
+
+bool PyHloIr::HasEqualOutputAs(std::shared_ptr<xla::HloModule> other_module,
+                               int times) {
+  return HasEqualOutput(hlo_module_, other_module, times);
+}
+
+// Callback helper that prints the different literals when they are
+// not equal
+void OnMiscompare(const xla::LiteralSlice& expected,
+                  const xla::LiteralSlice& actual,
+                  const xla::LiteralSlice& mismatches,
+                  const xla::ShapeIndex& /*shape_index*/) {
+  LOG(INFO) << "expected: " << xla::ShapeUtil::HumanString(expected.shape())
+            << " " << xla::literal_comparison::ToStringTruncated(expected);
+  LOG(INFO) << "actual:   " << xla::ShapeUtil::HumanString(actual.shape())
+            << " " << xla::literal_comparison::ToStringTruncated(actual);
+}
+
+bool PyHloIr::HasEqualOutput(std::shared_ptr<xla::HloModule> first_module,
+                             std::shared_ptr<xla::HloModule> second_module,
+                             int times) {
+  if (platform_ == "gpu") {
+    for (int run = 0; run < times; run++) {
+      evaluator_.Compile(first_module->ToProto(),
+                         /* rerun_hlo = */ false, client_.get());
+      auto first_ret = evaluator_.Evaluate();
+      xla::Evaluator::BufferPack& first_output = first_ret.output;
+
+      evaluator_.Compile(second_module->ToProto(),
+                         /* rerun_hlo = */ false, client_.get());
+      auto second_ret = evaluator_.Evaluate();
+      xla::Evaluator::BufferPack& second_output = second_ret.output;
+
+      if (first_output.size() != second_output.size()) {
+        LOG(ERROR)
+            << "Evaluation output length of compared HloModule is different!";
+        return false;
+      }
+
+      for (int i = 0; i < first_output.size(); i++) {
+        auto& first_buf_vector = first_output[i];
+        auto& second_buf_vector = second_output[i];
+        if (first_buf_vector.size() != second_buf_vector.size()) {
+          LOG(ERROR) << "Evaluation output (internal vector) of compared "
+                        "HloModule length is different!";
+          return false;
+        }
+
+        for (int j = 0; j < first_buf_vector.size(); j++) {
+          auto first_literal = std::make_shared<xla::Literal>(
+              first_buf_vector[j]->on_device_shape());
+          auto second_literal = std::make_shared<xla::Literal>(
+              second_buf_vector[j]->on_device_shape());
+
+          first_buf_vector[j]->ToLiteral(first_literal.get());
+          second_buf_vector[j]->ToLiteral(second_literal.get());
+
+          xla::ErrorSpec error_spec(static_cast<float>(1e-6),
+                                    static_cast<float>(1e-6));
+
+          xla::Status comparison_res = xla::literal_comparison::Near(
+              /*expected=*/*first_literal,
+              /*actual=*/*second_literal,
+              /*error=*/error_spec,
+              /*detailed_message=*/true, &OnMiscompare);
+
+          return comparison_res.ok();
+        }
+      }
+    }
+    return true;
+  } else if (platform_ == "cpu") {
+    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
   }
 }
 
@@ -64,6 +139,8 @@ PyHloIr::EvaluationResult PyHloIr::Evaluate(int times) {
                    [](absl::Duration duration) -> uint64_t {
                      return duration / absl::Nanoseconds(1);
                    });
+  } else if (platform_ == "cpu") {
+    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
   }
   return result;
 }
@@ -86,6 +163,8 @@ void PyHloIr::PreFusionOptimizations() {
     gpu_intercept_.compiler->OptimizeHloModulePreFusion(
         hlo_module_.get(), gpu_intercept_.stream_exec,
         gpu_intercept_.options.device_allocator);
+  } else if (platform_ == "cpu") {
+    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
   }
 }
 
@@ -102,6 +181,8 @@ void PyHloIr::FusionDryRun() {
          hlo_module_.get()->MakeNonfusionComputations()) {
       computation->set_dry(false);
     }
+  } else if (platform_ == "cpu") {
+    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
   }
 }
 
@@ -110,6 +191,8 @@ void PyHloIr::PostFusionOptimizations() {
     gpu_intercept_.compiler->OptimizeHloModulePostFusion(
         hlo_module_.get(), gpu_intercept_.stream_exec,
         gpu_intercept_.options.device_allocator);
+  } else if (platform_ == "cpu") {
+    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
   }
 }
 
@@ -160,6 +243,8 @@ void PyHloIr::ApplyAlternatives(py::array_t<size_t> decisions) {
       // Remove the residue
       computation->Prune();
     }
+  } else if (platform_ == "cpu") {
+    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
   }
 }
 
@@ -208,6 +293,11 @@ PYBIND11_MODULE(hlo_ir, m) {
   py::class_<PyHloIr>(m, "PyHloIr")
       .def(py::init<const std::string&, const std::string&>())
       .def("evaluate", &PyHloIr::Evaluate)
+      .def("has_equal_output", &PyHloIr::HasEqualOutput,
+           py::arg("first_module"), py::arg("second_module"),
+           py::arg("times") = 1)
+      .def("has_equal_output_as", &PyHloIr::HasEqualOutputAs,
+           py::arg("other_module"), py::arg("times") = 1)
       .def("save_hlo", &PyHloIr::SaveHloModule)
       .def("restore_hlo", &PyHloIr::RestoreHloModule)
       .def("export_hlo_to_str", &PyHloIr::ExportHloModuleToStr)
