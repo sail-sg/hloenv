@@ -74,7 +74,7 @@ pybind_extension(
         "@org_tensorflow//tensorflow/compiler/xla/pjrt:cpu_device",
         "@org_tensorflow//tensorflow/compiler/xla/pjrt:gpu_device",
         "@org_tensorflow//tensorflow/compiler/xla/pjrt:pjrt_client",
-        "@org_tensorflow//tensorflow/compiler/xla/python:py_client",
+        "@org_tensorflow//tensorflow/compiler/xla/python:types",
         "@org_tensorflow//tensorflow/compiler/xla/service:hlo_pass_pipeline",
         "@org_tensorflow//tensorflow/compiler/xla/service:hlo_proto_cc",
         "@org_tensorflow//tensorflow/compiler/xla/tools:hlo_module_loader",

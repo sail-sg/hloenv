@@ -14,7 +14,7 @@
 
 namespace xla {
 
-HloGraph::HloGraph(const HloModule* m)
+HloGraph::HloGraph(const HloModule* m, bool do_hash_verification)
     : parent_hlo_module_(const_cast<HloModule*>(m)),
       uid_(m->unique_id()),
       name_(m->name()) {
@@ -24,7 +24,7 @@ HloGraph::HloGraph(const HloModule* m)
   operand_list_indices_ = std::make_shared<std::vector<size_t>>();
   alternative_indices_ = std::make_shared<std::vector<int>>();
 
-  Build(m);
+  Build(m, do_hash_verification);
 }
 
 void HloGraph::Clear() {
@@ -241,7 +241,7 @@ void HloGraph::PrepareFeatures() {
   }
 }
 
-bool HloGraph::Build(const HloModule* m) {
+bool HloGraph::Build(const HloModule* m, bool do_hash_verification) {
   parent_hlo_module_ = const_cast<HloModule*>(m);
   uid_ = m->unique_id();
   name_ = m->name();
@@ -257,12 +257,14 @@ bool HloGraph::Build(const HloModule* m) {
 
   LOG(ERROR) << "HloGraph build finished";
 
-  uint64_t hlograph_hash = Hash();
-  uint64_t hlomodule_hash = parent_hlo_module_->CalledComputationHash();
-  if (hlograph_hash == hlomodule_hash) {
-    LOG(ERROR) << "HloGraph build verified.";
-  } else {
-    LOG(ERROR) << "HloGraph hash NOT verified.";
+  if (do_hash_verification) {
+    uint64_t hlograph_hash = Hash();
+    uint64_t hlomodule_hash = parent_hlo_module_->CalledComputationHash();
+    if (hlograph_hash == hlomodule_hash) {
+      LOG(ERROR) << "HloGraph build verified.";
+    } else {
+      LOG(ERROR) << "HloGraph hash NOT verified.";
+    }
   }
 
   return true;

@@ -5,14 +5,20 @@ CPP_FILES = $(shell find altgraph/ -type f -name "*.h" -o -name "*.cc")
 check_install = python3 -c "import $(1)" || pip3 install $(1) --upgrade
 check_install_extra = python3 -c "import $(1)" || pip3 install $(2) --upgrade
 
-build:
-	bazel --output_user_root=/tmp/altgraph run --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //:setup
+clean:
+	rm -rf /localfolder/${USER}
+	rm -rf ${HOME}/.cache//bazel
+	bazel --output_user_root=/localfolder/${USER} clean
 
-install: build
-	pip install --force-reinstall "bazel-bin/setup.runfiles/org_altgraph/dist/altgraph-0.0.1-cp38-cp38-linux_x86_64.whl"
+build:
+	bazel --output_user_root=/localfolder/${USER} run --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //:setup
+	cp -r /localfolder/${USER}/*/execroot/org_altgraph/bazel-out/k8-opt/bin/setup.runfiles/org_altgraph/dist/ /home/aiops/${USER}/tf_graph/altgraph/ \
+
+install:
+	pip install --force-reinstall "/home/aiops/${USER}/tf_graph/altgraph/dist/altgraph-0.0.1-cp38-cp38-linux_x86_64.whl"
 
 test:
-	bazel --output_user_root=/tmp/altgraph test --test_output=all --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //tests/...
+	bazel --output_user_root=/tmp/${USER} test --test_output=all --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //tests/...
 
 format: yapf clang-format
 

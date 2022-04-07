@@ -147,9 +147,9 @@ struct EdgeFeats {
 class HloGraph {
  public:
   HloGraph() {}
-  explicit HloGraph(const HloModule* m);
+  explicit HloGraph(const HloModule* m, bool do_hash_verification = true);
 
-  bool Build(const HloModule* m);
+  bool Build(const HloModule* m, bool do_hash_verification = true);
 
   void Clear();
 

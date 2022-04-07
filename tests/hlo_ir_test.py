@@ -83,7 +83,7 @@ class HloIRTest(absltest.TestCase):
       logging.info("Pass: %d" % count)
       logging.info("Running fusion dry run")
       hlo_ir.fusion_dry_run()
-      hlo_graph = hlo_ir.get_hlo_graph()
+      hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
       num_operands = node_features.num_operands
       num_alts = len(hlo_graph.alternative_indices)
@@ -138,7 +138,7 @@ class HloIRTest(absltest.TestCase):
     num_alts = 1
     while num_alts > 0:
       hlo_ir.fusion_dry_run()
-      hlo_graph = hlo_ir.get_hlo_graph()
+      hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
       num_operands = node_features.num_operands
       num_alts = len(hlo_graph.alternative_indices)
@@ -169,7 +169,13 @@ class HloIRTest(absltest.TestCase):
     )
     assert (len(orig_res.output) == len(mod_res.output))
     for i in range(len(orig_res.output)):
-      assert (np.allclose(mod_res.output[i], orig_res.output[i]))
+      assert (len(orig_res.output[i]) == len(mod_res.output[i]))
+      for j in range(len(orig_res.output[i])):
+        assert (len(orig_res.output[i][j]) == len(mod_res.output[i][j]))
+        for k in range(len(orig_res.output[i][j])):
+          assert (
+            np.allclose(mod_res.output[i][j][k], orig_res.output[i][j][k])
+          )
 
 
 if __name__ == "__main__":

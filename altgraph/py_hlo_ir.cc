@@ -113,13 +113,15 @@ void PyHloIr::PostFusionOptimizations() {
   }
 }
 
-PyHloGraph PyHloIr::GetHloGraph() { return PyHloGraph(hlo_module_.get()); }
+PyHloGraph PyHloIr::GetHloGraph(bool do_hash_verification) {
+  return PyHloGraph(hlo_module_.get(), do_hash_verification);
+}
 
-// TODO(ohcy): Does it make more sense to return as an array of (uid, decision)
-// tuples rather than (node_idx, decision) 2D array?
+// TODO(ohcy): Make it take a (uid_ptr, decision) arg instead, save time on
+// rebuilding the HloGraph
 void PyHloIr::ApplyAlternatives(py::array_t<size_t> decisions) {
   if (platform_ == "gpu") {
-    PyHloGraph py_hlo_graph = PyHloGraph(hlo_module_.get());
+    PyHloGraph py_hlo_graph = PyHloGraph(hlo_module_.get(), false);
     xla::NodeFeats& node_feats = py_hlo_graph.py_get_node_features();
 
     py::buffer_info decisions_buf = decisions.request();
@@ -209,7 +211,8 @@ PYBIND11_MODULE(hlo_ir, m) {
       .def("save_hlo", &PyHloIr::SaveHloModule)
       .def("restore_hlo", &PyHloIr::RestoreHloModule)
       .def("export_hlo_to_str", &PyHloIr::ExportHloModuleToStr)
-      .def("get_hlo_graph", &PyHloIr::GetHloGraph)
+      .def("get_hlo_graph", &PyHloIr::GetHloGraph,
+           py::arg("do_hash_verification") = true)
       .def("pre_fusion_optimizations", &PyHloIr::PreFusionOptimizations)
       .def("fusion_dry_run", &PyHloIr::FusionDryRun)
       .def("post_fusion_optimizations", &PyHloIr::PostFusionOptimizations)

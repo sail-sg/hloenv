@@ -65,7 +65,7 @@ class PyHloIr {
 
   void PostFusionOptimizations();
 
-  PyHloGraph GetHloGraph();
+  PyHloGraph GetHloGraph(bool do_hash_verification);
 
   void ApplyAlternatives(py::array_t<size_t> decisions);
 };
