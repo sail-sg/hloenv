@@ -191,6 +191,17 @@ void PyHloIr::PostFusionOptimizations() {
     gpu_intercept_.compiler->OptimizeHloModulePostFusion(
         hlo_module_.get(), gpu_intercept_.stream_exec,
         gpu_intercept_.options.device_allocator);
+    // TODO(ohcy) To be refactored out of PostFusionOptimizations when we
+    // can do multiple passes and have a pre/post passes phase
+    this->PrepareHloModuleForIrEmitting();
+  } else if (platform_ == "cpu") {
+    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
+  }
+}
+
+void PyHloIr::PrepareHloModuleForIrEmitting() {
+  if (platform_ == "gpu") {
+    gpu_intercept_.compiler->PrepareHloModuleForIrEmitting(hlo_module_.get());
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
   }

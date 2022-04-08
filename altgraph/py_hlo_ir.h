@@ -76,6 +76,9 @@ class PyHloIr {
   PyHloGraph GetHloGraph(bool do_hash_verification);
 
   void ApplyAlternatives(py::array_t<size_t> decisions);
+
+ private:
+  void PrepareHloModuleForIrEmitting();
 };
 
 #endif  // ALTGRAPH_PY_HLO_IR_H_
