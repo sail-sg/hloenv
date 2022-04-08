@@ -29,10 +29,9 @@ load("@third_party//py:workspace1.bzl", workspace1 = "workspace")
 
 workspace1()
 
-# TODO: clean up internal tensorflow/main, and switch to main
 git_repository(
     name = "org_tensorflow",
-    branch = "14-pybind-interface-to-compilation-loop-2",
+    branch = "main",
     remote = "https://AltGraph:p2WoxJyV93twzkTEyXvL@git.insea.io/sail/aisys/tensorflow.git",
 )
 
