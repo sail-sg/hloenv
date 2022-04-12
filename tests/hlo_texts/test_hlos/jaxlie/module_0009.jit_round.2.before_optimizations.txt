@@ -1,0 +1,34 @@
+HloModule jit_round.2
+
+round.5 {
+  Arg_0.6 = f32[4]{0} parameter(0)
+  floor.13 = f32[4]{0} floor(Arg_0.6)
+  subtract.14 = f32[4]{0} subtract(Arg_0.6, floor.13)
+  constant.9 = f32[] constant(0.5)
+  broadcast.10 = f32[4]{0} broadcast(constant.9), dimensions={}
+  compare.20 = pred[4]{0} compare(subtract.14, broadcast.10), direction=GT
+  compare.21 = pred[4]{0} compare(subtract.14, broadcast.10), direction=EQ
+  multiply.15 = f32[4]{0} multiply(Arg_0.6, broadcast.10)
+  floor.16 = f32[4]{0} floor(multiply.15)
+  constant.11 = f32[] constant(2)
+  broadcast.12 = f32[4]{0} broadcast(constant.11), dimensions={}
+  multiply.17 = f32[4]{0} multiply(floor.16, broadcast.12)
+  subtract.18 = f32[4]{0} subtract(floor.13, multiply.17)
+  constant.7 = f32[] constant(1)
+  broadcast.8 = f32[4]{0} broadcast(constant.7), dimensions={}
+  compare.19 = pred[4]{0} compare(subtract.18, broadcast.8), direction=EQ
+  and.22 = pred[4]{0} and(compare.21, compare.19)
+  or.23 = pred[4]{0} or(compare.20, and.22)
+  add.24 = f32[4]{0} add(floor.13, broadcast.8)
+  ROOT select.25 = f32[4]{0} select(or.23, add.24, floor.13)
+}
+
+ENTRY main.28 {
+  Arg_0.1 = f32[4]{0} parameter(0)
+  constant.2 = f32[] constant(100000)
+  broadcast.3 = f32[4]{0} broadcast(constant.2), dimensions={}
+  multiply.4 = f32[4]{0} multiply(Arg_0.1, broadcast.3)
+  call.26 = f32[4]{0} call(multiply.4), to_apply=round.5
+  ROOT divide.27 = f32[4]{0} divide(call.26, broadcast.3)
+}
+

@@ -1,0 +1,39 @@
+HloModule jit__threefry_split.8
+
+%xla_fallback_threefry2x32.9 (Arg_0.10: u32[], Arg_1.11: u32[], Arg_2.12: u32[7], Arg_3.13: u32[7]) -> (u32[7], u32[7]) {
+  %Arg_0.10 = u32[] parameter(0)
+  %broadcast.14 = u32[7]{0} broadcast(u32[] %Arg_0.10), dimensions={}
+  %Arg_1.11 = u32[] parameter(1)
+  %broadcast.15 = u32[7]{0} broadcast(u32[] %Arg_1.11), dimensions={}
+  %Arg_2.12 = u32[7]{0} parameter(2)
+  %Arg_3.13 = u32[7]{0} parameter(3)
+  ROOT %custom-call.16 = (u32[7]{0}, u32[7]{0}) custom-call(u32[7]{0} %broadcast.14, u32[7]{0} %broadcast.15, u32[7]{0} %Arg_2.12, u32[7]{0} %Arg_3.13), custom_call_target="cuda_threefry2x32", operand_layout_constraints={u32[7]{0}, u32[7]{0}, u32[7]{0}, u32[7]{0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="\007\000\000\000\000\000\000\000"
+}
+
+%threefry2x32.17 (Arg_0.18: u32[], Arg_1.19: u32[], Arg_2.20: u32[7], Arg_3.21: u32[7]) -> (u32[7], u32[7]) {
+  %Arg_0.18 = u32[] parameter(0)
+  %Arg_1.19 = u32[] parameter(1)
+  %Arg_2.20 = u32[7]{0} parameter(2)
+  %Arg_3.21 = u32[7]{0} parameter(3)
+  %call.22 = (u32[7]{0}, u32[7]{0}) call(u32[] %Arg_0.18, u32[] %Arg_1.19, u32[7]{0} %Arg_2.20, u32[7]{0} %Arg_3.21), to_apply=%xla_fallback_threefry2x32.9
+  %get-tuple-element.23 = u32[7]{0} get-tuple-element((u32[7]{0}, u32[7]{0}) %call.22), index=0
+  %get-tuple-element.24 = u32[7]{0} get-tuple-element((u32[7]{0}, u32[7]{0}) %call.22), index=1
+  ROOT %tuple.25 = (u32[7]{0}, u32[7]{0}) tuple(u32[7]{0} %get-tuple-element.23, u32[7]{0} %get-tuple-element.24)
+}
+
+ENTRY %main.31 (Arg_0.1: u32[2]) -> u32[7,2] {
+  %Arg_0.1 = u32[2]{0} parameter(0)
+  %slice.3 = u32[1]{0} slice(u32[2]{0} %Arg_0.1), slice={[0:1]}
+  %reshape.4 = u32[] reshape(u32[1]{0} %slice.3)
+  %slice.5 = u32[1]{0} slice(u32[2]{0} %Arg_0.1), slice={[1:2]}
+  %reshape.6 = u32[] reshape(u32[1]{0} %slice.5)
+  %iota.2 = u32[14]{0} iota(), iota_dimension=0
+  %slice.7 = u32[7]{0} slice(u32[14]{0} %iota.2), slice={[0:7]}
+  %slice.8 = u32[7]{0} slice(u32[14]{0} %iota.2), slice={[7:14]}
+  %call.26 = (u32[7]{0}, u32[7]{0}) call(u32[] %reshape.4, u32[] %reshape.6, u32[7]{0} %slice.7, u32[7]{0} %slice.8), to_apply=%threefry2x32.17
+  %get-tuple-element.27 = u32[7]{0} get-tuple-element((u32[7]{0}, u32[7]{0}) %call.26), index=0
+  %get-tuple-element.28 = u32[7]{0} get-tuple-element((u32[7]{0}, u32[7]{0}) %call.26), index=1
+  %concatenate.29 = u32[14]{0} concatenate(u32[7]{0} %get-tuple-element.27, u32[7]{0} %get-tuple-element.28), dimensions={0}
+  ROOT %reshape.30 = u32[7,2]{1,0} reshape(u32[14]{0} %concatenate.29)
+}
+

@@ -1,0 +1,17 @@
+HloModule jit__one_hot.13
+
+ENTRY main.13 {
+  Arg_0.1 = s32[100]{0} parameter(0)
+  reshape.2 = s32[100,1]{1,0} reshape(Arg_0.1)
+  broadcast.5 = s32[100,1]{1,0} broadcast(reshape.2), dimensions={0,1}
+  reshape.6 = s32[100]{0} reshape(broadcast.5)
+  broadcast.7 = s32[100,10]{1,0} broadcast(reshape.6), dimensions={0}
+  iota.3 = s32[10]{0} iota(), iota_dimension=0
+  reshape.4 = s32[1,10]{1,0} reshape(iota.3)
+  broadcast.8 = s32[1,10]{1,0} broadcast(reshape.4), dimensions={0,1}
+  reshape.9 = s32[10]{0} reshape(broadcast.8)
+  broadcast.10 = s32[100,10]{1,0} broadcast(reshape.9), dimensions={1}
+  compare.11 = pred[100,10]{1,0} compare(broadcast.7, broadcast.10), direction=EQ
+  ROOT convert.12 = f32[100,10]{1,0} convert(compare.11)
+}
+

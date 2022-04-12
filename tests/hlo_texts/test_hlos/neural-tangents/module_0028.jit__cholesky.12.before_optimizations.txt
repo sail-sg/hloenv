@@ -1,0 +1,40 @@
+HloModule jit__cholesky.12
+
+xla_fallback_cholesky.3 {
+  Arg_0.4 = f32[1000,1000]{1,0} parameter(0)
+  custom-call.8 = (f32[1000,1000]{0,1}, s32[], s8[128]{0}) custom-call(Arg_0.4), custom_call_target="cusolver_potrf", operand_layout_constraints={f32[1000,1000]{0,1}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="\000\000\000\000\000\000\000\000\001\000\000\000\000\000\000\000\350\003\000\000\000\000\000\000 \000\000\000&\177\000\000"
+  get-tuple-element.9 = s32[] get-tuple-element(custom-call.8), index=1
+  constant.7 = s32[] constant(0)
+  compare.10 = pred[] compare(get-tuple-element.9, constant.7), direction=EQ
+  broadcast.11 = pred[1000,1000]{1,0} broadcast(compare.10), dimensions={}
+  get-tuple-element.12 = f32[1000,1000]{0,1} get-tuple-element(custom-call.8), index=0
+  constant.5 = f32[] constant(nan)
+  broadcast.6 = f32[1000,1000]{1,0} broadcast(constant.5), dimensions={}
+  ROOT select.13 = f32[1000,1000]{1,0} select(broadcast.11, get-tuple-element.12, broadcast.6)
+}
+
+cholesky.14 {
+  Arg_0.15 = f32[1000,1000]{1,0} parameter(0)
+  ROOT call.16 = f32[1000,1000]{1,0} call(Arg_0.15), to_apply=xla_fallback_cholesky.3
+}
+
+jit_tril.18 {
+  iota.22 = s32[1000]{0} iota(), iota_dimension=0
+  broadcast.23 = s32[1000,1000]{1,0} broadcast(iota.22), dimensions={0}
+  iota.24 = s32[1000]{0} iota(), iota_dimension=0
+  broadcast.25 = s32[1000,1000]{1,0} broadcast(iota.24), dimensions={1}
+  compare.26 = pred[1000,1000]{1,0} compare(broadcast.23, broadcast.25), direction=GE
+  Arg_0.19 = f32[1000,1000]{1,0} parameter(0)
+  constant.20 = f32[] constant(0)
+  broadcast.21 = f32[1000,1000]{1,0} broadcast(constant.20), dimensions={}
+  ROOT select.27 = f32[1000,1000]{1,0} select(compare.26, Arg_0.19, broadcast.21)
+}
+
+ENTRY main.30 {
+  Arg_0.1 = f32[1000,1000]{1,0} parameter(0)
+  transpose.2 = f32[1000,1000]{0,1} transpose(Arg_0.1), dimensions={1,0}
+  call.17 = f32[1000,1000]{1,0} call(transpose.2), to_apply=cholesky.14
+  call.28 = f32[1000,1000]{1,0} call(call.17), to_apply=jit_tril.18
+  ROOT transpose.29 = f32[1000,1000]{0,1} transpose(call.28), dimensions={1,0}
+}
+

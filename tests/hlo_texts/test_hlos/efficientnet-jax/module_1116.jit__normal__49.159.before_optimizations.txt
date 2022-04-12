@@ -1,0 +1,171 @@
+HloModule jit__normal__49.159
+
+%jit_threefry_2x32__51.3 (parameter.4: u32[2], parameter.5: u32[20736]) -> (u32[20736]) {
+  %constant.6 = pred[] constant(false)
+  %parameter.4 = u32[2]{0} parameter(0)
+  %slice.7 = u32[1]{0} slice(u32[2]{0} %parameter.4), slice={[0:1]}
+  %reshape.8 = u32[] reshape(u32[1]{0} %slice.7)
+  %broadcast.13 = u32[10368]{0} broadcast(u32[] %reshape.8), dimensions={}
+  %slice.9 = u32[1]{0} slice(u32[2]{0} %parameter.4), slice={[1:2]}
+  %reshape.10 = u32[] reshape(u32[1]{0} %slice.9)
+  %broadcast.14 = u32[10368]{0} broadcast(u32[] %reshape.10), dimensions={}
+  %parameter.5 = u32[20736]{0} parameter(1)
+  %slice.11 = u32[10368]{0} slice(u32[20736]{0} %parameter.5), slice={[0:10368]}
+  %broadcast.15 = u32[10368]{0} broadcast(u32[10368]{0} %slice.11), dimensions={0}
+  %slice.12 = u32[10368]{0} slice(u32[20736]{0} %parameter.5), slice={[10368:20736]}
+  %broadcast.16 = u32[10368]{0} broadcast(u32[10368]{0} %slice.12), dimensions={0}
+  %custom-call.17 = (u32[10368]{0}, u32[10368]{0}) custom-call(u32[10368]{0} %broadcast.13, u32[10368]{0} %broadcast.14, u32[10368]{0} %broadcast.15, u32[10368]{0} %broadcast.16), custom_call_target="cuda_threefry2x32", operand_layout_constraints={u32[10368]{0}, u32[10368]{0}, u32[10368]{0}, u32[10368]{0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="\200(\000\000\000\000\000\000"
+  %get-tuple-element.18 = u32[10368]{0} get-tuple-element((u32[10368]{0}, u32[10368]{0}) %custom-call.17), index=0
+  %get-tuple-element.19 = u32[10368]{0} get-tuple-element((u32[10368]{0}, u32[10368]{0}) %custom-call.17), index=1
+  %concatenate.20 = u32[20736]{0} concatenate(u32[10368]{0} %get-tuple-element.18, u32[10368]{0} %get-tuple-element.19), dimensions={0}
+  ROOT %tuple.21 = (u32[20736]{0}) tuple(u32[20736]{0} %concatenate.20)
+}
+
+%jit__random_bits__49.22 (parameter.23: u32[2]) -> (u32[3,3,1,2304]) {
+  %constant.24 = pred[] constant(false)
+  %parameter.23 = u32[2]{0} parameter(0)
+  %iota.25 = u32[20736] iota(), iota_dimension=0
+  %call.26 = (u32[20736]{0}) call(u32[2]{0} %parameter.23, u32[20736] %iota.25), to_apply=%jit_threefry_2x32__51.3
+  %get-tuple-element.27 = u32[20736]{0} get-tuple-element((u32[20736]{0}) %call.26), index=0
+  %reshape.28 = u32[3,3,1,2304]{3,2,1,0} reshape(u32[20736]{0} %get-tuple-element.27)
+  ROOT %tuple.29 = (u32[3,3,1,2304]{3,2,1,0}) tuple(u32[3,3,1,2304]{3,2,1,0} %reshape.28)
+}
+
+%jit__uniform__49.30 (parameter.31: u32[2], parameter.32: f32[], parameter.33: f32[]) -> (f32[3,3,1,2304]) {
+  %constant.34 = pred[] constant(false)
+  %parameter.32 = f32[] parameter(1)
+  %broadcast.35 = f32[1,1,1,1]{3,2,1,0} broadcast(f32[] %parameter.32), dimensions={}
+  %reshape.56 = f32[1]{0} reshape(f32[1,1,1,1]{3,2,1,0} %broadcast.35)
+  %broadcast.57 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[1]{0} %reshape.56), dimensions={2}
+  %parameter.31 = u32[2]{0} parameter(0)
+  %call.37 = (u32[3,3,1,2304]{3,2,1,0}) call(u32[2]{0} %parameter.31), to_apply=%jit__random_bits__49.22
+  %get-tuple-element.38 = u32[3,3,1,2304]{3,2,1,0} get-tuple-element((u32[3,3,1,2304]{3,2,1,0}) %call.37), index=0
+  %constant.39 = u32[] constant(9)
+  %broadcast.40 = u32[3,3,1,2304]{3,2,1,0} broadcast(u32[] %constant.39), dimensions={}
+  %shift-right-logical.41 = u32[3,3,1,2304]{3,2,1,0} shift-right-logical(u32[3,3,1,2304]{3,2,1,0} %get-tuple-element.38, u32[3,3,1,2304]{3,2,1,0} %broadcast.40)
+  %constant.42 = u32[] constant(1065353216)
+  %broadcast.43 = u32[3,3,1,2304]{3,2,1,0} broadcast(u32[] %constant.42), dimensions={}
+  %or.44 = u32[3,3,1,2304]{3,2,1,0} or(u32[3,3,1,2304]{3,2,1,0} %shift-right-logical.41, u32[3,3,1,2304]{3,2,1,0} %broadcast.43)
+  %bitcast-convert.45 = f32[3,3,1,2304]{3,2,1,0} bitcast-convert(u32[3,3,1,2304]{3,2,1,0} %or.44)
+  %constant.46 = f32[] constant(1)
+  %broadcast.47 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.46), dimensions={}
+  %subtract.48 = f32[3,3,1,2304]{3,2,1,0} subtract(f32[3,3,1,2304]{3,2,1,0} %bitcast-convert.45, f32[3,3,1,2304]{3,2,1,0} %broadcast.47)
+  %parameter.33 = f32[] parameter(2)
+  %broadcast.36 = f32[1,1,1,1]{3,2,1,0} broadcast(f32[] %parameter.33), dimensions={}
+  %subtract.49 = f32[1,1,1,1]{3,2,1,0} subtract(f32[1,1,1,1]{3,2,1,0} %broadcast.36, f32[1,1,1,1]{3,2,1,0} %broadcast.35)
+  %reshape.50 = f32[1]{0} reshape(f32[1,1,1,1]{3,2,1,0} %subtract.49)
+  %broadcast.51 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[1]{0} %reshape.50), dimensions={2}
+  %multiply.52 = f32[3,3,1,2304]{3,2,1,0} multiply(f32[3,3,1,2304]{3,2,1,0} %subtract.48, f32[3,3,1,2304]{3,2,1,0} %broadcast.51)
+  %reshape.53 = f32[1]{0} reshape(f32[1,1,1,1]{3,2,1,0} %broadcast.35)
+  %broadcast.54 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[1]{0} %reshape.53), dimensions={2}
+  %add.55 = f32[3,3,1,2304]{3,2,1,0} add(f32[3,3,1,2304]{3,2,1,0} %multiply.52, f32[3,3,1,2304]{3,2,1,0} %broadcast.54)
+  %maximum.58 = f32[3,3,1,2304]{3,2,1,0} maximum(f32[3,3,1,2304]{3,2,1,0} %broadcast.57, f32[3,3,1,2304]{3,2,1,0} %add.55)
+  ROOT %tuple.59 = (f32[3,3,1,2304]{3,2,1,0}) tuple(f32[3,3,1,2304]{3,2,1,0} %maximum.58)
+}
+
+%jit__normal_real__49.60 (parameter.61: u32[2]) -> (f32[3,3,1,2304]) {
+  %constant.62 = pred[] constant(false)
+  %parameter.61 = u32[2]{0} parameter(0)
+  %constant.63 = f32[] constant(-0.99999994)
+  %constant.64 = f32[] constant(1)
+  %call.65 = (f32[3,3,1,2304]{3,2,1,0}) call(u32[2]{0} %parameter.61, f32[] %constant.63, f32[] %constant.64), to_apply=%jit__uniform__49.30
+  %get-tuple-element.66 = f32[3,3,1,2304]{3,2,1,0} get-tuple-element((f32[3,3,1,2304]{3,2,1,0}) %call.65), index=0
+  %abs.148 = f32[3,3,1,2304]{3,2,1,0} abs(f32[3,3,1,2304]{3,2,1,0} %get-tuple-element.66)
+  %constant.147 = f32[] constant(1)
+  %broadcast.149 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.147), dimensions={}
+  %compare.150 = pred[3,3,1,2304]{3,2,1,0} compare(f32[3,3,1,2304]{3,2,1,0} %abs.148, f32[3,3,1,2304]{3,2,1,0} %broadcast.149), direction=EQ
+  %constant.144 = f32[] constant(inf)
+  %broadcast.145 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.144), dimensions={}
+  %multiply.146 = f32[3,3,1,2304]{3,2,1,0} multiply(f32[3,3,1,2304]{3,2,1,0} %get-tuple-element.66, f32[3,3,1,2304]{3,2,1,0} %broadcast.145)
+  %negate.67 = f32[3,3,1,2304]{3,2,1,0} negate(f32[3,3,1,2304]{3,2,1,0} %get-tuple-element.66)
+  %multiply.68 = f32[3,3,1,2304]{3,2,1,0} multiply(f32[3,3,1,2304]{3,2,1,0} %negate.67, f32[3,3,1,2304]{3,2,1,0} %get-tuple-element.66)
+  %log-plus-one.69 = f32[3,3,1,2304]{3,2,1,0} log-plus-one(f32[3,3,1,2304]{3,2,1,0} %multiply.68)
+  %negate.70 = f32[3,3,1,2304]{3,2,1,0} negate(f32[3,3,1,2304]{3,2,1,0} %log-plus-one.69)
+  %constant.71 = f32[] constant(5)
+  %broadcast.72 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.71), dimensions={}
+  %compare.73 = pred[3,3,1,2304]{3,2,1,0} compare(f32[3,3,1,2304]{3,2,1,0} %negate.70, f32[3,3,1,2304]{3,2,1,0} %broadcast.72), direction=LT
+  %constant.139 = f32[] constant(1.50140941)
+  %broadcast.140 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.139), dimensions={}
+  %constant.137 = f32[] constant(2.83297682)
+  %broadcast.138 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.137), dimensions={}
+  %select.141 = f32[3,3,1,2304]{3,2,1,0} select(pred[3,3,1,2304]{3,2,1,0} %compare.73, f32[3,3,1,2304]{3,2,1,0} %broadcast.140, f32[3,3,1,2304]{3,2,1,0} %broadcast.138)
+  %constant.132 = f32[] constant(0.246640727)
+  %broadcast.133 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.132), dimensions={}
+  %constant.130 = f32[] constant(1.00167406)
+  %broadcast.131 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.130), dimensions={}
+  %select.134 = f32[3,3,1,2304]{3,2,1,0} select(pred[3,3,1,2304]{3,2,1,0} %compare.73, f32[3,3,1,2304]{3,2,1,0} %broadcast.133, f32[3,3,1,2304]{3,2,1,0} %broadcast.131)
+  %constant.125 = f32[] constant(-0.00417768164)
+  %broadcast.126 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.125), dimensions={}
+  %constant.123 = f32[] constant(0.00943887047)
+  %broadcast.124 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.123), dimensions={}
+  %select.127 = f32[3,3,1,2304]{3,2,1,0} select(pred[3,3,1,2304]{3,2,1,0} %compare.73, f32[3,3,1,2304]{3,2,1,0} %broadcast.126, f32[3,3,1,2304]{3,2,1,0} %broadcast.124)
+  %constant.118 = f32[] constant(-0.00125372503)
+  %broadcast.119 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.118), dimensions={}
+  %constant.116 = f32[] constant(-0.0076224613)
+  %broadcast.117 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.116), dimensions={}
+  %select.120 = f32[3,3,1,2304]{3,2,1,0} select(pred[3,3,1,2304]{3,2,1,0} %compare.73, f32[3,3,1,2304]{3,2,1,0} %broadcast.119, f32[3,3,1,2304]{3,2,1,0} %broadcast.117)
+  %constant.111 = f32[] constant(0.00021858087)
+  %broadcast.112 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.111), dimensions={}
+  %constant.109 = f32[] constant(0.00573950773)
+  %broadcast.110 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.109), dimensions={}
+  %select.113 = f32[3,3,1,2304]{3,2,1,0} select(pred[3,3,1,2304]{3,2,1,0} %compare.73, f32[3,3,1,2304]{3,2,1,0} %broadcast.112, f32[3,3,1,2304]{3,2,1,0} %broadcast.110)
+  %constant.104 = f32[] constant(-4.39150654e-06)
+  %broadcast.105 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.104), dimensions={}
+  %constant.102 = f32[] constant(-0.00367342844)
+  %broadcast.103 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.102), dimensions={}
+  %select.106 = f32[3,3,1,2304]{3,2,1,0} select(pred[3,3,1,2304]{3,2,1,0} %compare.73, f32[3,3,1,2304]{3,2,1,0} %broadcast.105, f32[3,3,1,2304]{3,2,1,0} %broadcast.103)
+  %constant.97 = f32[] constant(-3.5233877e-06)
+  %broadcast.98 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.97), dimensions={}
+  %constant.95 = f32[] constant(0.00134934322)
+  %broadcast.96 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.95), dimensions={}
+  %select.99 = f32[3,3,1,2304]{3,2,1,0} select(pred[3,3,1,2304]{3,2,1,0} %compare.73, f32[3,3,1,2304]{3,2,1,0} %broadcast.98, f32[3,3,1,2304]{3,2,1,0} %broadcast.96)
+  %constant.90 = f32[] constant(3.43273939e-07)
+  %broadcast.91 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.90), dimensions={}
+  %constant.88 = f32[] constant(0.000100950558)
+  %broadcast.89 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.88), dimensions={}
+  %select.92 = f32[3,3,1,2304]{3,2,1,0} select(pred[3,3,1,2304]{3,2,1,0} %compare.73, f32[3,3,1,2304]{3,2,1,0} %broadcast.91, f32[3,3,1,2304]{3,2,1,0} %broadcast.89)
+  %constant.84 = f32[] constant(2.81022636e-08)
+  %broadcast.85 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.84), dimensions={}
+  %constant.82 = f32[] constant(-0.000200214257)
+  %broadcast.83 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.82), dimensions={}
+  %select.86 = f32[3,3,1,2304]{3,2,1,0} select(pred[3,3,1,2304]{3,2,1,0} %compare.73, f32[3,3,1,2304]{3,2,1,0} %broadcast.85, f32[3,3,1,2304]{3,2,1,0} %broadcast.83)
+  %constant.78 = f32[] constant(2.5)
+  %broadcast.79 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.78), dimensions={}
+  %subtract.80 = f32[3,3,1,2304]{3,2,1,0} subtract(f32[3,3,1,2304]{3,2,1,0} %negate.70, f32[3,3,1,2304]{3,2,1,0} %broadcast.79)
+  %sqrt.75 = f32[3,3,1,2304]{3,2,1,0} sqrt(f32[3,3,1,2304]{3,2,1,0} %negate.70)
+  %constant.74 = f32[] constant(3)
+  %broadcast.76 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.74), dimensions={}
+  %subtract.77 = f32[3,3,1,2304]{3,2,1,0} subtract(f32[3,3,1,2304]{3,2,1,0} %sqrt.75, f32[3,3,1,2304]{3,2,1,0} %broadcast.76)
+  %select.81 = f32[3,3,1,2304]{3,2,1,0} select(pred[3,3,1,2304]{3,2,1,0} %compare.73, f32[3,3,1,2304]{3,2,1,0} %subtract.80, f32[3,3,1,2304]{3,2,1,0} %subtract.77)
+  %multiply.87 = f32[3,3,1,2304]{3,2,1,0} multiply(f32[3,3,1,2304]{3,2,1,0} %select.86, f32[3,3,1,2304]{3,2,1,0} %select.81)
+  %add.93 = f32[3,3,1,2304]{3,2,1,0} add(f32[3,3,1,2304]{3,2,1,0} %select.92, f32[3,3,1,2304]{3,2,1,0} %multiply.87)
+  %multiply.94 = f32[3,3,1,2304]{3,2,1,0} multiply(f32[3,3,1,2304]{3,2,1,0} %add.93, f32[3,3,1,2304]{3,2,1,0} %select.81)
+  %add.100 = f32[3,3,1,2304]{3,2,1,0} add(f32[3,3,1,2304]{3,2,1,0} %select.99, f32[3,3,1,2304]{3,2,1,0} %multiply.94)
+  %multiply.101 = f32[3,3,1,2304]{3,2,1,0} multiply(f32[3,3,1,2304]{3,2,1,0} %add.100, f32[3,3,1,2304]{3,2,1,0} %select.81)
+  %add.107 = f32[3,3,1,2304]{3,2,1,0} add(f32[3,3,1,2304]{3,2,1,0} %select.106, f32[3,3,1,2304]{3,2,1,0} %multiply.101)
+  %multiply.108 = f32[3,3,1,2304]{3,2,1,0} multiply(f32[3,3,1,2304]{3,2,1,0} %add.107, f32[3,3,1,2304]{3,2,1,0} %select.81)
+  %add.114 = f32[3,3,1,2304]{3,2,1,0} add(f32[3,3,1,2304]{3,2,1,0} %select.113, f32[3,3,1,2304]{3,2,1,0} %multiply.108)
+  %multiply.115 = f32[3,3,1,2304]{3,2,1,0} multiply(f32[3,3,1,2304]{3,2,1,0} %add.114, f32[3,3,1,2304]{3,2,1,0} %select.81)
+  %add.121 = f32[3,3,1,2304]{3,2,1,0} add(f32[3,3,1,2304]{3,2,1,0} %select.120, f32[3,3,1,2304]{3,2,1,0} %multiply.115)
+  %multiply.122 = f32[3,3,1,2304]{3,2,1,0} multiply(f32[3,3,1,2304]{3,2,1,0} %add.121, f32[3,3,1,2304]{3,2,1,0} %select.81)
+  %add.128 = f32[3,3,1,2304]{3,2,1,0} add(f32[3,3,1,2304]{3,2,1,0} %select.127, f32[3,3,1,2304]{3,2,1,0} %multiply.122)
+  %multiply.129 = f32[3,3,1,2304]{3,2,1,0} multiply(f32[3,3,1,2304]{3,2,1,0} %add.128, f32[3,3,1,2304]{3,2,1,0} %select.81)
+  %add.135 = f32[3,3,1,2304]{3,2,1,0} add(f32[3,3,1,2304]{3,2,1,0} %select.134, f32[3,3,1,2304]{3,2,1,0} %multiply.129)
+  %multiply.136 = f32[3,3,1,2304]{3,2,1,0} multiply(f32[3,3,1,2304]{3,2,1,0} %add.135, f32[3,3,1,2304]{3,2,1,0} %select.81)
+  %add.142 = f32[3,3,1,2304]{3,2,1,0} add(f32[3,3,1,2304]{3,2,1,0} %select.141, f32[3,3,1,2304]{3,2,1,0} %multiply.136)
+  %multiply.143 = f32[3,3,1,2304]{3,2,1,0} multiply(f32[3,3,1,2304]{3,2,1,0} %add.142, f32[3,3,1,2304]{3,2,1,0} %get-tuple-element.66)
+  %select.151 = f32[3,3,1,2304]{3,2,1,0} select(pred[3,3,1,2304]{3,2,1,0} %compare.150, f32[3,3,1,2304]{3,2,1,0} %multiply.146, f32[3,3,1,2304]{3,2,1,0} %multiply.143)
+  %constant.152 = f32[] constant(1.41421354)
+  %broadcast.153 = f32[3,3,1,2304]{3,2,1,0} broadcast(f32[] %constant.152), dimensions={}
+  %multiply.154 = f32[3,3,1,2304]{3,2,1,0} multiply(f32[3,3,1,2304]{3,2,1,0} %select.151, f32[3,3,1,2304]{3,2,1,0} %broadcast.153)
+  ROOT %tuple.155 = (f32[3,3,1,2304]{3,2,1,0}) tuple(f32[3,3,1,2304]{3,2,1,0} %multiply.154)
+}
+
+ENTRY %jit__normal__49.159 (parameter.1: u32[2]) -> (f32[3,3,1,2304]) {
+  %constant.2 = pred[] constant(false)
+  %parameter.1 = u32[2]{0} parameter(0)
+  %call.156 = (f32[3,3,1,2304]{3,2,1,0}) call(u32[2]{0} %parameter.1), to_apply=%jit__normal_real__49.60
+  %get-tuple-element.157 = f32[3,3,1,2304]{3,2,1,0} get-tuple-element((f32[3,3,1,2304]{3,2,1,0}) %call.156), index=0
+  ROOT %tuple.158 = (f32[3,3,1,2304]{3,2,1,0}) tuple(f32[3,3,1,2304]{3,2,1,0} %get-tuple-element.157)
+}
+

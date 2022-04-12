@@ -1,0 +1,66 @@
+HloModule jit__cholesky__4.58
+
+%jit_tril__288.21 (parameter.22: f64[3441,1,1]) -> (f64[3441,1,1]) {
+  %constant.23 = pred[] constant(false)
+  %iota.24 = s32[1,1] iota(), iota_dimension=0
+  %constant.25 = s32[] constant(0)
+  %broadcast.26 = s32[1,1]{1,0} broadcast(s32[] %constant.25), dimensions={}
+  %add.27 = s32[1,1]{1,0} add(s32[1,1] %iota.24, s32[1,1]{1,0} %broadcast.26)
+  %iota.28 = s32[1,1] iota(), iota_dimension=1
+  %compare.29 = pred[1,1]{1,0} compare(s32[1,1]{1,0} %add.27, s32[1,1] %iota.28), direction=GE
+  %convert.30 = pred[1,1]{1,0} convert(pred[1,1]{1,0} %compare.29)
+  %broadcast.31 = pred[3441,1,1]{2,1,0} broadcast(pred[1,1]{1,0} %convert.30), dimensions={1,2}
+  %parameter.22 = f64[3441,1,1]{2,1,0} parameter(0)
+  %constant.32 = f64[] constant(0)
+  %broadcast.33 = f64[3441,1,1]{2,1,0} broadcast(f64[] %constant.32), dimensions={}
+  %select.34 = f64[3441,1,1]{2,1,0} select(pred[3441,1,1]{2,1,0} %broadcast.31, f64[3441,1,1]{2,1,0} %parameter.22, f64[3441,1,1]{2,1,0} %broadcast.33)
+  ROOT %tuple.35 = (f64[3441,1,1]{2,1,0}) tuple(f64[3441,1,1]{2,1,0} %select.34)
+}
+
+%jit_vmap_tril___96.38 (parameter.39: f64[3441,1,1]) -> (f64[3441,1,1]) {
+  %constant.40 = pred[] constant(false)
+  %iota.41 = s32[1,1] iota(), iota_dimension=0
+  %constant.42 = s32[] constant(0)
+  %broadcast.43 = s32[1,1]{1,0} broadcast(s32[] %constant.42), dimensions={}
+  %add.44 = s32[1,1]{1,0} add(s32[1,1] %iota.41, s32[1,1]{1,0} %broadcast.43)
+  %iota.45 = s32[1,1] iota(), iota_dimension=1
+  %compare.46 = pred[1,1]{1,0} compare(s32[1,1]{1,0} %add.44, s32[1,1] %iota.45), direction=GE
+  %convert.47 = pred[1,1]{1,0} convert(pred[1,1]{1,0} %compare.46)
+  %broadcast.48 = pred[1,1]{1,0} broadcast(pred[1,1]{1,0} %convert.47), dimensions={0,1}
+  %broadcast.51 = pred[3441,1,1]{2,1,0} broadcast(pred[1,1]{1,0} %broadcast.48), dimensions={1,2}
+  %parameter.39 = f64[3441,1,1]{2,1,0} parameter(0)
+  %constant.49 = f64[] constant(0)
+  %broadcast.50 = f64[1,1]{1,0} broadcast(f64[] %constant.49), dimensions={}
+  %broadcast.52 = f64[3441,1,1]{2,1,0} broadcast(f64[1,1]{1,0} %broadcast.50), dimensions={1,2}
+  %select.53 = f64[3441,1,1]{2,1,0} select(pred[3441,1,1]{2,1,0} %broadcast.51, f64[3441,1,1]{2,1,0} %parameter.39, f64[3441,1,1]{2,1,0} %broadcast.52)
+  ROOT %tuple.54 = (f64[3441,1,1]{2,1,0}) tuple(f64[3441,1,1]{2,1,0} %select.53)
+}
+
+ENTRY %jit__cholesky__4.58 (parameter.1: f64[3441,1,1]) -> (f64[3441,1,1]) {
+  %constant.2 = pred[] constant(false)
+  %parameter.1 = f64[3441,1,1]{2,1,0} parameter(0)
+  %transpose.3 = f64[3441,1,1]{1,2,0} transpose(f64[3441,1,1]{2,1,0} %parameter.1), dimensions={0,2,1}
+  %add.4 = f64[3441,1,1]{2,1,0} add(f64[3441,1,1]{2,1,0} %parameter.1, f64[3441,1,1]{1,2,0} %transpose.3)
+  %constant.5 = f64[] constant(2)
+  %broadcast.6 = f64[3441,1,1]{2,1,0} broadcast(f64[] %constant.5), dimensions={}
+  %divide.7 = f64[3441,1,1]{2,1,0} divide(f64[3441,1,1]{2,1,0} %add.4, f64[3441,1,1]{2,1,0} %broadcast.6)
+  %custom-call.8 = (f64[3441,1,1]{1,2,0}, s32[3441]{0}, s8[27528]{0}) custom-call(f64[3441,1,1]{2,1,0} %divide.7), custom_call_target="cusolver_potrf", operand_layout_constraints={f64[3441,1,1]{1,2,0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="\001\000\000\000\000\000\000\000q\r\000\000\000\000\000\000\001\000\000\000\000\000\000\000\000\000\000\000:\177\000\000"
+  %get-tuple-element.10 = s32[3441]{0} get-tuple-element((f64[3441,1,1]{1,2,0}, s32[3441]{0}, s8[27528]{0}) %custom-call.8), index=1
+  %constant.11 = s32[] constant(0)
+  %broadcast.12 = s32[3441]{0} broadcast(s32[] %constant.11), dimensions={}
+  %compare.13 = pred[3441]{0} compare(s32[3441]{0} %get-tuple-element.10, s32[3441]{0} %broadcast.12), direction=EQ
+  %reshape.14 = pred[3441,1,1]{2,1,0} reshape(pred[3441]{0} %compare.13)
+  %broadcast.17 = pred[3441,1,1]{2,1,0} broadcast(pred[3441,1,1]{2,1,0} %reshape.14), dimensions={0,1,2}
+  %get-tuple-element.9 = f64[3441,1,1]{1,2,0} get-tuple-element((f64[3441,1,1]{1,2,0}, s32[3441]{0}, s8[27528]{0}) %custom-call.8), index=0
+  %broadcast.18 = f64[3441,1,1]{2,1,0} broadcast(f64[3441,1,1]{1,2,0} %get-tuple-element.9), dimensions={0,1,2}
+  %constant.15 = f64[] constant(nan)
+  %broadcast.16 = f64[3441,1,1]{2,1,0} broadcast(f64[] %constant.15), dimensions={}
+  %broadcast.19 = f64[3441,1,1]{2,1,0} broadcast(f64[3441,1,1]{2,1,0} %broadcast.16), dimensions={0,1,2}
+  %select.20 = f64[3441,1,1]{2,1,0} select(pred[3441,1,1]{2,1,0} %broadcast.17, f64[3441,1,1]{2,1,0} %broadcast.18, f64[3441,1,1]{2,1,0} %broadcast.19)
+  %call.36 = (f64[3441,1,1]{2,1,0}) call(f64[3441,1,1]{2,1,0} %select.20), to_apply=%jit_tril__288.21
+  %get-tuple-element.37 = f64[3441,1,1]{2,1,0} get-tuple-element((f64[3441,1,1]{2,1,0}) %call.36), index=0
+  %call.55 = (f64[3441,1,1]{2,1,0}) call(f64[3441,1,1]{2,1,0} %get-tuple-element.37), to_apply=%jit_vmap_tril___96.38
+  %get-tuple-element.56 = f64[3441,1,1]{2,1,0} get-tuple-element((f64[3441,1,1]{2,1,0}) %call.55), index=0
+  ROOT %tuple.57 = (f64[3441,1,1]{2,1,0}) tuple(f64[3441,1,1]{2,1,0} %get-tuple-element.56)
+}
+

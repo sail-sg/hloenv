@@ -1,0 +1,39 @@
+HloModule jit__threefry_split.8
+
+xla_fallback_threefry2x32.9 {
+  Arg_0.10 = u32[] parameter(0)
+  broadcast.14 = u32[2]{0} broadcast(Arg_0.10), dimensions={}
+  Arg_1.11 = u32[] parameter(1)
+  broadcast.15 = u32[2]{0} broadcast(Arg_1.11), dimensions={}
+  Arg_2.12 = u32[2]{0} parameter(2)
+  Arg_3.13 = u32[2]{0} parameter(3)
+  ROOT custom-call.16 = (u32[2]{0}, u32[2]{0}) custom-call(broadcast.14, broadcast.15, Arg_2.12, Arg_3.13), custom_call_target="cuda_threefry2x32", operand_layout_constraints={u32[2]{0}, u32[2]{0}, u32[2]{0}, u32[2]{0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="\002\000\000\000\000\000\000\000"
+}
+
+threefry2x32.17 {
+  Arg_0.18 = u32[] parameter(0)
+  Arg_1.19 = u32[] parameter(1)
+  Arg_2.20 = u32[2]{0} parameter(2)
+  Arg_3.21 = u32[2]{0} parameter(3)
+  call.22 = (u32[2]{0}, u32[2]{0}) call(Arg_0.18, Arg_1.19, Arg_2.20, Arg_3.21), to_apply=xla_fallback_threefry2x32.9
+  get-tuple-element.23 = u32[2]{0} get-tuple-element(call.22), index=0
+  get-tuple-element.24 = u32[2]{0} get-tuple-element(call.22), index=1
+  ROOT tuple.25 = (u32[2]{0}, u32[2]{0}) tuple(get-tuple-element.23, get-tuple-element.24)
+}
+
+ENTRY main.31 {
+  Arg_0.1 = u32[2]{0} parameter(0)
+  slice.3 = u32[1]{0} slice(Arg_0.1), slice={[0:1]}
+  reshape.4 = u32[] reshape(slice.3)
+  slice.5 = u32[1]{0} slice(Arg_0.1), slice={[1:2]}
+  reshape.6 = u32[] reshape(slice.5)
+  iota.2 = u32[4]{0} iota(), iota_dimension=0
+  slice.7 = u32[2]{0} slice(iota.2), slice={[0:2]}
+  slice.8 = u32[2]{0} slice(iota.2), slice={[2:4]}
+  call.26 = (u32[2]{0}, u32[2]{0}) call(reshape.4, reshape.6, slice.7, slice.8), to_apply=threefry2x32.17
+  get-tuple-element.27 = u32[2]{0} get-tuple-element(call.26), index=0
+  get-tuple-element.28 = u32[2]{0} get-tuple-element(call.26), index=1
+  concatenate.29 = u32[4]{0} concatenate(get-tuple-element.27, get-tuple-element.28), dimensions={0}
+  ROOT reshape.30 = u32[2,2]{1,0} reshape(concatenate.29)
+}
+

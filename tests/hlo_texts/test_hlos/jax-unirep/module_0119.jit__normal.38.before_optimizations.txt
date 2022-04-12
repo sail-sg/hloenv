@@ -1,0 +1,156 @@
+HloModule jit__normal.38
+
+xla_fallback_threefry2x32.23 {
+  Arg_0.24 = u32[] parameter(0)
+  broadcast.28 = u32[13]{0} broadcast(Arg_0.24), dimensions={}
+  Arg_1.25 = u32[] parameter(1)
+  broadcast.29 = u32[13]{0} broadcast(Arg_1.25), dimensions={}
+  Arg_2.26 = u32[13]{0} parameter(2)
+  Arg_3.27 = u32[13]{0} parameter(3)
+  ROOT custom-call.30 = (u32[13]{0}, u32[13]{0}) custom-call(broadcast.28, broadcast.29, Arg_2.26, Arg_3.27), custom_call_target="cuda_threefry2x32", operand_layout_constraints={u32[13]{0}, u32[13]{0}, u32[13]{0}, u32[13]{0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="\r\000\000\000\000\000\000\000"
+}
+
+threefry2x32.31 {
+  Arg_0.32 = u32[] parameter(0)
+  Arg_1.33 = u32[] parameter(1)
+  Arg_2.34 = u32[13]{0} parameter(2)
+  Arg_3.35 = u32[13]{0} parameter(3)
+  call.36 = (u32[13]{0}, u32[13]{0}) call(Arg_0.32, Arg_1.33, Arg_2.34, Arg_3.35), to_apply=xla_fallback_threefry2x32.23
+  get-tuple-element.37 = u32[13]{0} get-tuple-element(call.36), index=0
+  get-tuple-element.38 = u32[13]{0} get-tuple-element(call.36), index=1
+  ROOT tuple.39 = (u32[13]{0}, u32[13]{0}) tuple(get-tuple-element.37, get-tuple-element.38)
+}
+
+xla_fallback_erf_inv.52 {
+  Arg_0.53 = f32[25]{0} parameter(0)
+  abs.100 = f32[25]{0} abs(Arg_0.53)
+  constant.98 = f32[] constant(1)
+  broadcast.99 = f32[25]{0} broadcast(constant.98), dimensions={}
+  compare.101 = pred[25]{0} compare(abs.100, broadcast.99), direction=EQ
+  constant.96 = f32[] constant(inf)
+  broadcast.97 = f32[25]{0} broadcast(constant.96), dimensions={}
+  multiply.102 = f32[25]{0} multiply(Arg_0.53, broadcast.97)
+  negate.103 = f32[25]{0} negate(Arg_0.53)
+  multiply.104 = f32[25]{0} multiply(negate.103, Arg_0.53)
+  log-plus-one.105 = f32[25]{0} log-plus-one(multiply.104)
+  negate.106 = f32[25]{0} negate(log-plus-one.105)
+  constant.94 = f32[] constant(5)
+  broadcast.95 = f32[25]{0} broadcast(constant.94), dimensions={}
+  compare.107 = pred[25]{0} compare(negate.106, broadcast.95), direction=LT
+  constant.92 = f32[] constant(1.50140941)
+  broadcast.93 = f32[25]{0} broadcast(constant.92), dimensions={}
+  constant.90 = f32[] constant(2.83297682)
+  broadcast.91 = f32[25]{0} broadcast(constant.90), dimensions={}
+  select.108 = f32[25]{0} select(compare.107, broadcast.93, broadcast.91)
+  constant.88 = f32[] constant(0.246640727)
+  broadcast.89 = f32[25]{0} broadcast(constant.88), dimensions={}
+  constant.86 = f32[] constant(1.00167406)
+  broadcast.87 = f32[25]{0} broadcast(constant.86), dimensions={}
+  select.109 = f32[25]{0} select(compare.107, broadcast.89, broadcast.87)
+  constant.84 = f32[] constant(-0.00417768164)
+  broadcast.85 = f32[25]{0} broadcast(constant.84), dimensions={}
+  constant.82 = f32[] constant(0.00943887047)
+  broadcast.83 = f32[25]{0} broadcast(constant.82), dimensions={}
+  select.110 = f32[25]{0} select(compare.107, broadcast.85, broadcast.83)
+  constant.80 = f32[] constant(-0.00125372503)
+  broadcast.81 = f32[25]{0} broadcast(constant.80), dimensions={}
+  constant.78 = f32[] constant(-0.0076224613)
+  broadcast.79 = f32[25]{0} broadcast(constant.78), dimensions={}
+  select.111 = f32[25]{0} select(compare.107, broadcast.81, broadcast.79)
+  constant.76 = f32[] constant(0.00021858087)
+  broadcast.77 = f32[25]{0} broadcast(constant.76), dimensions={}
+  constant.74 = f32[] constant(0.00573950773)
+  broadcast.75 = f32[25]{0} broadcast(constant.74), dimensions={}
+  select.112 = f32[25]{0} select(compare.107, broadcast.77, broadcast.75)
+  constant.72 = f32[] constant(-4.39150654e-06)
+  broadcast.73 = f32[25]{0} broadcast(constant.72), dimensions={}
+  constant.70 = f32[] constant(-0.00367342844)
+  broadcast.71 = f32[25]{0} broadcast(constant.70), dimensions={}
+  select.113 = f32[25]{0} select(compare.107, broadcast.73, broadcast.71)
+  constant.68 = f32[] constant(-3.5233877e-06)
+  broadcast.69 = f32[25]{0} broadcast(constant.68), dimensions={}
+  constant.66 = f32[] constant(0.00134934322)
+  broadcast.67 = f32[25]{0} broadcast(constant.66), dimensions={}
+  select.114 = f32[25]{0} select(compare.107, broadcast.69, broadcast.67)
+  constant.64 = f32[] constant(3.43273939e-07)
+  broadcast.65 = f32[25]{0} broadcast(constant.64), dimensions={}
+  constant.62 = f32[] constant(0.000100950558)
+  broadcast.63 = f32[25]{0} broadcast(constant.62), dimensions={}
+  select.115 = f32[25]{0} select(compare.107, broadcast.65, broadcast.63)
+  constant.60 = f32[] constant(2.81022636e-08)
+  broadcast.61 = f32[25]{0} broadcast(constant.60), dimensions={}
+  constant.58 = f32[] constant(-0.000200214257)
+  broadcast.59 = f32[25]{0} broadcast(constant.58), dimensions={}
+  select.116 = f32[25]{0} select(compare.107, broadcast.61, broadcast.59)
+  constant.56 = f32[] constant(2.5)
+  broadcast.57 = f32[25]{0} broadcast(constant.56), dimensions={}
+  subtract.117 = f32[25]{0} subtract(negate.106, broadcast.57)
+  sqrt.118 = f32[25]{0} sqrt(negate.106)
+  constant.54 = f32[] constant(3)
+  broadcast.55 = f32[25]{0} broadcast(constant.54), dimensions={}
+  subtract.119 = f32[25]{0} subtract(sqrt.118, broadcast.55)
+  select.120 = f32[25]{0} select(compare.107, subtract.117, subtract.119)
+  multiply.121 = f32[25]{0} multiply(select.116, select.120)
+  add.122 = f32[25]{0} add(select.115, multiply.121)
+  multiply.123 = f32[25]{0} multiply(add.122, select.120)
+  add.124 = f32[25]{0} add(select.114, multiply.123)
+  multiply.125 = f32[25]{0} multiply(add.124, select.120)
+  add.126 = f32[25]{0} add(select.113, multiply.125)
+  multiply.127 = f32[25]{0} multiply(add.126, select.120)
+  add.128 = f32[25]{0} add(select.112, multiply.127)
+  multiply.129 = f32[25]{0} multiply(add.128, select.120)
+  add.130 = f32[25]{0} add(select.111, multiply.129)
+  multiply.131 = f32[25]{0} multiply(add.130, select.120)
+  add.132 = f32[25]{0} add(select.110, multiply.131)
+  multiply.133 = f32[25]{0} multiply(add.132, select.120)
+  add.134 = f32[25]{0} add(select.109, multiply.133)
+  multiply.135 = f32[25]{0} multiply(add.134, select.120)
+  add.136 = f32[25]{0} add(select.108, multiply.135)
+  multiply.137 = f32[25]{0} multiply(add.136, Arg_0.53)
+  ROOT select.138 = f32[25]{0} select(compare.101, multiply.102, multiply.137)
+}
+
+erf_inv.139 {
+  Arg_0.140 = f32[25]{0} parameter(0)
+  ROOT call.141 = f32[25]{0} call(Arg_0.140), to_apply=xla_fallback_erf_inv.52
+}
+
+ENTRY main.144 {
+  Arg_0.1 = u32[2]{0} parameter(0)
+  slice.16 = u32[1]{0} slice(Arg_0.1), slice={[0:1]}
+  reshape.17 = u32[] reshape(slice.16)
+  slice.18 = u32[1]{0} slice(Arg_0.1), slice={[1:2]}
+  reshape.19 = u32[] reshape(slice.18)
+  iota.15 = u32[25]{0} iota(), iota_dimension=0
+  slice.21 = u32[13]{0} slice(iota.15), slice={[0:13]}
+  constant.14 = u32[1]{0} constant({0})
+  concatenate.20 = u32[26]{0} concatenate(iota.15, constant.14), dimensions={0}
+  slice.22 = u32[13]{0} slice(concatenate.20), slice={[13:26]}
+  call.40 = (u32[13]{0}, u32[13]{0}) call(reshape.17, reshape.19, slice.21, slice.22), to_apply=threefry2x32.31
+  get-tuple-element.41 = u32[13]{0} get-tuple-element(call.40), index=0
+  get-tuple-element.42 = u32[13]{0} get-tuple-element(call.40), index=1
+  concatenate.43 = u32[26]{0} concatenate(get-tuple-element.41, get-tuple-element.42), dimensions={0}
+  slice.44 = u32[25]{0} slice(concatenate.43), slice={[0:25]}
+  constant.12 = u32[] constant(9)
+  broadcast.13 = u32[25]{0} broadcast(constant.12), dimensions={}
+  shift-right-logical.45 = u32[25]{0} shift-right-logical(slice.44, broadcast.13)
+  constant.10 = u32[] constant(1065353216)
+  broadcast.11 = u32[25]{0} broadcast(constant.10), dimensions={}
+  or.46 = u32[25]{0} or(shift-right-logical.45, broadcast.11)
+  bitcast-convert.47 = f32[25]{0} bitcast-convert(or.46)
+  constant.8 = f32[] constant(1)
+  broadcast.9 = f32[25]{0} broadcast(constant.8), dimensions={}
+  subtract.48 = f32[25]{0} subtract(bitcast-convert.47, broadcast.9)
+  constant.6 = f32[] constant(2)
+  broadcast.7 = f32[25]{0} broadcast(constant.6), dimensions={}
+  multiply.49 = f32[25]{0} multiply(subtract.48, broadcast.7)
+  constant.4 = f32[] constant(-0.99999994)
+  broadcast.5 = f32[25]{0} broadcast(constant.4), dimensions={}
+  add.50 = f32[25]{0} add(multiply.49, broadcast.5)
+  maximum.51 = f32[25]{0} maximum(add.50, broadcast.5)
+  call.142 = f32[25]{0} call(maximum.51), to_apply=erf_inv.139
+  constant.2 = f32[] constant(1.41421354)
+  broadcast.3 = f32[25]{0} broadcast(constant.2), dimensions={}
+  ROOT multiply.143 = f32[25]{0} multiply(call.142, broadcast.3)
+}
+

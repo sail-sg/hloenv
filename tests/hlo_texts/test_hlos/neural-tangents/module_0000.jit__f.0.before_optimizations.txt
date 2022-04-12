@@ -1,0 +1,93 @@
+HloModule jit__f.0
+
+jit__where.52 {
+  Arg_0.53 = pred[1000,1000]{1,0} parameter(0)
+  Arg_1.54 = f32[] parameter(1)
+  broadcast.56 = f32[1000,1000]{1,0} broadcast(Arg_1.54), dimensions={}
+  Arg_2.55 = f32[1000,1000]{1,0} parameter(2)
+  ROOT select.57 = f32[1000,1000]{1,0} select(Arg_0.53, broadcast.56, Arg_2.55)
+}
+
+jit__where_0.73 {
+  Arg_0.74 = pred[1000]{0} parameter(0)
+  Arg_1.75 = f32[] parameter(1)
+  broadcast.77 = f32[1000]{0} broadcast(Arg_1.75), dimensions={}
+  Arg_2.76 = f32[1000]{0} parameter(2)
+  ROOT select.78 = f32[1000]{0} select(Arg_0.74, broadcast.77, Arg_2.76)
+}
+
+ENTRY main.85 {
+  Arg_0.1 = f32[1000,3072]{1,0} parameter(0)
+  dot.25 = f32[1000]{0} dot(Arg_0.1, Arg_0.1), lhs_batch_dims={0}, lhs_contracting_dims={1}, rhs_batch_dims={0}, rhs_contracting_dims={1}
+  constant.23 = f32[] constant(3072)
+  broadcast.24 = f32[1000]{0} broadcast(constant.23), dimensions={}
+  divide.26 = f32[1000]{0} divide(dot.25, broadcast.24)
+  constant.8 = f32[] constant(4)
+  broadcast.9 = f32[1000]{0} broadcast(constant.8), dimensions={}
+  multiply.29 = f32[1000]{0} multiply(divide.26, broadcast.9)
+  constant.6 = f32[] constant(0.0025)
+  broadcast.7 = f32[1000]{0} broadcast(constant.6), dimensions={}
+  add.30 = f32[1000]{0} add(multiply.29, broadcast.7)
+  constant.19 = f32[] constant(1)
+  broadcast.20 = f32[1000]{0} broadcast(constant.19), dimensions={}
+  divide.33 = f32[1000]{0} divide(add.30, broadcast.20)
+  multiply.43 = f32[1000]{0} multiply(divide.33, divide.33)
+  multiply.65 = f32[1000]{0} multiply(add.30, add.30)
+  subtract.66 = f32[1000]{0} subtract(multiply.43, multiply.65)
+  constant.11 = f32[] constant(0)
+  broadcast.12 = f32[1000]{0} broadcast(constant.11), dimensions={}
+  maximum.67 = f32[1000]{0} maximum(subtract.66, broadcast.12)
+  sqrt.68 = f32[1000]{0} sqrt(maximum.67)
+  compare.69 = pred[1000]{0} compare(sqrt.68, broadcast.12), direction=EQ
+  compare.70 = pred[1000]{0} compare(add.30, broadcast.12), direction=EQ
+  and.71 = pred[1000]{0} and(compare.69, compare.70)
+  constant.10 = f32[] constant(1.57079637)
+  atan2.72 = f32[1000]{0} atan2(sqrt.68, add.30)
+  call.79 = f32[1000]{0} call(and.71, constant.10, atan2.72), to_apply=jit__where_0.73
+  reshape.34 = f32[1000,1]{1,0} reshape(divide.33)
+  broadcast.36 = f32[1000,1]{1,0} broadcast(reshape.34), dimensions={0,1}
+  reshape.37 = f32[1000]{0} reshape(broadcast.36)
+  broadcast.38 = f32[1000,1000]{1,0} broadcast(reshape.37), dimensions={0}
+  reshape.35 = f32[1,1000]{1,0} reshape(divide.33)
+  broadcast.39 = f32[1,1000]{1,0} broadcast(reshape.35), dimensions={0,1}
+  reshape.40 = f32[1000]{0} reshape(broadcast.39)
+  broadcast.41 = f32[1000,1000]{1,0} broadcast(reshape.40), dimensions={1}
+  multiply.42 = f32[1000,1000]{1,0} multiply(broadcast.38, broadcast.41)
+  dot.27 = f32[1000,1000]{1,0} dot(Arg_0.1, Arg_0.1), lhs_contracting_dims={1}, rhs_contracting_dims={1}
+  constant.21 = f32[] constant(3072)
+  broadcast.22 = f32[1000,1000]{1,0} broadcast(constant.21), dimensions={}
+  divide.28 = f32[1000,1000]{1,0} divide(dot.27, broadcast.22)
+  constant.2 = f32[] constant(4)
+  broadcast.3 = f32[1000,1000]{1,0} broadcast(constant.2), dimensions={}
+  multiply.31 = f32[1000,1000]{1,0} multiply(divide.28, broadcast.3)
+  constant.4 = f32[] constant(0.0025)
+  broadcast.5 = f32[1000,1000]{1,0} broadcast(constant.4), dimensions={}
+  add.32 = f32[1000,1000]{1,0} add(multiply.31, broadcast.5)
+  multiply.44 = f32[1000,1000]{1,0} multiply(add.32, add.32)
+  subtract.45 = f32[1000,1000]{1,0} subtract(multiply.42, multiply.44)
+  constant.17 = f32[] constant(0)
+  broadcast.18 = f32[1000,1000]{1,0} broadcast(constant.17), dimensions={}
+  maximum.46 = f32[1000,1000]{1,0} maximum(subtract.45, broadcast.18)
+  sqrt.47 = f32[1000,1000]{1,0} sqrt(maximum.46)
+  constant.13 = f32[] constant(0.159154937)
+  broadcast.14 = f32[1000,1000]{1,0} broadcast(constant.13), dimensions={}
+  multiply.61 = f32[1000,1000]{1,0} multiply(sqrt.47, broadcast.14)
+  constant.15 = f32[] constant(0.5)
+  broadcast.16 = f32[1000,1000]{1,0} broadcast(constant.15), dimensions={}
+  compare.48 = pred[1000,1000]{1,0} compare(sqrt.47, broadcast.18), direction=EQ
+  compare.49 = pred[1000,1000]{1,0} compare(add.32, broadcast.18), direction=EQ
+  and.50 = pred[1000,1000]{1,0} and(compare.48, compare.49)
+  atan2.51 = f32[1000,1000]{1,0} atan2(sqrt.47, add.32)
+  call.58 = f32[1000,1000]{1,0} call(and.50, constant.10, atan2.51), to_apply=jit__where.52
+  multiply.59 = f32[1000,1000]{1,0} multiply(call.58, broadcast.14)
+  subtract.60 = f32[1000,1000]{1,0} subtract(broadcast.16, multiply.59)
+  multiply.62 = f32[1000,1000]{1,0} multiply(subtract.60, add.32)
+  add.63 = f32[1000,1000]{1,0} add(multiply.61, multiply.62)
+  multiply.80 = f32[1000,1000]{1,0} multiply(add.63, broadcast.3)
+  add.81 = f32[1000,1000]{1,0} add(multiply.80, broadcast.5)
+  multiply.64 = f32[1000,1000]{1,0} multiply(add.32, subtract.60)
+  multiply.82 = f32[1000,1000]{1,0} multiply(multiply.64, broadcast.3)
+  add.83 = f32[1000,1000]{1,0} add(add.81, multiply.82)
+  ROOT tuple.84 = (f32[1000,1000]{1,0}, f32[1000,1000]{1,0}) tuple(add.81, add.83)
+}
+

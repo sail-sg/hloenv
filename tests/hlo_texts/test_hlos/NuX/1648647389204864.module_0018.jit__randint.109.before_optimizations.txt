@@ -1,0 +1,113 @@
+HloModule jit__randint.109
+
+ENTRY %jit__randint.109 (parameter.1: u32[2], parameter.2: s32[], parameter.3: s32[]) -> (s32[16]) {
+  %constant.4 = pred[] constant(false)
+  %constant.14 = s32[] constant(2147483647)
+  %constant.12 = s32[] constant(-2147483648)
+  %parameter.2 = s32[] parameter(1)
+  %convert.11 = s32[] convert(s32[] %parameter.2)
+  %maximum.13 = s32[] maximum(s32[] %constant.12, s32[] %convert.11)
+  %minimum.15 = s32[] minimum(s32[] %constant.14, s32[] %maximum.13)
+  %broadcast.21 = s32[1]{0} broadcast(s32[] %minimum.15), dimensions={}
+  %reshape.105 = s32[] reshape(s32[1]{0} %broadcast.21)
+  %broadcast.106 = s32[16]{0} broadcast(s32[] %reshape.105), dimensions={}
+  %parameter.1 = u32[2]{0} parameter(0)
+  %slice.24 = u32[1]{0} slice(u32[2]{0} %parameter.1), slice={[0:1]}
+  %reshape.25 = u32[] reshape(u32[1]{0} %slice.24)
+  %broadcast.30 = u32[2]{0} broadcast(u32[] %reshape.25), dimensions={}
+  %slice.26 = u32[1]{0} slice(u32[2]{0} %parameter.1), slice={[1:2]}
+  %reshape.27 = u32[] reshape(u32[1]{0} %slice.26)
+  %broadcast.31 = u32[2]{0} broadcast(u32[] %reshape.27), dimensions={}
+  %iota.23 = u32[4] iota(), iota_dimension=0
+  %slice.28 = u32[2]{0} slice(u32[4] %iota.23), slice={[0:2]}
+  %broadcast.32 = u32[2]{0} broadcast(u32[2]{0} %slice.28), dimensions={0}
+  %slice.29 = u32[2]{0} slice(u32[4] %iota.23), slice={[2:4]}
+  %broadcast.33 = u32[2]{0} broadcast(u32[2]{0} %slice.29), dimensions={0}
+  %custom-call.34 = (u32[2]{0}, u32[2]{0}) custom-call(u32[2]{0} %broadcast.30, u32[2]{0} %broadcast.31, u32[2]{0} %broadcast.32, u32[2]{0} %broadcast.33), custom_call_target="cuda_threefry2x32", operand_layout_constraints={u32[2]{0}, u32[2]{0}, u32[2]{0}, u32[2]{0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="\002\000\000\000\000\000\000\000"
+  %get-tuple-element.35 = u32[2]{0} get-tuple-element((u32[2]{0}, u32[2]{0}) %custom-call.34), index=0
+  %get-tuple-element.36 = u32[2]{0} get-tuple-element((u32[2]{0}, u32[2]{0}) %custom-call.34), index=1
+  %concatenate.37 = u32[4]{0} concatenate(u32[2]{0} %get-tuple-element.35, u32[2]{0} %get-tuple-element.36), dimensions={0}
+  %reshape.38 = u32[2,2]{1,0} reshape(u32[4]{0} %concatenate.37)
+  %slice.39 = u32[1,2]{1,0} slice(u32[2,2]{1,0} %reshape.38), slice={[0:1], [0:2]}
+  %reshape.40 = u32[2]{0} reshape(u32[1,2]{1,0} %slice.39)
+  %slice.44 = u32[1]{0} slice(u32[2]{0} %reshape.40), slice={[0:1]}
+  %reshape.45 = u32[] reshape(u32[1]{0} %slice.44)
+  %broadcast.50 = u32[8]{0} broadcast(u32[] %reshape.45), dimensions={}
+  %slice.46 = u32[1]{0} slice(u32[2]{0} %reshape.40), slice={[1:2]}
+  %reshape.47 = u32[] reshape(u32[1]{0} %slice.46)
+  %broadcast.51 = u32[8]{0} broadcast(u32[] %reshape.47), dimensions={}
+  %iota.43 = u32[16] iota(), iota_dimension=0
+  %slice.48 = u32[8]{0} slice(u32[16] %iota.43), slice={[0:8]}
+  %broadcast.52 = u32[8]{0} broadcast(u32[8]{0} %slice.48), dimensions={0}
+  %slice.49 = u32[8]{0} slice(u32[16] %iota.43), slice={[8:16]}
+  %broadcast.53 = u32[8]{0} broadcast(u32[8]{0} %slice.49), dimensions={0}
+  %custom-call.54 = (u32[8]{0}, u32[8]{0}) custom-call(u32[8]{0} %broadcast.50, u32[8]{0} %broadcast.51, u32[8]{0} %broadcast.52, u32[8]{0} %broadcast.53), custom_call_target="cuda_threefry2x32", operand_layout_constraints={u32[8]{0}, u32[8]{0}, u32[8]{0}, u32[8]{0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="\010\000\000\000\000\000\000\000"
+  %get-tuple-element.55 = u32[8]{0} get-tuple-element((u32[8]{0}, u32[8]{0}) %custom-call.54), index=0
+  %get-tuple-element.56 = u32[8]{0} get-tuple-element((u32[8]{0}, u32[8]{0}) %custom-call.54), index=1
+  %concatenate.57 = u32[16]{0} concatenate(u32[8]{0} %get-tuple-element.55, u32[8]{0} %get-tuple-element.56), dimensions={0}
+  %parameter.3 = s32[] parameter(2)
+  %constant.8 = s32[] constant(2147483647)
+  %constant.5 = s32[] constant(-2147483648)
+  %constant.6 = s32[] constant(2147483647)
+  %maximum.7 = s32[] maximum(s32[] %constant.5, s32[] %constant.6)
+  %minimum.9 = s32[] minimum(s32[] %constant.8, s32[] %maximum.7)
+  %compare.10 = pred[] compare(s32[] %parameter.3, s32[] %minimum.9), direction=GT
+  %broadcast.80 = pred[1]{0} broadcast(pred[] %compare.10), dimensions={}
+  %constant.19 = s32[] constant(2147483647)
+  %constant.17 = s32[] constant(-2147483648)
+  %convert.16 = s32[] convert(s32[] %parameter.3)
+  %maximum.18 = s32[] maximum(s32[] %constant.17, s32[] %convert.16)
+  %minimum.20 = s32[] minimum(s32[] %constant.19, s32[] %maximum.18)
+  %broadcast.22 = s32[1]{0} broadcast(s32[] %minimum.20), dimensions={}
+  %compare.79 = pred[1]{0} compare(s32[1]{0} %broadcast.22, s32[1]{0} %broadcast.21), direction=GT
+  %and.81 = pred[1]{0} and(pred[1]{0} %broadcast.80, pred[1]{0} %compare.79)
+  %compare.75 = pred[1]{0} compare(s32[1]{0} %broadcast.22, s32[1]{0} %broadcast.21), direction=LE
+  %constant.76 = u32[] constant(1)
+  %broadcast.77 = u32[1]{0} broadcast(u32[] %constant.76), dimensions={}
+  %subtract.73 = s32[1]{0} subtract(s32[1]{0} %broadcast.22, s32[1]{0} %broadcast.21)
+  %convert.74 = u32[1]{0} convert(s32[1]{0} %subtract.73)
+  %select.78 = u32[1]{0} select(pred[1]{0} %compare.75, u32[1]{0} %broadcast.77, u32[1]{0} %convert.74)
+  %constant.82 = u32[] constant(1)
+  %broadcast.83 = u32[1]{0} broadcast(u32[] %constant.82), dimensions={}
+  %add.84 = u32[1]{0} add(u32[1]{0} %select.78, u32[1]{0} %broadcast.83)
+  %select.85 = u32[1]{0} select(pred[1]{0} %and.81, u32[1]{0} %add.84, u32[1]{0} %select.78)
+  %reshape.91 = u32[] reshape(u32[1]{0} %select.85)
+  %broadcast.92 = u32[16]{0} broadcast(u32[] %reshape.91), dimensions={}
+  %remainder.93 = u32[16]{0} remainder(u32[16]{0} %concatenate.57, u32[16]{0} %broadcast.92)
+  %constant.86 = u32[] constant(65536)
+  %broadcast.87 = u32[1]{0} broadcast(u32[] %constant.86), dimensions={}
+  %remainder.88 = u32[1]{0} remainder(u32[1]{0} %broadcast.87, u32[1]{0} %select.85)
+  %multiply.89 = u32[1]{0} multiply(u32[1]{0} %remainder.88, u32[1]{0} %remainder.88)
+  %remainder.90 = u32[1]{0} remainder(u32[1]{0} %multiply.89, u32[1]{0} %select.85)
+  %reshape.94 = u32[] reshape(u32[1]{0} %remainder.90)
+  %broadcast.95 = u32[16]{0} broadcast(u32[] %reshape.94), dimensions={}
+  %multiply.96 = u32[16]{0} multiply(u32[16]{0} %remainder.93, u32[16]{0} %broadcast.95)
+  %slice.41 = u32[1,2]{1,0} slice(u32[2,2]{1,0} %reshape.38), slice={[1:2], [0:2]}
+  %reshape.42 = u32[2]{0} reshape(u32[1,2]{1,0} %slice.41)
+  %slice.59 = u32[1]{0} slice(u32[2]{0} %reshape.42), slice={[0:1]}
+  %reshape.60 = u32[] reshape(u32[1]{0} %slice.59)
+  %broadcast.65 = u32[8]{0} broadcast(u32[] %reshape.60), dimensions={}
+  %slice.61 = u32[1]{0} slice(u32[2]{0} %reshape.42), slice={[1:2]}
+  %reshape.62 = u32[] reshape(u32[1]{0} %slice.61)
+  %broadcast.66 = u32[8]{0} broadcast(u32[] %reshape.62), dimensions={}
+  %iota.58 = u32[16] iota(), iota_dimension=0
+  %slice.63 = u32[8]{0} slice(u32[16] %iota.58), slice={[0:8]}
+  %broadcast.67 = u32[8]{0} broadcast(u32[8]{0} %slice.63), dimensions={0}
+  %slice.64 = u32[8]{0} slice(u32[16] %iota.58), slice={[8:16]}
+  %broadcast.68 = u32[8]{0} broadcast(u32[8]{0} %slice.64), dimensions={0}
+  %custom-call.69 = (u32[8]{0}, u32[8]{0}) custom-call(u32[8]{0} %broadcast.65, u32[8]{0} %broadcast.66, u32[8]{0} %broadcast.67, u32[8]{0} %broadcast.68), custom_call_target="cuda_threefry2x32", operand_layout_constraints={u32[8]{0}, u32[8]{0}, u32[8]{0}, u32[8]{0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="\010\000\000\000\000\000\000\000"
+  %get-tuple-element.70 = u32[8]{0} get-tuple-element((u32[8]{0}, u32[8]{0}) %custom-call.69), index=0
+  %get-tuple-element.71 = u32[8]{0} get-tuple-element((u32[8]{0}, u32[8]{0}) %custom-call.69), index=1
+  %concatenate.72 = u32[16]{0} concatenate(u32[8]{0} %get-tuple-element.70, u32[8]{0} %get-tuple-element.71), dimensions={0}
+  %reshape.97 = u32[] reshape(u32[1]{0} %select.85)
+  %broadcast.98 = u32[16]{0} broadcast(u32[] %reshape.97), dimensions={}
+  %remainder.99 = u32[16]{0} remainder(u32[16]{0} %concatenate.72, u32[16]{0} %broadcast.98)
+  %add.100 = u32[16]{0} add(u32[16]{0} %multiply.96, u32[16]{0} %remainder.99)
+  %reshape.101 = u32[] reshape(u32[1]{0} %select.85)
+  %broadcast.102 = u32[16]{0} broadcast(u32[] %reshape.101), dimensions={}
+  %remainder.103 = u32[16]{0} remainder(u32[16]{0} %add.100, u32[16]{0} %broadcast.102)
+  %convert.104 = s32[16]{0} convert(u32[16]{0} %remainder.103)
+  %add.107 = s32[16]{0} add(s32[16]{0} %broadcast.106, s32[16]{0} %convert.104)
+  ROOT %tuple.108 = (s32[16]{0}) tuple(s32[16]{0} %add.107)
+}
+

@@ -11,11 +11,7 @@ class HloIRTest(absltest.TestCase):
     logging.set_verbosity(logging.INFO)
     logging.info("setting up")
     dir_path = os.path.dirname(os.path.realpath(__file__)) + "/hlo_texts"
-    all_dir_path = dir_path + "/test_hlos"
-    self.hlo_test_files = [
-      os.path.join(all_dir_path, filename)
-      for filename in os.listdir(all_dir_path)
-    ]
+
     self.hlo_main_test_file = dir_path + "/hlo_test.txt"
 
   def test_import(self) -> None:
@@ -191,40 +187,45 @@ class HloIRTest(absltest.TestCase):
     from random import randrange
     import numpy as np
 
-    for filepath in self.hlo_test_files:
-      logging.info("Testing validation for file: " + filepath)
+    base_dir = os.path.dirname(os.path.realpath(__file__))
+    hlo_base_dir = base_dir + "/hlo_texts/test_hlos"
+    for root, dirs, files in os.walk(hlo_base_dir):
+      for file in files:
 
-      hlo_ir = HloIr(filepath, "gpu")
+        filepath = os.path.join(root, file)
+        logging.info("Testing validation for file: " + filepath)
 
-      saved_hlo_module = hlo_ir.save_hlo()
-      hlo_ir.original_run_hlo_passes()
-      # Save reference copy of the module after a non dry-run RunHloPasses call
-      reference_hlo_module = hlo_ir.save_hlo()
-      hlo_ir.restore_hlo(saved_hlo_module)
+        hlo_ir = HloIr(filepath, "gpu")
 
-      hlo_ir.pre_fusion_optimizations()
-      num_alts = 1
-      while num_alts > 0:
-        hlo_ir.fusion_dry_run()
-        hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
-        node_features = hlo_graph.node_features
-        num_operands = node_features.num_operands
-        num_alts = len(hlo_graph.alternative_indices)
+        saved_hlo_module = hlo_ir.save_hlo()
+        hlo_ir.original_run_hlo_passes()
+        # Save reference copy of the module after a non dry-run RunHloPasses call
+        reference_hlo_module = hlo_ir.save_hlo()
+        hlo_ir.restore_hlo(saved_hlo_module)
 
-        if num_alts > 0:
-          decisions = []
-          for alt_idx in hlo_graph.alternative_indices:
-            decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+        hlo_ir.pre_fusion_optimizations()
+        num_alts = 1
+        while num_alts > 0:
+          hlo_ir.fusion_dry_run()
+          hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
+          node_features = hlo_graph.node_features
+          num_operands = node_features.num_operands
+          num_alts = len(hlo_graph.alternative_indices)
 
-          decisions = np.asarray(decisions)
-          hlo_ir.apply_alternatives(decisions)
+          if num_alts > 0:
+            decisions = []
+            for alt_idx in hlo_graph.alternative_indices:
+              decisions.append([alt_idx, randrange(num_operands[alt_idx])])
 
-      hlo_ir.post_fusion_optimizations()
-      post_fusion_module = hlo_ir.save_hlo()
+            decisions = np.asarray(decisions)
+            hlo_ir.apply_alternatives(decisions)
 
-      assert (
-        hlo_ir.has_equal_output(post_fusion_module, reference_hlo_module)
-      )
+        hlo_ir.post_fusion_optimizations()
+        post_fusion_module = hlo_ir.save_hlo()
+
+        assert (
+          hlo_ir.has_equal_output(post_fusion_module, reference_hlo_module)
+        )
 
 
 if __name__ == "__main__":
