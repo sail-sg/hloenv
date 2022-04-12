@@ -1,0 +1,453 @@
+HloModule jit__randint.431
+
+%jit_clip.8 (parameter.9: s32[], parameter.10: s32[], parameter.11: s32[]) -> s32[] {
+  %constant.12 = pred[] constant(false)
+  %parameter.11 = s32[] parameter(2)
+  %parameter.10 = s32[] parameter(1)
+  %parameter.9 = s32[] parameter(0)
+  %maximum.13 = s32[] maximum(s32[] %parameter.10, s32[] %parameter.9), metadata={op_type="max" op_name="jit(_randint)/jit(clip)/max" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  ROOT %minimum.14 = s32[] minimum(s32[] %parameter.11, s32[] %maximum.13), metadata={op_type="min" op_name="jit(_randint)/jit(clip)/min" source_file="<ipython-input-1-5475764559be>" source_line=6}
+}
+
+%jit_clip__1.19 (parameter.20: s32[], parameter.21: s32[], parameter.22: s32[]) -> s32[] {
+  %constant.23 = pred[] constant(false)
+  %parameter.22 = s32[] parameter(2)
+  %parameter.21 = s32[] parameter(1)
+  %parameter.20 = s32[] parameter(0)
+  %convert.24 = s32[] convert(s32[] %parameter.20), metadata={op_type="convert_element_type" op_name="jit(_randint)/jit(clip)/convert_element_type[new_dtype=int32 weak_type=False]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %maximum.25 = s32[] maximum(s32[] %parameter.21, s32[] %convert.24), metadata={op_type="max" op_name="jit(_randint)/jit(clip)/max" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  ROOT %minimum.26 = s32[] minimum(s32[] %parameter.22, s32[] %maximum.25), metadata={op_type="min" op_name="jit(_randint)/jit(clip)/min" source_file="<ipython-input-1-5475764559be>" source_line=6}
+}
+
+%jit_clip__2.30 (parameter.31: s32[], parameter.32: s32[], parameter.33: s32[]) -> s32[] {
+  %constant.34 = pred[] constant(false)
+  %parameter.33 = s32[] parameter(2)
+  %parameter.32 = s32[] parameter(1)
+  %parameter.31 = s32[] parameter(0)
+  %convert.35 = s32[] convert(s32[] %parameter.31), metadata={op_type="convert_element_type" op_name="jit(_randint)/jit(clip)/convert_element_type[new_dtype=int32 weak_type=False]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %maximum.36 = s32[] maximum(s32[] %parameter.32, s32[] %convert.35), metadata={op_type="max" op_name="jit(_randint)/jit(clip)/max" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  ROOT %minimum.37 = s32[] minimum(s32[] %parameter.33, s32[] %maximum.36), metadata={op_type="min" op_name="jit(_randint)/jit(clip)/min" source_file="<ipython-input-1-5475764559be>" source_line=6}
+}
+
+%body_computation.62 (parameter.63: (s32[], s32[], u32[2], u32[2], u32[], /*index=5*/u32[], u32[], u32[4], u32[4])) -> (s32[], s32[], u32[2], u32[2], u32[], /*index=5*/u32[], u32[], u32[4], u32[4]) {
+  %constant.73 = pred[] constant(false)
+  %parameter.63 = (s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) parameter(0)
+  %get-tuple-element.64 = s32[] get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.63), index=0
+  %constant.129 = s32[] constant(1), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.130 = s32[] add(s32[] %get-tuple-element.64, s32[] %constant.129), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.65 = s32[] get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.63), index=1
+  %constant.74 = s32[] constant(1), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.75 = s32[] add(s32[] %get-tuple-element.65, s32[] %constant.74), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.66 = u32[2]{0} get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.63), index=2
+  %get-tuple-element.67 = u32[2]{0} get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.63), index=3
+  %add.84 = u32[2]{0} add(u32[2]{0} %get-tuple-element.66, u32[2]{0} %get-tuple-element.67), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.71 = u32[4]{0} get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.63), index=7
+  %slice.76 = u32[1]{0} slice(u32[4]{0} %get-tuple-element.71), slice={[0:1]}, metadata={op_type="slice" op_name="jit(_randint)/body/slice[limit_indices=(1,) start_indices=(0,) strides=(1,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.77 = u32[] reshape(u32[1]{0} %slice.76), metadata={op_type="squeeze" op_name="jit(_randint)/body/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.85 = u32[2]{0} broadcast(u32[] %reshape.77), dimensions={}, metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-left.86 = u32[2]{0} shift-left(u32[2]{0} %get-tuple-element.67, u32[2]{0} %broadcast.85), metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.87 = u32[] constant(32), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %subtract.88 = u32[] subtract(u32[] %constant.87, u32[] %reshape.77), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.89 = u32[2]{0} broadcast(u32[] %subtract.88), dimensions={}, metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-right-logical.90 = u32[2]{0} shift-right-logical(u32[2]{0} %get-tuple-element.67, u32[2]{0} %broadcast.89), metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %or.91 = u32[2]{0} or(u32[2]{0} %shift-left.86, u32[2]{0} %shift-right-logical.90), metadata={op_type="or" op_name="jit(_randint)/body/or" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %xor.92 = u32[2]{0} xor(u32[2]{0} %add.84, u32[2]{0} %or.91), metadata={op_type="xor" op_name="jit(_randint)/body/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.93 = u32[2]{0} add(u32[2]{0} %add.84, u32[2]{0} %xor.92), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.78 = u32[1]{0} slice(u32[4]{0} %get-tuple-element.71), slice={[1:2]}, metadata={op_type="slice" op_name="jit(_randint)/body/slice[limit_indices=(2,) start_indices=(1,) strides=(1,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.79 = u32[] reshape(u32[1]{0} %slice.78), metadata={op_type="squeeze" op_name="jit(_randint)/body/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.94 = u32[2]{0} broadcast(u32[] %reshape.79), dimensions={}, metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-left.95 = u32[2]{0} shift-left(u32[2]{0} %xor.92, u32[2]{0} %broadcast.94), metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.96 = u32[] constant(32), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %subtract.97 = u32[] subtract(u32[] %constant.96, u32[] %reshape.79), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.98 = u32[2]{0} broadcast(u32[] %subtract.97), dimensions={}, metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-right-logical.99 = u32[2]{0} shift-right-logical(u32[2]{0} %xor.92, u32[2]{0} %broadcast.98), metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %or.100 = u32[2]{0} or(u32[2]{0} %shift-left.95, u32[2]{0} %shift-right-logical.99), metadata={op_type="or" op_name="jit(_randint)/body/or" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %xor.101 = u32[2]{0} xor(u32[2]{0} %add.93, u32[2]{0} %or.100), metadata={op_type="xor" op_name="jit(_randint)/body/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.102 = u32[2]{0} add(u32[2]{0} %add.93, u32[2]{0} %xor.101), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.80 = u32[1]{0} slice(u32[4]{0} %get-tuple-element.71), slice={[2:3]}, metadata={op_type="slice" op_name="jit(_randint)/body/slice[limit_indices=(3,) start_indices=(2,) strides=(1,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.81 = u32[] reshape(u32[1]{0} %slice.80), metadata={op_type="squeeze" op_name="jit(_randint)/body/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.103 = u32[2]{0} broadcast(u32[] %reshape.81), dimensions={}, metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-left.104 = u32[2]{0} shift-left(u32[2]{0} %xor.101, u32[2]{0} %broadcast.103), metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.105 = u32[] constant(32), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %subtract.106 = u32[] subtract(u32[] %constant.105, u32[] %reshape.81), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.107 = u32[2]{0} broadcast(u32[] %subtract.106), dimensions={}, metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-right-logical.108 = u32[2]{0} shift-right-logical(u32[2]{0} %xor.101, u32[2]{0} %broadcast.107), metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %or.109 = u32[2]{0} or(u32[2]{0} %shift-left.104, u32[2]{0} %shift-right-logical.108), metadata={op_type="or" op_name="jit(_randint)/body/or" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %xor.110 = u32[2]{0} xor(u32[2]{0} %add.102, u32[2]{0} %or.109), metadata={op_type="xor" op_name="jit(_randint)/body/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.111 = u32[2]{0} add(u32[2]{0} %add.102, u32[2]{0} %xor.110), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.68 = u32[] get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.63), index=4
+  %broadcast.120 = u32[2]{0} broadcast(u32[] %get-tuple-element.68), dimensions={}, metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.121 = u32[2]{0} add(u32[2]{0} %add.111, u32[2]{0} %broadcast.120), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.82 = u32[1]{0} slice(u32[4]{0} %get-tuple-element.71), slice={[3:4]}, metadata={op_type="slice" op_name="jit(_randint)/body/slice[limit_indices=(4,) start_indices=(3,) strides=(1,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.83 = u32[] reshape(u32[1]{0} %slice.82), metadata={op_type="squeeze" op_name="jit(_randint)/body/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.112 = u32[2]{0} broadcast(u32[] %reshape.83), dimensions={}, metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-left.113 = u32[2]{0} shift-left(u32[2]{0} %xor.110, u32[2]{0} %broadcast.112), metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.114 = u32[] constant(32), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %subtract.115 = u32[] subtract(u32[] %constant.114, u32[] %reshape.83), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.116 = u32[2]{0} broadcast(u32[] %subtract.115), dimensions={}, metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-right-logical.117 = u32[2]{0} shift-right-logical(u32[2]{0} %xor.110, u32[2]{0} %broadcast.116), metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %or.118 = u32[2]{0} or(u32[2]{0} %shift-left.113, u32[2]{0} %shift-right-logical.117), metadata={op_type="or" op_name="jit(_randint)/body/or" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %xor.119 = u32[2]{0} xor(u32[2]{0} %add.111, u32[2]{0} %or.118), metadata={op_type="xor" op_name="jit(_randint)/body/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.69 = u32[] get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.63), index=5
+  %broadcast.122 = u32[2]{0} broadcast(u32[] %get-tuple-element.69), dimensions={}, metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.123 = u32[2]{0} add(u32[2]{0} %xor.119, u32[2]{0} %broadcast.122), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.124 = s32[] constant(1), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.125 = s32[] add(s32[] %get-tuple-element.65, s32[] %constant.124), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %convert.126 = u32[] convert(s32[] %add.125), metadata={op_type="convert_element_type" op_name="jit(_randint)/body/convert_element_type[new_dtype=uint32 weak_type=False]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.127 = u32[2]{0} broadcast(u32[] %convert.126), dimensions={}, metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.128 = u32[2]{0} add(u32[2]{0} %add.123, u32[2]{0} %broadcast.127), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.70 = u32[] get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.63), index=6
+  %get-tuple-element.72 = u32[4]{0} get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.63), index=8
+  ROOT %tuple.131 = (s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) tuple(s32[] %add.130, s32[] %add.75, u32[2]{0} %add.121, u32[2]{0} %add.128, u32[] %get-tuple-element.69, /*index=5*/u32[] %get-tuple-element.70, u32[] %get-tuple-element.68, u32[4]{0} %get-tuple-element.72, u32[4]{0} %get-tuple-element.71)
+}
+
+%cond_computation.132 (parameter.133: (s32[], s32[], u32[2], u32[2], u32[], /*index=5*/u32[], u32[], u32[4], u32[4])) -> pred[] {
+  %parameter.133 = (s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) parameter(0)
+  %get-tuple-element.135 = s32[] get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.133), index=1
+  %get-tuple-element.136 = u32[2]{0} get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.133), index=2
+  %get-tuple-element.137 = u32[2]{0} get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.133), index=3
+  %get-tuple-element.138 = u32[] get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.133), index=4
+  %get-tuple-element.139 = u32[] get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.133), index=5
+  %get-tuple-element.140 = u32[] get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.133), index=6
+  %get-tuple-element.141 = u32[4]{0} get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.133), index=7
+  %get-tuple-element.142 = u32[4]{0} get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.133), index=8
+  %constant.143 = pred[] constant(false)
+  %get-tuple-element.134 = s32[] get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.133), index=0
+  %constant.144 = s32[] constant(5), metadata={op_type="lt" op_name="jit(_randint)/cond/lt" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  ROOT %compare.145 = pred[] compare(s32[] %get-tuple-element.134, s32[] %constant.144), direction=LT, metadata={op_type="lt" op_name="jit(_randint)/cond/lt" source_file="<ipython-input-1-5475764559be>" source_line=6}
+}
+
+%body_computation__1.183 (parameter.184: (s32[], s32[], u32[500], u32[500], u32[], /*index=5*/u32[], u32[], u32[4], u32[4])) -> (s32[], s32[], u32[500], u32[500], u32[], /*index=5*/u32[], u32[], u32[4], u32[4]) {
+  %constant.194 = pred[] constant(false)
+  %parameter.184 = (s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) parameter(0)
+  %get-tuple-element.185 = s32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.184), index=0
+  %constant.250 = s32[] constant(1), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.251 = s32[] add(s32[] %get-tuple-element.185, s32[] %constant.250), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.186 = s32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.184), index=1
+  %constant.195 = s32[] constant(1), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.196 = s32[] add(s32[] %get-tuple-element.186, s32[] %constant.195), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.187 = u32[500]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.184), index=2
+  %get-tuple-element.188 = u32[500]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.184), index=3
+  %add.205 = u32[500]{0} add(u32[500]{0} %get-tuple-element.187, u32[500]{0} %get-tuple-element.188), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.192 = u32[4]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.184), index=7
+  %slice.197 = u32[1]{0} slice(u32[4]{0} %get-tuple-element.192), slice={[0:1]}, metadata={op_type="slice" op_name="jit(_randint)/body/slice[limit_indices=(1,) start_indices=(0,) strides=(1,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.198 = u32[] reshape(u32[1]{0} %slice.197), metadata={op_type="squeeze" op_name="jit(_randint)/body/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.206 = u32[500]{0} broadcast(u32[] %reshape.198), dimensions={}, metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-left.207 = u32[500]{0} shift-left(u32[500]{0} %get-tuple-element.188, u32[500]{0} %broadcast.206), metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.208 = u32[] constant(32), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %subtract.209 = u32[] subtract(u32[] %constant.208, u32[] %reshape.198), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.210 = u32[500]{0} broadcast(u32[] %subtract.209), dimensions={}, metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-right-logical.211 = u32[500]{0} shift-right-logical(u32[500]{0} %get-tuple-element.188, u32[500]{0} %broadcast.210), metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %or.212 = u32[500]{0} or(u32[500]{0} %shift-left.207, u32[500]{0} %shift-right-logical.211), metadata={op_type="or" op_name="jit(_randint)/body/or" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %xor.213 = u32[500]{0} xor(u32[500]{0} %add.205, u32[500]{0} %or.212), metadata={op_type="xor" op_name="jit(_randint)/body/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.214 = u32[500]{0} add(u32[500]{0} %add.205, u32[500]{0} %xor.213), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.199 = u32[1]{0} slice(u32[4]{0} %get-tuple-element.192), slice={[1:2]}, metadata={op_type="slice" op_name="jit(_randint)/body/slice[limit_indices=(2,) start_indices=(1,) strides=(1,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.200 = u32[] reshape(u32[1]{0} %slice.199), metadata={op_type="squeeze" op_name="jit(_randint)/body/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.215 = u32[500]{0} broadcast(u32[] %reshape.200), dimensions={}, metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-left.216 = u32[500]{0} shift-left(u32[500]{0} %xor.213, u32[500]{0} %broadcast.215), metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.217 = u32[] constant(32), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %subtract.218 = u32[] subtract(u32[] %constant.217, u32[] %reshape.200), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.219 = u32[500]{0} broadcast(u32[] %subtract.218), dimensions={}, metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-right-logical.220 = u32[500]{0} shift-right-logical(u32[500]{0} %xor.213, u32[500]{0} %broadcast.219), metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %or.221 = u32[500]{0} or(u32[500]{0} %shift-left.216, u32[500]{0} %shift-right-logical.220), metadata={op_type="or" op_name="jit(_randint)/body/or" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %xor.222 = u32[500]{0} xor(u32[500]{0} %add.214, u32[500]{0} %or.221), metadata={op_type="xor" op_name="jit(_randint)/body/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.223 = u32[500]{0} add(u32[500]{0} %add.214, u32[500]{0} %xor.222), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.201 = u32[1]{0} slice(u32[4]{0} %get-tuple-element.192), slice={[2:3]}, metadata={op_type="slice" op_name="jit(_randint)/body/slice[limit_indices=(3,) start_indices=(2,) strides=(1,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.202 = u32[] reshape(u32[1]{0} %slice.201), metadata={op_type="squeeze" op_name="jit(_randint)/body/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.224 = u32[500]{0} broadcast(u32[] %reshape.202), dimensions={}, metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-left.225 = u32[500]{0} shift-left(u32[500]{0} %xor.222, u32[500]{0} %broadcast.224), metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.226 = u32[] constant(32), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %subtract.227 = u32[] subtract(u32[] %constant.226, u32[] %reshape.202), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.228 = u32[500]{0} broadcast(u32[] %subtract.227), dimensions={}, metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-right-logical.229 = u32[500]{0} shift-right-logical(u32[500]{0} %xor.222, u32[500]{0} %broadcast.228), metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %or.230 = u32[500]{0} or(u32[500]{0} %shift-left.225, u32[500]{0} %shift-right-logical.229), metadata={op_type="or" op_name="jit(_randint)/body/or" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %xor.231 = u32[500]{0} xor(u32[500]{0} %add.223, u32[500]{0} %or.230), metadata={op_type="xor" op_name="jit(_randint)/body/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.232 = u32[500]{0} add(u32[500]{0} %add.223, u32[500]{0} %xor.231), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.189 = u32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.184), index=4
+  %broadcast.241 = u32[500]{0} broadcast(u32[] %get-tuple-element.189), dimensions={}, metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.242 = u32[500]{0} add(u32[500]{0} %add.232, u32[500]{0} %broadcast.241), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.203 = u32[1]{0} slice(u32[4]{0} %get-tuple-element.192), slice={[3:4]}, metadata={op_type="slice" op_name="jit(_randint)/body/slice[limit_indices=(4,) start_indices=(3,) strides=(1,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.204 = u32[] reshape(u32[1]{0} %slice.203), metadata={op_type="squeeze" op_name="jit(_randint)/body/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.233 = u32[500]{0} broadcast(u32[] %reshape.204), dimensions={}, metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-left.234 = u32[500]{0} shift-left(u32[500]{0} %xor.231, u32[500]{0} %broadcast.233), metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.235 = u32[] constant(32), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %subtract.236 = u32[] subtract(u32[] %constant.235, u32[] %reshape.204), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.237 = u32[500]{0} broadcast(u32[] %subtract.236), dimensions={}, metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-right-logical.238 = u32[500]{0} shift-right-logical(u32[500]{0} %xor.231, u32[500]{0} %broadcast.237), metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %or.239 = u32[500]{0} or(u32[500]{0} %shift-left.234, u32[500]{0} %shift-right-logical.238), metadata={op_type="or" op_name="jit(_randint)/body/or" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %xor.240 = u32[500]{0} xor(u32[500]{0} %add.232, u32[500]{0} %or.239), metadata={op_type="xor" op_name="jit(_randint)/body/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.190 = u32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.184), index=5
+  %broadcast.243 = u32[500]{0} broadcast(u32[] %get-tuple-element.190), dimensions={}, metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.244 = u32[500]{0} add(u32[500]{0} %xor.240, u32[500]{0} %broadcast.243), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.245 = s32[] constant(1), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.246 = s32[] add(s32[] %get-tuple-element.186, s32[] %constant.245), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %convert.247 = u32[] convert(s32[] %add.246), metadata={op_type="convert_element_type" op_name="jit(_randint)/body/convert_element_type[new_dtype=uint32 weak_type=False]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.248 = u32[500]{0} broadcast(u32[] %convert.247), dimensions={}, metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.249 = u32[500]{0} add(u32[500]{0} %add.244, u32[500]{0} %broadcast.248), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.191 = u32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.184), index=6
+  %get-tuple-element.193 = u32[4]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.184), index=8
+  ROOT %tuple.252 = (s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) tuple(s32[] %add.251, s32[] %add.196, u32[500]{0} %add.242, u32[500]{0} %add.249, u32[] %get-tuple-element.190, /*index=5*/u32[] %get-tuple-element.191, u32[] %get-tuple-element.189, u32[4]{0} %get-tuple-element.193, u32[4]{0} %get-tuple-element.192)
+}
+
+%cond_computation__1.253 (parameter.254: (s32[], s32[], u32[500], u32[500], u32[], /*index=5*/u32[], u32[], u32[4], u32[4])) -> pred[] {
+  %parameter.254 = (s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) parameter(0)
+  %get-tuple-element.256 = s32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.254), index=1
+  %get-tuple-element.257 = u32[500]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.254), index=2
+  %get-tuple-element.258 = u32[500]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.254), index=3
+  %get-tuple-element.259 = u32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.254), index=4
+  %get-tuple-element.260 = u32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.254), index=5
+  %get-tuple-element.261 = u32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.254), index=6
+  %get-tuple-element.262 = u32[4]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.254), index=7
+  %get-tuple-element.263 = u32[4]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.254), index=8
+  %constant.264 = pred[] constant(false)
+  %get-tuple-element.255 = s32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.254), index=0
+  %constant.265 = s32[] constant(5), metadata={op_type="lt" op_name="jit(_randint)/cond/lt" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  ROOT %compare.266 = pred[] compare(s32[] %get-tuple-element.255, s32[] %constant.265), direction=LT, metadata={op_type="lt" op_name="jit(_randint)/cond/lt" source_file="<ipython-input-1-5475764559be>" source_line=6}
+}
+
+%body_computation__2.300 (parameter.301: (s32[], s32[], u32[500], u32[500], u32[], /*index=5*/u32[], u32[], u32[4], u32[4])) -> (s32[], s32[], u32[500], u32[500], u32[], /*index=5*/u32[], u32[], u32[4], u32[4]) {
+  %constant.311 = pred[] constant(false)
+  %parameter.301 = (s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) parameter(0)
+  %get-tuple-element.302 = s32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.301), index=0
+  %constant.367 = s32[] constant(1), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.368 = s32[] add(s32[] %get-tuple-element.302, s32[] %constant.367), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.303 = s32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.301), index=1
+  %constant.312 = s32[] constant(1), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.313 = s32[] add(s32[] %get-tuple-element.303, s32[] %constant.312), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.304 = u32[500]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.301), index=2
+  %get-tuple-element.305 = u32[500]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.301), index=3
+  %add.322 = u32[500]{0} add(u32[500]{0} %get-tuple-element.304, u32[500]{0} %get-tuple-element.305), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.309 = u32[4]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.301), index=7
+  %slice.314 = u32[1]{0} slice(u32[4]{0} %get-tuple-element.309), slice={[0:1]}, metadata={op_type="slice" op_name="jit(_randint)/body/slice[limit_indices=(1,) start_indices=(0,) strides=(1,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.315 = u32[] reshape(u32[1]{0} %slice.314), metadata={op_type="squeeze" op_name="jit(_randint)/body/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.323 = u32[500]{0} broadcast(u32[] %reshape.315), dimensions={}, metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-left.324 = u32[500]{0} shift-left(u32[500]{0} %get-tuple-element.305, u32[500]{0} %broadcast.323), metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.325 = u32[] constant(32), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %subtract.326 = u32[] subtract(u32[] %constant.325, u32[] %reshape.315), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.327 = u32[500]{0} broadcast(u32[] %subtract.326), dimensions={}, metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-right-logical.328 = u32[500]{0} shift-right-logical(u32[500]{0} %get-tuple-element.305, u32[500]{0} %broadcast.327), metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %or.329 = u32[500]{0} or(u32[500]{0} %shift-left.324, u32[500]{0} %shift-right-logical.328), metadata={op_type="or" op_name="jit(_randint)/body/or" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %xor.330 = u32[500]{0} xor(u32[500]{0} %add.322, u32[500]{0} %or.329), metadata={op_type="xor" op_name="jit(_randint)/body/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.331 = u32[500]{0} add(u32[500]{0} %add.322, u32[500]{0} %xor.330), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.316 = u32[1]{0} slice(u32[4]{0} %get-tuple-element.309), slice={[1:2]}, metadata={op_type="slice" op_name="jit(_randint)/body/slice[limit_indices=(2,) start_indices=(1,) strides=(1,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.317 = u32[] reshape(u32[1]{0} %slice.316), metadata={op_type="squeeze" op_name="jit(_randint)/body/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.332 = u32[500]{0} broadcast(u32[] %reshape.317), dimensions={}, metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-left.333 = u32[500]{0} shift-left(u32[500]{0} %xor.330, u32[500]{0} %broadcast.332), metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.334 = u32[] constant(32), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %subtract.335 = u32[] subtract(u32[] %constant.334, u32[] %reshape.317), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.336 = u32[500]{0} broadcast(u32[] %subtract.335), dimensions={}, metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-right-logical.337 = u32[500]{0} shift-right-logical(u32[500]{0} %xor.330, u32[500]{0} %broadcast.336), metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %or.338 = u32[500]{0} or(u32[500]{0} %shift-left.333, u32[500]{0} %shift-right-logical.337), metadata={op_type="or" op_name="jit(_randint)/body/or" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %xor.339 = u32[500]{0} xor(u32[500]{0} %add.331, u32[500]{0} %or.338), metadata={op_type="xor" op_name="jit(_randint)/body/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.340 = u32[500]{0} add(u32[500]{0} %add.331, u32[500]{0} %xor.339), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.318 = u32[1]{0} slice(u32[4]{0} %get-tuple-element.309), slice={[2:3]}, metadata={op_type="slice" op_name="jit(_randint)/body/slice[limit_indices=(3,) start_indices=(2,) strides=(1,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.319 = u32[] reshape(u32[1]{0} %slice.318), metadata={op_type="squeeze" op_name="jit(_randint)/body/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.341 = u32[500]{0} broadcast(u32[] %reshape.319), dimensions={}, metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-left.342 = u32[500]{0} shift-left(u32[500]{0} %xor.339, u32[500]{0} %broadcast.341), metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.343 = u32[] constant(32), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %subtract.344 = u32[] subtract(u32[] %constant.343, u32[] %reshape.319), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.345 = u32[500]{0} broadcast(u32[] %subtract.344), dimensions={}, metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-right-logical.346 = u32[500]{0} shift-right-logical(u32[500]{0} %xor.339, u32[500]{0} %broadcast.345), metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %or.347 = u32[500]{0} or(u32[500]{0} %shift-left.342, u32[500]{0} %shift-right-logical.346), metadata={op_type="or" op_name="jit(_randint)/body/or" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %xor.348 = u32[500]{0} xor(u32[500]{0} %add.340, u32[500]{0} %or.347), metadata={op_type="xor" op_name="jit(_randint)/body/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.349 = u32[500]{0} add(u32[500]{0} %add.340, u32[500]{0} %xor.348), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.306 = u32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.301), index=4
+  %broadcast.358 = u32[500]{0} broadcast(u32[] %get-tuple-element.306), dimensions={}, metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.359 = u32[500]{0} add(u32[500]{0} %add.349, u32[500]{0} %broadcast.358), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.320 = u32[1]{0} slice(u32[4]{0} %get-tuple-element.309), slice={[3:4]}, metadata={op_type="slice" op_name="jit(_randint)/body/slice[limit_indices=(4,) start_indices=(3,) strides=(1,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.321 = u32[] reshape(u32[1]{0} %slice.320), metadata={op_type="squeeze" op_name="jit(_randint)/body/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.350 = u32[500]{0} broadcast(u32[] %reshape.321), dimensions={}, metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-left.351 = u32[500]{0} shift-left(u32[500]{0} %xor.348, u32[500]{0} %broadcast.350), metadata={op_type="shift_left" op_name="jit(_randint)/body/shift_left" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.352 = u32[] constant(32), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %subtract.353 = u32[] subtract(u32[] %constant.352, u32[] %reshape.321), metadata={op_type="sub" op_name="jit(_randint)/body/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.354 = u32[500]{0} broadcast(u32[] %subtract.353), dimensions={}, metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %shift-right-logical.355 = u32[500]{0} shift-right-logical(u32[500]{0} %xor.348, u32[500]{0} %broadcast.354), metadata={op_type="shift_right_logical" op_name="jit(_randint)/body/shift_right_logical" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %or.356 = u32[500]{0} or(u32[500]{0} %shift-left.351, u32[500]{0} %shift-right-logical.355), metadata={op_type="or" op_name="jit(_randint)/body/or" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %xor.357 = u32[500]{0} xor(u32[500]{0} %add.349, u32[500]{0} %or.356), metadata={op_type="xor" op_name="jit(_randint)/body/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.307 = u32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.301), index=5
+  %broadcast.360 = u32[500]{0} broadcast(u32[] %get-tuple-element.307), dimensions={}, metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.361 = u32[500]{0} add(u32[500]{0} %xor.357, u32[500]{0} %broadcast.360), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.362 = s32[] constant(1), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.363 = s32[] add(s32[] %get-tuple-element.303, s32[] %constant.362), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %convert.364 = u32[] convert(s32[] %add.363), metadata={op_type="convert_element_type" op_name="jit(_randint)/body/convert_element_type[new_dtype=uint32 weak_type=False]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.365 = u32[500]{0} broadcast(u32[] %convert.364), dimensions={}, metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.366 = u32[500]{0} add(u32[500]{0} %add.361, u32[500]{0} %broadcast.365), metadata={op_type="add" op_name="jit(_randint)/body/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.308 = u32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.301), index=6
+  %get-tuple-element.310 = u32[4]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.301), index=8
+  ROOT %tuple.369 = (s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) tuple(s32[] %add.368, s32[] %add.313, u32[500]{0} %add.359, u32[500]{0} %add.366, u32[] %get-tuple-element.307, /*index=5*/u32[] %get-tuple-element.308, u32[] %get-tuple-element.306, u32[4]{0} %get-tuple-element.310, u32[4]{0} %get-tuple-element.309)
+}
+
+%cond_computation__2.370 (parameter.371: (s32[], s32[], u32[500], u32[500], u32[], /*index=5*/u32[], u32[], u32[4], u32[4])) -> pred[] {
+  %parameter.371 = (s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) parameter(0)
+  %get-tuple-element.373 = s32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.371), index=1
+  %get-tuple-element.374 = u32[500]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.371), index=2
+  %get-tuple-element.375 = u32[500]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.371), index=3
+  %get-tuple-element.376 = u32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.371), index=4
+  %get-tuple-element.377 = u32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.371), index=5
+  %get-tuple-element.378 = u32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.371), index=6
+  %get-tuple-element.379 = u32[4]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.371), index=7
+  %get-tuple-element.380 = u32[4]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.371), index=8
+  %constant.381 = pred[] constant(false)
+  %get-tuple-element.372 = s32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.371), index=0
+  %constant.382 = s32[] constant(5), metadata={op_type="lt" op_name="jit(_randint)/cond/lt" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  ROOT %compare.383 = pred[] compare(s32[] %get-tuple-element.372, s32[] %constant.382), direction=LT, metadata={op_type="lt" op_name="jit(_randint)/cond/lt" source_file="<ipython-input-1-5475764559be>" source_line=6}
+}
+
+ENTRY %jit__randint.431 (parameter.1: u32[2], parameter.2: s32[], parameter.3: s32[]) -> s32[1,1000] {
+  %constant.4 = pred[] constant(false)
+  %constant.50 = pred[] constant(false), metadata={op_type="threefry2x32" op_name="jit(_randint)/threefry2x32" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.59 = pred[] constant(false), metadata={op_type="scan" op_name="jit(_randint)/scan[\n  length=5\n  linear=(False, False, False, False, False, False, False, False)\n  num_carry=8\n  num_consts=0\n  reverse=False\n  unroll=1\n]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.60 = s32[] constant(0), metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.58 = s32[] constant(0), metadata={op_type="scan" op_name="jit(_randint)/scan[\n  length=5\n  linear=(False, False, False, False, False, False, False, False)\n  num_carry=8\n  num_consts=0\n  reverse=False\n  unroll=1\n]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %iota.41 = u32[4] iota(), iota_dimension=0, metadata={op_type="iota" op_name="jit(_randint)/iota[dimension=0 dtype=uint32 shape=(4,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.46 = u32[2]{0} slice(u32[4] %iota.41), slice={[0:2]}, metadata={op_type="slice" op_name="jit(_randint)/slice[limit_indices=(2,) start_indices=(0,) strides=None]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %parameter.1 = u32[2]{0} parameter(0)
+  %slice.42 = u32[1]{0} slice(u32[2]{0} %parameter.1), slice={[0:1]}, metadata={op_type="slice" op_name="jit(_randint)/slice[limit_indices=(1,) start_indices=(0,) strides=(1,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.43 = u32[] reshape(u32[1]{0} %slice.42), metadata={op_type="squeeze" op_name="jit(_randint)/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.54 = u32[2]{0} broadcast(u32[] %reshape.43), dimensions={}, metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.55 = u32[2]{0} add(u32[2]{0} %slice.46, u32[2]{0} %broadcast.54), metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.47 = u32[2]{0} slice(u32[4] %iota.41), slice={[2:4]}, metadata={op_type="slice" op_name="jit(_randint)/slice[limit_indices=(4,) start_indices=(2,) strides=None]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.44 = u32[1]{0} slice(u32[2]{0} %parameter.1), slice={[1:2]}, metadata={op_type="slice" op_name="jit(_randint)/slice[limit_indices=(2,) start_indices=(1,) strides=(1,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.45 = u32[] reshape(u32[1]{0} %slice.44), metadata={op_type="squeeze" op_name="jit(_randint)/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.56 = u32[2]{0} broadcast(u32[] %reshape.45), dimensions={}, metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.57 = u32[2]{0} add(u32[2]{0} %slice.47, u32[2]{0} %broadcast.56), metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %xor.51 = u32[] xor(u32[] %reshape.43, u32[] %reshape.45), metadata={op_type="xor" op_name="jit(_randint)/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.52 = u32[] constant(466688986), metadata={op_type="xor" op_name="jit(_randint)/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %xor.53 = u32[] xor(u32[] %xor.51, u32[] %constant.52), metadata={op_type="xor" op_name="jit(_randint)/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.48 = u32[4]{0} constant({13, 15, 26, 6}), metadata={op_type="threefry2x32" op_name="jit(_randint)/threefry2x32" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.49 = u32[4]{0} constant({17, 29, 16, 24}), metadata={op_type="threefry2x32" op_name="jit(_randint)/threefry2x32" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %tuple.61 = (s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) tuple(s32[] %constant.60, s32[] %constant.58, u32[2]{0} %add.55, u32[2]{0} %add.57, u32[] %reshape.45, /*index=5*/u32[] %xor.53, u32[] %reshape.43, u32[4]{0} %constant.48, u32[4]{0} %constant.49), metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %while.146 = (s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) while((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %tuple.61), condition=%cond_computation.132, body=%body_computation.62, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.147 = s32[] get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.146), index=0, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.148 = s32[] get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.146), index=1, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.151 = u32[] get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.146), index=4, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.152 = u32[] get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.146), index=5, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.153 = u32[] get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.146), index=6, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.154 = u32[4]{0} get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.146), index=7, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.155 = u32[4]{0} get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.146), index=8, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.171 = pred[] constant(false), metadata={op_type="threefry2x32" op_name="jit(_randint)/threefry2x32" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.180 = pred[] constant(false), metadata={op_type="scan" op_name="jit(_randint)/scan[\n  length=5\n  linear=(False, False, False, False, False, False, False, False)\n  num_carry=8\n  num_consts=0\n  reverse=False\n  unroll=1\n]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.181 = s32[] constant(0), metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.179 = s32[] constant(0), metadata={op_type="scan" op_name="jit(_randint)/scan[\n  length=5\n  linear=(False, False, False, False, False, False, False, False)\n  num_carry=8\n  num_consts=0\n  reverse=False\n  unroll=1\n]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %iota.162 = u32[1000] iota(), iota_dimension=0, metadata={op_type="iota" op_name="jit(_randint)/iota[dimension=0 dtype=uint32 shape=(1000,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.167 = u32[500]{0} slice(u32[1000] %iota.162), slice={[0:500]}, metadata={op_type="slice" op_name="jit(_randint)/slice[limit_indices=(500,) start_indices=(0,) strides=None]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.149 = u32[2]{0} get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.146), index=2, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.150 = u32[2]{0} get-tuple-element((s32[], s32[], u32[2]{0}, u32[2]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.146), index=3, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %concatenate.156 = u32[4]{0} concatenate(u32[2]{0} %get-tuple-element.149, u32[2]{0} %get-tuple-element.150), dimensions={0}, metadata={op_type="concatenate" op_name="jit(_randint)/concatenate[dimension=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.157 = u32[2,2]{1,0} reshape(u32[4]{0} %concatenate.156), metadata={op_type="reshape" op_name="jit(_randint)/reshape[dimensions=None new_sizes=(2, 2)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.158 = u32[1,2]{1,0} slice(u32[2,2]{1,0} %reshape.157), slice={[0:1], [0:2]}, metadata={op_type="slice" op_name="jit(_randint)/slice[limit_indices=(1, 2) start_indices=(0, 0) strides=(1, 1)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.159 = u32[2]{0} reshape(u32[1,2]{1,0} %slice.158), metadata={op_type="squeeze" op_name="jit(_randint)/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.163 = u32[1]{0} slice(u32[2]{0} %reshape.159), slice={[0:1]}, metadata={op_type="slice" op_name="jit(_randint)/slice[limit_indices=(1,) start_indices=(0,) strides=(1,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.164 = u32[] reshape(u32[1]{0} %slice.163), metadata={op_type="squeeze" op_name="jit(_randint)/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.175 = u32[500]{0} broadcast(u32[] %reshape.164), dimensions={}, metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.176 = u32[500]{0} add(u32[500]{0} %slice.167, u32[500]{0} %broadcast.175), metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.168 = u32[500]{0} slice(u32[1000] %iota.162), slice={[500:1000]}, metadata={op_type="slice" op_name="jit(_randint)/slice[limit_indices=(1000,) start_indices=(500,) strides=None]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.165 = u32[1]{0} slice(u32[2]{0} %reshape.159), slice={[1:2]}, metadata={op_type="slice" op_name="jit(_randint)/slice[limit_indices=(2,) start_indices=(1,) strides=(1,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.166 = u32[] reshape(u32[1]{0} %slice.165), metadata={op_type="squeeze" op_name="jit(_randint)/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.177 = u32[500]{0} broadcast(u32[] %reshape.166), dimensions={}, metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.178 = u32[500]{0} add(u32[500]{0} %slice.168, u32[500]{0} %broadcast.177), metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %xor.172 = u32[] xor(u32[] %reshape.164, u32[] %reshape.166), metadata={op_type="xor" op_name="jit(_randint)/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.173 = u32[] constant(466688986), metadata={op_type="xor" op_name="jit(_randint)/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %xor.174 = u32[] xor(u32[] %xor.172, u32[] %constant.173), metadata={op_type="xor" op_name="jit(_randint)/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.169 = u32[4]{0} constant({13, 15, 26, 6}), metadata={op_type="threefry2x32" op_name="jit(_randint)/threefry2x32" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.170 = u32[4]{0} constant({17, 29, 16, 24}), metadata={op_type="threefry2x32" op_name="jit(_randint)/threefry2x32" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %tuple.182 = (s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) tuple(s32[] %constant.181, s32[] %constant.179, u32[500]{0} %add.176, u32[500]{0} %add.178, u32[] %reshape.166, /*index=5*/u32[] %xor.174, u32[] %reshape.164, u32[4]{0} %constant.169, u32[4]{0} %constant.170), metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %while.267 = (s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) while((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %tuple.182), condition=%cond_computation__1.253, body=%body_computation__1.183, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.268 = s32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.267), index=0, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.269 = s32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.267), index=1, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.272 = u32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.267), index=4, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.273 = u32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.267), index=5, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.274 = u32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.267), index=6, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.275 = u32[4]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.267), index=7, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.276 = u32[4]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.267), index=8, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.288 = pred[] constant(false), metadata={op_type="threefry2x32" op_name="jit(_randint)/threefry2x32" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.297 = pred[] constant(false), metadata={op_type="scan" op_name="jit(_randint)/scan[\n  length=5\n  linear=(False, False, False, False, False, False, False, False)\n  num_carry=8\n  num_consts=0\n  reverse=False\n  unroll=1\n]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.298 = s32[] constant(0), metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.296 = s32[] constant(0), metadata={op_type="scan" op_name="jit(_randint)/scan[\n  length=5\n  linear=(False, False, False, False, False, False, False, False)\n  num_carry=8\n  num_consts=0\n  reverse=False\n  unroll=1\n]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %iota.279 = u32[1000] iota(), iota_dimension=0, metadata={op_type="iota" op_name="jit(_randint)/iota[dimension=0 dtype=uint32 shape=(1000,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.284 = u32[500]{0} slice(u32[1000] %iota.279), slice={[0:500]}, metadata={op_type="slice" op_name="jit(_randint)/slice[limit_indices=(500,) start_indices=(0,) strides=None]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.160 = u32[1,2]{1,0} slice(u32[2,2]{1,0} %reshape.157), slice={[1:2], [0:2]}, metadata={op_type="slice" op_name="jit(_randint)/slice[limit_indices=(2, 2) start_indices=(1, 0) strides=(1, 1)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.161 = u32[2]{0} reshape(u32[1,2]{1,0} %slice.160), metadata={op_type="squeeze" op_name="jit(_randint)/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.280 = u32[1]{0} slice(u32[2]{0} %reshape.161), slice={[0:1]}, metadata={op_type="slice" op_name="jit(_randint)/slice[limit_indices=(1,) start_indices=(0,) strides=(1,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.281 = u32[] reshape(u32[1]{0} %slice.280), metadata={op_type="squeeze" op_name="jit(_randint)/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.292 = u32[500]{0} broadcast(u32[] %reshape.281), dimensions={}, metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.293 = u32[500]{0} add(u32[500]{0} %slice.284, u32[500]{0} %broadcast.292), metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.285 = u32[500]{0} slice(u32[1000] %iota.279), slice={[500:1000]}, metadata={op_type="slice" op_name="jit(_randint)/slice[limit_indices=(1000,) start_indices=(500,) strides=None]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %slice.282 = u32[1]{0} slice(u32[2]{0} %reshape.161), slice={[1:2]}, metadata={op_type="slice" op_name="jit(_randint)/slice[limit_indices=(2,) start_indices=(1,) strides=(1,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.283 = u32[] reshape(u32[1]{0} %slice.282), metadata={op_type="squeeze" op_name="jit(_randint)/squeeze[dimensions=(0,)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.294 = u32[500]{0} broadcast(u32[] %reshape.283), dimensions={}, metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.295 = u32[500]{0} add(u32[500]{0} %slice.285, u32[500]{0} %broadcast.294), metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %xor.289 = u32[] xor(u32[] %reshape.281, u32[] %reshape.283), metadata={op_type="xor" op_name="jit(_randint)/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.290 = u32[] constant(466688986), metadata={op_type="xor" op_name="jit(_randint)/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %xor.291 = u32[] xor(u32[] %xor.289, u32[] %constant.290), metadata={op_type="xor" op_name="jit(_randint)/xor" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.286 = u32[4]{0} constant({13, 15, 26, 6}), metadata={op_type="threefry2x32" op_name="jit(_randint)/threefry2x32" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.287 = u32[4]{0} constant({17, 29, 16, 24}), metadata={op_type="threefry2x32" op_name="jit(_randint)/threefry2x32" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %tuple.299 = (s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) tuple(s32[] %constant.298, s32[] %constant.296, u32[500]{0} %add.293, u32[500]{0} %add.295, u32[] %reshape.283, /*index=5*/u32[] %xor.291, u32[] %reshape.281, u32[4]{0} %constant.286, u32[4]{0} %constant.287), metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %while.384 = (s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) while((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %tuple.299), condition=%cond_computation__2.370, body=%body_computation__2.300, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.385 = s32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.384), index=0, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.386 = s32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.384), index=1, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.389 = u32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.384), index=4, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.390 = u32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.384), index=5, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.391 = u32[] get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.384), index=6, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.392 = u32[4]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.384), index=7, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.393 = u32[4]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.384), index=8, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %parameter.2 = s32[] parameter(1)
+  %constant.17 = s32[] constant(-2147483648), metadata={op_type="xla_call" op_name="jit(_randint)/xla_call[\n  backend=None\n  device=None\n  donated_invars=(False, False, False)\n  inline=False\n  name=clip\n]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.18 = s32[] constant(2147483647), metadata={op_type="xla_call" op_name="jit(_randint)/xla_call[\n  backend=None\n  device=None\n  donated_invars=(False, False, False)\n  inline=False\n  name=clip\n]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %call.27 = s32[] call(s32[] %parameter.2, s32[] %constant.17, s32[] %constant.18), to_apply=%jit_clip__1.19, metadata={op_type="xla_call" op_name="jit(_randint)/xla_call[\n  backend=None\n  device=None\n  donated_invars=(False, False, False)\n  inline=False\n  name=clip\n]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.39 = s32[1,1]{1,0} broadcast(s32[] %call.27), dimensions={}, metadata={op_type="broadcast_in_dim" op_name="jit(_randint)/broadcast_in_dim[broadcast_dimensions=() shape=(1, 1)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.428 = s32[1]{0} reshape(s32[1,1]{1,0} %broadcast.39), metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.429 = s32[1,1000]{1,0} broadcast(s32[1]{0} %reshape.428), dimensions={0}, metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.270 = u32[500]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.267), index=2, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.271 = u32[500]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.267), index=3, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %concatenate.277 = u32[1000]{0} concatenate(u32[500]{0} %get-tuple-element.270, u32[500]{0} %get-tuple-element.271), dimensions={0}, metadata={op_type="concatenate" op_name="jit(_randint)/concatenate[dimension=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.278 = u32[1,1000]{1,0} reshape(u32[1000]{0} %concatenate.277), metadata={op_type="reshape" op_name="jit(_randint)/reshape[dimensions=None new_sizes=(1, 1000)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %parameter.3 = s32[] parameter(2)
+  %constant.5 = s32[] constant(2147483647), metadata={op_type="xla_call" op_name="jit(_randint)/xla_call[\n  backend=None\n  device=None\n  donated_invars=(False, False, False)\n  inline=False\n  name=clip\n]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.6 = s32[] constant(-2147483648), metadata={op_type="xla_call" op_name="jit(_randint)/xla_call[\n  backend=None\n  device=None\n  donated_invars=(False, False, False)\n  inline=False\n  name=clip\n]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.7 = s32[] constant(2147483647), metadata={op_type="xla_call" op_name="jit(_randint)/xla_call[\n  backend=None\n  device=None\n  donated_invars=(False, False, False)\n  inline=False\n  name=clip\n]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %call.15 = s32[] call(s32[] %constant.5, s32[] %constant.6, s32[] %constant.7), to_apply=%jit_clip.8, metadata={op_type="xla_call" op_name="jit(_randint)/xla_call[\n  backend=None\n  device=None\n  donated_invars=(False, False, False)\n  inline=False\n  name=clip\n]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %compare.16 = pred[] compare(s32[] %parameter.3, s32[] %call.15), direction=GT, metadata={op_type="gt" op_name="jit(_randint)/gt" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.403 = pred[1,1]{1,0} broadcast(pred[] %compare.16), dimensions={}, metadata={op_type="and" op_name="jit(_randint)/and" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.28 = s32[] constant(-2147483648), metadata={op_type="xla_call" op_name="jit(_randint)/xla_call[\n  backend=None\n  device=None\n  donated_invars=(False, False, False)\n  inline=False\n  name=clip\n]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.29 = s32[] constant(2147483647), metadata={op_type="xla_call" op_name="jit(_randint)/xla_call[\n  backend=None\n  device=None\n  donated_invars=(False, False, False)\n  inline=False\n  name=clip\n]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %call.38 = s32[] call(s32[] %parameter.3, s32[] %constant.28, s32[] %constant.29), to_apply=%jit_clip__2.30, metadata={op_type="xla_call" op_name="jit(_randint)/xla_call[\n  backend=None\n  device=None\n  donated_invars=(False, False, False)\n  inline=False\n  name=clip\n]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.40 = s32[1,1]{1,0} broadcast(s32[] %call.38), dimensions={}, metadata={op_type="broadcast_in_dim" op_name="jit(_randint)/broadcast_in_dim[broadcast_dimensions=() shape=(1, 1)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %compare.402 = pred[1,1]{1,0} compare(s32[1,1]{1,0} %broadcast.40, s32[1,1]{1,0} %broadcast.39), direction=GT, metadata={op_type="gt" op_name="jit(_randint)/gt" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %and.404 = pred[1,1]{1,0} and(pred[1,1]{1,0} %broadcast.403, pred[1,1]{1,0} %compare.402), metadata={op_type="and" op_name="jit(_randint)/and" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %compare.398 = pred[1,1]{1,0} compare(s32[1,1]{1,0} %broadcast.40, s32[1,1]{1,0} %broadcast.39), direction=LE, metadata={op_type="le" op_name="jit(_randint)/le" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.399 = u32[] constant(1), metadata={op_type="broadcast_in_dim" op_name="jit(_randint)/broadcast_in_dim[broadcast_dimensions=() shape=(1, 1)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.400 = u32[1,1]{1,0} broadcast(u32[] %constant.399), dimensions={}, metadata={op_type="broadcast_in_dim" op_name="jit(_randint)/broadcast_in_dim[broadcast_dimensions=() shape=(1, 1)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %subtract.396 = s32[1,1]{1,0} subtract(s32[1,1]{1,0} %broadcast.40, s32[1,1]{1,0} %broadcast.39), metadata={op_type="sub" op_name="jit(_randint)/sub" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %convert.397 = u32[1,1]{1,0} convert(s32[1,1]{1,0} %subtract.396), metadata={op_type="convert_element_type" op_name="jit(_randint)/convert_element_type[new_dtype=uint32 weak_type=False]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %select.401 = u32[1,1]{1,0} select(pred[1,1]{1,0} %compare.398, u32[1,1]{1,0} %broadcast.400, u32[1,1]{1,0} %convert.397), metadata={op_type="select" op_name="jit(_randint)/select" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.405 = u32[] constant(1), metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.406 = u32[1,1]{1,0} broadcast(u32[] %constant.405), dimensions={}, metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.407 = u32[1,1]{1,0} add(u32[1,1]{1,0} %select.401, u32[1,1]{1,0} %broadcast.406), metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %select.408 = u32[1,1]{1,0} select(pred[1,1]{1,0} %and.404, u32[1,1]{1,0} %add.407, u32[1,1]{1,0} %select.401), metadata={op_type="select" op_name="jit(_randint)/select" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.414 = u32[1]{0} reshape(u32[1,1]{1,0} %select.408), metadata={op_type="rem" op_name="jit(_randint)/rem" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.415 = u32[1,1000]{1,0} broadcast(u32[1]{0} %reshape.414), dimensions={0}, metadata={op_type="rem" op_name="jit(_randint)/rem" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %remainder.416 = u32[1,1000]{1,0} remainder(u32[1,1000]{1,0} %reshape.278, u32[1,1000]{1,0} %broadcast.415), metadata={op_type="rem" op_name="jit(_randint)/rem" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %constant.409 = u32[] constant(65536), metadata={op_type="rem" op_name="jit(_randint)/rem" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.410 = u32[1,1]{1,0} broadcast(u32[] %constant.409), dimensions={}, metadata={op_type="rem" op_name="jit(_randint)/rem" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %remainder.411 = u32[1,1]{1,0} remainder(u32[1,1]{1,0} %broadcast.410, u32[1,1]{1,0} %select.408), metadata={op_type="rem" op_name="jit(_randint)/rem" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %multiply.412 = u32[1,1]{1,0} multiply(u32[1,1]{1,0} %remainder.411, u32[1,1]{1,0} %remainder.411), metadata={op_type="mul" op_name="jit(_randint)/mul" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %remainder.413 = u32[1,1]{1,0} remainder(u32[1,1]{1,0} %multiply.412, u32[1,1]{1,0} %select.408), metadata={op_type="rem" op_name="jit(_randint)/rem" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.417 = u32[1]{0} reshape(u32[1,1]{1,0} %remainder.413), metadata={op_type="mul" op_name="jit(_randint)/mul" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.418 = u32[1,1000]{1,0} broadcast(u32[1]{0} %reshape.417), dimensions={0}, metadata={op_type="mul" op_name="jit(_randint)/mul" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %multiply.419 = u32[1,1000]{1,0} multiply(u32[1,1000]{1,0} %remainder.416, u32[1,1000]{1,0} %broadcast.418), metadata={op_type="mul" op_name="jit(_randint)/mul" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.387 = u32[500]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.384), index=2, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %get-tuple-element.388 = u32[500]{0} get-tuple-element((s32[], s32[], u32[500]{0}, u32[500]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.384), index=3, metadata={op_type="while" op_name="jit(_randint)/while[body_nconsts=0 cond_nconsts=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %concatenate.394 = u32[1000]{0} concatenate(u32[500]{0} %get-tuple-element.387, u32[500]{0} %get-tuple-element.388), dimensions={0}, metadata={op_type="concatenate" op_name="jit(_randint)/concatenate[dimension=0]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.395 = u32[1,1000]{1,0} reshape(u32[1000]{0} %concatenate.394), metadata={op_type="reshape" op_name="jit(_randint)/reshape[dimensions=None new_sizes=(1, 1000)]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.420 = u32[1]{0} reshape(u32[1,1]{1,0} %select.408), metadata={op_type="rem" op_name="jit(_randint)/rem" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.421 = u32[1,1000]{1,0} broadcast(u32[1]{0} %reshape.420), dimensions={0}, metadata={op_type="rem" op_name="jit(_randint)/rem" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %remainder.422 = u32[1,1000]{1,0} remainder(u32[1,1000]{1,0} %reshape.395, u32[1,1000]{1,0} %broadcast.421), metadata={op_type="rem" op_name="jit(_randint)/rem" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %add.423 = u32[1,1000]{1,0} add(u32[1,1000]{1,0} %multiply.419, u32[1,1000]{1,0} %remainder.422), metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %reshape.424 = u32[1]{0} reshape(u32[1,1]{1,0} %select.408), metadata={op_type="rem" op_name="jit(_randint)/rem" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %broadcast.425 = u32[1,1000]{1,0} broadcast(u32[1]{0} %reshape.424), dimensions={0}, metadata={op_type="rem" op_name="jit(_randint)/rem" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %remainder.426 = u32[1,1000]{1,0} remainder(u32[1,1000]{1,0} %add.423, u32[1,1000]{1,0} %broadcast.425), metadata={op_type="rem" op_name="jit(_randint)/rem" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  %convert.427 = s32[1,1000]{1,0} convert(u32[1,1000]{1,0} %remainder.426), metadata={op_type="convert_element_type" op_name="jit(_randint)/convert_element_type[new_dtype=int32 weak_type=False]" source_file="<ipython-input-1-5475764559be>" source_line=6}
+  ROOT %add.430 = s32[1,1000]{1,0} add(s32[1,1000]{1,0} %broadcast.429, s32[1,1000]{1,0} %convert.427), metadata={op_type="add" op_name="jit(_randint)/add" source_file="<ipython-input-1-5475764559be>" source_line=6}
+}
+

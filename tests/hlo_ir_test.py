@@ -193,17 +193,16 @@ class HloIRTest(absltest.TestCase):
 
     for filepath in self.hlo_test_files:
       logging.info("Testing validation for file: " + filepath)
+
       hlo_ir = HloIr(filepath, "gpu")
 
-      hlo_ir.pre_fusion_optimizations()
       saved_hlo_module = hlo_ir.save_hlo()
-      hlo_ir.post_fusion_optimizations()
-
-      # Save a valid copy of the original module
-      orig_post_opt_module = hlo_ir.save_hlo()
-
+      hlo_ir.original_run_hlo_passes()
+      # Save reference copy of the module after a non dry-run RunHloPasses call
+      reference_hlo_module = hlo_ir.save_hlo()
       hlo_ir.restore_hlo(saved_hlo_module)
 
+      hlo_ir.pre_fusion_optimizations()
       num_alts = 1
       while num_alts > 0:
         hlo_ir.fusion_dry_run()
@@ -222,8 +221,9 @@ class HloIRTest(absltest.TestCase):
 
       hlo_ir.post_fusion_optimizations()
       post_fusion_module = hlo_ir.save_hlo()
+
       assert (
-        hlo_ir.has_equal_output(post_fusion_module, orig_post_opt_module)
+        hlo_ir.has_equal_output(post_fusion_module, reference_hlo_module)
       )
 
 

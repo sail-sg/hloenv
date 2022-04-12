@@ -170,6 +170,10 @@ void PyHloIr::PreFusionOptimizations() {
 
 void PyHloIr::FusionDryRun() {
   if (platform_ == "gpu") {
+    gpu_intercept_.compiler->OptimizeHloModuleFusionRunPre(
+        hlo_module_.get(), gpu_intercept_.stream_exec,
+        gpu_intercept_.options.device_allocator);
+
     for (xla::HloComputation* computation :
          hlo_module_.get()->MakeNonfusionComputations()) {
       computation->set_dry(true);
@@ -201,6 +205,18 @@ void PyHloIr::PostFusionOptimizations() {
 
 void PyHloIr::PrepareHloModuleForIrEmitting() {
   if (platform_ == "gpu") {
+    gpu_intercept_.compiler->PrepareHloModuleForIrEmitting(hlo_module_.get());
+  } else if (platform_ == "cpu") {
+    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
+  }
+}
+
+void PyHloIr::OriginalRunHloPasses() {
+  if (platform_ == "gpu") {
+    gpu_intercept_.compiler->OptimizeHloModule(
+        hlo_module_.get(), gpu_intercept_.stream_exec,
+        gpu_intercept_.options.device_allocator);
+
     gpu_intercept_.compiler->PrepareHloModuleForIrEmitting(hlo_module_.get());
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
@@ -254,6 +270,10 @@ void PyHloIr::ApplyAlternatives(py::array_t<size_t> decisions) {
       // Remove the residue
       computation->Prune();
     }
+
+    gpu_intercept_.compiler->OptimizeHloModuleFusionRunPost(
+        hlo_module_.get(), gpu_intercept_.stream_exec,
+        gpu_intercept_.options.device_allocator);
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
   }
@@ -317,6 +337,7 @@ PYBIND11_MODULE(hlo_ir, m) {
       .def("pre_fusion_optimizations", &PyHloIr::PreFusionOptimizations)
       .def("fusion_dry_run", &PyHloIr::FusionDryRun)
       .def("post_fusion_optimizations", &PyHloIr::PostFusionOptimizations)
+      .def("original_run_hlo_passes", &PyHloIr::OriginalRunHloPasses)
       .def("apply_alternatives", &PyHloIr::ApplyAlternatives);
 
   py::class_<xla::HloModule, std::shared_ptr<xla::HloModule>>(m, "HloModule");

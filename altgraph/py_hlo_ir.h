@@ -77,6 +77,8 @@ class PyHloIr {
 
   void ApplyAlternatives(py::array_t<size_t> decisions);
 
+  void OriginalRunHloPasses();
+
  private:
   void PrepareHloModuleForIrEmitting();
 };
