@@ -262,8 +262,10 @@ bool HloGraph::Build(const HloModule* m, bool do_hash_verification) {
     uint64_t hlomodule_hash = parent_hlo_module_->CalledComputationHash();
     if (hlograph_hash == hlomodule_hash) {
       LOG(ERROR) << "HloGraph build verified.";
+      return true;
     } else {
       LOG(ERROR) << "HloGraph hash NOT verified.";
+      return false;
     }
   }
 
@@ -274,7 +276,7 @@ uint64_t HloGraph::Hash() {
   // only consider if cross-computation edges are correctly built.
   // Since all operands and users are added properly by calling
   // HloInstruction's operands() and users() function.
-  uint64_t hash_value = parent_hlo_module_->entry_computation_layout().Hash();
+  uint64_t hash_value = absl::HashOf(parent_hlo_module_);
   for (int i = 0; i < in_edge_feats_.uids->size(); ++i) {
     // add euid of cross computation edge to hash_value
     int src = in_edge_feats_.srcs->at(i);

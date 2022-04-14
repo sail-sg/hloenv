@@ -92,8 +92,8 @@ bool PyHloIr::HasEqualOutput(std::shared_ptr<xla::HloModule> first_module,
           auto second_literal = std::make_shared<xla::Literal>(
               second_buf_vector[j]->on_device_shape());
 
-          first_buf_vector[j]->ToLiteral(first_literal.get());
-          second_buf_vector[j]->ToLiteral(second_literal.get());
+          first_buf_vector[j]->ToLiteralSync(first_literal.get());
+          second_buf_vector[j]->ToLiteralSync(second_literal.get());
 
           xla::ErrorSpec error_spec(static_cast<float>(1e-6),
                                     static_cast<float>(1e-6));
@@ -129,7 +129,7 @@ PyHloIr::EvaluationResult PyHloIr::Evaluate(int times) {
       result.output.push_back(std::vector<py::object>());
       for (auto& pjrt_buf_ptr : pjrt_buf_vector) {
         std::shared_ptr<xla::Literal> literal =
-            pjrt_buf_ptr->ToLiteral().ValueOrDie();
+            pjrt_buf_ptr->ToLiteralSync().ValueOrDie();
         result.output.back().push_back(
             std::move(xla::LiteralToPython(literal).ValueOrDie()));
       }

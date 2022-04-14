@@ -31,7 +31,7 @@ workspace1()
 
 git_repository(
     name = "org_tensorflow",
-    branch = "additional-visibility-changes",
+    branch = "r2.9",
     remote = "https://AltGraph:p2WoxJyV93twzkTEyXvL@git.insea.io/sail/aisys/tensorflow.git",
 )
 
@@ -41,10 +41,6 @@ git_repository(
     tag = "jaxlib-v0.3.0",
 )
 
-# local_repository(
-#     name = "org_tensorflow",
-#     path = "/home/aiops/ohcy/tf_graph/tensorflow",
-# )
 
 http_archive(
   name = "com_google_googletest",
