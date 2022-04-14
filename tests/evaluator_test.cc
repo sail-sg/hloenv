@@ -39,7 +39,7 @@ TEST(EvaluatorTestBase, Basic) {
     for (absl::Duration duration : result.durations) {
       EXPECT_GT(duration, absl::Nanoseconds(1));
     }
-    auto literal = result.output[0][0]->ToLiteral().ValueOrDie();
+    auto literal = result.output[0][0]->ToLiteralSync().ValueOrDie();
     if (seed_to_results.count(seed)) {
       EXPECT_EQ(*literal, *seed_to_results[seed]);
     } else {

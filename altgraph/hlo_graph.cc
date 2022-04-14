@@ -260,6 +260,8 @@ bool HloGraph::Build(const HloModule* m, bool do_hash_verification) {
   if (do_hash_verification) {
     uint64_t hlograph_hash = Hash();
     uint64_t hlomodule_hash = parent_hlo_module_->CalledComputationHash();
+    // TODO(wangyzh/ohcy) Rewrite the HloGraph::Hash according to the new
+    // mechanism.
     if (hlograph_hash == hlomodule_hash) {
       LOG(ERROR) << "HloGraph build verified.";
       return true;
