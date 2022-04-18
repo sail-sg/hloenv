@@ -279,9 +279,12 @@ void PyHloIr::ApplyAlternatives(py::array_t<size_t> decisions) {
   }
 }
 
+uint64_t PyHloIr::GetHloModuleHash() { return absl::HashOf(*hlo_module_); }
+
 PYBIND11_MODULE(hlo_ir, m) {
   // TODO(ohcy) Change PyHloGraph and PyHloIr names to remove the Py prefix
   py::class_<PyHloGraph> py_hlo_graph(m, "PyHloGraph");
+
   py_hlo_graph.def(py::init<const xla::HloModule*>())
       .def("hash", &PyHloGraph::py_hash)
       .DEF_PYBIND_READONLY(PyHloGraph, out_edge_offsets)
@@ -338,6 +341,7 @@ PYBIND11_MODULE(hlo_ir, m) {
       .def("fusion_dry_run", &PyHloIr::FusionDryRun)
       .def("post_fusion_optimizations", &PyHloIr::PostFusionOptimizations)
       .def("original_run_hlo_passes", &PyHloIr::OriginalRunHloPasses)
+      .def("get_hlo_module_hash", &PyHloIr::GetHloModuleHash)
       .def("apply_alternatives", &PyHloIr::ApplyAlternatives);
 
   py::class_<xla::HloModule, std::shared_ptr<xla::HloModule>>(m, "HloModule");

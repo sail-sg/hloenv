@@ -13,6 +13,7 @@
 #include <utility>
 #include <vector>
 
+#include "absl/hash/hash.h"
 #include "altgraph/evaluation/evaluator.h"
 #include "altgraph/py_hlo_graph.h"
 #include "tensorflow/compiler/xla/literal.h"
@@ -72,6 +73,9 @@ class PyHloIr {
   void FusionDryRun();
 
   void PostFusionOptimizations();
+
+  // TODO(ohcy): Move to utility/PyHloModule
+  uint64_t GetHloModuleHash();
 
   PyHloGraph GetHloGraph(bool do_hash_verification);
 

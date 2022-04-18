@@ -80,6 +80,7 @@ pybind_extension(
         "@org_tensorflow//tensorflow/compiler/xla/service:hlo_proto_cc",
         "@org_tensorflow//tensorflow/compiler/xla/tools:hlo_module_loader",
         "@org_tensorflow//tensorflow/python:pybind11_lib",
+        "@com_google_absl//absl/hash",
     ],
 )
 
