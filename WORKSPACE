@@ -35,6 +35,11 @@ git_repository(
     remote = "https://AltGraph:p2WoxJyV93twzkTEyXvL@git.insea.io/sail/aisys/tensorflow.git",
 )
 
+# local_repository(
+#     name = "org_tensorflow",
+#     path = "/home/aiops/ohcy/tf_graph/tensorflow",
+# )
+
 git_repository(
     name = "jax",
     remote = "https://github.com/google/jax.git",

@@ -67,6 +67,29 @@ class HloIRTest(absltest.TestCase):
     assert (len(out_edge_features.dtypes) == num_out_edges)
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_py_hlo_module(self) -> None:
+    import tensorflow
+    from altgraph import HloIr, HloModule
+    from random import randrange
+    import numpy as np
+
+    hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
+
+    hlo_module_ref = HloModule(self.hlo_main_test_file)
+    hlo_module_str_ref = hlo_module_ref.to_string()
+    hlo_module_hash_ref = hlo_module_ref.hash()
+
+    hlo_module_from_ir = hlo_ir.get_hlo_module()
+    hlo_module_from_ir_str = hlo_module_from_ir.to_string()
+    hlo_module_from_ir_hash = hlo_module_from_ir.hash()
+
+    hlo_ir_hlo_str = hlo_ir.export_hlo_to_str()
+    hlo_ir_hlo_hash = hlo_ir.get_hlo_module_hash()
+
+    assert (hlo_module_str_ref == hlo_module_from_ir_str == hlo_ir_hlo_str)
+    assert (hlo_module_hash_ref == hlo_module_from_ir_hash == hlo_ir_hlo_hash)
+
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_basic(self) -> None:
     import tensorflow
     from altgraph import HloIr

@@ -51,6 +51,15 @@ pybind_library(
     ],
 )
 
+pybind_library(
+    name = "py_hlo_module",
+    srcs = ["py_hlo_module.h"],
+    deps = [
+        "@org_tensorflow//tensorflow/compiler/xla/service:hlo",
+        "@org_tensorflow//tensorflow/compiler/xla/tools:hlo_module_loader",
+    ],
+)
+
 pybind_extension(
     name = "hlo_ir",
     srcs = ["py_hlo_ir.cc"],
@@ -64,6 +73,7 @@ pybind_extension(
     module_name = "hlo_ir",
     deps = [
         ":py_hlo_graph",
+        ":py_hlo_module",
         "//altgraph/evaluation:evaluator",
         "@org_tensorflow//tensorflow/compiler/jit:xla_cpu_jit",
         "@org_tensorflow//tensorflow/compiler/jit:xla_gpu_jit",

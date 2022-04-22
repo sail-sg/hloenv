@@ -39,6 +39,9 @@ xcuserdata
 # For Sublime SFTP
 *sftp-config.json
 
+# Debug files
+/debug
+
 # For trunk.io
 .flake8
 .isort.cfg

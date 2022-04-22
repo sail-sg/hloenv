@@ -16,6 +16,7 @@
 #include "absl/hash/hash.h"
 #include "altgraph/evaluation/evaluator.h"
 #include "altgraph/py_hlo_graph.h"
+#include "altgraph/py_hlo_module.h"
 #include "tensorflow/compiler/xla/literal.h"
 #include "tensorflow/compiler/xla/literal_comparison.h"
 #include "tensorflow/compiler/xla/literal_util.h"
@@ -42,7 +43,7 @@ class PyHloIr {
   };
 
  private:
-  std::shared_ptr<xla::HloModule> hlo_module_;
+  std::shared_ptr<PyHloModule> py_hlo_module_;
   xla::Intercept<xla::cpu::CpuCompiler> cpu_intercept_;
   xla::Intercept<xla::gpu::GpuCompiler> gpu_intercept_;
   const std::string platform_;
@@ -53,19 +54,19 @@ class PyHloIr {
   explicit PyHloIr(const std::string& hlo_filepath,
                    const std::string& platform);
 
-  std::shared_ptr<xla::HloModule> SaveHloModule();
+  std::shared_ptr<PyHloModule> SaveHloModule();
 
-  void RestoreHloModule(std::shared_ptr<xla::HloModule> saved_hlo_module);
+  void RestoreHloModule(std::shared_ptr<PyHloModule> saved_hlo_module);
 
   std::string ExportHloModuleToStr();
 
   EvaluationResult Evaluate(int times);
 
-  bool HasEqualOutputAs(std::shared_ptr<xla::HloModule> other_module,
+  bool HasEqualOutputAs(std::shared_ptr<PyHloModule> other_module,
                         int times = 1);
 
-  bool HasEqualOutput(std::shared_ptr<xla::HloModule> first_module,
-                      std::shared_ptr<xla::HloModule> second_module,
+  bool HasEqualOutput(std::shared_ptr<PyHloModule> first_module,
+                      std::shared_ptr<PyHloModule> second_module,
                       int times = 1);
 
   void PreFusionOptimizations();
@@ -78,6 +79,8 @@ class PyHloIr {
   uint64_t GetHloModuleHash();
 
   PyHloGraph GetHloGraph(bool do_hash_verification);
+
+  std::shared_ptr<PyHloModule> GetHloModule();
 
   void ApplyAlternatives(py::array_t<size_t> decisions);
 

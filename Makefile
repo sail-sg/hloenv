@@ -14,6 +14,14 @@ build:
 	bazel --output_user_root=/localfolder/${USER} run --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //:setup
 	cp -r /localfolder/${USER}/*/execroot/org_altgraph/bazel-out/k8-opt/bin/setup.runfiles/org_altgraph/dist/ ${ROOT_DIR} \
 
+build-no-remote:
+	bazel --output_user_root=/localfolder/${USER} run //:setup
+	cp -r /localfolder/${USER}/*/execroot/org_altgraph/bazel-out/k8-opt/bin/setup.runfiles/org_altgraph/dist/ ${ROOT_DIR} \
+
+build-refresh-remote:
+	bazel --output_user_root=/localfolder/${USER} run --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com --remote_accept_cached=false //:setup
+	cp -r /localfolder/${USER}/*/execroot/org_altgraph/bazel-out/k8-opt/bin/setup.runfiles/org_altgraph/dist/ ${ROOT_DIR} \
+
 install:
 	pip install --force-reinstall "${ROOT_DIR}/dist/altgraph-0.0.1-cp38-cp38-linux_x86_64.whl"
 
