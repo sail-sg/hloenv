@@ -2,15 +2,20 @@
 
 #include "altgraph/py_hlo_ir.h"
 
-PyHloIr::PyHloIr(const std::string& hlo_filepath, const std::string& platform)
+PyHloIr::PyHloIr(const std::string& hlo_filepath, const std::string& platform,
+                 bool preallocate, double memory_fraction)
     : platform_(platform) {
   std::unique_ptr<PyHloModule> temp_hlo_module =
       std::make_unique<PyHloModule>(hlo_filepath);
   const xla::HloModuleProto hlo_module_proto = temp_hlo_module->ToProto();
 
   if (platform == "gpu") {
-    client_ = xla::GetGpuClient(/*asynchronous=*/true,
-                                xla::GpuAllocatorConfig(), nullptr, 0)
+    xla::GpuAllocatorConfig gpu_allocator_config = xla::GpuAllocatorConfig();
+    gpu_allocator_config.memory_fraction = memory_fraction;
+    gpu_allocator_config.preallocate = preallocate;
+
+    client_ = xla::GetGpuClient(/*asynchronous=*/true, gpu_allocator_config,
+                                nullptr, 0)
                   .ValueOrDie();
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
@@ -333,7 +338,9 @@ PYBIND11_MODULE(hlo_ir, m) {
       .def("hash", &PyHloModule::Hash);
 
   py::class_<PyHloIr>(m, "PyHloIr")
-      .def(py::init<const std::string&, const std::string&>())
+      .def(py::init<const std::string&, const std::string&, bool, double>(),
+           py::arg("hlo_filepath"), py::arg("platform"),
+           py::arg("preallocate") = false, py::arg("memory_fraction") = 0.9)
       .def("evaluate", &PyHloIr::Evaluate)
       .def("has_equal_output", &PyHloIr::HasEqualOutput,
            py::arg("first_module"), py::arg("second_module"),

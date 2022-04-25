@@ -51,8 +51,17 @@ class PyHloIr {
   xla::Evaluator evaluator_;
 
  public:
-  explicit PyHloIr(const std::string& hlo_filepath,
-                   const std::string& platform);
+  // Currently, JAX automatically preallocates 90% of the currently-available
+  // GPU memory when the first JAX op is run. Setting preallocate to false will
+  // disable this, though it might result in more allocation overhead and
+  // memory fragmentation. Conversely, setting it to true may cause out of
+  // memory errors.
+  //
+  // memory_fraction can be used to control the percentage of
+  // currently available GPU memory that is preallocated. However if preallocat
+  // is set to false, this parameter will be ignored.
+  explicit PyHloIr(const std::string& hlo_filepath, const std::string& platform,
+                   bool preallocate = false, double memory_fraction = 0.9);
 
   std::shared_ptr<PyHloModule> SaveHloModule();
 
