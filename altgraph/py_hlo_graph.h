@@ -42,6 +42,8 @@ struct PyNodeFeats : public xla::NodeFeats {
   SHARED_VEC_TO_PYARRAY(num_users, int, num_users)
   SHARED_VEC_TO_PYARRAY(num_operands, int, num_operands)
   SHARED_VEC_TO_PYARRAY(opcodes, int, opcodes)
+  SHARED_VEC_TO_PYARRAY(opcode_attrs, int, opcode_attrs)
+  SHARED_VEC_TO_PYARRAY(num_opcode_attrs, int, num_opcode_attrs)
   SHARED_VEC_TO_PYARRAY(is_alternative, uint8_t, is_alternative)
   SHARED_VEC_TO_PYARRAY(in_tensor_sizes, int64_t, in_tensor_sizes)
   SHARED_VEC_TO_PYARRAY(out_tensor_sizes, int64_t, out_tensor_sizes)

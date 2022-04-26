@@ -5,6 +5,7 @@
 #include <string>
 
 #include "absl/base/casts.h"
+#include "altgraph/utils/hlo_utils.h"
 #include "tensorflow/compiler/xla/map_util.h"
 #include "tensorflow/compiler/xla/service/hlo_opcode.h"
 #include "tensorflow/compiler/xla/types.h"
@@ -98,6 +99,14 @@ void HloGraph::BuildGraphTopology(const HloComputation* c, int gid) {
     node_feats_.names->push_back(name);
     node_feats_.gids->push_back(gid);
     node_feats_.opcodes->push_back(opcode);
+    std::vector<int> opcode_attrs;
+    std::vector<int> opcode_attr_counts;
+    GetInstructionAttributesAndCounts(inst, &opcode_attrs, &opcode_attr_counts);
+    node_feats_.opcode_attrs->insert(node_feats_.opcode_attrs->end(),
+                                     opcode_attrs.begin(), opcode_attrs.end());
+    node_feats_.num_opcode_attrs->insert(node_feats_.num_opcode_attrs->end(),
+                                         opcode_attr_counts.begin(),
+                                         opcode_attr_counts.end());
     uid_to_inst_.insert({uid, inst});
   }
   return;

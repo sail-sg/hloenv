@@ -26,6 +26,10 @@ namespace xla {
 // gids: sub-computation id HloInstruction belongs to
 // num_users: number of outgoing edges (users and called computations)
 // num_operands: number of incoming edges (operands)
+// opcodes: enumerator of opcodes in HLO
+// opcode_attrs: integers that represent opcode's attributes
+// num_opcode_attrs: two consecutive integers represent count
+// of integer attrs and count of enumerator attrs.
 // is_alternative: whether the node is kAlternative
 // in_tensor_sizes: sum of input tensor sizes
 // out_tensor_sizes: sum of output tensor sizes
@@ -43,6 +47,8 @@ struct NodeFeats {
   // opcode enum is defined here:
   // https://git.insea.io/sail/aisys/tensorflow/-/blob/main/tensorflow/compiler/xla/service/hlo_opcode.h#L46
   std::shared_ptr<std::vector<int>> opcodes;
+  std::shared_ptr<std::vector<int>> opcode_attrs;
+  std::shared_ptr<std::vector<int>> num_opcode_attrs;
   std::shared_ptr<std::vector<uint8_t>> is_alternative;
   std::shared_ptr<std::vector<int64_t>> in_tensor_sizes;
   std::shared_ptr<std::vector<int64_t>> out_tensor_sizes;
@@ -56,6 +62,8 @@ struct NodeFeats {
     num_users = std::make_shared<std::vector<int>>();
     num_operands = std::make_shared<std::vector<int>>();
     opcodes = std::make_shared<std::vector<int>>();
+    opcode_attrs = std::make_shared<std::vector<int>>();
+    num_opcode_attrs = std::make_shared<std::vector<int>>();
     is_alternative = std::make_shared<std::vector<uint8_t>>();
     in_tensor_sizes = std::make_shared<std::vector<int64_t>>();
     out_tensor_sizes = std::make_shared<std::vector<int64_t>>();
@@ -70,6 +78,8 @@ struct NodeFeats {
     num_users->clear();
     num_operands->clear();
     opcodes->clear();
+    opcode_attrs->clear();
+    num_opcode_attrs->clear();
     is_alternative->clear();
     in_tensor_sizes->clear();
     out_tensor_sizes->clear();
@@ -182,6 +192,12 @@ class HloGraph {
     return *node_feats_.num_operands;
   }
   const std::vector<int>& get_opcodes() { return *node_feats_.opcodes; }
+  const std::vector<int>& get_opcode_attrs() {
+    return *node_feats_.opcode_attrs;
+  }
+  const std::vector<int>& get_num_opcode_attrs() {
+    return *node_feats_.num_opcode_attrs;
+  }
 
   // return edge features.
   const std::vector<int64_t>& get_in_edge_uids() {

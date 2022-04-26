@@ -304,6 +304,8 @@ PYBIND11_MODULE(hlo_ir, m) {
       .DEF_PYBIND_READONLY(PyNodeFeats, num_users)
       .DEF_PYBIND_READONLY(PyNodeFeats, num_operands)
       .DEF_PYBIND_READONLY(PyNodeFeats, opcodes)
+      .DEF_PYBIND_READONLY(PyNodeFeats, opcode_attrs)
+      .DEF_PYBIND_READONLY(PyNodeFeats, num_opcode_attrs)
       .DEF_PYBIND_READONLY(PyNodeFeats, is_alternative)
       .DEF_PYBIND_READONLY(PyNodeFeats, in_tensor_sizes)
       .DEF_PYBIND_READONLY(PyNodeFeats, out_tensor_sizes)
