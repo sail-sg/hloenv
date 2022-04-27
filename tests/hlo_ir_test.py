@@ -1,4 +1,5 @@
 import os
+
 from absl import logging
 from absl.testing import absltest
 
@@ -15,8 +16,9 @@ class HloIRTest(absltest.TestCase):
     self.hlo_main_test_file = dir_path + "/hlo_test.txt"
 
   def test_import(self) -> None:
-    import tensorflow
     import altgraph
+
+    import tensorflow
     logging.info("altgraph module imported at %s", altgraph)
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
@@ -28,7 +30,7 @@ class HloIRTest(absltest.TestCase):
     assert (len(hlo_graph.out_edge_offsets) > 0)
     assert (len(hlo_graph.out_edge_indices) > 0)
     assert (len(hlo_graph.in_edge_offsets) > 0)
-    assert (len(hlo_graph.in_edge_indices) > 0)
+    assert (len(hlo_graph.in_edge_indices) > 0) 
 
     _ = hlo_graph.alternative_indices
     _ = hlo_graph.hash()
@@ -37,12 +39,14 @@ class HloIRTest(absltest.TestCase):
     out_edge_features = hlo_graph.out_edge_features
 
     num_nodes = len(node_features.uids)
-    assert (num_nodes > 0)
+    assert (num_nodes > 0) 
+    assert (hlo_graph.opcode_attr_counts == 236)  
+    assert (len(node_features.opcode_attrs) == sum(node_features.num_opcode_attrs))
     assert (len(node_features.names) == num_nodes)
     assert (len(node_features.gids) == num_nodes)
     assert (len(node_features.num_users) == num_nodes)
     assert (len(node_features.num_operands) == num_nodes)
-    assert (len(node_features.opcodes) == num_nodes)
+    assert (len(node_features.opcodes) == num_nodes)  
     assert (len(node_features.is_alternative) == num_nodes)
     assert (len(node_features.in_tensor_sizes) == num_nodes)
     assert (len(node_features.out_tensor_sizes) == num_nodes)
@@ -68,10 +72,12 @@ class HloIRTest(absltest.TestCase):
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_py_hlo_module(self) -> None:
-    import tensorflow
-    from altgraph import HloIr, HloModule
     from random import randrange
+
     import numpy as np
+    from altgraph import HloIr, HloModule
+
+    import tensorflow
 
     hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
 
@@ -91,10 +97,12 @@ class HloIRTest(absltest.TestCase):
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_basic(self) -> None:
-    import tensorflow
-    from altgraph import HloIr
     from random import randrange
+
     import numpy as np
+    from altgraph import HloIr
+
+    import tensorflow
 
     hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
 
@@ -150,9 +158,10 @@ class HloIRTest(absltest.TestCase):
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_evaluation(self) -> None:
-    from altgraph import HloIr
     from random import randrange
+
     import numpy as np
+    from altgraph import HloIr
 
     hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
 
@@ -206,9 +215,10 @@ class HloIRTest(absltest.TestCase):
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_validation(self) -> None:
-    from altgraph import HloIr
     from random import randrange
+
     import numpy as np
+    from altgraph import HloIr
 
     base_dir = os.path.dirname(os.path.realpath(__file__))
     hlo_base_dir = base_dir + "/hlo_texts/test_hlos"

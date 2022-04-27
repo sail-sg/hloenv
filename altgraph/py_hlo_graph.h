@@ -77,6 +77,7 @@ class PyHloGraph : public xla::HloGraph {
   SHARED_VEC_TO_PYARRAY(out_edge_indices, size_t, get_out_edge_indices_ptr());
   SHARED_VEC_TO_PYARRAY(in_edge_offsets, size_t, get_in_edge_offsets_ptr());
   SHARED_VEC_TO_PYARRAY(in_edge_indices, size_t, get_in_edge_indices_ptr());
+  SHARED_VEC_TO_PYARRAY(opcode_attr_counts, int, get_opcode_attr_counts_ptr());
   SHARED_VEC_TO_PYARRAY(alternative_indices, int,
                         get_alternative_indices_ptr());
 

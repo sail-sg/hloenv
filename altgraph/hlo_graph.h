@@ -156,7 +156,9 @@ struct EdgeFeats {
 // To make things simpler, only string, f32, i32, and i64 are allowed as dtype.
 class HloGraph {
  public:
-  HloGraph() {}
+  HloGraph()
+      :  // as of tensorflow==r2.9, this is the number of HLO opcode.
+        kNumOpcodes(118) {}
   explicit HloGraph(const HloModule* m, bool do_hash_verification = true);
 
   bool Build(const HloModule* m, bool do_hash_verification = true);
@@ -179,6 +181,9 @@ class HloGraph {
   }
   std::shared_ptr<std::vector<size_t>> get_in_edge_indices_ptr() {
     return operand_list_indices_;
+  }
+  std::shared_ptr<std::vector<int>> get_opcode_attr_counts_ptr() {
+    return opcode_attr_counts_;
   }
 
   // return node features.
@@ -245,11 +250,13 @@ class HloGraph {
   void BuildGraphTopology(const HloComputation* c, int gid);
   void BuildRaggedTensors();
   void PrepareFeatures();
+  void GenOpcodeAttrCounts();
 
  private:
   HloModule* parent_hlo_module_;
   int uid_;
   std::string name_;
+  const int kNumOpcodes;
 
   std::vector<HloInstruction*> inst_list_;
   absl::flat_hash_map<int, std::vector<int>> in_edge_lists_;
@@ -268,6 +275,7 @@ class HloGraph {
   std::shared_ptr<std::vector<size_t>> user_list_indices_;
   std::shared_ptr<std::vector<size_t>> operand_list_offsets_;
   std::shared_ptr<std::vector<size_t>> operand_list_indices_;
+  std::shared_ptr<std::vector<int>> opcode_attr_counts_;
 
   // Indices of alternative nodes
   std::shared_ptr<std::vector<int>> alternative_indices_;

@@ -3,6 +3,7 @@
 #include "altgraph/hlo_graph.h"
 
 #include <string>
+#include <utility>
 
 #include "absl/base/casts.h"
 #include "altgraph/utils/hlo_utils.h"
@@ -18,11 +19,14 @@ namespace xla {
 HloGraph::HloGraph(const HloModule* m, bool do_hash_verification)
     : parent_hlo_module_(const_cast<HloModule*>(m)),
       uid_(m->unique_id()),
-      name_(m->name()) {
+      name_(m->name()),
+      // as of tensorflow==r2.9, this is the number of HLO opcode.
+      kNumOpcodes(118) {
   user_list_offsets_ = std::make_shared<std::vector<size_t>>();
   user_list_indices_ = std::make_shared<std::vector<size_t>>();
   operand_list_offsets_ = std::make_shared<std::vector<size_t>>();
   operand_list_indices_ = std::make_shared<std::vector<size_t>>();
+  opcode_attr_counts_ = std::make_shared<std::vector<int>>();
   alternative_indices_ = std::make_shared<std::vector<int>>();
 
   Build(m, do_hash_verification);
@@ -37,6 +41,7 @@ void HloGraph::Clear() {
   operand_list_offsets_->clear();
   user_list_indices_->clear();
   operand_list_indices_->clear();
+  opcode_attr_counts_->clear();
   alternative_indices_->clear();
 
   inst_list_.clear();
@@ -256,6 +261,7 @@ bool HloGraph::Build(const HloModule* m, bool do_hash_verification) {
   name_ = m->name();
 
   Clear();
+  GenOpcodeAttrCounts();
   BuildGraphTopology(m->entry_computation(), 0);
   BuildRaggedTensors();
   PrepareFeatures();
@@ -307,6 +313,43 @@ uint64_t HloGraph::Hash() {
     }
   }
   return hash_value;
+}
+
+// TODO(wangyzh): Ideally this could be a static member for the HloGraph.
+void HloGraph::GenOpcodeAttrCounts() {
+  opcode_attr_counts_->resize(kNumOpcodes * 2, 0);
+  auto update_opcode_attr_counts = [&](int idx, int int_count, int enum_count) {
+    opcode_attr_counts_->at(idx * 2) = int_count;
+    opcode_attr_counts_->at(idx * 2 + 1) = enum_count;
+  };
+
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kBroadcast), 6, 0);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kSetDimensionSize), 6,
+                            0);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kConcatenate), 0,
+                            6 * 7);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kReduce), 0, 6 * 7);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kReverse), 0, 6 * 7);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kTranspose), 0, 6 * 7);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kCompare), 0, 6 + 4);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kConvolution), 16,
+                            24 * 7);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kDot), 0, 24 * 7 + 3);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kDynamicSlice), 6, 0);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kGather), 7,
+                            18 * 7 + 2);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kGetTupleElement), 1,
+                            0);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kIota), 0, 7);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kPad), 18, 0);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kScatter), 1,
+                            18 * 7 + 2 * 2);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kSlice), 18, 0);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kSort), 0, 7 + 2);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kTriangularSolve), 0,
+                            2 * 3 + 4);
+
+  return;
 }
 
 void HloGraph::ShowStats() {

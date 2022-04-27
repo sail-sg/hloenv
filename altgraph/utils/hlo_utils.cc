@@ -7,8 +7,9 @@ void GetInstructionAttributesAndCounts(HloInstruction* inst,
                                        std::vector<int>* attrs,
                                        std::vector<int>* attr_counts) {
   auto add_enum = [&attrs](int item, int count) {
-    attrs->push_back(item);
-    attrs->push_back(count);
+    std::vector<int> one_hot(count, 0);
+    one_hot[item] = 1;
+    attrs->insert(attrs->end(), one_hot.begin(), one_hot.end());
   };
   auto add_attr_counts = [&attr_counts](int int_count, int enum_count) {
     attr_counts->push_back(int_count);
@@ -45,7 +46,7 @@ void GetInstructionAttributesAndCounts(HloInstruction* inst,
       for (int i = 0; i < 6 - inst->dimensions().size(); ++i) {
         add_enum(/*item=*/kInvalidDim, /*count=*/kDimEnumSize);
       }
-      add_attr_counts(/*int_count=*/0, /*enum_count=*/6);
+      add_attr_counts(/*int_count=*/0, /*enum_count=*/6 * 7);
       break;
     }
     case HloOpcode::kCompare: {
@@ -53,7 +54,7 @@ void GetInstructionAttributesAndCounts(HloInstruction* inst,
       auto comp_inst = dynamic_cast<HloCompareInstruction*>(inst);
       add_enum(/*item=*/static_cast<int>(comp_inst->direction()), /*count=*/6);
       add_enum(/*item=*/static_cast<int>(comp_inst->type()), /*count=*/4);
-      add_attr_counts(/*int_count=*/0, /*enum_count=*/2);
+      add_attr_counts(/*int_count=*/0, /*enum_count=*/6 + 4);
       break;
     }
     case HloOpcode::kConvolution: {
@@ -115,7 +116,7 @@ void GetInstructionAttributesAndCounts(HloInstruction* inst,
            ++i) {
         add_enum(/*item=*/kInvalidDim, /*count=*/kDimEnumSize);
       }
-      add_attr_counts(/*int_count=*/16, /*enum_count=*/24);
+      add_attr_counts(/*int_count=*/16, /*enum_count=*/24 * 7);
       break;
     }
     case HloOpcode::kDot: {
@@ -156,7 +157,7 @@ void GetInstructionAttributesAndCounts(HloInstruction* inst,
       } else {
         add_enum(/*item=*/0, /*count=*/3);
       }
-      add_attr_counts(/*int_count=*/0, /*enum_count=*/25);
+      add_attr_counts(/*int_count=*/0, /*enum_count=*/24 * 7 + 3);
       break;
     }
     case HloOpcode::kDynamicSlice: {
@@ -201,7 +202,7 @@ void GetInstructionAttributesAndCounts(HloInstruction* inst,
         add_enum(/*item=*/kInvalidDim, /*count=*/kDimEnumSize);
       }
       add_enum(/*item=*/gather_inst->indices_are_sorted(), /*count=*/2);
-      add_attr_counts(/*int_count=*/7, /*enum_count=*/19);
+      add_attr_counts(/*int_count=*/7, /*enum_count=*/18 * 7 + 2);
       break;
     }
     case HloOpcode::kGetTupleElement: {
@@ -215,7 +216,7 @@ void GetInstructionAttributesAndCounts(HloInstruction* inst,
       // counts: 0,1
       auto iota_inst = dynamic_cast<HloIotaInstruction*>(inst);
       add_enum(/*item=*/iota_inst->iota_dimension(), /*count=*/kDimEnumSize);
-      add_attr_counts(/*int_count=*/0, /*enum_count=*/1);
+      add_attr_counts(/*int_count=*/0, /*enum_count=*/7);
       break;
     }
     case HloOpcode::kPad: {
@@ -261,7 +262,7 @@ void GetInstructionAttributesAndCounts(HloInstruction* inst,
       }
       add_enum(/*item=*/sc_inst->indices_are_sorted(), /*count=*/2);
       add_enum(/*item=*/sc_inst->unique_indices(), /*count=*/2);
-      add_attr_counts(/*int_count=*/1, /*enum_count=*/20);
+      add_attr_counts(/*int_count=*/1, /*enum_count=*/18 * 7 + 2 * 2);
       break;
     }
     case HloOpcode::kSlice: {
@@ -288,7 +289,7 @@ void GetInstructionAttributesAndCounts(HloInstruction* inst,
       auto sort_inst = dynamic_cast<HloSortInstruction*>(inst);
       add_enum(/*item=*/sort_inst->sort_dimension(), /*count=*/kDimEnumSize);
       add_enum(/*item=*/sort_inst->is_stable(), /*count=*/2);
-      add_attr_counts(/*int_count=*/0, /*enum_count=*/2);
+      add_attr_counts(/*int_count=*/0, /*enum_count=*/7 + 2);
       break;
     }
     case HloOpcode::kTriangularSolve: {
@@ -300,7 +301,7 @@ void GetInstructionAttributesAndCounts(HloInstruction* inst,
       add_enum(/*item=*/trisol_options.unit_diagonal(), /*count=*/2);
       add_enum(/*item=*/static_cast<int>(trisol_options.transpose_a()),
                /*count=*/4);
-      add_attr_counts(/*int_count=*/0, /*enum_count=*/4);
+      add_attr_counts(/*int_count=*/0, /*enum_count=*/2 * 3 + 4);
       break;
     }
     case HloOpcode::kCustomCall:
