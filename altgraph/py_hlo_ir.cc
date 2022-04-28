@@ -292,6 +292,7 @@ PYBIND11_MODULE(hlo_ir, m) {
       .DEF_PYBIND_READONLY(PyHloGraph, in_edge_offsets)
       .DEF_PYBIND_READONLY(PyHloGraph, in_edge_indices)
       .DEF_PYBIND_READONLY(PyHloGraph, alternative_indices)
+      .DEF_PYBIND_READONLY(PyHloGraph, opcode_attr_counts)
       .DEF_PYBIND_READONLY(PyHloGraph, node_features)
       .DEF_PYBIND_READONLY(PyHloGraph, in_edge_features)
       .DEF_PYBIND_READONLY(PyHloGraph, out_edge_features);

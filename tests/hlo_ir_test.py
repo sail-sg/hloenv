@@ -40,7 +40,7 @@ class HloIRTest(absltest.TestCase):
 
     num_nodes = len(node_features.uids)
     assert (num_nodes > 0) 
-    assert (hlo_graph.opcode_attr_counts == 236)  
+    assert (len(hlo_graph.opcode_attr_counts) == 236)  
     assert (len(node_features.opcode_attrs) == sum(node_features.num_opcode_attrs))
     assert (len(node_features.names) == num_nodes)
     assert (len(node_features.gids) == num_nodes)
