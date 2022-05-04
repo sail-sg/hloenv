@@ -30,7 +30,7 @@ class HloIRTest(absltest.TestCase):
     assert (len(hlo_graph.out_edge_offsets) > 0)
     assert (len(hlo_graph.out_edge_indices) > 0)
     assert (len(hlo_graph.in_edge_offsets) > 0)
-    assert (len(hlo_graph.in_edge_indices) > 0) 
+    assert (len(hlo_graph.in_edge_indices) > 0)
 
     _ = hlo_graph.alternative_indices
     _ = hlo_graph.hash()
@@ -39,14 +39,16 @@ class HloIRTest(absltest.TestCase):
     out_edge_features = hlo_graph.out_edge_features
 
     num_nodes = len(node_features.uids)
-    assert (num_nodes > 0) 
-    assert (len(hlo_graph.opcode_attr_counts) == 236)  
-    assert (len(node_features.opcode_attrs) == sum(node_features.num_opcode_attrs))
+    assert (num_nodes > 0)
+    assert (len(hlo_graph.opcode_attr_counts) == 236)
+    assert (
+      len(node_features.opcode_attrs) == sum(node_features.num_opcode_attrs)
+    )
     assert (len(node_features.names) == num_nodes)
     assert (len(node_features.gids) == num_nodes)
     assert (len(node_features.num_users) == num_nodes)
     assert (len(node_features.num_operands) == num_nodes)
-    assert (len(node_features.opcodes) == num_nodes)  
+    assert (len(node_features.opcodes) == num_nodes)
     assert (len(node_features.is_alternative) == num_nodes)
     assert (len(node_features.in_tensor_sizes) == num_nodes)
     assert (len(node_features.out_tensor_sizes) == num_nodes)
@@ -300,7 +302,80 @@ class HloIRTest(absltest.TestCase):
     actual_mem_util = next(nvsmi.get_gpus()).mem_util
     assert (actual_mem_util < 80)
 
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_load_from_string(self) -> None:
+    from random import randrange
+
+    import numpy as np
+    from altgraph import HloIr
+
+    import tensorflow
+
+    def check_load_from_string(hlo_ir):
+      hlo_string = hlo_ir.export_hlo_to_str()
+      hlo_ir_loaded_from_str = HloIr(hlo_string, "txt", "gpu")
+      assert (
+        hlo_ir.get_hlo_module_hash() ==
+        hlo_ir_loaded_from_str.get_hlo_module_hash()
+      )
+
+    hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
+    logging.info(
+      "Checking load_from_string after: hlo_ir = HloIr(%s, %s)" %
+      (self.hlo_main_test_file, "gpu")
+    )
+    check_load_from_string(hlo_ir)
+
+    hlo_string = hlo_ir.export_hlo_to_str()
+    hlo_ir = HloIr(hlo_string, "txt", "gpu")
+
+    hlo_ir.pre_fusion_optimizations()
+    logging.info(
+      "Checking load_from_string after: hlo_ir.pre_fusion_optimizations"
+    )
+    check_load_from_string(hlo_ir)
+
+    num_alts = 1
+    count = 1
+    while num_alts > 0:
+      logging.info("\n*****************************************")
+      logging.info("Pass: %d" % count)
+      logging.info("Running fusion dry run")
+      hlo_ir.fusion_dry_run()
+      logging.info("Checking load_from_string after: hlo_ir.fusion_dry_run")
+      check_load_from_string(hlo_ir)
+
+      hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
+      node_features = hlo_graph.node_features
+      num_operands = node_features.num_operands
+      num_alts = len(hlo_graph.alternative_indices)
+
+      if num_alts > 0:
+        logging.info("Generating decisions...")
+        decisions = []
+        for alt_idx in hlo_graph.alternative_indices:
+          decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+
+        decisions = np.asarray(decisions)
+        # pass the decision back to compilerp
+        logging.info("Applying alternatives...")
+        hlo_ir.apply_alternatives(decisions)
+        logging.info(
+          "Checking load_from_string after: hlo_ir.apply_alternatives"
+        )
+        check_load_from_string(hlo_ir)
+
+      else:
+        logging.info("No more alternatives, ending run...")
+      count += 1
+
+    logging.info("Running post_fusion_optimizations...")
+    hlo_ir.post_fusion_optimizations()
+    logging.info(
+      "Checking load_from_string after: hlo_ir.post_fusion_optimizations"
+    )
+    check_load_from_string(hlo_ir)
+
 
 if __name__ == "__main__":
   absltest.main()
-

@@ -21,6 +21,25 @@ class PyHloModule {
   explicit PyHloModule(std::unique_ptr<xla::HloModule> hlo_module) {
     hlo_module_ = std::move(hlo_module);
   }
+
+  explicit PyHloModule(const std::string& input, const std::string& format) {
+    std::function<void(xla::HloModuleConfig*)> config_modifier_hook =
+        [](xla::HloModuleConfig* config) { config->set_seed(42); };
+
+    if (format == "path") {
+      hlo_module_ = std::move(
+          LoadModuleFromFile(input, xla::hlo_module_loader_details::Config(),
+                             "txt", config_modifier_hook)
+              .ValueOrDie());
+    } else {
+      hlo_module_ =
+          std::move(LoadModuleFromData(input, format,
+                                       xla::hlo_module_loader_details::Config(),
+                                       config_modifier_hook)
+                        .ValueOrDie());
+    }
+  }
+
   explicit PyHloModule(const std::string& hlo_filepath) {
     std::function<void(xla::HloModuleConfig*)> config_modifier_hook =
         [](xla::HloModuleConfig* config) { config->set_seed(42); };
