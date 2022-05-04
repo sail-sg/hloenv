@@ -260,6 +260,46 @@ class HloIRTest(absltest.TestCase):
           hlo_ir.has_equal_output(post_fusion_module, reference_hlo_module)
         )
 
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_preallocate(self) -> None:
+    from altgraph import HloIr
+    import nvsmi
+
+    hlo_ir = HloIr(
+      self.hlo_main_test_file, "gpu", preallocate=False, memory_fraction=0.5
+    )
+    hlo_ir.evaluate(1)
+    actual_mem_util = next(nvsmi.get_gpus()).mem_util
+    assert (actual_mem_util < 5)
+    del hlo_ir
+
+    hlo_ir = HloIr(
+      self.hlo_main_test_file, "gpu", preallocate=True, memory_fraction=0.5
+    )
+    hlo_ir.evaluate(1)
+    actual_mem_util = next(nvsmi.get_gpus()).mem_util
+    assert (abs(actual_mem_util - 50) < 5)
+    del hlo_ir
+
+    hlo_ir = HloIr(
+      self.hlo_main_test_file, "gpu", preallocate=True, memory_fraction=0.75
+    )
+    hlo_ir.evaluate(1)
+    actual_mem_util = next(nvsmi.get_gpus()).mem_util
+    assert (abs(actual_mem_util - 75) < 15)
+    del hlo_ir
+
+    hlo_ir50 = HloIr(
+      self.hlo_main_test_file, "gpu", preallocate=True, memory_fraction=0.5
+    )
+    hlo_ir50.evaluate(1)
+    hlo_ir25 = HloIr(
+      self.hlo_main_test_file, "gpu", preallocate=True, memory_fraction=0.25
+    )
+    hlo_ir25.evaluate(1)
+    actual_mem_util = next(nvsmi.get_gpus()).mem_util
+    assert (actual_mem_util < 80)
+
 
 if __name__ == "__main__":
   absltest.main()
