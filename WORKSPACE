@@ -31,7 +31,7 @@ workspace1()
 
 git_repository(
     name = "org_tensorflow",
-    branch = "r2.9",
+    branch = "main",
     remote = "https://AltGraph:p2WoxJyV93twzkTEyXvL@git.insea.io/sail/aisys/tensorflow.git",
 )
 
