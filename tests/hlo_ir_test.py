@@ -145,6 +145,47 @@ class HloIRTest(absltest.TestCase):
     hlo_ir.post_fusion_optimizations()
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_may_duplicate(self) -> None:
+    import tensorflow
+    from altgraph import HloIr
+    from random import randrange
+    import numpy as np
+
+    hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
+
+    hlo_ir.pre_fusion_optimizations()
+
+    num_alts = 1
+    count = 1
+    while num_alts > 0:
+      logging.info("\n*****************************************")
+      logging.info("Pass: %d" % count)
+      logging.info("Running fusion dry run, may_duplicate = %s" % (count%2==0))
+      hlo_ir.fusion_dry_run(may_duplicate=(count%2==0))
+      hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
+      node_features = hlo_graph.node_features
+      num_operands = node_features.num_operands
+      num_alts = len(hlo_graph.alternative_indices)
+
+      if num_alts > 0:
+        logging.info("Generating decisions...")
+        decisions = []
+        for alt_idx in hlo_graph.alternative_indices:
+          decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+
+        decisions = np.asarray(decisions)
+        # pass the decision back to compilerp
+        logging.info("Applying alternatives...")
+        hlo_ir.apply_alternatives(decisions)
+      else:
+        logging.info("No more alternatives, ending run...")
+      count += 1
+
+    logging.info("Running post_fusion_optimizations...")
+    hlo_ir.post_fusion_optimizations()
+    hlo_ir.evaluate(1)
+
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_save_restore(self) -> None:
     from altgraph import HloIr
     hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
