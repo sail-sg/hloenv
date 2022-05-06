@@ -151,6 +151,7 @@ std::shared_ptr<PyHloModule> PyHloIr::SaveHloModule() {
   return py_hlo_module_->Clone();
 }
 
+// TODO(ohcy): Enable restore from string or path too
 void PyHloIr::RestoreHloModule(std::shared_ptr<PyHloModule> saved_hlo_module) {
   py_hlo_module_ = saved_hlo_module;
 }

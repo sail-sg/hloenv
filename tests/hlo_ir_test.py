@@ -376,6 +376,67 @@ class HloIRTest(absltest.TestCase):
     )
     check_load_from_string(hlo_ir)
 
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_hash(self) -> None:
+    from altgraph import HloIr
+    from random import randrange
+    import numpy as np
+
+    base_dir = os.path.dirname(os.path.realpath(__file__))
+    hlo_base_dir = base_dir + "/hlo_texts/test_hlos"
+    for root, dirs, files in os.walk(hlo_base_dir):
+      for file in files:
+
+        filepath = os.path.join(root, file)
+        logging.info("Testing hash for file: " + filepath)
+
+        hlo_ir = HloIr(filepath, "gpu")
+
+        saved_hlo_module = hlo_ir.save_hlo()
+        cloned_hash = saved_hlo_module.hash()
+        original_hash = hlo_ir.get_hlo_module_hash()
+        assert (cloned_hash == original_hash)
+        hlo_ir.restore_hlo(saved_hlo_module)
+
+        hlo_ir.pre_fusion_optimizations()
+        saved_hlo_module = hlo_ir.save_hlo()
+        cloned_hash = saved_hlo_module.hash()
+        original_hash = hlo_ir.get_hlo_module_hash()
+        assert (cloned_hash == original_hash)
+        hlo_ir.restore_hlo(saved_hlo_module)
+
+        num_alts = 1
+        while num_alts > 0:
+          prev_hash = hlo_ir.get_hlo_module_hash()
+          hlo_ir.fusion_dry_run()
+
+          hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
+          node_features = hlo_graph.node_features
+          num_operands = node_features.num_operands
+          num_alts = len(hlo_graph.alternative_indices)
+
+          if num_alts > 0:
+            # Test that hash changes after fusion_dry_run
+            new_hash = hlo_ir.get_hlo_module_hash()
+            saved_hlo_module = hlo_ir.save_hlo()
+            cloned_hash = saved_hlo_module.hash()
+            assert (cloned_hash == new_hash)
+            assert (prev_hash != new_hash)
+            hlo_ir.restore_hlo(saved_hlo_module)
+
+            # Test that hash changes after apply_alternatives
+            prev_hash = hlo_ir.get_hlo_module_hash()
+            decisions = []
+            for alt_idx in hlo_graph.alternative_indices:
+              decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+
+            decisions = np.asarray(decisions)
+            hlo_ir.apply_alternatives(decisions)
+            new_hash = hlo_ir.get_hlo_module_hash()
+            assert (prev_hash != new_hash)
+
+        hlo_ir.post_fusion_optimizations()
+
 
 if __name__ == "__main__":
   absltest.main()

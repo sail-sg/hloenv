@@ -313,4 +313,154 @@ void GetInstructionAttributesAndCounts(HloInstruction* inst,
   }
 }
 
+bool isCommutative(xla::HloInstruction* inst) {
+  using xla::HloOpcode;
+  switch (inst->opcode()) {
+    // nullary ops
+    case HloOpcode::kConstant:
+    case HloOpcode::kIota:
+    case HloOpcode::kParameter:
+    case HloOpcode::kPartitionId:
+    case HloOpcode::kReplicaId:
+    case HloOpcode::kRngGetAndUpdateState:
+    // unary ops
+    case HloOpcode::kAbs:
+    case HloOpcode::kAllGatherDone:
+    case HloOpcode::kAllReduceDone:
+    case HloOpcode::kAsyncUpdate:
+    case HloOpcode::kAsyncDone:
+    case HloOpcode::kBitcast:
+    case HloOpcode::kBitcastConvert:
+    case HloOpcode::kBroadcast:
+    case HloOpcode::kCeil:
+    case HloOpcode::kCholesky:
+    case HloOpcode::kCollectivePermuteDone:
+    case HloOpcode::kClz:
+    case HloOpcode::kConvert:
+    case HloOpcode::kCopy:
+    case HloOpcode::kCopyDone:
+    case HloOpcode::kCopyStart:
+    case HloOpcode::kCos:
+    case HloOpcode::kDomain:
+    case HloOpcode::kExp:
+    case HloOpcode::kExpm1:
+    case HloOpcode::kFft:
+    case HloOpcode::kFloor:
+    case HloOpcode::kGetDimensionSize:
+    case HloOpcode::kGetTupleElement:
+    case HloOpcode::kImag:
+    case HloOpcode::kInfeed:
+    case HloOpcode::kIsFinite:
+    case HloOpcode::kLog:
+    case HloOpcode::kLog1p:
+    case HloOpcode::kLogistic:
+    case HloOpcode::kNot:
+    case HloOpcode::kOptimizationBarrier:
+    case HloOpcode::kNegate:
+    case HloOpcode::kPopulationCount:
+    case HloOpcode::kReal:
+    case HloOpcode::kRecv:
+    case HloOpcode::kRecvDone:
+    case HloOpcode::kReducePrecision:
+    case HloOpcode::kReshape:
+    case HloOpcode::kReverse:
+    case HloOpcode::kRngBitGenerator:
+    case HloOpcode::kRoundNearestAfz:
+    case HloOpcode::kRsqrt:
+    case HloOpcode::kSendDone:
+    case HloOpcode::kSign:
+    case HloOpcode::kSin:
+    case HloOpcode::kSlice:
+    case HloOpcode::kSqrt:
+    case HloOpcode::kCbrt:
+    case HloOpcode::kTanh:
+    case HloOpcode::kTrace:
+    case HloOpcode::kTranspose:
+    case HloOpcode::kWhile:
+      return true;
+
+    // COMMUTATIVE:
+    case HloOpcode::kAdd:
+    case HloOpcode::kAnd:
+    case HloOpcode::kOr:
+    case HloOpcode::kXor:
+    case HloOpcode::kMaximum:
+    case HloOpcode::kMinimum:
+    case HloOpcode::kMultiply:
+    case HloOpcode::kDot:
+    case HloOpcode::kSort:
+    case HloOpcode::kAlternatives:
+      return true;
+
+    // NOT COMMUTATIVE:
+    case HloOpcode::kAtan2:
+    case HloOpcode::kDivide:
+    case HloOpcode::kShiftLeft:
+    case HloOpcode::kShiftRightArithmetic:
+    case HloOpcode::kShiftRightLogical:
+    case HloOpcode::kSubtract:
+      return false;
+
+    // UNSURE:
+    // TODO(ohcy): Confirm whether these are not commutative
+    // binary ops
+    case HloOpcode::kAddDependency:
+    case HloOpcode::kCompare:
+    case HloOpcode::kComplex:
+    case HloOpcode::kConvolution:
+    case HloOpcode::kGather:
+    case HloOpcode::kSetDimensionSize:
+    case HloOpcode::kOutfeed:
+    case HloOpcode::kPad:
+    case HloOpcode::kPower:
+    case HloOpcode::kRemainder:
+    case HloOpcode::kSend:
+    case HloOpcode::kTriangularSolve:
+    // ternary ops
+    case HloOpcode::kBatchNormTraining:
+    case HloOpcode::kClamp:
+    case HloOpcode::kScatter:
+    case HloOpcode::kSelect:
+    case HloOpcode::kSelectAndScatter:
+    case HloOpcode::kTupleSelect:
+    // quinary ops
+    case HloOpcode::kBatchNormGrad:
+    case HloOpcode::kBatchNormInference:
+    // variadic ops
+    case HloOpcode::kAfterAll:
+    case HloOpcode::kAllGather:
+    case HloOpcode::kAllGatherStart:
+    case HloOpcode::kAllReduce:
+    case HloOpcode::kAllReduceStart:
+    case HloOpcode::kAllToAll:
+    case HloOpcode::kAsyncStart:
+    case HloOpcode::kCall:
+    case HloOpcode::kCollectivePermute:
+    case HloOpcode::kCollectivePermuteStart:
+    case HloOpcode::kConcatenate:
+    case HloOpcode::kConditional:
+    case HloOpcode::kCustomCall:
+    case HloOpcode::kDynamicSlice:
+    case HloOpcode::kDynamicUpdateSlice:
+    case HloOpcode::kFusion:
+    case HloOpcode::kMap:
+    case HloOpcode::kReduce:
+    case HloOpcode::kReduceScatter:
+    case HloOpcode::kReduceWindow:
+    case HloOpcode::kDynamicReshape:
+    case HloOpcode::kRng:
+    case HloOpcode::kTuple:
+      return false;
+    default:
+      // We should not get here
+      LOG(FATAL) << "Unrecognized Hlo Instruction: " << inst->opcode();
+  }
+  return false;
+}
+
+uint64_t HloModuleHash(xla::HloModule* module) {
+  HloModuleHashWrapper hash_wrapper = HloModuleHashWrapper(module);
+  return absl::HashOf(hash_wrapper);
+}
+
 }  // namespace xla

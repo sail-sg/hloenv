@@ -14,6 +14,9 @@ build:
 	bazel --output_user_root=/localfolder/${USER} run --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //:setup
 	cp -r /localfolder/${USER}/*/execroot/org_altgraph/bazel-out/k8-opt/bin/setup.runfiles/org_altgraph/dist/ ${ROOT_DIR} \
 
+build-debug:
+	bazel --output_user_root=/localfolder/${USER} run --strip=never --copt="-DNDEBUG" --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com --compilation_mode=dbg //:setup
+
 build-no-remote:
 	bazel --output_user_root=/localfolder/${USER} run //:setup
 	cp -r /localfolder/${USER}/*/execroot/org_altgraph/bazel-out/k8-opt/bin/setup.runfiles/org_altgraph/dist/ ${ROOT_DIR} \

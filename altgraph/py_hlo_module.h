@@ -9,7 +9,7 @@
 #include <string>
 #include <utility>
 
-#include "absl/hash/hash.h"
+#include "altgraph/utils/hlo_utils.h"
 #include "tensorflow/compiler/xla/service/hlo_module.h"
 #include "tensorflow/compiler/xla/service/hlo_module_config.h"
 #include "tensorflow/compiler/xla/tools/hlo_module_loader.h"
@@ -72,7 +72,7 @@ class PyHloModule {
 
   std::string ToString() { return hlo_module_->ToString(); }
 
-  uint64_t Hash() { return absl::HashOf(*hlo_module_); }
+  uint64_t Hash() { return xla::HloModuleHash(hlo_module_.get()); }
 
   xla::HloModuleProto ToProto() { return hlo_module_->ToProto(); }
 
