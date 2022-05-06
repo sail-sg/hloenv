@@ -80,6 +80,7 @@ class PyHloGraph : public xla::HloGraph {
   SHARED_VEC_TO_PYARRAY(opcode_attr_counts, int, get_opcode_attr_counts_ptr());
   SHARED_VEC_TO_PYARRAY(alternative_indices, int,
                         get_alternative_indices_ptr());
+  int py_get_graph_load_errors() { return graph_load_errors_; }
 
   PyNodeFeats node_features_;
   PyEdgeFeats in_edge_features_;

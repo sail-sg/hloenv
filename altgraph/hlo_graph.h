@@ -3,6 +3,7 @@
 #ifndef ALTGRAPH_HLO_GRAPH_H_
 #define ALTGRAPH_HLO_GRAPH_H_
 
+#include <algorithm>
 #include <cstdio>
 #include <iostream>
 #include <memory>
@@ -251,6 +252,7 @@ class HloGraph {
   void BuildRaggedTensors();
   void PrepareFeatures();
   void GenOpcodeAttrCounts();
+  int graph_load_errors_;
 
  private:
   HloModule* parent_hlo_module_;

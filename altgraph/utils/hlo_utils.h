@@ -3,6 +3,7 @@
 #ifndef ALTGRAPH_UTILS_HLO_UTILS_H_
 #define ALTGRAPH_UTILS_HLO_UTILS_H_
 
+#include <algorithm>
 #include <cstdio>
 #include <iostream>
 #include <memory>

@@ -295,6 +295,7 @@ PYBIND11_MODULE(hlo_ir, m) {
 
   py_hlo_graph.def(py::init<const xla::HloModule*>())
       .def("hash", &PyHloGraph::py_hash)
+      .def("get_graph_load_errors", &PyHloGraph::py_get_graph_load_errors)
       .DEF_PYBIND_READONLY(PyHloGraph, out_edge_offsets)
       .DEF_PYBIND_READONLY(PyHloGraph, out_edge_indices)
       .DEF_PYBIND_READONLY(PyHloGraph, in_edge_offsets)

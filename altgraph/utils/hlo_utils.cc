@@ -17,33 +17,26 @@ void GetInstructionAttributesAndCounts(HloInstruction* inst,
   };
   attrs->clear();
   attr_counts->clear();
+  // We cap the max possible number of dim at 6.
+  // Covers 99.99% time.
   const int kInvalidDim = 6;
   // set dim enum size to be 6 + 1 invalid dim
   const int kDimEnumSize = 7;
   switch (inst->opcode()) {
-    // dimension sizes
-    case HloOpcode::kBroadcast:
-    case HloOpcode::kSetDimensionSize: {
-      // counts: 6,0
-      attrs->resize(6, -1);
-      int idx = 0;
-      for (auto d : inst->dimensions()) {
-        (*attrs)[idx++] = d;
-      }
-      add_attr_counts(/*int_count=*/6, /*enum_count=*/0);
-      break;
-    }
     // dimension indices
+    case HloOpcode::kBroadcast:
+    case HloOpcode::kSetDimensionSize:
     case HloOpcode::kConcatenate:
     case HloOpcode::kReduce:
     case HloOpcode::kReverse:
     case HloOpcode::kTranspose: {
       // counts: 0,6
       // pad to six to keep a fixed size
-      for (auto d : inst->dimensions()) {
-        add_enum(/*item=*/d, /*count=*/kDimEnumSize);
+      for (int i = 0; i < std::min<int>(6, inst->dimensions().size()); ++i) {
+        add_enum(/*item=*/inst->dimensions()[i], /*count=*/kDimEnumSize);
       }
-      for (int i = 0; i < 6 - inst->dimensions().size(); ++i) {
+      for (int i = 0; i < std::max<int>(0, (6 - inst->dimensions().size()));
+           ++i) {
         add_enum(/*item=*/kInvalidDim, /*count=*/kDimEnumSize);
       }
       add_attr_counts(/*int_count=*/0, /*enum_count=*/6 * 7);
@@ -166,7 +159,7 @@ void GetInstructionAttributesAndCounts(HloInstruction* inst,
       attrs->resize(6, -1);
       int idx = 0;
       for (auto d : ds_inst->dynamic_slice_sizes()) {
-        (*attrs)[idx++] = d;
+        attrs->at(idx++) = d;
       }
       add_attr_counts(/*int_count=*/6, /*enum_count=*/0);
       break;
@@ -177,9 +170,9 @@ void GetInstructionAttributesAndCounts(HloInstruction* inst,
       auto gather_dims = gather_inst->gather_dimension_numbers();
       attrs->resize(7, -1);
       int idx = 0;
-      (*attrs)[idx++] = gather_dims.index_vector_dim();
+      attrs->at(idx++) = gather_dims.index_vector_dim();
       for (auto d : gather_inst->gather_slice_sizes()) {
-        (*attrs)[idx++] = d;
+        attrs->at(idx++) = d;
       }
       for (auto offset_dim : gather_dims.offset_dims()) {
         add_enum(/*item=*/offset_dim, /*count=*/kDimEnumSize);
@@ -215,7 +208,8 @@ void GetInstructionAttributesAndCounts(HloInstruction* inst,
     case HloOpcode::kIota: {
       // counts: 0,1
       auto iota_inst = dynamic_cast<HloIotaInstruction*>(inst);
-      add_enum(/*item=*/iota_inst->iota_dimension(), /*count=*/kDimEnumSize);
+      add_enum(/*item=*/std::min<int>(6, iota_inst->iota_dimension()),
+               /*count=*/kDimEnumSize);
       add_attr_counts(/*int_count=*/0, /*enum_count=*/7);
       break;
     }

@@ -21,7 +21,8 @@ HloGraph::HloGraph(const HloModule* m, bool do_hash_verification)
       uid_(m->unique_id()),
       name_(m->name()),
       // as of tensorflow==r2.9, this is the number of HLO opcode.
-      kNumOpcodes(118) {
+      kNumOpcodes(118),
+      graph_load_errors_(0) {
   user_list_offsets_ = std::make_shared<std::vector<size_t>>();
   user_list_indices_ = std::make_shared<std::vector<size_t>>();
   operand_list_offsets_ = std::make_shared<std::vector<size_t>>();
@@ -75,8 +76,15 @@ void HloGraph::BuildGraphTopology(const HloComputation* c, int gid) {
       for (auto c : inst->called_computations()) {
         BuildGraphTopology(c, gid + 1);
         auto params = c->parameter_instructions();
-        CHECK_EQ(params.size(), operands.size());
-        for (int i = 0; i < params.size(); ++i) {
+        // TODO(wangyzh): fix the bug that sometimes cross comp param
+        // may get ignored. disable the check temporarily.
+        // CHECK_EQ(params.size(), operands.size());
+        if (params.size() != operands.size()) {
+          LOG(ERROR) << "Incorrect parameter size for called computation!";
+          graph_load_errors_ = graph_load_errors_ + 1;
+        }
+        int operand_size = std::min(params.size(), operands.size());
+        for (int i = 0; i < operand_size; ++i) {
           int op_uid = operands[i]->unique_id();
           int param_uid = params[i]->unique_id();
           out_edge_lists_[op_uid].push_back(param_uid);
@@ -323,9 +331,9 @@ void HloGraph::GenOpcodeAttrCounts() {
     opcode_attr_counts_->at(idx * 2 + 1) = enum_count;
   };
 
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kBroadcast), 6, 0);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kSetDimensionSize), 6,
-                            0);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kBroadcast), 0, 6 * 7);
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kSetDimensionSize), 0,
+                            6 * 7);
   update_opcode_attr_counts(static_cast<int>(HloOpcode::kConcatenate), 0,
                             6 * 7);
   update_opcode_attr_counts(static_cast<int>(HloOpcode::kReduce), 0, 6 * 7);
