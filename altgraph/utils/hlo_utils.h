@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <iostream>
 #include <memory>
+#include <random>
 #include <string>
 #include <tuple>
 #include <unordered_map>
@@ -22,6 +23,7 @@
 #include "tensorflow/compiler/xla/service/hlo_instructions.h"
 #include "tensorflow/compiler/xla/service/hlo_module.h"
 #include "tensorflow/compiler/xla/service/hlo_opcode.h"
+#include "tensorflow/compiler/xla/tools/hlo_extractor.h"
 
 namespace xla {
 // given an instruction, return its attributes (int vector)
@@ -231,6 +233,20 @@ class HloModuleHashWrapper {
 };
 
 uint64_t HloModuleHash(xla::HloModule* module);
+
+HloInstruction* FindInstruction(HloModule* module, HloOpcode opcode);
+
+template <typename T, typename Pred>
+T FilterComputations(const T& comps, Pred predicate) {
+  T result;
+  std::copy_if(comps.begin(), comps.end(), std::back_inserter(result),
+               predicate);
+  return result;
+}
+
+std::unique_ptr<HloModule> ExtractRandomSubmodule(
+    const std::unique_ptr<HloModule>& module, int instruction_count_threshold,
+    int height);
 
 }  // namespace xla
 

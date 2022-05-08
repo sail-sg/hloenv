@@ -14,14 +14,14 @@ py_test(
 tf_cc_test(
     name = "hlo_graph_test",
     srcs = ["hlo_graph_test.cc"],
+    linkstatic = 1,
     deps = [
         "//altgraph:hlo_graph",
+        "@com_google_googletest//:gtest_main",
         "@org_tensorflow//tensorflow/compiler/xla:literal",
         "@org_tensorflow//tensorflow/compiler/xla:literal_util",
         "@org_tensorflow//tensorflow/compiler/xla:shape_util",
-        "@com_google_googletest//:gtest_main",
     ],
-    linkstatic = 1,
 )
 
 tf_cc_test(
@@ -30,17 +30,33 @@ tf_cc_test(
     data = [
         ":test_data",
     ],
+    linkstatic = 1,
     deps = [
         "//altgraph/evaluation:evaluator",
+        "@com_google_googletest//:gtest_main",
         "@org_tensorflow//tensorflow/compiler/xla/pjrt:cpu_device",
         "@org_tensorflow//tensorflow/compiler/xla/service:hlo",
         "@org_tensorflow//tensorflow/compiler/xla/tools:hlo_module_loader",
-        "@com_google_googletest//:gtest_main",
     ],
-    linkstatic = 1,
 )
 
 filegroup(
     name = "test_data",
-    srcs = glob(["*.txt", "hlo_texts/*.txt", "hlo_texts/test_hlos/*.txt"]),
+    srcs = glob([
+        "*.txt",
+        "hlo_texts/*.txt",
+        "hlo_texts/test_hlos/**/*.txt",
+    ]),
+)
+
+sh_test(
+    name = "extract_test",
+    srcs = ["extract_test.sh"],
+    args = [
+        "$(rootpath //altgraph/bin:extract_subgraphs)",
+    ],
+    data = [
+        ":test_data",
+        "//altgraph/bin:extract_subgraphs",
+    ],
 )

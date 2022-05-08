@@ -457,4 +457,63 @@ uint64_t HloModuleHash(xla::HloModule* module) {
   return absl::HashOf(hash_wrapper);
 }
 
+// Note that calling FindInstruction() on a large/full hlo module is not
+// the intended way to use this function.
+HloInstruction* FindInstruction(HloModule* module, HloOpcode opcode) {
+  for (const HloComputation* c : module->computations()) {
+    auto instructions = c->instructions();
+    auto it = absl::c_find_if(
+        instructions, [&](HloInstruction* i) { return i->opcode() == opcode; });
+    if (it != instructions.end()) {
+      return *it;
+    }
+  }
+  return nullptr;
+}
+
+std::unique_ptr<HloModule> ExtractRandomSubmodule(
+    const std::unique_ptr<HloModule>& module, int instruction_count_threshold,
+    int height) {
+  // Return nullptr if total instruction count is too small
+  // or instruction count threshold is larger than the total
+  // instruction count.
+  const int kInstructionCountThreshold = 10;
+  if (module->instruction_count() < kInstructionCountThreshold ||
+      instruction_count_threshold > module->instruction_count()) {
+    return nullptr;
+  }
+  // Select a random instruction in a random computation.
+  auto comps = module->MakeComputationPostOrder();
+  // Pick computation only when its instruction count is large enough.
+  auto filtered_comps = FilterComputations(comps, [](HloComputation* c) {
+    return c->instruction_count() > kInstructionCountThreshold;
+  });
+  if (filtered_comps.empty()) {
+    LOG(ERROR) << "no submodule generated!";
+    return nullptr;
+  }
+  std::random_device device;
+  std::mt19937 generator(device());
+  std::uniform_int_distribution<int> rand_comp(0, filtered_comps.size() - 1);
+  auto instructions =
+      filtered_comps[rand_comp(generator)]->MakeInstructionPostOrder();
+  std::uniform_int_distribution<int> rand_inst(0, instructions.size() - 1);
+  auto inst = instructions[rand_inst(generator)];
+  auto submodule = ExtractModule(inst, height);
+  const int kRetry = 10;
+  int tried = 1;
+  while (FindInstruction(submodule.get(), HloOpcode::kCall) != nullptr ||
+         submodule->instruction_count() < instruction_count_threshold) {
+    // Resample
+    inst = instructions[rand_inst(generator)];
+    submodule = ExtractModule(inst, height);
+    tried++;
+    if (tried == kRetry) {
+      LOG(ERROR) << "no submodule generated!";
+      return nullptr;
+    }
+  }
+  return submodule;
+}
+
 }  // namespace xla

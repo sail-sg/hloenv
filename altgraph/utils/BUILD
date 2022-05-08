@@ -10,6 +10,7 @@ cc_library(
         "@org_tensorflow//tensorflow/compiler/xla:types",
         "@org_tensorflow//tensorflow/compiler/xla:util",
         "@org_tensorflow//tensorflow/compiler/xla/service:hlo",
+        "@org_tensorflow//tensorflow/compiler/xla/tools:hlo_extractor",
         "@org_tensorflow//tensorflow/core:lib",
         "@org_tensorflow//tensorflow/core:lib_internal",
     ],

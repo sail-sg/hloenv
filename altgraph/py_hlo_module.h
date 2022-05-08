@@ -74,6 +74,15 @@ class PyHloModule {
 
   uint64_t Hash() { return xla::HloModuleHash(hlo_module_.get()); }
 
+  std::shared_ptr<PyHloModule> ExtractRandomSubmodule(
+      int instruction_count_threshold, int height) {
+    auto returned_submodule = xla::ExtractRandomSubmodule(
+        hlo_module_, instruction_count_threshold, height);
+    return returned_submodule == nullptr
+               ? nullptr
+               : std::make_shared<PyHloModule>(std::move(returned_submodule));
+  }
+
   xla::HloModuleProto ToProto() { return hlo_module_->ToProto(); }
 
  private:

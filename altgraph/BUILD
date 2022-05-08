@@ -76,6 +76,7 @@ pybind_extension(
         ":py_hlo_graph",
         ":py_hlo_module",
         "//altgraph/evaluation:evaluator",
+        "@com_google_absl//absl/hash",
         "@org_tensorflow//tensorflow/compiler/jit:xla_cpu_jit",
         "@org_tensorflow//tensorflow/compiler/jit:xla_gpu_jit",
         "@org_tensorflow//tensorflow/compiler/xla:literal",
@@ -92,13 +93,22 @@ pybind_extension(
         "@org_tensorflow//tensorflow/compiler/xla/service:hlo_proto_cc",
         "@org_tensorflow//tensorflow/compiler/xla/tools:hlo_module_loader",
         "@org_tensorflow//tensorflow/python:pybind11_lib",
-        "@com_google_absl//absl/hash",
     ],
+)
+
+genrule(
+    name = "gen_extract_subgraphs",
+    srcs = ["//altgraph/bin:extract_subgraphs"],
+    outs = ["extract_subgraphs"],
+    cmd = "cp $< $@ && chmod 755 $@",
 )
 
 py_library(
     name = "altgraph",
     srcs = ["__init__.py"],
-    data = ["hlo_ir.so"],
+    data = [
+        "hlo_ir.so",
+        ":gen_extract_subgraphs",
+    ],
 )
 
