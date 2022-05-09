@@ -340,7 +340,8 @@ PYBIND11_MODULE(hlo_ir, m) {
       .def(py::init<const std::string&>())
       .def("to_string", &PyHloModule::ToString)
       .def("hash", &PyHloModule::Hash)
-      .def("extract_random_submodule", &PyHloModule::ExtractRandomSubmodule);
+      .def("extract_random_submodule", &PyHloModule::ExtractRandomSubmodule)
+      .def("clone", &PyHloModule::Clone);
 
   py::class_<PyHloIr>(m, "PyHloIr")
       .def(py::init<const std::string&, const std::string&, bool, double>(),
