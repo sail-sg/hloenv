@@ -135,14 +135,75 @@ class HloIRTest(absltest.TestCase):
       else:
         logging.info("No more alternatives, ending run...")
       eval_result = hlo_ir.evaluate(10)
+      total_time = 0
       for eval_time_ns in eval_result.durations:
         assert eval_time_ns > 0
-      logging.info("Running time estimation: %d ns", eval_time_ns / 10)
+        total_time += eval_time_ns
+      logging.info("Running time estimation: %d ns", total_time / 10)
 
       count += 1
 
+    assert (count > 1)
+
     logging.info("Running post_fusion_optimizations...")
     hlo_ir.post_fusion_optimizations()
+
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_create_from_module_handle(self) -> None:
+    from random import randrange
+
+    import numpy as np
+    from altgraph import HloIr, HloModule
+
+    import tensorflow
+
+    hlo_module = HloModule(self.hlo_main_test_file)
+
+    hlo_ir = HloIr(hlo_module, "gpu")
+    hlo_ir.pre_fusion_optimizations()
+
+    num_alts = 1
+    count = 1
+    while num_alts > 0:
+      logging.info("\n*****************************************")
+      logging.info("Pass: %d" % count)
+      logging.info("Running fusion dry run")
+      hlo_ir.fusion_dry_run()
+
+      saved_hlo_module = hlo_ir.save_hlo()
+      hlo_ir = HloIr(saved_hlo_module, "gpu")
+
+      hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
+      node_features = hlo_graph.node_features
+      num_operands = node_features.num_operands
+      num_alts = len(hlo_graph.alternative_indices)
+
+      if num_alts > 0:
+        logging.info("Generating decisions...")
+        decisions = []
+        for alt_idx in hlo_graph.alternative_indices:
+          decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+
+        decisions = np.asarray(decisions)
+        # pass the decision back to compilerp
+        logging.info("Applying alternatives...")
+        hlo_ir.apply_alternatives(decisions)
+      else:
+        logging.info("No more alternatives, ending run...")
+        eval_result = hlo_ir.evaluate(1)
+        for eval_time_ns in eval_result.durations:
+          assert eval_time_ns > 0
+          logging.info("Running time estimation: %d ns", eval_time_ns)
+
+      count += 1
+
+    assert (count > 1)
+    logging.info("Running post_fusion_optimizations...")
+    hlo_ir.post_fusion_optimizations()
+    eval_result = hlo_ir.evaluate(1)
+    for eval_time_ns in eval_result.durations:
+      assert eval_time_ns > 0
+      logging.info("Running time estimation: %d ns", eval_time_ns)
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_may_duplicate(self) -> None:
@@ -160,8 +221,10 @@ class HloIRTest(absltest.TestCase):
     while num_alts > 0:
       logging.info("\n*****************************************")
       logging.info("Pass: %d" % count)
-      logging.info("Running fusion dry run, may_duplicate = %s" % (count%2==0))
-      hlo_ir.fusion_dry_run(may_duplicate=(count%2==0))
+      logging.info(
+        "Running fusion dry run, may_duplicate = %s" % (count % 2 == 0)
+      )
+      hlo_ir.fusion_dry_run(may_duplicate=(count % 2 == 0))
       hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
       num_operands = node_features.num_operands
@@ -409,6 +472,8 @@ class HloIRTest(absltest.TestCase):
       else:
         logging.info("No more alternatives, ending run...")
       count += 1
+
+    assert (count > 1)
 
     logging.info("Running post_fusion_optimizations...")
     hlo_ir.post_fusion_optimizations()

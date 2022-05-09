@@ -60,6 +60,9 @@ class PyHloIr {
   // memory_fraction can be used to control the percentage of
   // currently available GPU memory that is preallocated. However if preallocat
   // is set to false, this parameter will be ignored.
+  explicit PyHloIr(std::shared_ptr<PyHloModule>, const std::string& platform,
+                   bool preallocate = false, double memory_fraction = 0.9);
+
   explicit PyHloIr(const std::string& hlo_filepath, const std::string& format,
                    const std::string& platform, bool preallocate = false,
                    double memory_fraction = 0.9);
@@ -67,6 +70,8 @@ class PyHloIr {
   explicit PyHloIr(const std::string& hlo_filepath, const std::string& platform,
                    bool preallocate = false, double memory_fraction = 0.9)
       : PyHloIr(hlo_filepath, "path", platform, preallocate, memory_fraction) {}
+
+  void Init(bool preallocate, double memory_fraction);
 
   std::shared_ptr<PyHloModule> SaveHloModule();
 

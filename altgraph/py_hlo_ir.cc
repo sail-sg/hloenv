@@ -2,15 +2,26 @@
 
 #include "altgraph/py_hlo_ir.h"
 
+PyHloIr::PyHloIr(std::shared_ptr<PyHloModule> py_hlo_module,
+                 const std::string& platform, bool preallocate,
+                 double memory_fraction)
+    : platform_(platform) {
+  py_hlo_module_ = py_hlo_module;
+  Init(preallocate, memory_fraction);
+}
+
 PyHloIr::PyHloIr(const std::string& hlo_input, const std::string& format,
                  const std::string& platform, bool preallocate,
                  double memory_fraction)
     : platform_(platform) {
-  std::unique_ptr<PyHloModule> temp_hlo_module =
-      std::make_unique<PyHloModule>(hlo_input, format);
-  const xla::HloModuleProto hlo_module_proto = temp_hlo_module->ToProto();
+  py_hlo_module_ = std::make_shared<PyHloModule>(hlo_input, format);
+  Init(preallocate, memory_fraction);
+}
 
-  if (platform == "gpu") {
+void PyHloIr::Init(bool preallocate, double memory_fraction) {
+  const xla::HloModuleProto hlo_module_proto = py_hlo_module_->ToProto();
+
+  if (platform_ == "gpu") {
     xla::GpuAllocatorConfig gpu_allocator_config = xla::GpuAllocatorConfig();
     gpu_allocator_config.memory_fraction = memory_fraction;
     gpu_allocator_config.preallocate = preallocate;
@@ -22,7 +33,7 @@ PyHloIr::PyHloIr(const std::string& hlo_input, const std::string& format,
     LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
     // client = GetCpuClient(/*asynchronous=*/true).ValueOrDie();
   } else {
-    LOG(FATAL) << "Unknown platform " << platform;
+    LOG(FATAL) << "Unknown platform " << platform_;
   }
 
   // Compile XlaComputation to PjRtExecutable.
@@ -338,6 +349,7 @@ PYBIND11_MODULE(hlo_ir, m) {
 
   py::class_<PyHloModule, std::shared_ptr<PyHloModule>>(m, "PyHloModule")
       .def(py::init<const std::string&>())
+      .def(py::init<const std::string&, const std::string&>())
       .def("to_string", &PyHloModule::ToString)
       .def("hash", &PyHloModule::Hash)
       .def("extract_random_submodule", &PyHloModule::ExtractRandomSubmodule)
@@ -350,6 +362,10 @@ PYBIND11_MODULE(hlo_ir, m) {
       .def(py::init<const std::string&, const std::string&, const std::string&,
                     bool, double>(),
            py::arg("hlo_data"), py::arg("format"), py::arg("platform"),
+           py::arg("preallocate") = false, py::arg("memory_fraction") = 0.9)
+      .def(py::init<std::shared_ptr<PyHloModule>, const std::string&, bool,
+                    double>(),
+           py::arg("py_hlo_module"), py::arg("platform"),
            py::arg("preallocate") = false, py::arg("memory_fraction") = 0.9)
       .def("evaluate", &PyHloIr::Evaluate)
       .def("has_equal_output", &PyHloIr::HasEqualOutput,
