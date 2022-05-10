@@ -92,6 +92,8 @@ class PyHloIr {
 
   void FusionDryRun(bool may_duplicate = true);
 
+  void GeneralFusionDryRun();
+
   void PostFusionOptimizations();
 
   // TODO(ohcy): Move to utility/PyHloModule

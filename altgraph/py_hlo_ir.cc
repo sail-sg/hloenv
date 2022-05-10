@@ -204,6 +204,16 @@ void PyHloIr::FusionDryRun(bool may_duplicate) {
   }
 }
 
+void PyHloIr::GeneralFusionDryRun() {
+  if (platform_ == "gpu") {
+    gpu_intercept_.compiler->OptimizeHloModuleGeneralFusionRun(
+        py_hlo_module_->hlo_module_ptr(), gpu_intercept_.stream_exec,
+        gpu_intercept_.options.device_allocator);
+  } else if (platform_ == "cpu") {
+    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
+  }
+}
+
 void PyHloIr::PostFusionOptimizations() {
   if (platform_ == "gpu") {
     gpu_intercept_.compiler->OptimizeHloModulePostFusion(
@@ -382,6 +392,7 @@ PYBIND11_MODULE(hlo_ir, m) {
       .def("pre_fusion_optimizations", &PyHloIr::PreFusionOptimizations)
       .def("fusion_dry_run", &PyHloIr::FusionDryRun,
            py::arg("may_duplicate") = true)
+      .def("general_fusion_dry_run", &PyHloIr::GeneralFusionDryRun)
       .def("post_fusion_optimizations", &PyHloIr::PostFusionOptimizations)
       .def("original_run_hlo_passes", &PyHloIr::OriginalRunHloPasses)
       .def("get_hlo_module_hash", &PyHloIr::GetHloModuleHash)
