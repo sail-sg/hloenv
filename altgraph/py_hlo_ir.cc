@@ -181,12 +181,18 @@ void PyHloIr::PreFusionOptimizations() {
   }
 }
 
-void PyHloIr::FusionDryRun(bool may_duplicate) {
+void PyHloIr::PreFusionDryPasses() {
   if (platform_ == "gpu") {
     gpu_intercept_.compiler->OptimizeHloModuleFusionRunPre(
         py_hlo_module_->hlo_module_ptr(), gpu_intercept_.stream_exec,
         gpu_intercept_.options.device_allocator);
+  } else if (platform_ == "cpu") {
+    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
+  }
+}
 
+void PyHloIr::FusionDryRun(bool may_duplicate) {
+  if (platform_ == "gpu") {
     for (xla::HloComputation* computation :
          py_hlo_module_->hlo_module_ptr()->MakeNonfusionComputations()) {
       computation->set_dry(true);
@@ -199,6 +205,16 @@ void PyHloIr::FusionDryRun(bool may_duplicate) {
          py_hlo_module_->hlo_module_ptr()->MakeNonfusionComputations()) {
       computation->set_dry(false);
     }
+  } else if (platform_ == "cpu") {
+    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
+  }
+}
+
+void PyHloIr::PostFusionDryPasses() {
+  if (platform_ == "gpu") {
+    gpu_intercept_.compiler->OptimizeHloModuleFusionRunPost(
+        py_hlo_module_->hlo_module_ptr(), gpu_intercept_.stream_exec,
+        gpu_intercept_.options.device_allocator);
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
   }
@@ -299,10 +315,9 @@ void PyHloIr::ApplyAlternatives(py::array_t<size_t> decisions) {
       // Remove the residue
       computation->Prune();
     }
+    // Remove unused computations created during fusion
+    py_hlo_module_->hlo_module_ptr()->RemoveUnusedComputations();
 
-    gpu_intercept_.compiler->OptimizeHloModuleFusionRunPost(
-        py_hlo_module_->hlo_module_ptr(), gpu_intercept_.stream_exec,
-        gpu_intercept_.options.device_allocator);
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
   }
@@ -392,6 +407,8 @@ PYBIND11_MODULE(hlo_ir, m) {
       .def("pre_fusion_optimizations", &PyHloIr::PreFusionOptimizations)
       .def("fusion_dry_run", &PyHloIr::FusionDryRun,
            py::arg("may_duplicate") = true)
+      .def("post_fusion_dry_passes", &PyHloIr::PostFusionDryPasses)
+      .def("pre_fusion_dry_passes", &PyHloIr::PreFusionDryPasses)
       .def("general_fusion_dry_run", &PyHloIr::GeneralFusionDryRun)
       .def("post_fusion_optimizations", &PyHloIr::PostFusionOptimizations)
       .def("original_run_hlo_passes", &PyHloIr::OriginalRunHloPasses)

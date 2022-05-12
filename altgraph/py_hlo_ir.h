@@ -90,7 +90,11 @@ class PyHloIr {
 
   void PreFusionOptimizations();
 
+  void PreFusionDryPasses();
+
   void FusionDryRun(bool may_duplicate = true);
+
+  void PostFusionDryPasses();
 
   void GeneralFusionDryRun();
 

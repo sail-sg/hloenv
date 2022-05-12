@@ -213,19 +213,16 @@ class HloModuleHashWrapper {
   friend H AbslHashValue(H h, const HloModuleHashWrapper& module_wrapper) {
     xla::HloModule* module = module_wrapper.module_;
 
-    h = H::combine(std::move(h), module->entry_computation_layout());
-    // Use MakeComputationSorted() instead of MakeComputationPostOrder()
-    // because naming may affect the order of MakeComputationPostOrder() but not
-    // MakeComputationSorted().
-    auto computations = module->MakeComputationSorted();
     std::unordered_map<xla::HloInstruction*, uint64_t> inst_hash_map;
     std::unordered_map<xla::HloComputation*, uint64_t> comp_hash_map;
-    for (auto* computation : computations) {
-      HloComputationHashWrapper comp_hash_wrapper = HloComputationHashWrapper(
-          computation, &inst_hash_map, &comp_hash_map);
-      h = H::combine(std::move(h), absl::HashOf(comp_hash_wrapper));
-    }
-    return H::combine(std::move(h), computations.size());
+
+    h = H::combine(std::move(h), module->entry_computation_layout());
+
+    xla::HloComputation* entry_computation = module->entry_computation();
+    HloComputationHashWrapper comp_hash_wrapper = HloComputationHashWrapper(
+        entry_computation, &inst_hash_map, &comp_hash_map);
+    h = H::combine(std::move(h), absl::HashOf(comp_hash_wrapper));
+    return h;
   }
 
  private:

@@ -116,6 +116,7 @@ class HloIRTest(absltest.TestCase):
       logging.info("\n*****************************************")
       logging.info("Pass: %d" % count)
       logging.info("Running fusion dry run")
+      hlo_ir.pre_fusion_dry_passes()
       hlo_ir.fusion_dry_run()
       hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
@@ -132,6 +133,7 @@ class HloIRTest(absltest.TestCase):
         # pass the decision back to compilerp
         logging.info("Applying alternatives...")
         hlo_ir.apply_alternatives(decisions)
+        hlo_ir.post_fusion_dry_passes()
       else:
         logging.info("No more alternatives, ending run...")
       eval_result = hlo_ir.evaluate(10)
@@ -168,6 +170,7 @@ class HloIRTest(absltest.TestCase):
       logging.info("\n*****************************************")
       logging.info("Pass: %d" % count)
       logging.info("Running fusion dry run")
+      hlo_ir.pre_fusion_dry_passes()
       hlo_ir.fusion_dry_run()
 
       saved_hlo_module = hlo_ir.save_hlo()
@@ -188,6 +191,7 @@ class HloIRTest(absltest.TestCase):
         # pass the decision back to compilerp
         logging.info("Applying alternatives...")
         hlo_ir.apply_alternatives(decisions)
+        hlo_ir.post_fusion_dry_passes()
       else:
         logging.info("No more alternatives, ending run...")
         eval_result = hlo_ir.evaluate(1)
@@ -240,6 +244,7 @@ class HloIRTest(absltest.TestCase):
         # pass the decision back to compilerp
         logging.info("Applying alternatives...")
         hlo_ir.apply_alternatives(decisions)
+        hlo_ir.post_fusion_dry_passes()
       else:
         logging.info("No more alternatives, ending run...")
       count += 1
@@ -283,6 +288,7 @@ class HloIRTest(absltest.TestCase):
 
     num_alts = 1
     while num_alts > 0:
+      hlo_ir.pre_fusion_dry_passes()
       hlo_ir.fusion_dry_run()
       hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
@@ -296,6 +302,7 @@ class HloIRTest(absltest.TestCase):
 
         decisions = np.asarray(decisions)
         hlo_ir.apply_alternatives(decisions)
+        hlo_ir.post_fusion_dry_passes()
 
     hlo_ir.post_fusion_optimizations()
     mod_res = hlo_ir.evaluate(1)
@@ -345,6 +352,7 @@ class HloIRTest(absltest.TestCase):
         hlo_ir.pre_fusion_optimizations()
         num_alts = 1
         while num_alts > 0:
+          hlo_ir.pre_fusion_dry_passes()
           hlo_ir.fusion_dry_run()
           hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
           node_features = hlo_graph.node_features
@@ -358,6 +366,7 @@ class HloIRTest(absltest.TestCase):
 
             decisions = np.asarray(decisions)
             hlo_ir.apply_alternatives(decisions)
+            hlo_ir.post_fusion_dry_passes()
 
         hlo_ir.post_fusion_optimizations()
         post_fusion_module = hlo_ir.save_hlo()
@@ -445,6 +454,7 @@ class HloIRTest(absltest.TestCase):
       logging.info("\n*****************************************")
       logging.info("Pass: %d" % count)
       logging.info("Running fusion dry run")
+      hlo_ir.pre_fusion_dry_passes()
       hlo_ir.fusion_dry_run()
       logging.info("Checking load_from_string after: hlo_ir.fusion_dry_run")
       check_load_from_string(hlo_ir)
@@ -464,6 +474,7 @@ class HloIRTest(absltest.TestCase):
         # pass the decision back to compilerp
         logging.info("Applying alternatives...")
         hlo_ir.apply_alternatives(decisions)
+        hlo_ir.post_fusion_dry_passes()
         logging.info(
           "Checking load_from_string after: hlo_ir.apply_alternatives"
         )
@@ -514,6 +525,7 @@ class HloIRTest(absltest.TestCase):
         num_alts = 1
         while num_alts > 0:
           prev_hash = hlo_ir.get_hlo_module_hash()
+          hlo_ir.pre_fusion_dry_passes()
           hlo_ir.fusion_dry_run()
 
           hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
@@ -539,9 +551,54 @@ class HloIRTest(absltest.TestCase):
             decisions = np.asarray(decisions)
             hlo_ir.apply_alternatives(decisions)
             new_hash = hlo_ir.get_hlo_module_hash()
+            hlo_ir.post_fusion_dry_passes()
             assert (prev_hash != new_hash)
 
         hlo_ir.post_fusion_optimizations()
+
+  # Test that if we choose the original nodes, graph and graph hash
+  # stays constant
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_apply_original(self) -> None:
+    from altgraph import HloIr
+    from random import randrange
+    import numpy as np
+
+    base_dir = os.path.dirname(os.path.realpath(__file__))
+    hlo_base_dir = base_dir + "/hlo_texts/test_hlos"
+    for root, dirs, files in os.walk(hlo_base_dir):
+      for file in files:
+
+        filepath = os.path.join(root, file)
+        logging.info("Testing hash for file: " + filepath)
+
+        hlo_ir = HloIr(filepath, "gpu")
+        hlo_ir.pre_fusion_optimizations()
+
+        num_alts = 1
+        while num_alts > 0:
+          prev_hash = hlo_ir.get_hlo_module_hash()
+          hlo_ir.pre_fusion_dry_passes()
+          original_hash = hlo_ir.get_hlo_module_hash()
+          hlo_ir.fusion_dry_run()
+
+          hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
+          node_features = hlo_graph.node_features
+          num_operands = node_features.num_operands
+          num_alts = len(hlo_graph.alternative_indices)
+
+          if num_alts > 0:
+            # Test that hash does not change after apply_alternatives zero
+            decisions = []
+            for alt_idx in hlo_graph.alternative_indices:
+              decisions.append([alt_idx, 0])
+
+            decisions = np.asarray(decisions)
+            hlo_ir.apply_alternatives(decisions)
+            new_hash = hlo_ir.get_hlo_module_hash()
+            assert (original_hash == new_hash)
+
+            break
 
 
 if __name__ == "__main__":
