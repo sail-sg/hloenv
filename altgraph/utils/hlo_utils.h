@@ -245,6 +245,9 @@ std::unique_ptr<HloModule> ExtractRandomSubmodule(
     const std::unique_ptr<HloModule>& module, int instruction_count_threshold,
     int height);
 
+std::vector<std::pair<HloInstruction*, std::unique_ptr<HloModule>>>
+ExtractInstructionsAsModule(const HloModule& module, int repeat = 1000);
+
 }  // namespace xla
 
 #endif  // ALTGRAPH_UTILS_HLO_UTILS_H_

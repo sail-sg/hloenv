@@ -2,6 +2,8 @@
 
 #include "altgraph/utils/hlo_utils.h"
 
+#include <unordered_set>
+
 namespace xla {
 void GetInstructionAttributesAndCounts(HloInstruction* inst,
                                        std::vector<int>* attrs,
@@ -514,6 +516,67 @@ std::unique_ptr<HloModule> ExtractRandomSubmodule(
     }
   }
   return submodule;
+}
+
+std::vector<std::pair<HloInstruction*, std::unique_ptr<HloModule>>>
+ExtractInstructionsAsModule(const HloModule& module, int repeat) {
+  std::vector<std::pair<HloInstruction*, std::unique_ptr<HloModule>>> ret;
+  for (xla::HloComputation* computation : module.computations()) {
+    for (auto instruction : computation->instructions()) {
+      auto instruction_proto = instruction->ToProto();
+      // We skip instructions that calls other computations, like call, reduce,
+      // etc
+      if (!instruction->called_computations().empty()) {
+        continue;
+      }
+
+      // Skip trivial ops
+      std::unordered_set<xla::HloOpcode> uninterested_ops = {
+          xla::HloOpcode::kParameter};
+      if (uninterested_ops.count(
+              xla::StringToHloOpcode(instruction_proto.opcode())
+                  .ValueOrDie())) {
+        continue;
+      }
+
+      absl::flat_hash_map<int64_t, xla::HloInstruction*> id_to_params;
+      xla::HloComputation::Builder computation_builder("new_computation");
+
+      int param_num = 0;
+      // Build params
+      for (int i = 0; i < instruction->operand_count(); i++) {
+        auto parameter = xla::HloInstruction::CreateParameter(
+            param_num++, instruction->operand(i)->shape(),
+            "param" + std::to_string(i));
+        id_to_params.try_emplace(instruction->operand(i)->unique_id(),
+                                 parameter.get());
+        computation_builder.AddInstruction(std::move(parameter));
+      }
+      // Build instructions
+      xla::HloInstruction* last_instruction = nullptr;
+      for (int rep = 0; rep < repeat; rep++) {
+        auto new_instruction = xla::HloInstruction::CreateFromProto(
+                                   instruction_proto, id_to_params, {})
+                                   .ValueOrDie();
+        new_instruction->ClearUniqueIdInternal();
+        if (last_instruction != nullptr) {
+          // old must run before new instruction
+          CHECK(last_instruction->AddControlDependencyTo(new_instruction.get())
+                    .ok());
+        }
+        last_instruction = new_instruction.get();
+        computation_builder.AddInstruction(std::move(new_instruction));
+      }
+      auto new_computation = computation_builder.Build(last_instruction);
+
+      xla::HloModuleConfig config;
+      std::unique_ptr<xla::HloModule> module =
+          std::make_unique<xla::HloModule>("module", config);
+      module->AddEntryComputation(std::move(new_computation));
+      ret.emplace_back(std::make_pair(last_instruction, std::move(module)));
+    }
+  }
+  return ret;
 }
 
 }  // namespace xla

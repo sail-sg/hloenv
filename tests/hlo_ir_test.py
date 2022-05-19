@@ -600,6 +600,16 @@ class HloIRTest(absltest.TestCase):
 
             break
 
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_extract_instruction(self) -> None:
+    from altgraph import HloIr, HloModule
+
+    hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
+    for (instruction, hlo_graph) in hlo_ir.get_hlo_module().extract_instructions_as_module(10):
+        assert(len(instruction) > 0)
+        assert(len(hlo_graph.to_string()) > 0)
+        print(instruction)
+        print(hlo_graph.to_string())
 
 if __name__ == "__main__":
   absltest.main()

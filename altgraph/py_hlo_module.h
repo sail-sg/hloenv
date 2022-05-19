@@ -8,6 +8,7 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "altgraph/utils/hlo_utils.h"
 #include "tensorflow/compiler/xla/service/hlo_module.h"
@@ -81,6 +82,19 @@ class PyHloModule {
     return returned_submodule == nullptr
                ? nullptr
                : std::make_shared<PyHloModule>(std::move(returned_submodule));
+  }
+
+  // TODO(wanxy): Might need a better reprensentation for HloInstruction besides
+  // serialized string
+  std::vector<std::pair<std::string, std::shared_ptr<PyHloModule>>>
+  ExtractInstructionsAsModule(int repeat = 1000) {
+    std::vector<std::pair<std::string, std::shared_ptr<PyHloModule>>> ret;
+    for (auto& ins : xla::ExtractInstructionsAsModule(*hlo_module_, repeat)) {
+      ret.emplace_back(
+          std::make_pair(ins.first->ToString(),
+                         std::make_shared<PyHloModule>(std::move(ins.second))));
+    }
+    return ret;
   }
 
   xla::HloModuleProto ToProto() { return hlo_module_->ToProto(); }
