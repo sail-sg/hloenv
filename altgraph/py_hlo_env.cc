@@ -162,9 +162,13 @@ std::shared_ptr<PyHloModule> PyHloEnv::SaveHloModule() {
   return py_hlo_module_->Clone();
 }
 
-// TODO(ohcy): Enable restore from string or path too
-void PyHloEnv::RestoreHloModule(std::shared_ptr<PyHloModule> saved_hlo_module) {
+void PyHloEnv::LoadHloModule(std::shared_ptr<PyHloModule> saved_hlo_module) {
   py_hlo_module_ = saved_hlo_module;
+}
+
+void PyHloEnv::LoadHloModule(const std::string& hlo_input,
+                             const std::string& format) {
+  py_hlo_module_ = std::make_shared<PyHloModule>(hlo_input, format);
 }
 
 std::string PyHloEnv::ExportHloModuleToStr() {
@@ -297,11 +301,11 @@ void PyHloEnv::ApplyAlternatives(py::array_t<size_t> decisions) {
         py_hlo_graph.get_uid_to_inst();
     for (size_t decisions_idx = 0; decisions_idx < num_decisions;
          decisions_idx++) {
-      size_t node_idx = decisions_ptr[decisions_idx * 2];
+      size_t node_uid = decisions_ptr[decisions_idx * 2];
       size_t decision = decisions_ptr[decisions_idx * 2 + 1];
-      int uid = node_feats.uids->at(node_idx);
+      // int uid = node_feats.uids->at(node_idx);
 
-      xla::HloInstruction* instruction = uid_to_inst.at(uid);
+      xla::HloInstruction* instruction = uid_to_inst.at(node_uid);
 
       // OCYTEMP -> sanity checks while debugging
       if (instruction->opcode() != xla::HloOpcode::kAlternatives) {
@@ -401,7 +405,14 @@ PYBIND11_MODULE(hlo_env, m) {
       .def("has_equal_output_as", &PyHloEnv::HasEqualOutputAs,
            py::arg("other_module"), py::arg("times") = 1)
       .def("save_hlo", &PyHloEnv::SaveHloModule)
-      .def("restore_hlo", &PyHloEnv::RestoreHloModule)
+      .def("load_hlo",
+           static_cast<void (PyHloEnv::*)(std::shared_ptr<PyHloModule>)>(
+               &PyHloEnv::LoadHloModule))
+      .def("load_hlo",
+           static_cast<void (PyHloEnv::*)(const std::string&,
+                                          const std::string&)>(
+               &PyHloEnv::LoadHloModule),
+           py::arg("hlo_data"), py::arg("format") = "path")
       .def("export_hlo_to_str", &PyHloEnv::ExportHloModuleToStr)
       .def("get_hlo_module", &PyHloEnv::GetHloModule)
       .def("get_hlo_graph", &PyHloEnv::GetHloGraph,

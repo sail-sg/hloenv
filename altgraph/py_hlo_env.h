@@ -77,7 +77,9 @@ class PyHloEnv {
 
   std::shared_ptr<PyHloModule> SaveHloModule();
 
-  void RestoreHloModule(std::shared_ptr<PyHloModule> saved_hlo_module);
+  void LoadHloModule(std::shared_ptr<PyHloModule> saved_hlo_module);
+
+  void LoadHloModule(const std::string& hlo_input, const std::string& format);
 
   std::string ExportHloModuleToStr();
 

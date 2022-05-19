@@ -127,7 +127,8 @@ class HloEnvTest(absltest.TestCase):
         logging.info("Generating decisions...")
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
-          decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+          node_uid = node_features.uids[alt_idx]
+          decisions.append([node_uid, randrange(num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
@@ -185,7 +186,8 @@ class HloEnvTest(absltest.TestCase):
         logging.info("Generating decisions...")
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
-          decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+          node_uid = node_features.uids[alt_idx]
+          decisions.append([node_uid, randrange(num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
@@ -238,7 +240,8 @@ class HloEnvTest(absltest.TestCase):
         logging.info("Generating decisions...")
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
-          decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+          node_uid = node_features.uids[alt_idx]
+          decisions.append([node_uid, randrange(num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
@@ -254,18 +257,42 @@ class HloEnvTest(absltest.TestCase):
     hlo_env.evaluate(1)
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
-  def test_save_restore(self) -> None:
+  def test_save_load(self) -> None:
     from altgraph import HloEnv
+
+    # Test normal save/loading
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
 
     init_hlo_str = hlo_env.export_hlo_to_str()
+    init_hlo_hash = hlo_env.get_hlo_module_hash()
     saved_hlo_module = hlo_env.save_hlo()
     hlo_env.pre_fusion_optimizations()
     post_fusion_hlo_str = hlo_env.export_hlo_to_str()
-    hlo_env.restore_hlo(saved_hlo_module)
+    post_fusion_hlo_hash = hlo_env.get_hlo_module_hash()
+    hlo_env.load_hlo(saved_hlo_module)
+    restored_hlo_hash = hlo_env.get_hlo_module_hash()
     restored_hlo_str = hlo_env.export_hlo_to_str()
     assert (init_hlo_str != post_fusion_hlo_str)
+    assert (init_hlo_hash != post_fusion_hlo_hash)
     assert (init_hlo_str == restored_hlo_str)
+    assert (init_hlo_hash == restored_hlo_hash)
+
+    # Test loading from string
+    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+
+    init_hlo_str = hlo_env.export_hlo_to_str()
+    init_hlo_hash = hlo_env.get_hlo_module_hash()
+    saved_hlo_module = hlo_env.save_hlo()
+    hlo_env.pre_fusion_optimizations()
+    post_fusion_hlo_str = hlo_env.export_hlo_to_str()
+    post_fusion_hlo_hash = hlo_env.get_hlo_module_hash()
+    hlo_env.load_hlo(init_hlo_str, "txt")
+    restored_hlo_hash = hlo_env.get_hlo_module_hash()
+    restored_hlo_str = hlo_env.export_hlo_to_str()
+    assert (init_hlo_str != post_fusion_hlo_str)
+    assert (init_hlo_hash != post_fusion_hlo_hash)
+    assert (init_hlo_str == restored_hlo_str)
+    assert (init_hlo_hash == restored_hlo_hash)
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_evaluation(self) -> None:
@@ -284,7 +311,7 @@ class HloEnvTest(absltest.TestCase):
     orig_res = hlo_env.evaluate(1)
     orig_post_opt_module = hlo_env.save_hlo()
 
-    hlo_env.restore_hlo(saved_hlo_module)
+    hlo_env.load_hlo(saved_hlo_module)
 
     num_alts = 1
     while num_alts > 0:
@@ -298,7 +325,8 @@ class HloEnvTest(absltest.TestCase):
       if num_alts > 0:
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
-          decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+          node_uid = node_features.uids[alt_idx]
+          decisions.append([node_uid, randrange(num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         hlo_env.apply_alternatives(decisions)
@@ -347,7 +375,7 @@ class HloEnvTest(absltest.TestCase):
         hlo_env.original_run_hlo_passes()
         # Save reference copy of the module after a non dry-run RunHloPasses call
         reference_hlo_module = hlo_env.save_hlo()
-        hlo_env.restore_hlo(saved_hlo_module)
+        hlo_env.load_hlo(saved_hlo_module)
 
         hlo_env.pre_fusion_optimizations()
         num_alts = 1
@@ -362,7 +390,8 @@ class HloEnvTest(absltest.TestCase):
           if num_alts > 0:
             decisions = []
             for alt_idx in hlo_graph.alternative_indices:
-              decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+              node_uid = node_features.uids[alt_idx]
+              decisions.append([node_uid, randrange(num_operands[alt_idx])])
 
             decisions = np.asarray(decisions)
             hlo_env.apply_alternatives(decisions)
@@ -468,7 +497,8 @@ class HloEnvTest(absltest.TestCase):
         logging.info("Generating decisions...")
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
-          decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+          node_uid = node_features.uids[alt_idx]
+          decisions.append([node_uid, randrange(num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
@@ -513,14 +543,14 @@ class HloEnvTest(absltest.TestCase):
         cloned_hash = saved_hlo_module.hash()
         original_hash = hlo_env.get_hlo_module_hash()
         assert (cloned_hash == original_hash)
-        hlo_env.restore_hlo(saved_hlo_module)
+        hlo_env.load_hlo(saved_hlo_module)
 
         hlo_env.pre_fusion_optimizations()
         saved_hlo_module = hlo_env.save_hlo()
         cloned_hash = saved_hlo_module.hash()
         original_hash = hlo_env.get_hlo_module_hash()
         assert (cloned_hash == original_hash)
-        hlo_env.restore_hlo(saved_hlo_module)
+        hlo_env.load_hlo(saved_hlo_module)
 
         num_alts = 1
         while num_alts > 0:
@@ -540,13 +570,14 @@ class HloEnvTest(absltest.TestCase):
             cloned_hash = saved_hlo_module.hash()
             assert (cloned_hash == new_hash)
             assert (prev_hash != new_hash)
-            hlo_env.restore_hlo(saved_hlo_module)
+            hlo_env.load_hlo(saved_hlo_module)
 
             # Test that hash changes after apply_alternatives
             prev_hash = hlo_env.get_hlo_module_hash()
             decisions = []
             for alt_idx in hlo_graph.alternative_indices:
-              decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+              node_uid = node_features.uids[alt_idx]
+              decisions.append([node_uid, randrange(num_operands[alt_idx])])
 
             decisions = np.asarray(decisions)
             hlo_env.apply_alternatives(decisions)
@@ -591,7 +622,8 @@ class HloEnvTest(absltest.TestCase):
             # Test that hash does not change after apply_alternatives zero
             decisions = []
             for alt_idx in hlo_graph.alternative_indices:
-              decisions.append([alt_idx, 0])
+              node_id = node_features.uids[alt_idx]
+              decisions.append([node_id, 0])
 
             decisions = np.asarray(decisions)
             hlo_env.apply_alternatives(decisions)
@@ -611,7 +643,6 @@ class HloEnvTest(absltest.TestCase):
       assert (len(hlo_graph.to_string()) > 0)
       print(instruction)
       print(hlo_graph.to_string())
-
 
 if __name__ == "__main__":
   absltest.main()
