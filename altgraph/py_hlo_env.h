@@ -15,6 +15,7 @@
 
 #include "absl/hash/hash.h"
 #include "altgraph/evaluation/evaluator.h"
+#include "altgraph/gpu_backend.h"
 #include "altgraph/py_hlo_graph.h"
 #include "altgraph/py_hlo_module.h"
 #include "tensorflow/compiler/xla/literal.h"
@@ -44,10 +45,7 @@ class PyHloEnv {
 
  private:
   std::shared_ptr<PyHloModule> py_hlo_module_;
-  xla::Intercept<xla::cpu::CpuCompiler> cpu_intercept_;
-  xla::Intercept<xla::gpu::GpuCompiler> gpu_intercept_;
   const std::string platform_;
-  std::unique_ptr<xla::PjRtClient> client_;
   xla::Evaluator evaluator_;
 
  public:
@@ -60,18 +58,14 @@ class PyHloEnv {
   // memory_fraction can be used to control the percentage of
   // currently available GPU memory that is preallocated. However if preallocat
   // is set to false, this parameter will be ignored.
-  explicit PyHloEnv(std::shared_ptr<PyHloModule>, const std::string& platform,
-                    bool preallocate = false, double memory_fraction = 0.9);
+  explicit PyHloEnv(std::shared_ptr<PyHloModule>, const std::string& platform);
 
   explicit PyHloEnv(const std::string& hlo_filepath, const std::string& format,
-                    const std::string& platform, bool preallocate = false,
-                    double memory_fraction = 0.9);
+                    const std::string& platform);
 
   explicit PyHloEnv(const std::string& hlo_filepath,
-                    const std::string& platform, bool preallocate = false,
-                    double memory_fraction = 0.9)
-      : PyHloEnv(hlo_filepath, "path", platform, preallocate, memory_fraction) {
-  }
+                    const std::string& platform)
+      : PyHloEnv(hlo_filepath, "path", platform) {}
 
   void Init(bool preallocate, double memory_fraction);
 

@@ -61,6 +61,19 @@ pybind_library(
     ],
 )
 
+cc_library(
+    name = "gpu_backend",
+    hdrs = ["gpu_backend.h"],
+    deps = [
+        "@org_tensorflow//tensorflow/compiler/xla/service:hlo",
+        "@org_tensorflow//tensorflow/compiler/xla/pjrt:gpu_device",
+        "@org_tensorflow//tensorflow/compiler/xla/pjrt:pjrt_client",
+        "@org_tensorflow//tensorflow/compiler/xla/service:hlo_pass_pipeline",
+        "@org_tensorflow//tensorflow/compiler/xla/service:hlo_proto_cc",
+        "@org_tensorflow//tensorflow/compiler/xla/tools:hlo_module_loader",
+    ],
+)
+
 pybind_extension(
     name = "hlo_env",
     srcs = ["py_hlo_env.cc"],
@@ -73,6 +86,7 @@ pybind_extension(
     ],
     module_name = "hlo_env",
     deps = [
+        ":gpu_backend",
         ":py_hlo_graph",
         ":py_hlo_module",
         "//altgraph/evaluation:evaluator",

@@ -65,7 +65,6 @@ class HloEnvTest(absltest.TestCase):
     _ = in_edge_features.get_tensor_size(0)
 
     num_out_edges = len(out_edge_features.uids)
-    assert (num_out_edges == num_out_edges)
     assert (len(out_edge_features.srcs) == num_out_edges)
     assert (len(out_edge_features.dsts) == num_out_edges)
     assert (len(out_edge_features.dims) == num_out_edges * 8)
@@ -405,46 +404,6 @@ class HloEnvTest(absltest.TestCase):
         )
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
-  def test_preallocate(self) -> None:
-    from altgraph import HloEnv
-    import nvsmi
-
-    hlo_env = HloEnv(
-      self.hlo_main_test_file, "gpu", preallocate=False, memory_fraction=0.5
-    )
-    hlo_env.evaluate(1)
-    actual_mem_util = next(nvsmi.get_gpus()).mem_util
-    assert (actual_mem_util < 5)
-    del hlo_env
-
-    hlo_env = HloEnv(
-      self.hlo_main_test_file, "gpu", preallocate=True, memory_fraction=0.5
-    )
-    hlo_env.evaluate(1)
-    actual_mem_util = next(nvsmi.get_gpus()).mem_util
-    assert (abs(actual_mem_util - 50) < 5)
-    del hlo_env
-
-    hlo_env = HloEnv(
-      self.hlo_main_test_file, "gpu", preallocate=True, memory_fraction=0.75
-    )
-    hlo_env.evaluate(1)
-    actual_mem_util = next(nvsmi.get_gpus()).mem_util
-    assert (abs(actual_mem_util - 75) < 15)
-    del hlo_env
-
-    hlo_env50 = HloEnv(
-      self.hlo_main_test_file, "gpu", preallocate=True, memory_fraction=0.5
-    )
-    hlo_env50.evaluate(1)
-    hlo_env25 = HloEnv(
-      self.hlo_main_test_file, "gpu", preallocate=True, memory_fraction=0.25
-    )
-    hlo_env25.evaluate(1)
-    actual_mem_util = next(nvsmi.get_gpus()).mem_util
-    assert (actual_mem_util < 80)
-
-  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_load_from_string(self) -> None:
     from random import randrange
 
@@ -643,6 +602,7 @@ class HloEnvTest(absltest.TestCase):
       assert (len(hlo_graph.to_string()) > 0)
       print(instruction)
       print(hlo_graph.to_string())
+
 
 if __name__ == "__main__":
   absltest.main()
