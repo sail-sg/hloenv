@@ -2,8 +2,8 @@ load("@org_tensorflow//tensorflow:tensorflow.bzl", "tf_cc_test")
 load("@locked_deps//:requirements.bzl", "requirement")
 
 py_test(
-    name = "hlo_ir_test",
-    srcs = ["hlo_ir_test.py"],
+    name = "hlo_env_test",
+    srcs = ["hlo_env_test.py"],
     data = [":test_data"],
     deps = [
         "//altgraph",

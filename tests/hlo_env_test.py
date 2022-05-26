@@ -4,7 +4,7 @@ from absl import logging
 from absl.testing import absltest
 
 
-class HloIRTest(absltest.TestCase):
+class HloEnvTest(absltest.TestCase):
   """Placeholder for some real tests
   """
 
@@ -23,9 +23,9 @@ class HloIRTest(absltest.TestCase):
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_graph_interfaces(self) -> None:
-    from altgraph import HloIr
-    hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
-    hlo_graph = hlo_ir.get_hlo_graph()
+    from altgraph import HloEnv
+    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+    hlo_graph = hlo_env.get_hlo_graph()
 
     assert (len(hlo_graph.out_edge_offsets) > 0)
     assert (len(hlo_graph.out_edge_indices) > 0)
@@ -77,38 +77,38 @@ class HloIRTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import HloIr, HloModule
+    from altgraph import HloEnv, HloModule
 
     import tensorflow
 
-    hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
+    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
 
     hlo_module_ref = HloModule(self.hlo_main_test_file)
     hlo_module_str_ref = hlo_module_ref.to_string()
     hlo_module_hash_ref = hlo_module_ref.hash()
 
-    hlo_module_from_ir = hlo_ir.get_hlo_module()
+    hlo_module_from_ir = hlo_env.get_hlo_module()
     hlo_module_from_ir_str = hlo_module_from_ir.to_string()
     hlo_module_from_ir_hash = hlo_module_from_ir.hash()
 
-    hlo_ir_hlo_str = hlo_ir.export_hlo_to_str()
-    hlo_ir_hlo_hash = hlo_ir.get_hlo_module_hash()
+    hlo_env_hlo_str = hlo_env.export_hlo_to_str()
+    hlo_env_hlo_hash = hlo_env.get_hlo_module_hash()
 
-    assert (hlo_module_str_ref == hlo_module_from_ir_str == hlo_ir_hlo_str)
-    assert (hlo_module_hash_ref == hlo_module_from_ir_hash == hlo_ir_hlo_hash)
+    assert (hlo_module_str_ref == hlo_module_from_ir_str == hlo_env_hlo_str)
+    assert (hlo_module_hash_ref == hlo_module_from_ir_hash == hlo_env_hlo_hash)
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_basic(self) -> None:
     from random import randrange
 
     import numpy as np
-    from altgraph import HloIr
+    from altgraph import HloEnv
 
     import tensorflow
 
-    hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
+    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
 
-    hlo_ir.pre_fusion_optimizations()
+    hlo_env.pre_fusion_optimizations()
 
     num_alts = 1
     count = 1
@@ -116,9 +116,9 @@ class HloIRTest(absltest.TestCase):
       logging.info("\n*****************************************")
       logging.info("Pass: %d" % count)
       logging.info("Running fusion dry run")
-      hlo_ir.pre_fusion_dry_passes()
-      hlo_ir.fusion_dry_run()
-      hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
+      hlo_env.pre_fusion_dry_passes()
+      hlo_env.fusion_dry_run()
+      hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
       num_operands = node_features.num_operands
       num_alts = len(hlo_graph.alternative_indices)
@@ -132,11 +132,11 @@ class HloIRTest(absltest.TestCase):
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
         logging.info("Applying alternatives...")
-        hlo_ir.apply_alternatives(decisions)
-        hlo_ir.post_fusion_dry_passes()
+        hlo_env.apply_alternatives(decisions)
+        hlo_env.post_fusion_dry_passes()
       else:
         logging.info("No more alternatives, ending run...")
-      eval_result = hlo_ir.evaluate(10)
+      eval_result = hlo_env.evaluate(10)
       total_time = 0
       for eval_time_ns in eval_result.durations:
         assert eval_time_ns > 0
@@ -148,21 +148,21 @@ class HloIRTest(absltest.TestCase):
     assert (count > 1)
 
     logging.info("Running post_fusion_optimizations...")
-    hlo_ir.post_fusion_optimizations()
+    hlo_env.post_fusion_optimizations()
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_create_from_module_handle(self) -> None:
     from random import randrange
 
     import numpy as np
-    from altgraph import HloIr, HloModule
+    from altgraph import HloEnv, HloModule
 
     import tensorflow
 
     hlo_module = HloModule(self.hlo_main_test_file)
 
-    hlo_ir = HloIr(hlo_module, "gpu")
-    hlo_ir.pre_fusion_optimizations()
+    hlo_env = HloEnv(hlo_module, "gpu")
+    hlo_env.pre_fusion_optimizations()
 
     num_alts = 1
     count = 1
@@ -170,13 +170,13 @@ class HloIRTest(absltest.TestCase):
       logging.info("\n*****************************************")
       logging.info("Pass: %d" % count)
       logging.info("Running fusion dry run")
-      hlo_ir.pre_fusion_dry_passes()
-      hlo_ir.fusion_dry_run()
+      hlo_env.pre_fusion_dry_passes()
+      hlo_env.fusion_dry_run()
 
-      saved_hlo_module = hlo_ir.save_hlo()
-      hlo_ir = HloIr(saved_hlo_module, "gpu")
+      saved_hlo_module = hlo_env.save_hlo()
+      hlo_env = HloEnv(saved_hlo_module, "gpu")
 
-      hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
+      hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
       num_operands = node_features.num_operands
       num_alts = len(hlo_graph.alternative_indices)
@@ -190,11 +190,11 @@ class HloIRTest(absltest.TestCase):
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
         logging.info("Applying alternatives...")
-        hlo_ir.apply_alternatives(decisions)
-        hlo_ir.post_fusion_dry_passes()
+        hlo_env.apply_alternatives(decisions)
+        hlo_env.post_fusion_dry_passes()
       else:
         logging.info("No more alternatives, ending run...")
-        eval_result = hlo_ir.evaluate(1)
+        eval_result = hlo_env.evaluate(1)
         for eval_time_ns in eval_result.durations:
           assert eval_time_ns > 0
           logging.info("Running time estimation: %d ns", eval_time_ns)
@@ -203,8 +203,8 @@ class HloIRTest(absltest.TestCase):
 
     assert (count > 1)
     logging.info("Running post_fusion_optimizations...")
-    hlo_ir.post_fusion_optimizations()
-    eval_result = hlo_ir.evaluate(1)
+    hlo_env.post_fusion_optimizations()
+    eval_result = hlo_env.evaluate(1)
     for eval_time_ns in eval_result.durations:
       assert eval_time_ns > 0
       logging.info("Running time estimation: %d ns", eval_time_ns)
@@ -212,13 +212,13 @@ class HloIRTest(absltest.TestCase):
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_may_duplicate(self) -> None:
     import tensorflow
-    from altgraph import HloIr
+    from altgraph import HloEnv
     from random import randrange
     import numpy as np
 
-    hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
+    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
 
-    hlo_ir.pre_fusion_optimizations()
+    hlo_env.pre_fusion_optimizations()
 
     num_alts = 1
     count = 1
@@ -228,8 +228,8 @@ class HloIRTest(absltest.TestCase):
       logging.info(
         "Running fusion dry run, may_duplicate = %s" % (count % 2 == 0)
       )
-      hlo_ir.fusion_dry_run(may_duplicate=(count % 2 == 0))
-      hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
+      hlo_env.fusion_dry_run(may_duplicate=(count % 2 == 0))
+      hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
       num_operands = node_features.num_operands
       num_alts = len(hlo_graph.alternative_indices)
@@ -243,27 +243,27 @@ class HloIRTest(absltest.TestCase):
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
         logging.info("Applying alternatives...")
-        hlo_ir.apply_alternatives(decisions)
-        hlo_ir.post_fusion_dry_passes()
+        hlo_env.apply_alternatives(decisions)
+        hlo_env.post_fusion_dry_passes()
       else:
         logging.info("No more alternatives, ending run...")
       count += 1
 
     logging.info("Running post_fusion_optimizations...")
-    hlo_ir.post_fusion_optimizations()
-    hlo_ir.evaluate(1)
+    hlo_env.post_fusion_optimizations()
+    hlo_env.evaluate(1)
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_save_restore(self) -> None:
-    from altgraph import HloIr
-    hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
+    from altgraph import HloEnv
+    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
 
-    init_hlo_str = hlo_ir.export_hlo_to_str()
-    saved_hlo_module = hlo_ir.save_hlo()
-    hlo_ir.pre_fusion_optimizations()
-    post_fusion_hlo_str = hlo_ir.export_hlo_to_str()
-    hlo_ir.restore_hlo(saved_hlo_module)
-    restored_hlo_str = hlo_ir.export_hlo_to_str()
+    init_hlo_str = hlo_env.export_hlo_to_str()
+    saved_hlo_module = hlo_env.save_hlo()
+    hlo_env.pre_fusion_optimizations()
+    post_fusion_hlo_str = hlo_env.export_hlo_to_str()
+    hlo_env.restore_hlo(saved_hlo_module)
+    restored_hlo_str = hlo_env.export_hlo_to_str()
     assert (init_hlo_str != post_fusion_hlo_str)
     assert (init_hlo_str == restored_hlo_str)
 
@@ -272,25 +272,25 @@ class HloIRTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import HloIr
+    from altgraph import HloEnv
 
-    hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
+    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
 
-    hlo_ir.pre_fusion_optimizations()
-    saved_hlo_module = hlo_ir.save_hlo()
+    hlo_env.pre_fusion_optimizations()
+    saved_hlo_module = hlo_env.save_hlo()
     # Restore back to original, where we only did pre_fusion_optimizations
-    hlo_ir.post_fusion_optimizations()
+    hlo_env.post_fusion_optimizations()
 
-    orig_res = hlo_ir.evaluate(1)
-    orig_post_opt_module = hlo_ir.save_hlo()
+    orig_res = hlo_env.evaluate(1)
+    orig_post_opt_module = hlo_env.save_hlo()
 
-    hlo_ir.restore_hlo(saved_hlo_module)
+    hlo_env.restore_hlo(saved_hlo_module)
 
     num_alts = 1
     while num_alts > 0:
-      hlo_ir.pre_fusion_dry_passes()
-      hlo_ir.fusion_dry_run()
-      hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
+      hlo_env.pre_fusion_dry_passes()
+      hlo_env.fusion_dry_run()
+      hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
       num_operands = node_features.num_operands
       num_alts = len(hlo_graph.alternative_indices)
@@ -301,12 +301,12 @@ class HloIRTest(absltest.TestCase):
           decisions.append([alt_idx, randrange(num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
-        hlo_ir.apply_alternatives(decisions)
-        hlo_ir.post_fusion_dry_passes()
+        hlo_env.apply_alternatives(decisions)
+        hlo_env.post_fusion_dry_passes()
 
-    hlo_ir.post_fusion_optimizations()
-    mod_res = hlo_ir.evaluate(1)
-    assert (hlo_ir.has_equal_output_as(orig_post_opt_module))
+    hlo_env.post_fusion_optimizations()
+    mod_res = hlo_env.evaluate(1)
+    assert (hlo_env.has_equal_output_as(orig_post_opt_module))
 
     est_time_orig = sum(orig_res.durations) / len(orig_res.durations)
     est_time_mod = sum(mod_res.durations) / len(mod_res.durations)
@@ -331,7 +331,7 @@ class HloIRTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import HloIr
+    from altgraph import HloEnv
 
     base_dir = os.path.dirname(os.path.realpath(__file__))
     hlo_base_dir = base_dir + "/hlo_texts/test_hlos"
@@ -341,20 +341,20 @@ class HloIRTest(absltest.TestCase):
         filepath = os.path.join(root, file)
         logging.info("Testing validation for file: " + filepath)
 
-        hlo_ir = HloIr(filepath, "gpu")
+        hlo_env = HloEnv(filepath, "gpu")
 
-        saved_hlo_module = hlo_ir.save_hlo()
-        hlo_ir.original_run_hlo_passes()
+        saved_hlo_module = hlo_env.save_hlo()
+        hlo_env.original_run_hlo_passes()
         # Save reference copy of the module after a non dry-run RunHloPasses call
-        reference_hlo_module = hlo_ir.save_hlo()
-        hlo_ir.restore_hlo(saved_hlo_module)
+        reference_hlo_module = hlo_env.save_hlo()
+        hlo_env.restore_hlo(saved_hlo_module)
 
-        hlo_ir.pre_fusion_optimizations()
+        hlo_env.pre_fusion_optimizations()
         num_alts = 1
         while num_alts > 0:
-          hlo_ir.pre_fusion_dry_passes()
-          hlo_ir.fusion_dry_run()
-          hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
+          hlo_env.pre_fusion_dry_passes()
+          hlo_env.fusion_dry_run()
+          hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
           node_features = hlo_graph.node_features
           num_operands = node_features.num_operands
           num_alts = len(hlo_graph.alternative_indices)
@@ -365,53 +365,53 @@ class HloIRTest(absltest.TestCase):
               decisions.append([alt_idx, randrange(num_operands[alt_idx])])
 
             decisions = np.asarray(decisions)
-            hlo_ir.apply_alternatives(decisions)
-            hlo_ir.post_fusion_dry_passes()
+            hlo_env.apply_alternatives(decisions)
+            hlo_env.post_fusion_dry_passes()
 
-        hlo_ir.post_fusion_optimizations()
-        post_fusion_module = hlo_ir.save_hlo()
+        hlo_env.post_fusion_optimizations()
+        post_fusion_module = hlo_env.save_hlo()
 
         assert (
-          hlo_ir.has_equal_output(post_fusion_module, reference_hlo_module)
+          hlo_env.has_equal_output(post_fusion_module, reference_hlo_module)
         )
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_preallocate(self) -> None:
-    from altgraph import HloIr
+    from altgraph import HloEnv
     import nvsmi
 
-    hlo_ir = HloIr(
+    hlo_env = HloEnv(
       self.hlo_main_test_file, "gpu", preallocate=False, memory_fraction=0.5
     )
-    hlo_ir.evaluate(1)
+    hlo_env.evaluate(1)
     actual_mem_util = next(nvsmi.get_gpus()).mem_util
     assert (actual_mem_util < 5)
-    del hlo_ir
+    del hlo_env
 
-    hlo_ir = HloIr(
+    hlo_env = HloEnv(
       self.hlo_main_test_file, "gpu", preallocate=True, memory_fraction=0.5
     )
-    hlo_ir.evaluate(1)
+    hlo_env.evaluate(1)
     actual_mem_util = next(nvsmi.get_gpus()).mem_util
     assert (abs(actual_mem_util - 50) < 5)
-    del hlo_ir
+    del hlo_env
 
-    hlo_ir = HloIr(
+    hlo_env = HloEnv(
       self.hlo_main_test_file, "gpu", preallocate=True, memory_fraction=0.75
     )
-    hlo_ir.evaluate(1)
+    hlo_env.evaluate(1)
     actual_mem_util = next(nvsmi.get_gpus()).mem_util
     assert (abs(actual_mem_util - 75) < 15)
-    del hlo_ir
+    del hlo_env
 
-    hlo_ir50 = HloIr(
+    hlo_env50 = HloEnv(
       self.hlo_main_test_file, "gpu", preallocate=True, memory_fraction=0.5
     )
-    hlo_ir50.evaluate(1)
-    hlo_ir25 = HloIr(
+    hlo_env50.evaluate(1)
+    hlo_env25 = HloEnv(
       self.hlo_main_test_file, "gpu", preallocate=True, memory_fraction=0.25
     )
-    hlo_ir25.evaluate(1)
+    hlo_env25.evaluate(1)
     actual_mem_util = next(nvsmi.get_gpus()).mem_util
     assert (actual_mem_util < 80)
 
@@ -420,33 +420,33 @@ class HloIRTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import HloIr
+    from altgraph import HloEnv
 
     import tensorflow
 
-    def check_load_from_string(hlo_ir):
-      hlo_string = hlo_ir.export_hlo_to_str()
-      hlo_ir_loaded_from_str = HloIr(hlo_string, "txt", "gpu")
+    def check_load_from_string(hlo_env):
+      hlo_string = hlo_env.export_hlo_to_str()
+      hlo_env_loaded_from_str = HloEnv(hlo_string, "txt", "gpu")
       assert (
-        hlo_ir.get_hlo_module_hash() ==
-        hlo_ir_loaded_from_str.get_hlo_module_hash()
+        hlo_env.get_hlo_module_hash() ==
+        hlo_env_loaded_from_str.get_hlo_module_hash()
       )
 
-    hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
+    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     logging.info(
-      "Checking load_from_string after: hlo_ir = HloIr(%s, %s)" %
+      "Checking load_from_string after: hlo_env = HloEnv(%s, %s)" %
       (self.hlo_main_test_file, "gpu")
     )
-    check_load_from_string(hlo_ir)
+    check_load_from_string(hlo_env)
 
-    hlo_string = hlo_ir.export_hlo_to_str()
-    hlo_ir = HloIr(hlo_string, "txt", "gpu")
+    hlo_string = hlo_env.export_hlo_to_str()
+    hlo_env = HloEnv(hlo_string, "txt", "gpu")
 
-    hlo_ir.pre_fusion_optimizations()
+    hlo_env.pre_fusion_optimizations()
     logging.info(
-      "Checking load_from_string after: hlo_ir.pre_fusion_optimizations"
+      "Checking load_from_string after: hlo_env.pre_fusion_optimizations"
     )
-    check_load_from_string(hlo_ir)
+    check_load_from_string(hlo_env)
 
     num_alts = 1
     count = 1
@@ -454,12 +454,12 @@ class HloIRTest(absltest.TestCase):
       logging.info("\n*****************************************")
       logging.info("Pass: %d" % count)
       logging.info("Running fusion dry run")
-      hlo_ir.pre_fusion_dry_passes()
-      hlo_ir.fusion_dry_run()
-      logging.info("Checking load_from_string after: hlo_ir.fusion_dry_run")
-      check_load_from_string(hlo_ir)
+      hlo_env.pre_fusion_dry_passes()
+      hlo_env.fusion_dry_run()
+      logging.info("Checking load_from_string after: hlo_env.fusion_dry_run")
+      check_load_from_string(hlo_env)
 
-      hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
+      hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
       num_operands = node_features.num_operands
       num_alts = len(hlo_graph.alternative_indices)
@@ -473,12 +473,12 @@ class HloIRTest(absltest.TestCase):
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
         logging.info("Applying alternatives...")
-        hlo_ir.apply_alternatives(decisions)
-        hlo_ir.post_fusion_dry_passes()
+        hlo_env.apply_alternatives(decisions)
+        hlo_env.post_fusion_dry_passes()
         logging.info(
-          "Checking load_from_string after: hlo_ir.apply_alternatives"
+          "Checking load_from_string after: hlo_env.apply_alternatives"
         )
-        check_load_from_string(hlo_ir)
+        check_load_from_string(hlo_env)
 
       else:
         logging.info("No more alternatives, ending run...")
@@ -487,15 +487,15 @@ class HloIRTest(absltest.TestCase):
     assert (count > 1)
 
     logging.info("Running post_fusion_optimizations...")
-    hlo_ir.post_fusion_optimizations()
+    hlo_env.post_fusion_optimizations()
     logging.info(
-      "Checking load_from_string after: hlo_ir.post_fusion_optimizations"
+      "Checking load_from_string after: hlo_env.post_fusion_optimizations"
     )
-    check_load_from_string(hlo_ir)
+    check_load_from_string(hlo_env)
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_hash(self) -> None:
-    from altgraph import HloIr
+    from altgraph import HloEnv
     from random import randrange
     import numpy as np
 
@@ -507,60 +507,60 @@ class HloIRTest(absltest.TestCase):
         filepath = os.path.join(root, file)
         logging.info("Testing hash for file: " + filepath)
 
-        hlo_ir = HloIr(filepath, "gpu")
+        hlo_env = HloEnv(filepath, "gpu")
 
-        saved_hlo_module = hlo_ir.save_hlo()
+        saved_hlo_module = hlo_env.save_hlo()
         cloned_hash = saved_hlo_module.hash()
-        original_hash = hlo_ir.get_hlo_module_hash()
+        original_hash = hlo_env.get_hlo_module_hash()
         assert (cloned_hash == original_hash)
-        hlo_ir.restore_hlo(saved_hlo_module)
+        hlo_env.restore_hlo(saved_hlo_module)
 
-        hlo_ir.pre_fusion_optimizations()
-        saved_hlo_module = hlo_ir.save_hlo()
+        hlo_env.pre_fusion_optimizations()
+        saved_hlo_module = hlo_env.save_hlo()
         cloned_hash = saved_hlo_module.hash()
-        original_hash = hlo_ir.get_hlo_module_hash()
+        original_hash = hlo_env.get_hlo_module_hash()
         assert (cloned_hash == original_hash)
-        hlo_ir.restore_hlo(saved_hlo_module)
+        hlo_env.restore_hlo(saved_hlo_module)
 
         num_alts = 1
         while num_alts > 0:
-          prev_hash = hlo_ir.get_hlo_module_hash()
-          hlo_ir.pre_fusion_dry_passes()
-          hlo_ir.fusion_dry_run()
+          prev_hash = hlo_env.get_hlo_module_hash()
+          hlo_env.pre_fusion_dry_passes()
+          hlo_env.fusion_dry_run()
 
-          hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
+          hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
           node_features = hlo_graph.node_features
           num_operands = node_features.num_operands
           num_alts = len(hlo_graph.alternative_indices)
 
           if num_alts > 0:
             # Test that hash changes after fusion_dry_run
-            new_hash = hlo_ir.get_hlo_module_hash()
-            saved_hlo_module = hlo_ir.save_hlo()
+            new_hash = hlo_env.get_hlo_module_hash()
+            saved_hlo_module = hlo_env.save_hlo()
             cloned_hash = saved_hlo_module.hash()
             assert (cloned_hash == new_hash)
             assert (prev_hash != new_hash)
-            hlo_ir.restore_hlo(saved_hlo_module)
+            hlo_env.restore_hlo(saved_hlo_module)
 
             # Test that hash changes after apply_alternatives
-            prev_hash = hlo_ir.get_hlo_module_hash()
+            prev_hash = hlo_env.get_hlo_module_hash()
             decisions = []
             for alt_idx in hlo_graph.alternative_indices:
               decisions.append([alt_idx, randrange(num_operands[alt_idx])])
 
             decisions = np.asarray(decisions)
-            hlo_ir.apply_alternatives(decisions)
-            new_hash = hlo_ir.get_hlo_module_hash()
-            hlo_ir.post_fusion_dry_passes()
+            hlo_env.apply_alternatives(decisions)
+            new_hash = hlo_env.get_hlo_module_hash()
+            hlo_env.post_fusion_dry_passes()
             assert (prev_hash != new_hash)
 
-        hlo_ir.post_fusion_optimizations()
+        hlo_env.post_fusion_optimizations()
 
   # Test that if we choose the original nodes, graph and graph hash
   # stays constant
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_apply_original(self) -> None:
-    from altgraph import HloIr
+    from altgraph import HloEnv
     from random import randrange
     import numpy as np
 
@@ -572,17 +572,17 @@ class HloIRTest(absltest.TestCase):
         filepath = os.path.join(root, file)
         logging.info("Testing hash for file: " + filepath)
 
-        hlo_ir = HloIr(filepath, "gpu")
-        hlo_ir.pre_fusion_optimizations()
+        hlo_env = HloEnv(filepath, "gpu")
+        hlo_env.pre_fusion_optimizations()
 
         num_alts = 1
         while num_alts > 0:
-          prev_hash = hlo_ir.get_hlo_module_hash()
-          hlo_ir.pre_fusion_dry_passes()
-          original_hash = hlo_ir.get_hlo_module_hash()
-          hlo_ir.fusion_dry_run()
+          prev_hash = hlo_env.get_hlo_module_hash()
+          hlo_env.pre_fusion_dry_passes()
+          original_hash = hlo_env.get_hlo_module_hash()
+          hlo_env.fusion_dry_run()
 
-          hlo_graph = hlo_ir.get_hlo_graph(do_hash_verification=False)
+          hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
           node_features = hlo_graph.node_features
           num_operands = node_features.num_operands
           num_alts = len(hlo_graph.alternative_indices)
@@ -594,22 +594,24 @@ class HloIRTest(absltest.TestCase):
               decisions.append([alt_idx, 0])
 
             decisions = np.asarray(decisions)
-            hlo_ir.apply_alternatives(decisions)
-            new_hash = hlo_ir.get_hlo_module_hash()
+            hlo_env.apply_alternatives(decisions)
+            new_hash = hlo_env.get_hlo_module_hash()
             assert (original_hash == new_hash)
 
             break
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_extract_instruction(self) -> None:
-    from altgraph import HloIr, HloModule
+    from altgraph import HloEnv, HloModule
 
-    hlo_ir = HloIr(self.hlo_main_test_file, "gpu")
-    for (instruction, hlo_graph) in hlo_ir.get_hlo_module().extract_instructions_as_module(10):
-        assert(len(instruction) > 0)
-        assert(len(hlo_graph.to_string()) > 0)
-        print(instruction)
-        print(hlo_graph.to_string())
+    hlo_ir = HloEnv(self.hlo_main_test_file, "gpu")
+    for (instruction, hlo_graph
+        ) in hlo_ir.get_hlo_module().extract_instructions_as_module(10):
+      assert (len(instruction) > 0)
+      assert (len(hlo_graph.to_string()) > 0)
+      print(instruction)
+      print(hlo_graph.to_string())
+
 
 if __name__ == "__main__":
   absltest.main()

@@ -1,7 +1,7 @@
 // Copyright 2021 Garena Online Private Limited
 
-#ifndef ALTGRAPH_PY_HLO_IR_H_
-#define ALTGRAPH_PY_HLO_IR_H_
+#ifndef ALTGRAPH_PY_HLO_ENV_H_
+#define ALTGRAPH_PY_HLO_ENV_H_
 
 #include <pybind11/pybind11.h>
 
@@ -35,7 +35,7 @@
 
 namespace py = pybind11;
 
-class PyHloIr {
+class PyHloEnv {
  public:
   struct EvaluationResult {
     std::vector<uint64_t> durations;
@@ -60,16 +60,18 @@ class PyHloIr {
   // memory_fraction can be used to control the percentage of
   // currently available GPU memory that is preallocated. However if preallocat
   // is set to false, this parameter will be ignored.
-  explicit PyHloIr(std::shared_ptr<PyHloModule>, const std::string& platform,
-                   bool preallocate = false, double memory_fraction = 0.9);
+  explicit PyHloEnv(std::shared_ptr<PyHloModule>, const std::string& platform,
+                    bool preallocate = false, double memory_fraction = 0.9);
 
-  explicit PyHloIr(const std::string& hlo_filepath, const std::string& format,
-                   const std::string& platform, bool preallocate = false,
-                   double memory_fraction = 0.9);
+  explicit PyHloEnv(const std::string& hlo_filepath, const std::string& format,
+                    const std::string& platform, bool preallocate = false,
+                    double memory_fraction = 0.9);
 
-  explicit PyHloIr(const std::string& hlo_filepath, const std::string& platform,
-                   bool preallocate = false, double memory_fraction = 0.9)
-      : PyHloIr(hlo_filepath, "path", platform, preallocate, memory_fraction) {}
+  explicit PyHloEnv(const std::string& hlo_filepath,
+                    const std::string& platform, bool preallocate = false,
+                    double memory_fraction = 0.9)
+      : PyHloEnv(hlo_filepath, "path", platform, preallocate, memory_fraction) {
+  }
 
   void Init(bool preallocate, double memory_fraction);
 
@@ -115,4 +117,4 @@ class PyHloIr {
   void PrepareHloModuleForIrEmitting();
 };
 
-#endif  // ALTGRAPH_PY_HLO_IR_H_
+#endif  // ALTGRAPH_PY_HLO_ENV_H_

@@ -62,16 +62,16 @@ pybind_library(
 )
 
 pybind_extension(
-    name = "hlo_ir",
-    srcs = ["py_hlo_ir.cc"],
-    hdrs = ["py_hlo_ir.h"],
+    name = "hlo_env",
+    srcs = ["py_hlo_env.cc"],
+    hdrs = ["py_hlo_env.h"],
     copts = [
         "-fexceptions",
     ],
     link_in_framework = False,
     linkopts = [
     ],
-    module_name = "hlo_ir",
+    module_name = "hlo_env",
     deps = [
         ":py_hlo_graph",
         ":py_hlo_module",
@@ -107,7 +107,7 @@ py_library(
     name = "altgraph",
     srcs = ["__init__.py"],
     data = [
-        "hlo_ir.so",
+        "hlo_env.so",
         ":gen_extract_subgraphs",
     ],
 )

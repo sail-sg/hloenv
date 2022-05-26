@@ -1,24 +1,24 @@
 // Copyright 2021 Garena Online Private Limited
 
-#include "altgraph/py_hlo_ir.h"
+#include "altgraph/py_hlo_env.h"
 
-PyHloIr::PyHloIr(std::shared_ptr<PyHloModule> py_hlo_module,
-                 const std::string& platform, bool preallocate,
-                 double memory_fraction)
+PyHloEnv::PyHloEnv(std::shared_ptr<PyHloModule> py_hlo_module,
+                   const std::string& platform, bool preallocate,
+                   double memory_fraction)
     : platform_(platform) {
   py_hlo_module_ = py_hlo_module;
   Init(preallocate, memory_fraction);
 }
 
-PyHloIr::PyHloIr(const std::string& hlo_input, const std::string& format,
-                 const std::string& platform, bool preallocate,
-                 double memory_fraction)
+PyHloEnv::PyHloEnv(const std::string& hlo_input, const std::string& format,
+                   const std::string& platform, bool preallocate,
+                   double memory_fraction)
     : platform_(platform) {
   py_hlo_module_ = std::make_shared<PyHloModule>(hlo_input, format);
   Init(preallocate, memory_fraction);
 }
 
-void PyHloIr::Init(bool preallocate, double memory_fraction) {
+void PyHloEnv::Init(bool preallocate, double memory_fraction) {
   const xla::HloModuleProto hlo_module_proto = py_hlo_module_->ToProto();
 
   if (platform_ == "gpu") {
@@ -30,7 +30,7 @@ void PyHloIr::Init(bool preallocate, double memory_fraction) {
                                 nullptr, 0)
                   .ValueOrDie();
   } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
+    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
     // client = GetCpuClient(/*asynchronous=*/true).ValueOrDie();
   } else {
     LOG(FATAL) << "Unknown platform " << platform_;
@@ -52,8 +52,8 @@ void PyHloIr::Init(bool preallocate, double memory_fraction) {
   }
 }
 
-bool PyHloIr::HasEqualOutputAs(std::shared_ptr<PyHloModule> other_module,
-                               int times) {
+bool PyHloEnv::HasEqualOutputAs(std::shared_ptr<PyHloModule> other_module,
+                                int times) {
   return HasEqualOutput(py_hlo_module_, other_module, times);
 }
 
@@ -69,9 +69,9 @@ void OnMiscompare(const xla::LiteralSlice& expected,
             << " " << xla::literal_comparison::ToStringTruncated(actual);
 }
 
-bool PyHloIr::HasEqualOutput(std::shared_ptr<PyHloModule> first_module,
-                             std::shared_ptr<PyHloModule> second_module,
-                             int times) {
+bool PyHloEnv::HasEqualOutput(std::shared_ptr<PyHloModule> first_module,
+                              std::shared_ptr<PyHloModule> second_module,
+                              int times) {
   if (platform_ == "gpu") {
     for (int run = 0; run < times; run++) {
       evaluator_.Compile(first_module->hlo_module_ptr()->ToProto(),
@@ -123,12 +123,12 @@ bool PyHloIr::HasEqualOutput(std::shared_ptr<PyHloModule> first_module,
     }
     return true;
   } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
+    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
 }
 
-PyHloIr::EvaluationResult PyHloIr::Evaluate(int times) {
-  PyHloIr::EvaluationResult result;
+PyHloEnv::EvaluationResult PyHloEnv::Evaluate(int times) {
+  PyHloEnv::EvaluationResult result;
   result.durations.reserve(times);
 
   if (platform_ == "gpu") {
@@ -153,45 +153,45 @@ PyHloIr::EvaluationResult PyHloIr::Evaluate(int times) {
                      return duration / absl::Nanoseconds(1);
                    });
   } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
+    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
   return result;
 }
 
-std::shared_ptr<PyHloModule> PyHloIr::SaveHloModule() {
+std::shared_ptr<PyHloModule> PyHloEnv::SaveHloModule() {
   return py_hlo_module_->Clone();
 }
 
 // TODO(ohcy): Enable restore from string or path too
-void PyHloIr::RestoreHloModule(std::shared_ptr<PyHloModule> saved_hlo_module) {
+void PyHloEnv::RestoreHloModule(std::shared_ptr<PyHloModule> saved_hlo_module) {
   py_hlo_module_ = saved_hlo_module;
 }
 
-std::string PyHloIr::ExportHloModuleToStr() {
+std::string PyHloEnv::ExportHloModuleToStr() {
   return py_hlo_module_->ToString();
 }
 
-void PyHloIr::PreFusionOptimizations() {
+void PyHloEnv::PreFusionOptimizations() {
   if (platform_ == "gpu") {
     gpu_intercept_.compiler->OptimizeHloModulePreFusion(
         py_hlo_module_->hlo_module_ptr(), gpu_intercept_.stream_exec,
         gpu_intercept_.options.device_allocator);
   } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
+    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
 }
 
-void PyHloIr::PreFusionDryPasses() {
+void PyHloEnv::PreFusionDryPasses() {
   if (platform_ == "gpu") {
     gpu_intercept_.compiler->OptimizeHloModuleFusionRunPre(
         py_hlo_module_->hlo_module_ptr(), gpu_intercept_.stream_exec,
         gpu_intercept_.options.device_allocator);
   } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
+    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
 }
 
-void PyHloIr::FusionDryRun(bool may_duplicate) {
+void PyHloEnv::FusionDryRun(bool may_duplicate) {
   if (platform_ == "gpu") {
     for (xla::HloComputation* computation :
          py_hlo_module_->hlo_module_ptr()->MakeNonfusionComputations()) {
@@ -206,31 +206,31 @@ void PyHloIr::FusionDryRun(bool may_duplicate) {
       computation->set_dry(false);
     }
   } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
+    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
 }
 
-void PyHloIr::PostFusionDryPasses() {
+void PyHloEnv::PostFusionDryPasses() {
   if (platform_ == "gpu") {
     gpu_intercept_.compiler->OptimizeHloModuleFusionRunPost(
         py_hlo_module_->hlo_module_ptr(), gpu_intercept_.stream_exec,
         gpu_intercept_.options.device_allocator);
   } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
+    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
 }
 
-void PyHloIr::GeneralFusionDryRun() {
+void PyHloEnv::GeneralFusionDryRun() {
   if (platform_ == "gpu") {
     gpu_intercept_.compiler->OptimizeHloModuleGeneralFusionRun(
         py_hlo_module_->hlo_module_ptr(), gpu_intercept_.stream_exec,
         gpu_intercept_.options.device_allocator);
   } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
+    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
 }
 
-void PyHloIr::PostFusionOptimizations() {
+void PyHloEnv::PostFusionOptimizations() {
   if (platform_ == "gpu") {
     gpu_intercept_.compiler->OptimizeHloModulePostFusion(
         py_hlo_module_->hlo_module_ptr(), gpu_intercept_.stream_exec,
@@ -239,20 +239,20 @@ void PyHloIr::PostFusionOptimizations() {
     // can do multiple passes and have a pre/post passes phase
     this->PrepareHloModuleForIrEmitting();
   } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
+    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
 }
 
-void PyHloIr::PrepareHloModuleForIrEmitting() {
+void PyHloEnv::PrepareHloModuleForIrEmitting() {
   if (platform_ == "gpu") {
     gpu_intercept_.compiler->PrepareHloModuleForIrEmitting(
         py_hlo_module_->hlo_module_ptr());
   } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
+    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
 }
 
-void PyHloIr::OriginalRunHloPasses() {
+void PyHloEnv::OriginalRunHloPasses() {
   if (platform_ == "gpu") {
     gpu_intercept_.compiler->OptimizeHloModule(
         py_hlo_module_->hlo_module_ptr(), gpu_intercept_.stream_exec,
@@ -261,19 +261,19 @@ void PyHloIr::OriginalRunHloPasses() {
     gpu_intercept_.compiler->PrepareHloModuleForIrEmitting(
         py_hlo_module_->hlo_module_ptr());
   } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
+    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
 }
 
-PyHloGraph PyHloIr::GetHloGraph(bool do_hash_verification) {
+PyHloGraph PyHloEnv::GetHloGraph(bool do_hash_verification) {
   return PyHloGraph(py_hlo_module_->hlo_module_ptr(), do_hash_verification);
 }
 
-std::shared_ptr<PyHloModule> PyHloIr::GetHloModule() { return py_hlo_module_; }
+std::shared_ptr<PyHloModule> PyHloEnv::GetHloModule() { return py_hlo_module_; }
 
 // TODO(ohcy): Make it take a (uid_ptr, decision) arg instead, save time on
 // rebuilding the HloGraph
-void PyHloIr::ApplyAlternatives(py::array_t<size_t> decisions) {
+void PyHloEnv::ApplyAlternatives(py::array_t<size_t> decisions) {
   if (platform_ == "gpu") {
     PyHloGraph py_hlo_graph =
         PyHloGraph(py_hlo_module_->hlo_module_ptr(), false);
@@ -319,14 +319,14 @@ void PyHloIr::ApplyAlternatives(py::array_t<size_t> decisions) {
     py_hlo_module_->hlo_module_ptr()->RemoveUnusedComputations();
 
   } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloIr currently not enabled for platform == cpu";
+    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
 }
 
-uint64_t PyHloIr::GetHloModuleHash() { return py_hlo_module_->Hash(); }
+uint64_t PyHloEnv::GetHloModuleHash() { return py_hlo_module_->Hash(); }
 
-PYBIND11_MODULE(hlo_ir, m) {
-  // TODO(ohcy) Change PyHloGraph and PyHloIr names to remove the Py prefix
+PYBIND11_MODULE(hlo_env, m) {
+  // TODO(ohcy) Change PyHloGraph and PyHloEnv names to remove the Py prefix
   py::class_<PyHloGraph> py_hlo_graph(m, "PyHloGraph");
 
   py_hlo_graph.def(py::init<const xla::HloModule*>())
@@ -368,9 +368,9 @@ PYBIND11_MODULE(hlo_ir, m) {
       .DEF_PYBIND_READONLY(PyEdgeFeats, layouts)
       .DEF_PYBIND_READONLY(PyEdgeFeats, dtypes);
 
-  py::class_<PyHloIr::EvaluationResult>(m, "EvaluationResult")
-      .def_readonly("durations", &PyHloIr::EvaluationResult::durations)
-      .def_readonly("output", &PyHloIr::EvaluationResult::output);
+  py::class_<PyHloEnv::EvaluationResult>(m, "EvaluationResult")
+      .def_readonly("durations", &PyHloEnv::EvaluationResult::durations)
+      .def_readonly("output", &PyHloEnv::EvaluationResult::output);
 
   py::class_<PyHloModule, std::shared_ptr<PyHloModule>>(m, "PyHloModule")
       .def(py::init<const std::string&>())
@@ -382,7 +382,7 @@ PYBIND11_MODULE(hlo_ir, m) {
            &PyHloModule::ExtractInstructionsAsModule)
       .def("clone", &PyHloModule::Clone);
 
-  py::class_<PyHloIr>(m, "PyHloIr")
+  py::class_<PyHloEnv>(m, "PyHloEnv")
       .def(py::init<const std::string&, const std::string&, bool, double>(),
            py::arg("hlo_filepath"), py::arg("platform"),
            py::arg("preallocate") = false, py::arg("memory_fraction") = 0.9)
@@ -394,28 +394,28 @@ PYBIND11_MODULE(hlo_ir, m) {
                     double>(),
            py::arg("py_hlo_module"), py::arg("platform"),
            py::arg("preallocate") = false, py::arg("memory_fraction") = 0.9)
-      .def("evaluate", &PyHloIr::Evaluate)
-      .def("has_equal_output", &PyHloIr::HasEqualOutput,
+      .def("evaluate", &PyHloEnv::Evaluate)
+      .def("has_equal_output", &PyHloEnv::HasEqualOutput,
            py::arg("first_module"), py::arg("second_module"),
            py::arg("times") = 1)
-      .def("has_equal_output_as", &PyHloIr::HasEqualOutputAs,
+      .def("has_equal_output_as", &PyHloEnv::HasEqualOutputAs,
            py::arg("other_module"), py::arg("times") = 1)
-      .def("save_hlo", &PyHloIr::SaveHloModule)
-      .def("restore_hlo", &PyHloIr::RestoreHloModule)
-      .def("export_hlo_to_str", &PyHloIr::ExportHloModuleToStr)
-      .def("get_hlo_module", &PyHloIr::GetHloModule)
-      .def("get_hlo_graph", &PyHloIr::GetHloGraph,
+      .def("save_hlo", &PyHloEnv::SaveHloModule)
+      .def("restore_hlo", &PyHloEnv::RestoreHloModule)
+      .def("export_hlo_to_str", &PyHloEnv::ExportHloModuleToStr)
+      .def("get_hlo_module", &PyHloEnv::GetHloModule)
+      .def("get_hlo_graph", &PyHloEnv::GetHloGraph,
            py::arg("do_hash_verification") = true)
-      .def("pre_fusion_optimizations", &PyHloIr::PreFusionOptimizations)
-      .def("fusion_dry_run", &PyHloIr::FusionDryRun,
+      .def("pre_fusion_optimizations", &PyHloEnv::PreFusionOptimizations)
+      .def("fusion_dry_run", &PyHloEnv::FusionDryRun,
            py::arg("may_duplicate") = true)
-      .def("post_fusion_dry_passes", &PyHloIr::PostFusionDryPasses)
-      .def("pre_fusion_dry_passes", &PyHloIr::PreFusionDryPasses)
-      .def("general_fusion_dry_run", &PyHloIr::GeneralFusionDryRun)
-      .def("post_fusion_optimizations", &PyHloIr::PostFusionOptimizations)
-      .def("original_run_hlo_passes", &PyHloIr::OriginalRunHloPasses)
-      .def("get_hlo_module_hash", &PyHloIr::GetHloModuleHash)
-      .def("apply_alternatives", &PyHloIr::ApplyAlternatives);
+      .def("post_fusion_dry_passes", &PyHloEnv::PostFusionDryPasses)
+      .def("pre_fusion_dry_passes", &PyHloEnv::PreFusionDryPasses)
+      .def("general_fusion_dry_run", &PyHloEnv::GeneralFusionDryRun)
+      .def("post_fusion_optimizations", &PyHloEnv::PostFusionOptimizations)
+      .def("original_run_hlo_passes", &PyHloEnv::OriginalRunHloPasses)
+      .def("get_hlo_module_hash", &PyHloEnv::GetHloModuleHash)
+      .def("apply_alternatives", &PyHloEnv::ApplyAlternatives);
 
   py::class_<xla::Literal, std::shared_ptr<xla::Literal>>(m, "Literal")
       .def("__repr__", &xla::Literal::ToString);

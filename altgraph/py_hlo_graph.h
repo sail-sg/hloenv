@@ -36,7 +36,7 @@ inline py::array_t<typename Sequence::value_type> as_pyarray(
 
 // TODO(ohcy) -> shift HloGraph out from xla::namespace?
 struct PyNodeFeats : public xla::NodeFeats {
-  // Expose to pybind interface in py_hlo_ir.cc using DEF_PYBIND_READONLY macro
+  // Expose to pybind interface in py_hlo_env.cc using DEF_PYBIND_READONLY macro
   SHARED_VEC_TO_PYARRAY(uids, int, uids)
   SHARED_VEC_TO_PYARRAY(gids, size_t, gids)
   SHARED_VEC_TO_PYARRAY(num_users, int, num_users)
@@ -57,7 +57,7 @@ struct PyNodeFeats : public xla::NodeFeats {
 };
 
 struct PyEdgeFeats : public xla::EdgeFeats {
-  // Expose to pybind interface in py_hlo_ir.cc using DEF_PYBIND_READONLY macro
+  // Expose to pybind interface in py_hlo_env.cc using DEF_PYBIND_READONLY macro
   SHARED_VEC_TO_PYARRAY(uids, int64_t, uids);
   SHARED_VEC_TO_PYARRAY(srcs, int, srcs);
   SHARED_VEC_TO_PYARRAY(dsts, int, dsts);
@@ -72,7 +72,7 @@ struct PyEdgeFeats : public xla::EdgeFeats {
 
 class PyHloGraph : public xla::HloGraph {
  public:
-  // Expose to pybind interface in py_hlo_ir.cc using DEF_PYBIND_READONLY macro
+  // Expose to pybind interface in py_hlo_env.cc using DEF_PYBIND_READONLY macro
   SHARED_VEC_TO_PYARRAY(out_edge_offsets, size_t, get_out_edge_offsets_ptr());
   SHARED_VEC_TO_PYARRAY(out_edge_indices, size_t, get_out_edge_indices_ptr());
   SHARED_VEC_TO_PYARRAY(in_edge_offsets, size_t, get_in_edge_offsets_ptr());
