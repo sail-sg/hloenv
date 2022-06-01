@@ -23,12 +23,21 @@ struct HloEnvGpuBackend {
   HloEnvGpuBackend(const HloEnvGpuBackend&) = delete;
   HloEnvGpuBackend& operator=(const HloEnvGpuBackend&) = delete;
 
+  static xla::PjRtClient* PjRtClient() { return Instance().client.get(); }
+  static xla::gpu::GpuCompiler* GpuCompiler() { return Instance().compiler; }
+  static xla::se::StreamExecutor* StreamExecutor() {
+    return Instance().stream_exec;
+  }
+  static xla::se::DeviceMemoryAllocator* DeviceMemoryAllocator() {
+    return Instance().device_allocator;
+  }
+
+ private:
   std::unique_ptr<xla::PjRtClient> client;
   xla::gpu::GpuCompiler* compiler;
   xla::se::StreamExecutor* stream_exec;
   xla::se::DeviceMemoryAllocator* device_allocator;
 
- private:
   HloEnvGpuBackend() {
     std::function<void(xla::HloModuleConfig*)> config_modifier_hook =
         [](xla::HloModuleConfig* config) { config->set_seed(42); };

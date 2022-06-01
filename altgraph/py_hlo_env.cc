@@ -38,13 +38,13 @@ bool PyHloEnv::HasEqualOutput(std::shared_ptr<PyHloModule> first_module,
     for (int run = 0; run < times; run++) {
       evaluator_.Compile(first_module->hlo_module_ptr()->ToProto(),
                          /* rerun_hlo = */ false,
-                         HloEnvGpuBackend::Instance().client.get());
+                         HloEnvGpuBackend::PjRtClient());
       auto first_ret = evaluator_.Evaluate();
       xla::Evaluator::BufferPack& first_output = first_ret.output;
 
       evaluator_.Compile(second_module->hlo_module_ptr()->ToProto(),
                          /* rerun_hlo = */ false,
-                         HloEnvGpuBackend::Instance().client.get());
+                         HloEnvGpuBackend::PjRtClient());
       auto second_ret = evaluator_.Evaluate();
       xla::Evaluator::BufferPack& second_output = second_ret.output;
 
@@ -97,8 +97,7 @@ PyHloEnv::EvaluationResult PyHloEnv::Evaluate(int times) {
 
   if (platform_ == "gpu") {
     evaluator_.Compile(py_hlo_module_->hlo_module_ptr()->ToProto(),
-                       /* rerun_hlo = */ false,
-                       HloEnvGpuBackend::Instance().client.get());
+                       /* rerun_hlo = */ false, HloEnvGpuBackend::PjRtClient());
     auto ret = evaluator_.Evaluate(times);
 
     xla::Evaluator::BufferPack& output = ret.output;
@@ -142,10 +141,9 @@ std::string PyHloEnv::ExportHloModuleToStr() {
 
 void PyHloEnv::PreFusionOptimizations() {
   if (platform_ == "gpu") {
-    HloEnvGpuBackend::Instance().compiler->OptimizeHloModulePreFusion(
-        py_hlo_module_->hlo_module_ptr(),
-        HloEnvGpuBackend::Instance().stream_exec,
-        HloEnvGpuBackend::Instance().device_allocator);
+    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModulePreFusion(
+        py_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
+        HloEnvGpuBackend::DeviceMemoryAllocator());
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
@@ -153,10 +151,9 @@ void PyHloEnv::PreFusionOptimizations() {
 
 void PyHloEnv::PreFusionDryPasses() {
   if (platform_ == "gpu") {
-    HloEnvGpuBackend::Instance().compiler->OptimizeHloModuleFusionRunPre(
-        py_hlo_module_->hlo_module_ptr(),
-        HloEnvGpuBackend::Instance().stream_exec,
-        HloEnvGpuBackend::Instance().device_allocator);
+    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModuleFusionRunPre(
+        py_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
+        HloEnvGpuBackend::DeviceMemoryAllocator());
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
@@ -168,10 +165,9 @@ void PyHloEnv::FusionDryRun(bool may_duplicate) {
          py_hlo_module_->hlo_module_ptr()->MakeNonfusionComputations()) {
       computation->set_dry(true);
     }
-    HloEnvGpuBackend::Instance().compiler->OptimizeHloModuleFusionRun(
-        py_hlo_module_->hlo_module_ptr(),
-        HloEnvGpuBackend::Instance().stream_exec,
-        HloEnvGpuBackend::Instance().device_allocator, may_duplicate);
+    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModuleFusionRun(
+        py_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
+        HloEnvGpuBackend::DeviceMemoryAllocator(), may_duplicate);
 
     for (xla::HloComputation* computation :
          py_hlo_module_->hlo_module_ptr()->MakeNonfusionComputations()) {
@@ -184,10 +180,9 @@ void PyHloEnv::FusionDryRun(bool may_duplicate) {
 
 void PyHloEnv::PostFusionDryPasses() {
   if (platform_ == "gpu") {
-    HloEnvGpuBackend::Instance().compiler->OptimizeHloModuleFusionRunPost(
-        py_hlo_module_->hlo_module_ptr(),
-        HloEnvGpuBackend::Instance().stream_exec,
-        HloEnvGpuBackend::Instance().device_allocator);
+    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModuleFusionRunPost(
+        py_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
+        HloEnvGpuBackend::DeviceMemoryAllocator());
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
@@ -195,10 +190,9 @@ void PyHloEnv::PostFusionDryPasses() {
 
 void PyHloEnv::GeneralFusionDryRun() {
   if (platform_ == "gpu") {
-    HloEnvGpuBackend::Instance().compiler->OptimizeHloModuleGeneralFusionRun(
-        py_hlo_module_->hlo_module_ptr(),
-        HloEnvGpuBackend::Instance().stream_exec,
-        HloEnvGpuBackend::Instance().device_allocator);
+    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModuleGeneralFusionRun(
+        py_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
+        HloEnvGpuBackend::DeviceMemoryAllocator());
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
@@ -206,10 +200,9 @@ void PyHloEnv::GeneralFusionDryRun() {
 
 void PyHloEnv::PostFusionOptimizations() {
   if (platform_ == "gpu") {
-    HloEnvGpuBackend::Instance().compiler->OptimizeHloModulePostFusion(
-        py_hlo_module_->hlo_module_ptr(),
-        HloEnvGpuBackend::Instance().stream_exec,
-        HloEnvGpuBackend::Instance().device_allocator);
+    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModulePostFusion(
+        py_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
+        HloEnvGpuBackend::DeviceMemoryAllocator());
     // TODO(ohcy) To be refactored out of PostFusionOptimizations when we
     // can do multiple passes and have a pre/post passes phase
     this->PrepareHloModuleForIrEmitting();
@@ -220,7 +213,7 @@ void PyHloEnv::PostFusionOptimizations() {
 
 void PyHloEnv::PrepareHloModuleForIrEmitting() {
   if (platform_ == "gpu") {
-    HloEnvGpuBackend::Instance().compiler->PrepareHloModuleForIrEmitting(
+    HloEnvGpuBackend::GpuCompiler()->PrepareHloModuleForIrEmitting(
         py_hlo_module_->hlo_module_ptr());
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
@@ -229,12 +222,11 @@ void PyHloEnv::PrepareHloModuleForIrEmitting() {
 
 void PyHloEnv::OriginalRunHloPasses() {
   if (platform_ == "gpu") {
-    HloEnvGpuBackend::Instance().compiler->OptimizeHloModule(
-        py_hlo_module_->hlo_module_ptr(),
-        HloEnvGpuBackend::Instance().stream_exec,
-        HloEnvGpuBackend::Instance().device_allocator);
+    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModule(
+        py_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
+        HloEnvGpuBackend::DeviceMemoryAllocator());
 
-    HloEnvGpuBackend::Instance().compiler->PrepareHloModuleForIrEmitting(
+    HloEnvGpuBackend::GpuCompiler()->PrepareHloModuleForIrEmitting(
         py_hlo_module_->hlo_module_ptr());
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
