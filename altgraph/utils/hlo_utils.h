@@ -26,6 +26,53 @@
 #include "tensorflow/compiler/xla/tools/hlo_extractor.h"
 
 namespace xla {
+
+enum CustomCallTargetType {
+  kCublasGemm,
+  kCublasTriSolve,
+  kCudnnConvBackwardFilter,
+  kCudnnConvBackwardInput,
+  kCudnnConvBiasActivationFwd,
+  kCudnnConvForward,
+  kCublasTrsmBatched,
+  kCudaLuPivotsToPerm,
+  kCudaThreefry,
+  kCusolverGetrf,
+  kCusolverPotrf,
+  kCusolverSyevd,
+  kUnknownCustomCallTarget,
+};
+
+inline CustomCallTargetType CustomCallTargetStringToEnum(const std::string& v) {
+  if (v == "__cublas$gemm") {
+    return kCublasGemm;
+  } else if (v == "__cublas$triangularSolve") {
+    return kCublasTriSolve;
+  } else if (v == "__cudnn$convBackwardFilter") {
+    return kCudnnConvBackwardFilter;
+  } else if (v == "__cudnn$convBackwardInput") {
+    return kCudnnConvBackwardInput;
+  } else if (v == "__cudnn$convBiasActivationForward") {
+    return kCudnnConvBiasActivationFwd;
+  } else if (v == "__cudnn$convForward") {
+    return kCudnnConvForward;
+  } else if (v == "cublas_trsm_batched") {
+    return kCublasTrsmBatched;
+  } else if (v == "cuda_lu_pivots_to_permutation") {
+    return kCudaLuPivotsToPerm;
+  } else if (v == "cuda_threefry2x32") {
+    return kCudaThreefry;
+  } else if (v == "cusolver_getrf") {
+    return kCusolverGetrf;
+  } else if (v == "cusolver_potrf") {
+    return kCusolverPotrf;
+  } else if (v == "cusolver_syevd") {
+    return kCusolverSyevd;
+  } else {
+    return kUnknownCustomCallTarget;
+  }
+}
+
 // given an instruction, return its attributes (int vector)
 // and attribute counts:
 // {2,3,4}, {LE} (out of enum {LE, EQ, GE}), {SAME} (out of {PADDING,SAME}) will

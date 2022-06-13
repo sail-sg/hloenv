@@ -20,8 +20,7 @@ HloGraph::HloGraph(const HloModule* m, bool do_hash_verification)
     : parent_hlo_module_(const_cast<HloModule*>(m)),
       uid_(m->unique_id()),
       name_(m->name()),
-      // as of tensorflow==r2.9, this is the number of HLO opcode.
-      kNumOpcodes(118),
+      kNumOpcodes(xla::HloOpcodeCount()),
       graph_load_errors_(0) {
   user_list_offsets_ = std::make_shared<std::vector<size_t>>();
   user_list_indices_ = std::make_shared<std::vector<size_t>>();

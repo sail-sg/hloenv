@@ -157,9 +157,7 @@ struct EdgeFeats {
 // To make things simpler, only string, f32, i32, and i64 are allowed as dtype.
 class HloGraph {
  public:
-  HloGraph()
-      :  // as of tensorflow==r2.9, this is the number of HLO opcode.
-        kNumOpcodes(118) {}
+  HloGraph() : kNumOpcodes(xla::HloOpcodeCount()) {}
   explicit HloGraph(const HloModule* m, bool do_hash_verification = true);
 
   bool Build(const HloModule* m, bool do_hash_verification = true);

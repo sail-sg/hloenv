@@ -300,7 +300,16 @@ void GetInstructionAttributesAndCounts(HloInstruction* inst,
       add_attr_counts(/*int_count=*/0, /*enum_count=*/2 * 3 + 4);
       break;
     }
-    case HloOpcode::kCustomCall:
+    case HloOpcode::kCustomCall: {
+      // counts: 0,1
+      auto cc_inst = dynamic_cast<HloCustomCallInstruction*>(inst);
+      auto cc_target = cc_inst->custom_call_target();
+      CustomCallTargetType cc_target_enum =
+          CustomCallTargetStringToEnum(cc_target);
+      add_enum(/*item=*/cc_target_enum, /*count=*/13);
+      add_attr_counts(/*int_count=*/0, /*enum_count=*/1 * 13);
+      break;
+    }
     default: {
       // counts: 0,0
       add_attr_counts(/*int_count=*/0, /*enum_count=*/0);
