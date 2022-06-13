@@ -161,18 +161,11 @@ void PyHloEnv::PreFusionDryPasses() {
 
 void PyHloEnv::FusionDryRun(bool may_duplicate) {
   if (platform_ == "gpu") {
-    for (xla::HloComputation* computation :
-         py_hlo_module_->hlo_module_ptr()->MakeNonfusionComputations()) {
-      computation->set_dry(true);
-    }
+    py_hlo_module_->hlo_module_ptr()->SetDry(true);
     HloEnvGpuBackend::GpuCompiler()->OptimizeHloModuleFusionRun(
         py_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
         HloEnvGpuBackend::DeviceMemoryAllocator(), may_duplicate);
-
-    for (xla::HloComputation* computation :
-         py_hlo_module_->hlo_module_ptr()->MakeNonfusionComputations()) {
-      computation->set_dry(false);
-    }
+    py_hlo_module_->hlo_module_ptr()->SetDry(false);
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
