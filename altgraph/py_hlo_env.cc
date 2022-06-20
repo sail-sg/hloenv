@@ -176,6 +176,7 @@ void PyHloEnv::PostFusionDryPasses() {
     HloEnvGpuBackend::GpuCompiler()->OptimizeHloModuleFusionRunPost(
         py_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
         HloEnvGpuBackend::DeviceMemoryAllocator());
+    this->DedupTupleInstructions();
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
@@ -282,15 +283,19 @@ void PyHloEnv::ApplyAlternatives(py::array_t<size_t> decisions) {
       static_cast<xla::HloAlternatives*>(instruction)->Select(decision);
     }
 
-    for (xla::HloComputation* computation :
-         py_hlo_module_->hlo_module_ptr()->MakeNonfusionComputations()) {
-      // Remove the residue
-      computation->Prune();
-    }
+    py_hlo_module_->hlo_module_ptr()->Prune();
     // Remove unused computations created during fusion
     py_hlo_module_->hlo_module_ptr()->RemoveUnusedComputations();
     py_hlo_module_->hlo_module_ptr()->Cleanup();
 
+  } else if (platform_ == "cpu") {
+    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
+  }
+}
+
+void PyHloEnv::DedupTupleInstructions() {
+  if (platform_ == "gpu") {
+    py_hlo_module_->hlo_module_ptr()->DedupTupleInstructions();
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
@@ -541,6 +546,7 @@ PYBIND11_MODULE(hlo_env, m) {
       .def("prepare_hlo_module_for_ir_emitting",
            &PyHloEnv::PrepareHloModuleForIrEmitting)
       .def("run", &PyHloEnv::Run)
+      .def("get_hlo_module_hash", &PyHloEnv::GetHloModuleHash)
       .def("get_hlo_module_hash", &PyHloEnv::GetHloModuleHash)
       .def("apply_alternatives", &PyHloEnv::ApplyAlternatives);
 

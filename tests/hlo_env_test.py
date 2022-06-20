@@ -136,9 +136,10 @@ class HloEnvTest(absltest.TestCase):
         logging.info("Applying alternatives...")
         hlo_env.apply_alternatives(decisions)
         hlo_env.post_fusion_dry_passes()
+        hlo_env.dedup_tuples()
       else:
         logging.info("No more alternatives, ending run...")
-      eval_result = hlo_env.evaluate(10)
+      eval_result = hlo_env.evaluate(1)
       total_time = 0
       for eval_time_ns in eval_result.durations:
         assert eval_time_ns > 0
