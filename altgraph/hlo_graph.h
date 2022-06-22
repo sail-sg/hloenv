@@ -25,6 +25,9 @@ namespace xla {
 // uids: unique_id of HloInstruction
 // names: opcode in string
 // gids: sub-computation id HloInstruction belongs to
+// fused_comp_ids: called-computation id instruction points to
+//                 0: not pointing to a called-computation
+//                 other positive integers: fused computation id
 // num_users: number of outgoing edges (users and called computations)
 // num_operands: number of incoming edges (operands)
 // opcodes: enumerator of opcodes in HLO
@@ -41,6 +44,7 @@ struct NodeFeats {
   std::shared_ptr<std::vector<int>> uids;
   std::shared_ptr<std::vector<std::string>> names;
   std::shared_ptr<std::vector<size_t>> gids;
+  std::shared_ptr<std::vector<size_t>> fused_comp_ids;
 
   // advanced node feats
   std::shared_ptr<std::vector<int>> num_users;
@@ -60,6 +64,7 @@ struct NodeFeats {
     uids = std::make_shared<std::vector<int>>();
     names = std::make_shared<std::vector<std::string>>();
     gids = std::make_shared<std::vector<size_t>>();
+    fused_comp_ids = std::make_shared<std::vector<size_t>>();
     num_users = std::make_shared<std::vector<int>>();
     num_operands = std::make_shared<std::vector<int>>();
     opcodes = std::make_shared<std::vector<int>>();
@@ -76,6 +81,7 @@ struct NodeFeats {
     uids->clear();
     names->clear();
     gids->clear();
+    fused_comp_ids->clear();
     num_users->clear();
     num_operands->clear();
     opcodes->clear();
@@ -95,6 +101,7 @@ struct NodeFeats {
 // dsts: indices of destination nodes
 // dims: a fixed-length (8) array to present tensor shape
 // layouts: a fixed-length (8) array to present tensor layout
+// lehmercodes: a fixed-length (8) array to present lehmer code of layout
 // dtypes: tensor dtype, integer mapping to xla_data primitivetype:
 // enum PrimitiveType {
 //   PRIMITIVE_TYPE_INVALID = 0,
@@ -123,6 +130,7 @@ struct EdgeFeats {
   std::shared_ptr<std::vector<int>> dsts;
   std::shared_ptr<std::vector<int64_t>> dims;
   std::shared_ptr<std::vector<int64_t>> layouts;
+  std::shared_ptr<std::vector<int64_t>> lehmercodes;
   // PrimitiveType as is defined in xla_data.proto.
   std::shared_ptr<std::vector<int>> dtypes;
 
@@ -132,6 +140,7 @@ struct EdgeFeats {
     dsts = std::make_shared<std::vector<int>>();
     dims = std::make_shared<std::vector<int64_t>>();
     layouts = std::make_shared<std::vector<int64_t>>();
+    lehmercodes = std::make_shared<std::vector<int64_t>>();
     dtypes = std::make_shared<std::vector<int>>();
   }
 
@@ -141,6 +150,7 @@ struct EdgeFeats {
     dsts->clear();
     dims->clear();
     layouts->clear();
+    lehmercodes->clear();
     dtypes->clear();
   }
 
@@ -158,9 +168,11 @@ struct EdgeFeats {
 class HloGraph {
  public:
   HloGraph() : kNumOpcodes(xla::HloOpcodeCount()) {}
-  explicit HloGraph(const HloModule* m, bool do_hash_verification = true);
+  explicit HloGraph(const HloModule* m, bool inline_fused_comp = false,
+                    bool do_hash_verification = true);
 
-  bool Build(const HloModule* m, bool do_hash_verification = true);
+  bool Build(const HloModule* m, bool inline_fused_comp = false,
+             bool do_hash_verification = true);
 
   void Clear();
 
@@ -191,6 +203,9 @@ class HloGraph {
     return *node_feats_.names;
   }
   const std::vector<size_t>& get_gids() { return *node_feats_.gids; }
+  const std::vector<size_t>& get_fused_comp_ids() {
+    return *node_feats_.fused_comp_ids;
+  }
   const std::vector<int>& get_user_counts() { return *node_feats_.num_users; }
   const std::vector<int>& get_operand_counts() {
     return *node_feats_.num_operands;
@@ -215,6 +230,9 @@ class HloGraph {
   const std::vector<int64_t>& get_in_edge_layouts() {
     return *in_edge_feats_.layouts;
   }
+  const std::vector<int64_t>& get_in_edge_lehmercodes() {
+    return *in_edge_feats_.lehmercodes;
+  }
   const std::vector<int>& get_in_edge_dtypes() {
     return *in_edge_feats_.dtypes;
   }
@@ -229,6 +247,9 @@ class HloGraph {
   }
   const std::vector<int64_t>& get_out_edge_layouts() {
     return *out_edge_feats_.layouts;
+  }
+  const std::vector<int64_t>& get_out_edge_lehmercodes() {
+    return *out_edge_feats_.lehmercodes;
   }
   const std::vector<int>& get_out_edge_dtypes() {
     return *out_edge_feats_.dtypes;
@@ -246,17 +267,37 @@ class HloGraph {
   }
 
  protected:
+  // For each computation, build in/out edge lists for all instructions.
   void BuildGraphTopology(const HloComputation* c, int gid);
-  void BuildRaggedTensors();
+
+  // Inlining all fused computations into entry computation.
+  void FusedComputationInlining();
+
+  // Fill content of each in/out edge lists according to topology.
+  void BuildRaggedTensors(
+      const absl::flat_hash_map<HloComputation*, int>& comp_id_map);
+
+  // Fill the rest of contents in node/edge features.
   void PrepareFeatures();
-  void GenOpcodeAttrCounts();
+
   int graph_load_errors_;
 
  private:
+  // Internal function call to set fused_comp_ids for each instruction.
+  void SetFusedCompId(
+      const absl::flat_hash_map<HloComputation*, int>& comp_id_map);
+
+  // Internal function that returns indices of instructions from one specific
+  // fused computation.
+  std::vector<int> FindInstIndicesOfFusedComp(int fused_comp_id);
+
+  // Internal function that generate attribute count for each opcode.
+  void GenOpcodeAttrCounts();
+
+  const int kNumOpcodes;
   HloModule* parent_hlo_module_;
   int uid_;
   std::string name_;
-  const int kNumOpcodes;
 
   std::vector<HloInstruction*> inst_list_;
   absl::flat_hash_map<int, std::vector<int>> in_edge_lists_;

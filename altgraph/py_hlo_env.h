@@ -101,7 +101,7 @@ class PyHloEnv {
   // TODO(ohcy): Move to utility/PyHloModule
   uint64_t GetHloModuleHash();
 
-  PyHloGraph GetHloGraph(bool do_hash_verification);
+  PyHloGraph GetHloGraph(bool inline_fused_comp, bool do_hash_verification);
 
   std::shared_ptr<PyHloModule> GetHloModule();
 

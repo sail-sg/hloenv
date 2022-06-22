@@ -63,6 +63,7 @@ struct PyEdgeFeats : public xla::EdgeFeats {
   SHARED_VEC_TO_PYARRAY(dsts, int, dsts);
   SHARED_VEC_TO_PYARRAY(dims, int64_t, dims);
   SHARED_VEC_TO_PYARRAY(layouts, int64_t, layouts);
+  SHARED_VEC_TO_PYARRAY(lehmercodes, int64_t, lehmercodes);
   SHARED_VEC_TO_PYARRAY(dtypes, int, dtypes);
 
   PyEdgeFeats() {}
@@ -87,8 +88,9 @@ class PyHloGraph : public xla::HloGraph {
   PyEdgeFeats out_edge_features_;
 
   PyHloGraph() {}
-  explicit PyHloGraph(const xla::HloModule* m, bool do_hash_verification = true)
-      : xla::HloGraph(m, do_hash_verification) {
+  explicit PyHloGraph(const xla::HloModule* m, bool inline_fused_comp = false,
+                      bool do_hash_verification = true)
+      : xla::HloGraph(m, inline_fused_comp, do_hash_verification) {
     node_features_ = PyNodeFeats(get_node_feats());
     in_edge_features_ = PyEdgeFeats(get_in_edge_feats());
     out_edge_features_ = PyEdgeFeats(get_out_edge_feats());

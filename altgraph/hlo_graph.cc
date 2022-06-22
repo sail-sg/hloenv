@@ -16,11 +16,12 @@
 
 namespace xla {
 
-HloGraph::HloGraph(const HloModule* m, bool do_hash_verification)
-    : parent_hlo_module_(const_cast<HloModule*>(m)),
+HloGraph::HloGraph(const HloModule* m, bool inline_fused_comp,
+                   bool do_hash_verification)
+    : kNumOpcodes(xla::HloOpcodeCount()),
+      parent_hlo_module_(const_cast<HloModule*>(m)),
       uid_(m->unique_id()),
       name_(m->name()),
-      kNumOpcodes(xla::HloOpcodeCount()),
       graph_load_errors_(0) {
   user_list_offsets_ = std::make_shared<std::vector<size_t>>();
   user_list_indices_ = std::make_shared<std::vector<size_t>>();
@@ -29,7 +30,7 @@ HloGraph::HloGraph(const HloModule* m, bool do_hash_verification)
   opcode_attr_counts_ = std::make_shared<std::vector<int>>();
   alternative_indices_ = std::make_shared<std::vector<int>>();
 
-  Build(m, do_hash_verification);
+  Build(m, inline_fused_comp, do_hash_verification);
 }
 
 void HloGraph::Clear() {
@@ -56,51 +57,17 @@ void HloGraph::BuildGraphTopology(const HloComputation* c, int gid) {
   // build in/out edge lists with toposort order.
   for (auto inst : c->MakeInstructionPostOrder()) {
     int uid = inst->unique_id();
-    if (uid_set_.contains(uid)) {
-      continue;
-    }
-    uid_set_.insert(uid);
 
     // add into in edge lists
-    if (inst->called_computations().empty()) {
-      // normal instruction, put operands and users to its in_edge_lists_
-      // and out_edge_lists_.
-      for (auto operand : inst->operands()) {
-        size_t op_uid = operand->unique_id();
-        in_edge_lists_[uid].push_back(op_uid);
-      }
-    } else {
-      // instruction's in edges will be called computation's root insts.
-      auto operands = inst->operands();
-      for (auto c : inst->called_computations()) {
-        BuildGraphTopology(c, gid + 1);
-        auto params = c->parameter_instructions();
-        // TODO(wangyzh): fix the bug that sometimes cross comp param
-        // may get ignored. disable the check temporarily.
-        // CHECK_EQ(params.size(), operands.size());
-        if (params.size() != operands.size()) {
-          LOG(ERROR) << "Incorrect parameter size for called computation!";
-          graph_load_errors_ = graph_load_errors_ + 1;
-        }
-        int operand_size = std::min(params.size(), operands.size());
-        for (int i = 0; i < operand_size; ++i) {
-          int op_uid = operands[i]->unique_id();
-          int param_uid = params[i]->unique_id();
-          out_edge_lists_[op_uid].push_back(param_uid);
-          in_edge_lists_[param_uid].push_back(op_uid);
-        }
-        size_t root_uid = c->root_instruction()->unique_id();
-        in_edge_lists_[uid].push_back(root_uid);
-        out_edge_lists_[root_uid].push_back(uid);
-      }
+    for (auto operand : inst->unique_operands()) {
+      size_t op_uid = operand->unique_id();
+      in_edge_lists_[uid].push_back(op_uid);
     }
 
     // add into out edge lists
     for (auto user : inst->users()) {
-      if (user->called_computations().empty()) {
-        size_t user_uid = user->unique_id();
-        out_edge_lists_[uid].push_back(user_uid);
-      }
+      size_t user_uid = user->unique_id();
+      out_edge_lists_[uid].push_back(user_uid);
     }
 
     inst_list_.push_back(inst);
@@ -121,17 +88,85 @@ void HloGraph::BuildGraphTopology(const HloComputation* c, int gid) {
                                          opcode_attr_counts.end());
     uid_to_inst_.insert({uid, inst});
   }
+
   return;
 }
 
-void HloGraph::BuildRaggedTensors() {
+void HloGraph::SetFusedCompId(
+    const absl::flat_hash_map<HloComputation*, int>& comp_id_map) {
   int num_nodes = node_feats_.uids->size();
+  node_feats_.fused_comp_ids->resize(num_nodes);
+  for (int ii = 0; ii < num_nodes; ++ii) {
+    int uid = node_feats_.uids->at(ii);
+    uid_to_node_idx_[uid] = ii;
+    auto instruction = uid_to_inst_[uid];
+    // For fusion instruction, record the computation id of its fused
+    // computation; For all non-fusion instructions, set their fused_comp_ids to
+    // zero.
+    if (instruction->opcode() == HloOpcode::kFusion) {
+      auto comp_p = instruction->fused_instructions_computation();
+      int comp_id = comp_id_map.at(comp_p);
+      node_feats_.fused_comp_ids->at(ii) = comp_id;
+    } else {
+      node_feats_.fused_comp_ids->at(ii) = 0;
+    }
+  }
+}
+
+std::vector<int> HloGraph::FindInstIndicesOfFusedComp(int fused_comp_id) {
+  std::vector<int> indices;
+  auto gid_vector = node_feats_.gids.get();
+  auto it = gid_vector->begin();
+  while ((it = std::find_if(it, gid_vector->end(), [&](size_t const& e) {
+            return e == fused_comp_id;
+          })) != gid_vector->end()) {
+    indices.push_back(std::distance(gid_vector->begin(), it));
+    it++;
+  }
+  return indices;
+}
+
+void HloGraph::FusedComputationInlining() {
+  int num_nodes = node_feats_.uids->size();
+  for (int ii = 0; ii < num_nodes; ++ii) {
+    // get fusion instruction's uid and fused computation id it points to.
+    int uid = node_feats_.uids->at(ii);
+    int fused_comp_id = node_feats_.fused_comp_ids->at(ii);
+    if (fused_comp_id > 0) {
+      // If instruction is fusion, we inline the fused computation.
+      auto instr_indices = FindInstIndicesOfFusedComp(fused_comp_id);
+      for (int idx_instr_indices = 0; idx_instr_indices < instr_indices.size();
+           ++idx_instr_indices) {
+        // Iterate over all instructions in the fused computation.
+        int fused_comp_uid =
+            node_feats_.uids->at(instr_indices[idx_instr_indices]);
+        while (in_edge_lists_[fused_comp_uid].empty()) {
+          // param of fused comp instructions, we rewire fusion instruction's
+          // operand to params inside fused computation
+          int operand_fusion = in_edge_lists_[uid].front();
+          in_edge_lists_[uid].erase(in_edge_lists_[uid].begin());
+          in_edge_lists_[fused_comp_uid].push_back(operand_fusion);
+          idx_instr_indices++;
+          fused_comp_uid =
+              node_feats_.uids->at(instr_indices[idx_instr_indices]);
+        }
+        if (out_edge_lists_[fused_comp_uid].empty()) {
+          // root instruction of fused comp, we set user of fused computation
+          // root to fusion instruction.
+          out_edge_lists_[fused_comp_uid].push_back(uid);
+          in_edge_lists_[uid].push_back(fused_comp_uid);
+        }
+      }
+    }
+  }
+}
+
+void HloGraph::BuildRaggedTensors(
+    const absl::flat_hash_map<HloComputation*, int>& comp_id_map) {
+  int num_nodes = node_feats_.uids->size();
+  // Resize offsets arrays (need one extra space at the end)
   user_list_offsets_->resize(num_nodes + 1);
   operand_list_offsets_->resize(num_nodes + 1);
-
-  for (int ii = 0; ii < num_nodes; ++ii) {
-    uid_to_node_idx_[node_feats_.uids->at(ii)] = ii;
-  }
 
   user_list_offsets_->at(0) = 0;
   operand_list_offsets_->at(0) = 0;
@@ -162,6 +197,7 @@ void HloGraph::BuildRaggedTensors() {
 }
 
 void HloGraph::PrepareFeatures() {
+  // combines uid of source and destination node into a int64.
   auto genuid = [](int src_uid, int dst_uid) -> int64_t {
     int64_t suid = absl::bit_cast<int>(src_uid);
     int64_t duid = absl::bit_cast<int>(dst_uid);
@@ -199,7 +235,7 @@ void HloGraph::PrepareFeatures() {
       uid_to_out_edge_idx_.insert({euid, s});
       out_edge_feats_.srcs->push_back(i);
       out_edge_feats_.dsts->push_back(user_node_idx);
-      // put in shapes, layouts, and dtypes for cur_inst
+      // put in shapes, layouts, lehmer codes, and dtypes for cur_inst
       Shape shape = cur_inst->shape();
       auto minor_to_major = shape.layout().minor_to_major();
       int dim_size = shape.dimensions_size();
@@ -207,9 +243,15 @@ void HloGraph::PrepareFeatures() {
         if (k < dim_size) {
           out_edge_feats_.dims->push_back(shape.dimensions(k));
           out_edge_feats_.layouts->push_back(minor_to_major[k]);
+          int lehmer = 0;
+          for (int l = 0; l < k; ++l) {
+            lehmer += (minor_to_major[l] > minor_to_major[k]);
+          }
+          out_edge_feats_.lehmercodes->push_back(lehmer);
         } else {
           out_edge_feats_.dims->push_back(-1);
           out_edge_feats_.layouts->push_back(-1);
+          out_edge_feats_.lehmercodes->push_back(0);
         }
       }
       out_tensor_size += out_edge_feats_.GetTensorSize(s);
@@ -237,9 +279,15 @@ void HloGraph::PrepareFeatures() {
         if (k < dim_size) {
           in_edge_feats_.dims->push_back(shape.dimensions(k));
           in_edge_feats_.layouts->push_back(minor_to_major[k]);
+          int lehmer = 0;
+          for (int l = 0; l < k; ++l) {
+            lehmer += (minor_to_major[l] > minor_to_major[k]);
+          }
+          in_edge_feats_.lehmercodes->push_back(lehmer);
         } else {
           in_edge_feats_.dims->push_back(-1);
           in_edge_feats_.layouts->push_back(-1);
+          in_edge_feats_.lehmercodes->push_back(0);
         }
       }
       in_tensor_size += in_edge_feats_.GetTensorSize(s);
@@ -262,23 +310,51 @@ void HloGraph::PrepareFeatures() {
   }
 }
 
-bool HloGraph::Build(const HloModule* m, bool do_hash_verification) {
+bool HloGraph::Build(const HloModule* m, bool inline_fused_comp,
+                     bool do_hash_verification) {
   parent_hlo_module_ = const_cast<HloModule*>(m);
   uid_ = m->unique_id();
   name_ = m->name();
 
+  // Clear to rebuild.
   Clear();
   GenOpcodeAttrCounts();
-  BuildGraphTopology(m->entry_computation(), 0);
-  BuildRaggedTensors();
+
+  // For each sub computation, build its graph topology.
+  auto post_order_comps = m->MakeComputationPostOrder();
+  int gid = 0;
+  absl::flat_hash_map<HloComputation*, int> fused_comp_id_map;
+  while (!post_order_comps.empty()) {
+    // We iterate in reverse post order, so remove from the back of the
+    // vector.
+    HloComputation* comp = post_order_comps.back();
+    post_order_comps.pop_back();
+    if (!comp->IsFusionComputation() && !comp->IsEntryComputation()) {
+      // only consider entry computation and fused computation,
+      // ignore all other computations.
+      continue;
+    }
+    fused_comp_id_map[comp] = gid;
+    BuildGraphTopology(comp, gid++);
+  }
+
+  // Inline fused computation.
+  SetFusedCompId(fused_comp_id_map);
+  if (inline_fused_comp) {
+    FusedComputationInlining();
+  }
+
+  // Fill in content of node/edge features.
+  BuildRaggedTensors(fused_comp_id_map);
   PrepareFeatures();
 
-  // final touch, add the root_index_
+  // Final touch, add the root_index_
   int entry_root_uid = m->entry_computation()->root_instruction()->unique_id();
   root_index_ = uid_to_node_idx_[entry_root_uid];
 
   LOG(ERROR) << "HloGraph build finished";
 
+  // Optionally do hash verification.
   if (do_hash_verification) {
     uint64_t hlograph_hash = Hash();
     uint64_t hlomodule_hash = parent_hlo_module_->CalledComputationHash();
@@ -383,6 +459,7 @@ void HloGraph::ShowStats() {
 
   auto names = get_node_names();
   auto gids = get_gids();
+  auto fused_comp_ids = get_fused_comp_ids();
   auto ucounts = get_user_counts();
   auto opcounts = get_operand_counts();
   auto opcodes = get_opcodes();
@@ -392,6 +469,7 @@ void HloGraph::ShowStats() {
   auto oedge_dsts = get_out_edge_dsts();
   auto oedge_dims = get_out_edge_dims();
   auto oedge_layouts = get_out_edge_layouts();
+  auto oedge_lehmercodes = get_out_edge_lehmercodes();
   auto oedge_dtypes = get_out_edge_dtypes();
 
   auto iedge_uids = get_in_edge_uids();
@@ -399,12 +477,14 @@ void HloGraph::ShowStats() {
   auto iedge_dsts = get_in_edge_dsts();
   auto iedge_dims = get_in_edge_dims();
   auto iedge_layouts = get_in_edge_layouts();
+  auto iedge_lehmercodes = get_in_edge_lehmercodes();
   auto iedge_dtypes = get_in_edge_dtypes();
 
   for (int i = 0; i < oedge_offsets.size() - 1; ++i) {
     LOG(ERROR) << "node index: " << i;
     LOG(ERROR) << "node name: " << names[i];
     LOG(ERROR) << "gid: " << gids[i];
+    LOG(ERROR) << "fused computation id: " << fused_comp_ids[i];
     LOG(ERROR) << "user_count: " << ucounts[i];
     LOG(ERROR) << "operand_count: " << opcounts[i];
     LOG(ERROR) << "opcode: " << opcodes[i];
@@ -417,6 +497,8 @@ void HloGraph::ShowStats() {
                  << oedge_dsts[ii];
       LOG(ERROR) << "  dims: " << print_vector(&oedge_dims[ii * 8]);
       LOG(ERROR) << "  layouts: " << print_vector(&oedge_layouts[ii * 8]);
+      LOG(ERROR) << "  lehmercodes: "
+                 << print_vector(&oedge_lehmercodes[ii * 8]);
       LOG(ERROR) << "  dtype: " << oedge_dtypes[ii];
     }
     start_idx = iedge_offsets[i];
@@ -428,6 +510,8 @@ void HloGraph::ShowStats() {
                  << iedge_dsts[ii];
       LOG(ERROR) << "  dims: " << print_vector(&iedge_dims[ii * 8]);
       LOG(ERROR) << "  layouts: " << print_vector(&iedge_layouts[ii * 8]);
+      LOG(ERROR) << "  lehmercodes: "
+                 << print_vector(&iedge_lehmercodes[ii * 8]);
       LOG(ERROR) << "  dtype: " << iedge_dtypes[ii];
     }
     LOG(ERROR) << "--------------------------------";

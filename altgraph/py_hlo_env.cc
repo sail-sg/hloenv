@@ -226,8 +226,10 @@ void PyHloEnv::OriginalRunHloPasses() {
   }
 }
 
-PyHloGraph PyHloEnv::GetHloGraph(bool do_hash_verification) {
-  return PyHloGraph(py_hlo_module_->hlo_module_ptr(), do_hash_verification);
+PyHloGraph PyHloEnv::GetHloGraph(bool inline_fused_comp,
+                                 bool do_hash_verification) {
+  return PyHloGraph(py_hlo_module_->hlo_module_ptr(), inline_fused_comp,
+                    do_hash_verification);
 }
 
 std::shared_ptr<PyHloModule> PyHloEnv::GetHloModule() { return py_hlo_module_; }
@@ -326,6 +328,7 @@ PYBIND11_MODULE(hlo_env, m) {
       .DEF_PYBIND_READONLY(PyEdgeFeats, dsts)
       .DEF_PYBIND_READONLY(PyEdgeFeats, dims)
       .DEF_PYBIND_READONLY(PyEdgeFeats, layouts)
+      .DEF_PYBIND_READONLY(PyEdgeFeats, lehmercodes)
       .DEF_PYBIND_READONLY(PyEdgeFeats, dtypes);
 
   py::class_<PyHloEnv::EvaluationResult>(m, "EvaluationResult")
@@ -368,6 +371,7 @@ PYBIND11_MODULE(hlo_env, m) {
       .def("export_hlo_to_str", &PyHloEnv::ExportHloModuleToStr)
       .def("get_hlo_module", &PyHloEnv::GetHloModule)
       .def("get_hlo_graph", &PyHloEnv::GetHloGraph,
+           py::arg("inline_fused_comp") = false,
            py::arg("do_hash_verification") = true)
       .def("pre_fusion_optimizations", &PyHloEnv::PreFusionOptimizations)
       .def("fusion_dry_run", &PyHloEnv::FusionDryRun,

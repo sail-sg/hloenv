@@ -61,6 +61,7 @@ class HloEnvTest(absltest.TestCase):
     assert (len(in_edge_features.dsts) == num_in_edges)
     assert (len(in_edge_features.dims) == num_in_edges * 8)
     assert (len(in_edge_features.layouts) == num_in_edges * 8)
+    assert (len(in_edge_features.lehmercodes) == num_in_edges * 8)
     assert (len(in_edge_features.dtypes) == num_in_edges)
     _ = in_edge_features.get_tensor_size(0)
 
@@ -69,6 +70,7 @@ class HloEnvTest(absltest.TestCase):
     assert (len(out_edge_features.dsts) == num_out_edges)
     assert (len(out_edge_features.dims) == num_out_edges * 8)
     assert (len(out_edge_features.layouts) == num_out_edges * 8)
+    assert (len(out_edge_features.lehmercodes) == num_out_edges * 8)
     assert (len(out_edge_features.dtypes) == num_out_edges)
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
@@ -212,10 +214,12 @@ class HloEnvTest(absltest.TestCase):
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_may_duplicate(self) -> None:
-    import tensorflow
-    from altgraph import HloEnv
     from random import randrange
+
     import numpy as np
+    from altgraph import HloEnv
+
+    import tensorflow
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
 
@@ -484,9 +488,10 @@ class HloEnvTest(absltest.TestCase):
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_hash(self) -> None:
-    from altgraph import HloEnv
     from random import randrange
+
     import numpy as np
+    from altgraph import HloEnv
 
     base_dir = os.path.dirname(os.path.realpath(__file__))
     hlo_base_dir = base_dir + "/hlo_texts/test_hlos"
@@ -550,9 +555,10 @@ class HloEnvTest(absltest.TestCase):
   # stays constant
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_apply_original(self) -> None:
-    from altgraph import HloEnv
     from random import randrange
+
     import numpy as np
+    from altgraph import HloEnv
 
     base_dir = os.path.dirname(os.path.realpath(__file__))
     hlo_base_dir = base_dir + "/hlo_texts/test_hlos"
