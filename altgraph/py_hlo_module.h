@@ -99,6 +99,10 @@ class PyHloModule {
 
   xla::HloModuleProto ToProto() { return hlo_module_->ToProto(); }
 
+  bool IsBefEnabled() { return xla::gpu::IsBefEnabled(hlo_module_->config()); }
+
+  const xla::HloModuleConfig& config() const { return hlo_module_->config(); }
+
  private:
   std::unique_ptr<xla::HloModule> hlo_module_;
 };

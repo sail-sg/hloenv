@@ -1,5 +1,8 @@
 // Copyright 2021 Garena Online Private Limited
 
+#ifndef ALTGRAPH_GPU_BACKEND_H_
+#define ALTGRAPH_GPU_BACKEND_H_
+
 #include <memory>
 #include <string>
 #include <utility>
@@ -10,9 +13,6 @@
 #include "tensorflow/compiler/xla/service/hlo_module.h"
 #include "tensorflow/compiler/xla/service/hlo_module_config.h"
 #include "tensorflow/compiler/xla/tools/hlo_module_loader.h"
-
-#ifndef ALTGRAPH_GPU_BACKEND_H_
-#define ALTGRAPH_GPU_BACKEND_H_
 
 struct HloEnvGpuBackend {
   static HloEnvGpuBackend& Instance() {
@@ -30,6 +30,19 @@ struct HloEnvGpuBackend {
   }
   static xla::se::DeviceMemoryAllocator* DeviceMemoryAllocator() {
     return Instance().device_allocator;
+  }
+
+  // TODO(ohcy): Consider pybinding StreamExec, StreamExec::Platform
+  // and StreamExec::CudaComputeCapability if more of these hooks are needed.
+  static const std::string& GetStreamExecPlatform() {
+    std::cout << StreamExecutor()->platform()->Name() << std::endl;
+    return StreamExecutor()->platform()->Name();
+  }
+  static bool CudaComputeIsAtLeast(int other_major, int other_minor = 0) {
+    return StreamExecutor()
+        ->GetDeviceDescription()
+        .cuda_compute_capability()
+        .IsAtLeast(other_major, other_minor);
   }
 
  private:

@@ -74,6 +74,46 @@ cc_library(
     ],
 )
 
+cc_library(
+    name = "hlo_pass_defs",
+    hdrs = ["hlo_pass_defs.h"],
+    deps = [
+        "@org_tensorflow//tensorflow/compiler/jit:xla_gpu_jit",
+    ],
+)
+
+cc_library(
+    name = "schedule_pass_defs",
+    hdrs = ["schedule_pass_defs.h"],
+    deps = [
+        ":hlo_pass_defs",
+    ],
+)
+
+pybind_library(
+    name = "hlo_pass",
+    srcs = ["py_hlo_passes.cc"],
+    hdrs = ["py_hlo_passes.h"],
+    deps = [
+        ":gpu_backend",
+        ":hlo_pass_defs",
+        ":py_hlo_module",
+    ],
+)
+
+pybind_library(
+    name = "schedule",
+    srcs = ["schedule.h"],
+    deps = [
+        ":py_hlo_module",
+        ":schedule_pass_defs",
+        "@org_tensorflow//tensorflow/compiler/xla/service:hlo",
+        "@org_tensorflow//tensorflow/compiler/xla/pjrt:cpu_device",
+        "@org_tensorflow//tensorflow/compiler/xla/pjrt:gpu_device",
+        "@org_tensorflow//tensorflow/compiler/xla/pjrt:pjrt_client",
+    ],
+)
+
 pybind_extension(
     name = "hlo_env",
     srcs = ["py_hlo_env.cc"],
@@ -87,8 +127,10 @@ pybind_extension(
     module_name = "hlo_env",
     deps = [
         ":gpu_backend",
+        ":hlo_pass",
         ":py_hlo_graph",
         ":py_hlo_module",
+        ":schedule",
         "//altgraph/evaluation:evaluator",
         "@com_google_absl//absl/hash",
         "@org_tensorflow//tensorflow/compiler/jit:xla_cpu_jit",

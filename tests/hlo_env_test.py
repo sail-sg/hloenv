@@ -375,7 +375,10 @@ class HloEnvTest(absltest.TestCase):
         hlo_env = HloEnv(filepath, "gpu")
 
         saved_hlo_module = hlo_env.save_hlo()
-        hlo_env.original_run_hlo_passes()
+        # Original TF pipelines
+        hlo_env.optimize_hlo_module()
+        hlo_env.prepare_hlo_module_for_ir_emitting()
+
         # Save reference copy of the module after a non dry-run RunHloPasses call
         reference_hlo_module = hlo_env.save_hlo()
         hlo_env.load_hlo(saved_hlo_module)
@@ -608,6 +611,870 @@ class HloEnvTest(absltest.TestCase):
       assert (len(hlo_graph.to_string()) > 0)
       print(instruction)
       print(hlo_graph.to_string())
+
+  # Test general pipeline
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_general_pipeline_main(self) -> None:
+    from altgraph import Pipeline, Pass, AltPipeline, HloEnv, HloPass
+    from random import randrange
+    import numpy as np
+
+    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+    hlo_env.pre_fusion_optimizations()
+
+    num_alts = 1
+    count = 0
+
+    fusion_pre_pipeline = Pipeline("fusion_pre")
+
+    fusion_pre_pipeline.add_pass(HloPass.VariadicOpSplitter())
+    # Note you have to make an Pass, cannot just run the HloPass directly.
+    fusion_dry_pass = AltPipeline(
+      Pass(
+        HloPass.GpuInstructionFusion(True),  # may_duplicate
+      )
+    )
+
+    fusion_post_pipeline = Pipeline(name="fusion_pre")
+    fusion_post_pipeline.add_pass(HloPass.FusionMerger(), loop_count=1)
+    # Note: default values for dry_mode is false, loop_count is 1
+    fusion_post_pipeline.add_pass(HloPass.GpuMultiOutputFusion())
+    fusion_post_pipeline.add_pass(HloPass.HloCSE(True, True))
+
+    fusion_example_pipeline = Pipeline(name="fusion_pre_hlo_dce")
+    fusion_example_pipeline.add_pass(HloPass.HloDCE())
+    # Note, a pipeline can be added as a pass to a pipeline (can nest this)
+    fusion_post_pipeline.add_pass(fusion_example_pipeline)
+
+    init_hlo = hlo_env.save_hlo()
+    while num_alts > 0:
+      hlo_env.run(fusion_pre_pipeline)
+
+      # You can run a pass on it's own
+      hlo_env.run(fusion_dry_pass)
+
+      hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
+      node_features = hlo_graph.node_features
+      num_operands = node_features.num_operands
+      num_alts = len(hlo_graph.alternative_indices)
+
+      if num_alts > 0:
+        decisions = []
+        for alt_idx in hlo_graph.alternative_indices:
+          node_uid = node_features.uids[alt_idx]
+          decisions.append([alt_idx, min(1, num_operands[alt_idx])])
+
+        decisions = np.asarray(decisions)
+        # pass the decision back to compilerp
+        hlo_env.apply_alternatives(decisions)
+        hlo_env.run(fusion_post_pipeline)
+
+        count += 1
+
+    general_count = count
+    general_pipeline_hlo = hlo_env.save_hlo()
+
+    hlo_env.load_hlo(init_hlo)
+
+    num_alts = 1
+    count = 0
+    while num_alts > 0:
+      print(count)
+      hlo_env.pre_fusion_dry_passes()
+      hlo_env.fusion_dry_run()
+
+      hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
+      node_features = hlo_graph.node_features
+      num_operands = node_features.num_operands
+      num_alts = len(hlo_graph.alternative_indices)
+
+      if num_alts > 0:
+        decisions = []
+        for alt_idx in hlo_graph.alternative_indices:
+          node_uid = node_features.uids[alt_idx]
+          decisions.append([alt_idx, min(1, num_operands[alt_idx])])
+
+        hlo_env.apply_alternatives(decisions)
+        hlo_env.post_fusion_dry_passes()
+        count += 1
+
+    original_count = count
+    original_pipeline_hlo = hlo_env.save_hlo()
+
+    assert (original_count == general_count)
+    assert (
+      hlo_env.has_equal_output(original_pipeline_hlo, general_pipeline_hlo)
+    )
+
+  # Test general pipeline run till next dry pass functionality
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_general_pipeline_run_to_dry(self) -> None:
+    from altgraph import Pipeline, Pass, AltPipeline, HloEnv, HloPass
+    from random import randrange
+    import numpy as np
+
+    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+    hlo_env.pre_fusion_optimizations()
+
+    num_alts = 1
+    count = 0
+
+    fusion_pipeline = Pipeline("fusion")
+
+    fusion_pipeline.add_pass(HloPass.VariadicOpSplitter())
+    fusion_dry_pass = AltPipeline(
+      Pass(
+        HloPass.GpuInstructionFusion(may_duplicate=True
+                                    ),  # Test named arguments
+      )
+    )
+    fusion_pipeline.add_pass(fusion_dry_pass)
+    fusion_pipeline.add_pass(HloPass.FusionMerger())
+    fusion_pipeline.add_pass(HloPass.GpuMultiOutputFusion())
+    fusion_pipeline.add_pass(
+      HloPass.HloCSE(True, only_fusion_computations=True)
+    )
+    fusion_pipeline.add_pass(HloPass.HloDCE())
+
+    init_hlo = hlo_env.save_hlo()
+    has_alt = True
+    while has_alt:
+      has_alt = hlo_env.run(fusion_pipeline)
+      print("COUNT: ", count, has_alt)
+      # We hit a dry run pass
+      if has_alt:
+        hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
+        node_features = hlo_graph.node_features
+        num_operands = node_features.num_operands
+        num_alts = len(hlo_graph.alternative_indices)
+        assert (num_alts > 0)
+        if num_alts > 0:
+          decisions = []
+          for alt_idx in hlo_graph.alternative_indices:
+            node_uid = node_features.uids[alt_idx]
+            decisions.append([alt_idx, min(1, num_operands[alt_idx])])
+
+          decisions = np.asarray(decisions)
+          # pass the decision back to compilerp
+          hlo_env.apply_alternatives(decisions)
+          count += 1
+
+      # Continue running the rest of the fusion_pipeline
+      rest_has_alt = hlo_env.run(fusion_pipeline)
+      # We should have no alts now, since the rest of the passes are not dry
+      assert (not rest_has_alt)
+
+    general_count = count
+    general_pipeline_hlo = hlo_env.save_hlo()
+    hlo_env.load_hlo(init_hlo)
+
+    num_alts = 1
+    count = 0
+    while num_alts > 0:
+      hlo_env.pre_fusion_dry_passes()
+      hlo_env.fusion_dry_run()
+
+      hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
+      node_features = hlo_graph.node_features
+      num_operands = node_features.num_operands
+      num_alts = len(hlo_graph.alternative_indices)
+
+      if num_alts > 0:
+        decisions = []
+        for alt_idx in hlo_graph.alternative_indices:
+          node_uid = node_features.uids[alt_idx]
+          decisions.append([alt_idx, min(1, num_operands[alt_idx])])
+
+        hlo_env.apply_alternatives(decisions)
+        hlo_env.post_fusion_dry_passes()
+        count += 1
+
+    original_count = count
+    original_pipeline_hlo = hlo_env.save_hlo()
+
+    assert (original_count == general_count)
+    assert (
+      hlo_env.has_equal_output(original_pipeline_hlo, general_pipeline_hlo)
+    )
+
+  # Test general pipeline fixed pipeline functionality
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_general_pipeline_fixed(self) -> None:
+    from altgraph import Pipeline, Pass, AltPipeline, HloEnv, HloPass
+    from random import randrange
+    import numpy as np
+
+    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+    hlo_env.pre_fusion_optimizations()
+
+    num_alts = 1
+    count = 0
+
+    fusion_pipeline = Pipeline("fusion-pipeline", loop_count=-1)
+
+    fusion_pipeline.add_pass(HloPass.VariadicOpSplitter())
+    fusion_dry_pass = AltPipeline(Pass(HloPass.GpuInstructionFusion(True)))
+    fusion_pipeline.add_pass(fusion_dry_pass)
+    fusion_pipeline.add_pass(HloPass.FusionMerger())
+    fusion_pipeline.add_pass(HloPass.GpuMultiOutputFusion())
+    fusion_pipeline.add_pass(HloPass.HloCSE(True, True))
+    fusion_pipeline.add_pass(HloPass.HloDCE())
+
+    init_hlo = hlo_env.save_hlo()
+    has_alt = True
+    # Since the pipeline is fixed, it will run till there are no changes
+    while has_alt:
+      has_alt = hlo_env.run(fusion_pipeline)
+      # We hit a dry run pass
+      if has_alt:
+        hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
+        node_features = hlo_graph.node_features
+        num_operands = node_features.num_operands
+        num_alts = len(hlo_graph.alternative_indices)
+        if num_alts > 0:
+          decisions = []
+          for alt_idx in hlo_graph.alternative_indices:
+            node_uid = node_features.uids[alt_idx]
+            decisions.append([alt_idx, min(1, num_operands[alt_idx])])
+
+          decisions = np.asarray(decisions)
+          # pass the decision back to compilerp
+          hlo_env.apply_alternatives(decisions)
+          count += 1
+
+    general_count = count
+    general_pipeline_hlo = hlo_env.save_hlo()
+
+    hlo_env.load_hlo(init_hlo)
+
+    num_alts = 1
+    count = 0
+    while num_alts > 0:
+      hlo_env.pre_fusion_dry_passes()
+      hlo_env.fusion_dry_run()
+
+      hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
+      node_features = hlo_graph.node_features
+      num_operands = node_features.num_operands
+      num_alts = len(hlo_graph.alternative_indices)
+
+      if num_alts > 0:
+        decisions = []
+        for alt_idx in hlo_graph.alternative_indices:
+          node_uid = node_features.uids[alt_idx]
+          decisions.append([alt_idx, min(1, num_operands[alt_idx])])
+
+        hlo_env.apply_alternatives(decisions)
+        hlo_env.post_fusion_dry_passes()
+        count += 1
+
+    original_count = count
+    original_pipeline_hlo = hlo_env.save_hlo()
+
+    assert (original_count == general_count)
+    assert (
+      hlo_env.has_equal_output(original_pipeline_hlo, general_pipeline_hlo)
+    )
+
+  # Test general pipeline fixed single pass functionality
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_general_pipeline_loop_count(self) -> None:
+    from altgraph import Pipeline, Pass, AltPipeline, HloEnv, HloPass
+    import numpy as np
+
+    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+    hlo_env.pre_fusion_optimizations()
+
+    num_alts = 1
+    count = 0
+    loop_count = 7
+
+    fusion_dry_pass = AltPipeline(
+      Pass(
+        HloPass.GpuInstructionFusion(may_duplicate=True),
+        loop_count=loop_count
+      )
+    )
+
+    init_hlo = hlo_env.save_hlo()
+    has_alt = True
+    while (has_alt):
+      hlo_env.pre_fusion_dry_passes()
+      has_alt = hlo_env.run(fusion_dry_pass)
+      # We hit a dry run pass
+      if has_alt:
+        hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
+        node_features = hlo_graph.node_features
+        num_operands = node_features.num_operands
+        num_alts = len(hlo_graph.alternative_indices)
+
+        # Since pass is not complete, there must be a change, i.e.
+        # num_alts > 0
+        assert (num_alts > 0)
+        decisions = []
+        for alt_idx in hlo_graph.alternative_indices:
+          node_uid = node_features.uids[alt_idx]
+          decisions.append([alt_idx, min(1, num_operands[alt_idx])])
+
+        decisions = np.asarray(decisions)
+        # pass the decision back to compilerp
+        hlo_env.apply_alternatives(decisions)
+        hlo_env.post_fusion_dry_passes()
+
+        count += 1
+
+    assert (count == loop_count)
+    assert (hlo_env.has_equal_output_as(init_hlo))
+
+  # Test general pipeline fixed single pass functionality
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_general_pipeline_fixed_pass(self) -> None:
+    from altgraph import Pipeline, Pass, AltPipeline, HloEnv, HloPass
+    import numpy as np
+
+    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+    hlo_env.pre_fusion_optimizations()
+
+    num_alts = 1
+    count = 0
+
+    fusion_dry_pass = AltPipeline(
+      Pass(HloPass.GpuInstructionFusion(may_duplicate=True), loop_count=-1)
+    )
+
+    init_hlo = hlo_env.save_hlo()
+    has_alt = True
+    while (has_alt):
+      print(count)
+      hlo_env.pre_fusion_dry_passes()
+      has_alt = hlo_env.run(fusion_dry_pass)
+      # We hit a dry run pass
+      if has_alt:
+        hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
+        node_features = hlo_graph.node_features
+        num_operands = node_features.num_operands
+        num_alts = len(hlo_graph.alternative_indices)
+
+        # Since pass is not complete, there must be a change, i.e.
+        # num_alts > 0
+        assert (num_alts > 0)
+        decisions = []
+        for alt_idx in hlo_graph.alternative_indices:
+          node_uid = node_features.uids[alt_idx]
+          decisions.append([alt_idx, min(1, num_operands[alt_idx])])
+
+        decisions = np.asarray(decisions)
+        # pass the decision back to compilerp
+        hlo_env.apply_alternatives(decisions)
+        hlo_env.post_fusion_dry_passes()
+
+        count += 1
+
+    assert (count > 1)
+    assert (hlo_env.has_equal_output_as(init_hlo))
+
+  # Test general pipeline
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_general_pipeline_identical_hash(self) -> None:
+    from altgraph import Pipeline, Pass, AltPipeline, HloEnv, HloPass
+    from random import randrange
+    import numpy as np
+
+    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+    hlo_env.pre_fusion_optimizations()
+
+    num_alts = 1
+    count = 0
+
+    fusion_pre_pipeline = Pipeline("fusion_pre")
+
+    fusion_pre_pipeline.add_pass(HloPass.VariadicOpSplitter())
+    # Note you have to make an Pass, cannot just run the HloPass directly.
+    fusion_dry_pass = AltPipeline(
+      Pass(
+        HloPass.GpuInstructionFusion(True),  # may_duplicate
+      )
+    )
+
+    fusion_post_pipeline = Pipeline(name="fusion_pre")
+    fusion_post_pipeline.add_pass(HloPass.FusionMerger(), loop_count=1)
+    # Note: default values for dry_mode is false, loop_count is 1
+    # We ignore GpuMultiOutputFusion since its changes are undeterministic
+    # fusion_post_pipeline.add_pass(HloPass.GpuMultiOutputFusion())
+    fusion_post_pipeline.add_pass(HloPass.HloCSE(True, True))
+    fusion_post_pipeline.add_pass(HloPass.HloDCE())
+
+    init_hlo = hlo_env.save_hlo()
+    while num_alts > 0:
+      hlo_env.run(fusion_pre_pipeline)
+
+      # You can run a pass on it's own
+      hlo_env.run(fusion_dry_pass)
+
+      hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
+      node_features = hlo_graph.node_features
+      num_operands = node_features.num_operands
+      num_alts = len(hlo_graph.alternative_indices)
+
+      if num_alts > 0:
+        decisions = []
+        for alt_idx in hlo_graph.alternative_indices:
+          node_uid = node_features.uids[alt_idx]
+          decisions.append([alt_idx, min(1, num_operands[alt_idx])])
+
+        decisions = np.asarray(decisions)
+        # pass the decision back to compilerp
+        hlo_env.apply_alternatives(decisions)
+        hlo_env.run(fusion_post_pipeline)
+
+        count += 1
+
+    general_count = count
+    general_pipeline_hash = hlo_env.get_hlo_module_hash()
+
+    hlo_env.load_hlo(init_hlo)
+
+    num_alts = 1
+    count = 0
+    while num_alts > 0:
+      print(count)
+      hlo_env.pre_fusion_dry_passes()
+      hlo_env.fusion_dry_run()
+
+      hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
+      node_features = hlo_graph.node_features
+      num_operands = node_features.num_operands
+      num_alts = len(hlo_graph.alternative_indices)
+
+      if num_alts > 0:
+        decisions = []
+        for alt_idx in hlo_graph.alternative_indices:
+          node_uid = node_features.uids[alt_idx]
+          decisions.append([alt_idx, min(1, num_operands[alt_idx])])
+
+        hlo_env.apply_alternatives(decisions)
+        hlo_env.run(fusion_post_pipeline)  # So as to exclude MultiOutputFusion
+
+        count += 1
+
+    original_count = count
+    original_pipeline_hash = hlo_env.get_hlo_module_hash()
+
+    assert (original_count == general_count)
+    assert (original_pipeline_hash == general_pipeline_hash)
+
+  # Test general pipeline reproducing the full OptimizeHloModule pipeline
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_general_pipeline_full_optimize_hlo(self) -> None:
+    from altgraph import Pipeline, Pass, AltPipeline, HloEnv, HloPass, GpuBackend
+
+    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+    hlo_module = hlo_env.get_hlo_module()
+    config = hlo_module.config
+    debug_options = config.debug_options
+
+    #  -----------------------------------------------------------------------
+    #                             PRE FUSION PIPELINE
+    #  -----------------------------------------------------------------------
+
+    pre_fusion_pipeline = Pipeline("pre-fusion")
+
+    # --------------------------------------------
+    # SPMD Paritioning Pipeline
+    # --------------------------------------------
+
+    if (config.use_spmd_partitioning):
+      spmd_pipeline = Pipeline("spmd-partitioner")
+      num_partitions = config.num_partitions
+      if (num_partitions > 1):
+        spmd_pipeline.add_invariant_checker(HloPass.HloVerifier(False, False))
+
+        spmd_pipeline.add_pass(HloPass.CallInliner())
+        spmd_pipeline.add_pass(HloPass.ZeroSizedHloElimination())
+        spmd_pipeline.add_pass(HloPass.ConditionalCanonicalizer())
+
+        spmd_simplify_pipeline = Pipeline("spmd-simplify", loop_count=-1)
+        algebraic_config_options = {
+          "replace_transpose_with_bitcast": False,
+          "enable_conv_operand_swap": False,
+          "minmax_propagate_nan": debug_options.xla_gpu_enable_fast_min_max,
+        }
+        spmd_simplify_pipeline.add_pass(
+          HloPass.AlgebraicSimplifier(options=algebraic_config_options)
+        )
+        spmd_simplify_pipeline.add_pass(HloPass.SortSimplifier())
+        spmd_simplify_pipeline.add_pass(HloPass.TupleSimplifier())
+        spmd_simplify_pipeline.add_pass(
+          HloPass.ScatterExpander(
+            HloPass.ScatterExpander.Mode.kEliminateSimpleScatters
+          )
+        )
+        spmd_simplify_pipeline.add_pass(
+          HloPass.GatherExpander(
+            HloPass.GatherExpander.Mode.kEliminateSimpleGathers
+          )
+        )
+        spmd_simplify_pipeline.add_pass(HloPass.WhileLoopConstantSinking())
+        spmd_simplify_pipeline.add_pass(HloPass.WhileLoopSimplifier())
+        spmd_simplify_pipeline.add_pass(HloPass.ReshapeMover())
+        spmd_simplify_pipeline.add_pass(HloPass.HloConstantFolding())
+        spmd_simplify_pipeline.add_pass(HloPass.ConditionalSimplifier())
+        spmd_simplify_pipeline.add_pass(HloPass.HloDCE())
+        spmd_pipeline.add_pass(spmd_simplify_pipeline)
+
+        spmd_pipeline.add_pass(HloPass.ShardingPropagation(True))
+        spmd_pipeline.add_pass(
+          HloPass.StatefulRngSpmdPartitioner(
+            num_partitions, config.replica_count
+          )
+        )
+      else:
+        spmd_simplify_pipeline.add_pass(HloPass.ShardingRemover())
+        spmd_simplify_pipeline.add_pass(HloPass.HloDCE())
+
+      pre_fusion_pipeline.add_pass(spmd_pipeline)
+
+    # --------------------------------------------
+    # Optimization Pipeline
+    # --------------------------------------------
+
+    optimization_pipeline = Pipeline("optimization")
+    optimization_pipeline.add_invariant_checker(
+      HloPass.HloVerifier(False, False)
+    )
+
+    optimization_pipeline.add_pass(HloPass.AllToAllDecomposer())
+    optimization_pipeline.add_pass(HloPass.OperandUpcaster())
+    optimization_pipeline.add_pass(HloPass.ResultCaster())
+    optimization_pipeline.add_pass(HloPass.RngExpander())
+    optimization_pipeline.add_pass(
+      HloPass.RngBitGeneratorExpander(
+        HloPass.RngBitGeneratorExpander.RandomAlgorithm.RNG_PHILOX
+      )
+    )
+    optimization_pipeline.add_pass(HloPass.ComparisonExpander())
+    optimization_pipeline.add_pass(HloPass.ZeroSizedHloElimination())
+
+    if debug_options.xla_gpu_deterministic_ops:
+      optimization_pipeline.add_pass(
+        HloPass.ScatterExpander(
+          HloPass.ScatterExpander.Mode.kEliminateAllScatters
+        )
+      )
+    else:
+      optimization_pipeline.add_pass(HloPass.GpuScatterExpander())
+
+    optimization_pipeline.add_pass(HloPass.QrExpander())
+    optimization_pipeline.add_pass(HloPass.EighExpander())
+    optimization_pipeline.add_pass(HloPass.DynamicIndexSplitter())
+    optimization_pipeline.add_pass(HloPass.CallInliner())
+    optimization_pipeline.add_pass(HloPass.DotDecomposer())
+    optimization_pipeline.add_pass(HloPass.Convolution4DExpander())
+    optimization_pipeline.add_pass(HloPass.StableSortExpander())
+
+    optimization_pipeline.add_pass(HloPass.BFloat16Normalization(True))
+    optimization_pipeline.add_pass(HloPass.BatchNormExpander(True, True, True))
+    optimization_pipeline.add_pass(
+      HloPass.LogisticExpander(
+        HloPass.LogisticExpander.LogisticExpansionType.kExp
+      )
+    )
+    optimization_pipeline.add_pass(HloPass.ConditionalCanonicalizer())
+    optimization_pipeline.add_pass(HloPass.DynamicDimensionSimplifier())
+    dp_options = {
+      "shape_check_mode": HloPass.DynamicPadder.ShapeCheckMode.kCompileTime
+    }
+    optimization_pipeline.add_pass(HloPass.DynamicPadder(dp_options))
+
+    simplification_pipeline = Pipeline("simplification", loop_count=-1)
+    simplification_pipeline.add_pass(HloPass.ZeroSizedHloElimination())
+    simplification_pipeline.add_pass(
+      HloPass.GatherExpander(
+        HloPass.GatherExpander.Mode.kEliminateSimpleGathers
+      )
+    )
+    simplification_pipeline.add_pass(
+      HloPass.ScatterExpander(
+        HloPass.ScatterExpander.Mode.kEliminateSimpleScatters
+      )
+    )
+    algebraic_config_options = {
+      "replace_transpose_with_bitcast": False,
+      "minmax_propagate_nan": debug_options.xla_gpu_enable_fast_min_max,
+    }
+    if (GpuBackend.stream_exec_platform == "ROCM"):
+      algebraic_config_options["enable_conv_operand_swap"] = False
+    simplification_pipeline.add_pass(
+      HloPass.AlgebraicSimplifier(options=algebraic_config_options)
+    )
+    simplification_pipeline.add_pass(HloPass.BitcastDtypesExpander())
+    simplification_pipeline.add_pass(HloPass.DotDecomposer())
+    simplification_pipeline.add_pass(
+      HloPass.DotMerger(max_size_to_merge=16 << 20)
+    )
+    simplification_pipeline.add_pass(HloPass.SortSimplifier())
+    simplification_pipeline.add_pass(HloPass.TupleSimplifier())
+    simplification_pipeline.add_pass(HloPass.WhileLoopConstantSinking())
+    simplification_pipeline.add_pass(HloPass.WhileLoopSimplifier())
+    simplification_pipeline.add_pass(HloPass.ReshapeMover())
+    simplification_pipeline.add_pass(HloPass.HloConstantFolding())
+    simplification_pipeline.add_pass(HloPass.ConditionalSimplifier())
+    simplification_pipeline.add_pass(HloPass.RealImagExpander())
+    simplification_pipeline.add_pass(HloPass.TransposeFolding())
+    simplification_pipeline.add_pass(HloPass.HloCSE(is_layout_sensitive=False))
+    simplification_pipeline.add_pass(HloPass.HloDCE())
+    optimization_pipeline.add_pass(simplification_pipeline)
+
+    # Run WhileLoopTripCountAnnotator at the end of the simplification
+    # pipeline, before layout assignment and fusion.  This pass does some
+    # pattern-matching on while bodies/conditions, and this is where the HLO is
+    # "nicest".
+    #
+    # It's important that we don't make semantic changes (e.g. unrolling) to
+    # any `while` loops after this point, because otherwise the trip-count
+    # annotations added by this pass may not be correct after the
+    # modifications.
+    optimization_pipeline.add_pass(HloPass.WhileLoopTripCountAnnotator())
+    pre_fusion_pipeline.add_pass(optimization_pipeline)
+
+    # --------------------------------------------
+    # Collectives Pipeline
+    # --------------------------------------------
+
+    collectives_pipeline = Pipeline("collective-optimizations")
+    collectives_pipeline.add_pass(HloPass.AllReduceFolder())
+    collectives_pipeline.add_pass(HloPass.ReduceScatterCreator())
+    collectives_pipeline.add_pass(HloPass.AllReduceReassociate())
+    algebraic_config_options = {
+      "replace_transpose_with_bitcast": False,
+      "enable_conv_operand_swap": False,
+      "minmax_propagate_nan": debug_options.xla_gpu_enable_fast_min_max,
+    }
+    collectives_pipeline.add_pass(
+      HloPass.AlgebraicSimplifier(options=algebraic_config_options)
+    )
+    collectives_pipeline.add_pass(HloPass.AllGatherBroadcastReorder())
+    # pre_fusion_pipeline.add_pass(collectives_pipeline)
+
+    # --------------------------------------------
+    # Convolution Canonicalization Pipeline
+    # --------------------------------------------
+
+    # TODO(ohcy): Account for AMD GPU case
+    # Note, this is specific to Nvidia GPUs. For AMD GPUs, some of the passes,
+    # e.g. Cudnn passes should be excluded
+    conv_canon_pipeline = Pipeline("conv-canonicalization")
+    conv_canon_pipeline.add_pass(HloPass.GpusolverRewriter())
+    conv_canon_pipeline.add_pass(HloPass.GpuConvRewriter())
+    conv_canon_pipeline.add_pass(HloPass.CudnnFusedConvRewriter())
+    conv_canon_pipeline.add_pass(HloPass.GpuConvPaddingLegalization())
+    conv_canon_pipeline.add_pass(HloPass.CudnnPadForConvolutions())
+    conv_canon_pipeline.add_pass(HloPass.CudnnVectorizeConvolutions())
+    conv_canon_pipeline.add_pass(HloPass.CallInliner())
+    conv_canon_pipeline.add_pass(HloPass.TupleSimplifier())
+    algebraic_config_options = {
+      "replace_transpose_with_bitcast": False,
+      "enable_conv_operand_swap": False,
+    }
+    conv_canon_pipeline.add_pass(
+      HloPass.AlgebraicSimplifier(options=algebraic_config_options),
+      loop_count=-1
+    )
+    conv_canon_pipeline.add_pass(HloPass.HloConstantFolding())
+    pre_fusion_pipeline.add_pass(conv_canon_pipeline)
+
+    # --------------------------------------------
+    # Layout Assignment Pipeline
+    # --------------------------------------------
+
+    layout_assignment_pipeline = Pipeline("layout-assignment")
+    layout_assignment_pipeline.add_pass(HloPass.FlattenCallGraph())
+    layout_assignment_pipeline.add_pass(
+      HloPass.GpuLayoutAssignment(hlo_module)
+    )
+    pre_fusion_pipeline.add_pass(layout_assignment_pipeline)
+
+    # --------------------------------------------
+    # Post Layout Assignment Pipeline
+    # --------------------------------------------
+
+    # *******************
+    # NVIDIA GPU Specific Passes Stage 1 - START
+    post_layout_ass_pipeline_nv_pre = Pipeline("post-layout-assignment-nv-pre")
+    if (GpuBackend.cuda_is_at_least(GpuBackend.CudaComputeCapability.AMPERE)):
+      post_layout_ass_pipeline_nv_pre.add_pass(
+        HloPass.CublasPadForGemms(
+          datatype=HloPass.CublasPadForGemms.PrimitiveType.BF16,
+          pad_to_multiple_of=8
+        )
+      )
+
+    if (GpuBackend.cuda_is_at_least(GpuBackend.CudaComputeCapability.VOLTA)):
+      post_layout_ass_pipeline_nv_pre.add_pass(
+        HloPass.CublasPadForGemms(
+          datatype=HloPass.CublasPadForGemms.PrimitiveType.S8,
+          pad_to_multiple_of=4
+        )
+      )
+      post_layout_ass_pipeline_nv_pre.add_pass(
+        HloPass.CublasPadForGemms(
+          datatype=HloPass.CublasPadForGemms.PrimitiveType.F16,
+          pad_to_multiple_of=8
+        )
+      )
+
+    post_layout_ass_pipeline_nv_pre.add_pass(HloPass.HloConstantFolding())
+    # NVIDIA GPU Specific Passes Stage 1 - END
+    # *******************
+
+    post_layout_ass_pipeline = Pipeline("post-layout-assignment")
+    post_layout_ass_pipeline.add_pass(HloPass.ReductionDegenerateDimRemover())
+    post_layout_ass_pipeline.add_pass(HloPass.ReductionLayoutNormalizer())
+    post_layout_ass_pipeline.add_pass(HloPass.ReductionDimensionGrouper())
+    post_layout_ass_pipeline.add_pass(
+      HloPass.ReductionSplitter(), loop_count=-1
+    )
+    post_layout_ass_pipeline.add_pass(
+      HloPass.GpuTreeReductionRewriter(), loop_count=-1
+    )
+
+    algebraic_config_options = {
+      "is_layout_sensitive": True,
+      "replace_transpose_with_bitcast": False,
+      "enable_conv_operand_swap": False,
+      "minmax_propagate_nan": debug_options.xla_gpu_enable_fast_min_max,
+    }
+    post_layout_ass_pipeline.add_pass(
+      HloPass.AlgebraicSimplifier(algebraic_config_options), loop_count=-1
+    )
+    post_layout_ass_pipeline.add_pass(HloPass.TransposeFolding())
+    post_layout_ass_pipeline.add_pass(HloPass.GemmRewriter())
+    post_layout_ass_pipeline.add_pass(HloPass.GemmBroadcastFoldingRewriter())
+    post_layout_ass_pipeline.add_pass(HloPass.BFloat16Normalization(False))
+    post_layout_ass_pipeline.add_pass(HloPass.GpuConvAlgorithmPicker())
+    post_layout_ass_pipeline.add_pass(HloPass.TupleSimplifier())
+    post_layout_ass_pipeline.add_pass(HloPass.HloCSE(True))
+
+    # *******************
+    # NVIDIA GPU Specific Passes Stage 2 - START
+    post_layout_ass_pipeline_nv_post = Pipeline(
+      "post-layout-assignment-nv-post"
+    )
+
+    post_layout_ass_pipeline_nv_post.add_pass(HloPass.GemmAlgorithmPicker())
+    if (hlo_module.is_bef_enabled):
+      post_layout_ass_pipeline_nv_post.add_pass(
+        HloPass.TriangularSolveRewriter()
+      )
+    # NVIDIA GPU Specific Passes Stage 2 - END
+    # *******************
+
+    pre_fusion_pipeline.add_pass(post_layout_ass_pipeline_nv_pre)
+    pre_fusion_pipeline.add_pass(post_layout_ass_pipeline)
+    pre_fusion_pipeline.add_pass(post_layout_ass_pipeline_nv_post)
+
+    #  -----------------------------------------------------------------------
+    #                               FUSION PIPELINE
+    #  -----------------------------------------------------------------------
+
+    fusion_pipeline = Pipeline("fusion")
+
+    # --------------------------------------------
+    # Vertical Fusion Pipeline
+    # --------------------------------------------
+
+    vert_fusion_pipeline = Pipeline("vertical-fusion", loop_count=-1)
+    vert_fusion_pipeline.add_pass(HloPass.VariadicOpSplitter())
+    vert_fusion_pipeline.add_pass(HloPass.GpuInstructionFusion(False))
+    vert_fusion_pipeline.add_pass(HloPass.GpuInstructionFusion(True))
+    vert_fusion_pipeline.add_pass(HloPass.FusionMerger())
+    vert_fusion_pipeline.add_pass(HloPass.GpuMultiOutputFusion())
+    vert_fusion_pipeline.add_pass(HloPass.HloCSE(True, True))
+    vert_fusion_pipeline.add_pass(HloPass.HloDCE())
+
+    # --------------------------------------------
+    # Horizontal Fusion Pipeline
+    # --------------------------------------------
+
+    hori_fusion_pipeline = Pipeline("horizontal-fusion", loop_count=-1)
+    hori_fusion_pipeline.add_pass(HloPass.GpuHorizontalLoopFusion())
+    hori_fusion_pipeline.add_pass(HloPass.GpuHorizontalInputFusion())
+    hori_fusion_pipeline.add_pass(HloPass.HloCSE(True, True))
+    hori_fusion_pipeline.add_pass(HloPass.HloDCE())
+
+    fusion_pipeline.add_pass(vert_fusion_pipeline)
+    fusion_pipeline.add_pass(hori_fusion_pipeline)
+
+    #  -----------------------------------------------------------------------
+    #                               POST PIPELINE
+    #  -----------------------------------------------------------------------
+
+    post_fusion_pipeline = Pipeline("fusion")
+
+    post_fusion_pipeline.add_pass(
+      HloPass.AllGatherCombiner(
+        combine_threshold_in_bytes=1024 * 1024 * 1024,
+        combine_threshold_count=256
+      )
+    )
+    post_fusion_pipeline.add_pass(
+      HloPass.AllReduceCombiner(
+        combine_threshold_in_bytes=debug_options
+        .xla_gpu_all_reduce_combine_threshold_bytes,
+        combine_threshold_count=256
+      )
+    )
+    post_fusion_pipeline.add_pass(
+      HloPass.ReduceScatterCombiner(
+        combine_threshold_in_bytes=30 * 1024 * 1024,
+        combine_threshold_count=256
+      )
+    )
+
+    if debug_options.xla_gpu_all_reduce_contiguous:
+      post_fusion_pipeline.add_pass(HloPass.AllReduceContiguous())
+
+    blueconnect_num_devices_per_host = debug_options.xla_gpu_all_reduce_blueconnect_num_devices_per_host
+    if (blueconnect_num_devices_per_host > 0):
+      post_fusion_pipeline.add_pass(
+        HloPass.AllReduceBlueConnect(blueconnect_num_devices_per_host)
+      )
+
+    if debug_options.xla_gpu_enable_async_all_reduce:
+      post_fusion_pipeline.add_pass(HloPass.AsyncCollectiveCreator())
+
+    post_fusion_pipeline.add_pass(HloPass.CollectivesScheduleLinearizer())
+
+    algebraic_config_options = {
+      "is_layout_sensitive": True,
+      "replace_transpose_with_bitcast": False,
+      "enable_conv_operand_swap": False,
+      "minmax_propagate_nan": debug_options.xla_gpu_enable_fast_min_max,
+    }
+    post_fusion_pipeline.add_pass(
+      HloPass.AlgebraicSimplifier(algebraic_config_options)
+    )
+    post_fusion_pipeline.add_pass(HloPass.OptimizationBarrierExpander())
+    post_fusion_pipeline.add_pass(HloPass.TupleSimplifier())
+
+    #  -----------------------------------------------------------------------
+    #                        FULL OPTIMIZE HLO MODULE PIPELINE
+    #  -----------------------------------------------------------------------
+
+    optimize_hlo_pipeline = Pipeline("fusion")
+
+    optimize_hlo_pipeline.add_pass(pre_fusion_pipeline)
+    optimize_hlo_pipeline.add_pass(fusion_pipeline)
+    optimize_hlo_pipeline.add_pass(post_fusion_pipeline)
+
+    hlo_env.run(optimize_hlo_pipeline)
+    general_pipeline_hash = hlo_env.get_hlo_module_hash()
+
+    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+    hlo_env.optimize_hlo_module()
+    original_pipeline_hash = hlo_env.get_hlo_module_hash()
+
+    assert (general_pipeline_hash == original_pipeline_hash)
 
 
 if __name__ == "__main__":

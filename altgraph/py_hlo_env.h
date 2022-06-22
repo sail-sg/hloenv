@@ -18,6 +18,8 @@
 #include "altgraph/gpu_backend.h"
 #include "altgraph/py_hlo_graph.h"
 #include "altgraph/py_hlo_module.h"
+#include "altgraph/py_hlo_passes.h"
+#include "altgraph/schedule.h"
 #include "tensorflow/compiler/xla/literal.h"
 #include "tensorflow/compiler/xla/literal_comparison.h"
 #include "tensorflow/compiler/xla/literal_util.h"
@@ -98,6 +100,8 @@ class PyHloEnv {
 
   void PostFusionOptimizations();
 
+  bool Run(std::shared_ptr<PassInterface> pass);
+
   // TODO(ohcy): Move to utility/PyHloModule
   uint64_t GetHloModuleHash();
 
@@ -107,9 +111,8 @@ class PyHloEnv {
 
   void ApplyAlternatives(py::array_t<size_t> decisions);
 
-  void OriginalRunHloPasses();
+  void OriginalOptimizeHloModule();
 
- private:
   void PrepareHloModuleForIrEmitting();
 };
 
