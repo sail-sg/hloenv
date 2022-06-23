@@ -548,6 +548,7 @@ PYBIND11_MODULE(hlo_env, m) {
       .def("run", &PyHloEnv::Run)
       .def("get_hlo_module_hash", &PyHloEnv::GetHloModuleHash)
       .def("get_hlo_module_hash", &PyHloEnv::GetHloModuleHash)
+      .def("dedup_tuples", &PyHloEnv::DedupTupleInstructions)
       .def("apply_alternatives", &PyHloEnv::ApplyAlternatives);
 
   py::class_<HloEnvGpuBackend, std::unique_ptr<HloEnvGpuBackend, py::nodelete>>

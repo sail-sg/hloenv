@@ -1,8 +1,17 @@
 import os
+import random
 
 from absl import logging
 from absl.testing import absltest
 
+SELECT_ORIGINAL_CHANCE = 0.1
+
+def get_rand_action(num_operands):
+  select_original = random.random() <= SELECT_ORIGINAL_CHANCE
+  if select_original:
+    return 0
+  else:
+    return random.randrange(1, num_operands)
 
 class HloEnvTest(absltest.TestCase):
   """Placeholder for some real tests
@@ -129,14 +138,13 @@ class HloEnvTest(absltest.TestCase):
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
           node_uid = node_features.uids[alt_idx]
-          decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+          decisions.append([alt_idx, get_rand_action(num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
         logging.info("Applying alternatives...")
         hlo_env.apply_alternatives(decisions)
         hlo_env.post_fusion_dry_passes()
-        hlo_env.dedup_tuples()
       else:
         logging.info("No more alternatives, ending run...")
       eval_result = hlo_env.evaluate(1)
@@ -189,7 +197,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
           node_uid = node_features.uids[alt_idx]
-          decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+          decisions.append([alt_idx, get_rand_action(num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
@@ -245,7 +253,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
           node_uid = node_features.uids[alt_idx]
-          decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+          decisions.append([alt_idx, get_rand_action(num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
@@ -330,7 +338,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
           node_uid = node_features.uids[alt_idx]
-          decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+          decisions.append([alt_idx, get_rand_action(num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         hlo_env.apply_alternatives(decisions)
@@ -398,7 +406,7 @@ class HloEnvTest(absltest.TestCase):
             decisions = []
             for alt_idx in hlo_graph.alternative_indices:
               node_uid = node_features.uids[alt_idx]
-              decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+              decisions.append([alt_idx, get_rand_action(num_operands[alt_idx])])
 
             decisions = np.asarray(decisions)
             hlo_env.apply_alternatives(decisions)
@@ -465,7 +473,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
           node_uid = node_features.uids[alt_idx]
-          decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+          decisions.append([alt_idx, get_rand_action(num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
@@ -545,7 +553,7 @@ class HloEnvTest(absltest.TestCase):
             decisions = []
             for alt_idx in hlo_graph.alternative_indices:
               node_uid = node_features.uids[alt_idx]
-              decisions.append([alt_idx, randrange(num_operands[alt_idx])])
+              decisions.append([alt_idx, get_rand_action(num_operands[alt_idx])])
 
             decisions = np.asarray(decisions)
             hlo_env.apply_alternatives(decisions)
