@@ -890,10 +890,8 @@ class HloEnvTest(absltest.TestCase):
     loop_count = 7
 
     fusion_dry_pass = AltPipeline(
-      Pass(
-        HloPass.GpuInstructionFusion(may_duplicate=True),
-        loop_count=loop_count
-      )
+      Pass(HloPass.GpuInstructionFusion(may_duplicate=True),),
+      loop_count=loop_count
     )
 
     init_hlo = hlo_env.save_hlo()

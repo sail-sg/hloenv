@@ -38,6 +38,8 @@ class PassInterface {
 
   bool complete() const { return complete_; }
 
+  int loop_count() const { return loop_count_; }
+
   virtual bool IsPipeline() = 0;
 
   bool Run(std::shared_ptr<PyHloModule> py_hlo_module) {
@@ -103,8 +105,6 @@ class PassInterface {
   // Run the pass on the given HLO module.  Returns whether it generated alts
   // and whether it changed the hlo_module.
   virtual RunHelperResults RunHelper(xla::HloModule* hlo_module) = 0;
-
-  int loop_count() const { return loop_count_; }
 
   const std::string name_;
   int loop_count_;

@@ -614,7 +614,8 @@ PYBIND11_MODULE(hlo_env, m) {
 
   py::class_<AltPipeline, PassInterface, std::shared_ptr<AltPipeline>>(
       m, "AltPipeline")
-      .def(py::init<std::shared_ptr<PassInterface>>(), py::arg("pass"))
+      .def(py::init<std::shared_ptr<PassInterface>, int>(), py::arg("pass"),
+           py::arg("loop_count") = 1)
       .def_property_readonly("name", &AltPipeline::name)
       .def_property_readonly("changed", &AltPipeline::changed);
 }
