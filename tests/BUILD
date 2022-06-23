@@ -40,6 +40,18 @@ tf_cc_test(
     ],
 )
 
+tf_cc_test(
+    name = "cycle_detection_test",
+    srcs = ["cycle_detection_test.cc"],
+    linkstatic = 1,
+    deps = [
+        "@com_google_googletest//:gtest_main",
+        "@org_tensorflow//tensorflow/compiler/xla/service:computation_placer",
+        "@org_tensorflow//tensorflow/compiler/xla/service:hlo",
+    ],
+)
+
+
 filegroup(
     name = "test_data",
     srcs = glob([

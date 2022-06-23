@@ -278,7 +278,9 @@ void PyHloEnv::ApplyAlternatives(py::array_t<size_t> decisions) {
 
       // OCYTEMP -> sanity checks while debugging
       if (instruction->opcode() != xla::HloOpcode::kAlternatives) {
-        LOG(FATAL) << "Trying to apply alternatives to non-kAlternatives node!";
+        LOG(FATAL) << "Applying alternatives to non-kAlternatives node -> "
+                   << decisions_ptr[decisions_idx * 2] << " -> "
+                   << instruction->name();
       }
       static_cast<xla::HloAlternatives*>(instruction)->Select(decision);
     }
