@@ -1,7 +1,6 @@
 
 #include "tensorflow/compiler/xla/service/hlo_reachability.h"
 #include "gtest/gtest.h"
-#include "tensorflow/compiler/xla/service/computation_placer.h"
 #include "tensorflow/compiler/xla/service/hlo_instruction.h"
 #include "tensorflow/compiler/xla/literal_util.h"
 

@@ -96,8 +96,6 @@ class PyHloEnv {
 
   void PostFusionDryPasses();
 
-  void GeneralFusionDryRun();
-
   void PostFusionOptimizations();
 
   bool Run(std::shared_ptr<PassInterface> pass);
@@ -114,8 +112,6 @@ class PyHloEnv {
   void OriginalOptimizeHloModule();
 
   void PrepareHloModuleForIrEmitting();
-
-  void DedupTupleInstructions();
 };
 
 #endif  // ALTGRAPH_PY_HLO_ENV_H_

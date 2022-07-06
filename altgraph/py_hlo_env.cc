@@ -176,17 +176,6 @@ void PyHloEnv::PostFusionDryPasses() {
     HloEnvGpuBackend::GpuCompiler()->OptimizeHloModuleFusionRunPost(
         py_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
         HloEnvGpuBackend::DeviceMemoryAllocator());
-    this->DedupTupleInstructions();
-  } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
-  }
-}
-
-void PyHloEnv::GeneralFusionDryRun() {
-  if (platform_ == "gpu") {
-    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModuleGeneralFusionRun(
-        py_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
-        HloEnvGpuBackend::DeviceMemoryAllocator());
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
@@ -290,14 +279,6 @@ void PyHloEnv::ApplyAlternatives(py::array_t<size_t> decisions) {
     py_hlo_module_->hlo_module_ptr()->RemoveUnusedComputations();
     py_hlo_module_->hlo_module_ptr()->Cleanup();
 
-  } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
-  }
-}
-
-void PyHloEnv::DedupTupleInstructions() {
-  if (platform_ == "gpu") {
-    py_hlo_module_->hlo_module_ptr()->DedupTupleInstructions();
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
@@ -542,15 +523,12 @@ PYBIND11_MODULE(hlo_env, m) {
            py::arg("may_duplicate") = true)
       .def("post_fusion_dry_passes", &PyHloEnv::PostFusionDryPasses)
       .def("pre_fusion_dry_passes", &PyHloEnv::PreFusionDryPasses)
-      .def("general_fusion_dry_run", &PyHloEnv::GeneralFusionDryRun)
       .def("post_fusion_optimizations", &PyHloEnv::PostFusionOptimizations)
       .def("optimize_hlo_module", &PyHloEnv::OriginalOptimizeHloModule)
       .def("prepare_hlo_module_for_ir_emitting",
            &PyHloEnv::PrepareHloModuleForIrEmitting)
       .def("run", &PyHloEnv::Run)
       .def("get_hlo_module_hash", &PyHloEnv::GetHloModuleHash)
-      .def("get_hlo_module_hash", &PyHloEnv::GetHloModuleHash)
-      .def("dedup_tuples", &PyHloEnv::DedupTupleInstructions)
       .def("apply_alternatives", &PyHloEnv::ApplyAlternatives);
 
   py::class_<HloEnvGpuBackend, std::unique_ptr<HloEnvGpuBackend, py::nodelete>>

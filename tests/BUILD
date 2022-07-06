@@ -46,7 +46,6 @@ tf_cc_test(
     linkstatic = 1,
     deps = [
         "@com_google_googletest//:gtest_main",
-        "@org_tensorflow//tensorflow/compiler/xla/service:computation_placer",
         "@org_tensorflow//tensorflow/compiler/xla/service:hlo",
     ],
 )
