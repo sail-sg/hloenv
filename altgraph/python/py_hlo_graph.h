@@ -16,17 +16,17 @@
 
 namespace py = pybind11;
 
+namespace altgraph {
+
 // Capsule stores a copy of the shared_ptr to the data
 // will delete the shared_ptr when it goes out of scope in python
 template <typename Sequence>
 inline py::array_t<typename Sequence::value_type> as_pyarray(
     std::shared_ptr<Sequence> s_ptr) {
   return py::array_t<typename Sequence::value_type>{
-      s_ptr->size(), s_ptr->data(),
-      py::capsule(new auto(s_ptr),
-                  [](void* p) {
-                    delete reinterpret_cast<decltype(s_ptr)*>(p);
-                  })};
+      s_ptr->size(), s_ptr->data(), py::capsule(new auto(s_ptr), [](void* p) {
+        delete reinterpret_cast<decltype(s_ptr)*>(p);
+      })};
 }
 
 #define SHARED_VEC_TO_PYARRAY(NAME, TYPE, SHARED_PTR) \
@@ -35,8 +35,7 @@ inline py::array_t<typename Sequence::value_type> as_pyarray(
 #define DEF_PYBIND_READONLY(CLASS, NAME) \
   def_property_readonly(#NAME, &CLASS::py_get_##NAME)
 
-// TODO(ohcy) -> shift HloGraph out from xla::namespace?
-struct PyNodeFeats : public xla::NodeFeats {
+struct PyNodeFeats : public NodeFeats {
   // Expose to pybind interface in py_hlo_env.cc using DEF_PYBIND_READONLY macro
   SHARED_VEC_TO_PYARRAY(uids, int, uids)
   SHARED_VEC_TO_PYARRAY(gids, size_t, gids)
@@ -54,11 +53,10 @@ struct PyNodeFeats : public xla::NodeFeats {
   std::vector<std::string>& py_get_names() { return *names; }
 
   PyNodeFeats() {}
-  explicit PyNodeFeats(const xla::NodeFeats& node_feats)
-      : xla::NodeFeats(node_feats) {}
+  explicit PyNodeFeats(const NodeFeats& node_feats) : NodeFeats(node_feats) {}
 };
 
-struct PyEdgeFeats : public xla::EdgeFeats {
+struct PyEdgeFeats : public EdgeFeats {
   // Expose to pybind interface in py_hlo_env.cc using DEF_PYBIND_READONLY macro
   SHARED_VEC_TO_PYARRAY(uids, int64_t, uids);
   SHARED_VEC_TO_PYARRAY(srcs, int, srcs);
@@ -69,11 +67,10 @@ struct PyEdgeFeats : public xla::EdgeFeats {
   SHARED_VEC_TO_PYARRAY(dtypes, int, dtypes);
 
   PyEdgeFeats() {}
-  explicit PyEdgeFeats(const xla::EdgeFeats& edge_feats)
-      : xla::EdgeFeats(edge_feats) {}
+  explicit PyEdgeFeats(const EdgeFeats& edge_feats) : EdgeFeats(edge_feats) {}
 };
 
-class PyHloGraph : public xla::HloGraph {
+class PyHloGraph : public HloGraph {
  public:
   // Expose to pybind interface in py_hlo_env.cc using DEF_PYBIND_READONLY macro
   SHARED_VEC_TO_PYARRAY(out_edge_offsets, size_t, get_out_edge_offsets_ptr());
@@ -92,7 +89,7 @@ class PyHloGraph : public xla::HloGraph {
   PyHloGraph() {}
   explicit PyHloGraph(const xla::HloModule* m, bool inline_fused_comp = false,
                       bool do_hash_verification = false)
-      : xla::HloGraph(m, inline_fused_comp, do_hash_verification) {
+      : HloGraph(m, inline_fused_comp, do_hash_verification) {
     node_features_ = PyNodeFeats(get_node_feats());
     in_edge_features_ = PyEdgeFeats(get_in_edge_feats());
     out_edge_features_ = PyEdgeFeats(get_out_edge_feats());
@@ -104,5 +101,7 @@ class PyHloGraph : public xla::HloGraph {
 
   uint64_t py_hash() { return Hash(); }
 };
+
+}  // namespace altgraph
 
 #endif  // ALTGRAPH_PYTHON_PY_HLO_GRAPH_H_

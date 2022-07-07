@@ -56,7 +56,7 @@ TEST(HloGraphTest, OneComputationPostOrder) {
   // Create a module with a single computation.
   auto module = CreateNewVerifiedModule();
   auto computation = module->AddEntryComputation(CreateConstantComputation());
-  HloGraph graph(module.get());
+  altgraph::HloGraph graph(module.get());
 
   // TODO(ohcy, wangyzh) Restore tests once hash is updated
   // EXPECT_EQ(graph.Hash(), module->CalledComputationHash());
@@ -68,7 +68,7 @@ TEST(HloGraphTest, TwoComputationsPostOrder) {
   auto computation1 = module->AddEntryComputation(CreateConstantComputation());
   auto computation2 =
       module->AddEmbeddedComputation(CreateConstantComputation());
-  HloGraph graph(module.get());
+  altgraph::HloGraph graph(module.get());
 
   // TODO(ohcy, wangyzh) Restore tests once hash is updated
   // EXPECT_EQ(graph.Hash(), module->CalledComputationHash());

@@ -2,20 +2,22 @@
 
 #include "altgraph/hlo_env.h"
 
+namespace altgraph {
+
 HloEnv::HloEnv(std::shared_ptr<AltHloModule> py_hlo_module,
-                   const std::string& platform)
+               const std::string& platform)
     : platform_(platform) {
   alt_hlo_module_ = py_hlo_module;
 }
 
 HloEnv::HloEnv(const std::string& hlo_input, const std::string& format,
-                   const std::string& platform)
+               const std::string& platform)
     : platform_(platform) {
   alt_hlo_module_ = std::make_shared<AltHloModule>(hlo_input, format);
 }
 
 bool HloEnv::HasEqualOutputAs(std::shared_ptr<AltHloModule> other_module,
-                                int times) {
+                              int times) {
   return HasEqualOutput(alt_hlo_module_, other_module, times);
 }
 
@@ -32,21 +34,21 @@ void OnMiscompare(const xla::LiteralSlice& expected,
 }
 
 bool HloEnv::HasEqualOutput(std::shared_ptr<AltHloModule> first_module,
-                              std::shared_ptr<AltHloModule> second_module,
-                              int times) {
+                            std::shared_ptr<AltHloModule> second_module,
+                            int times) {
   if (platform_ == "gpu") {
     for (int run = 0; run < times; run++) {
       evaluator_.Compile(first_module->hlo_module_ptr()->ToProto(),
                          /* rerun_hlo = */ false,
                          HloEnvGpuBackend::PjRtClient());
       auto first_ret = evaluator_.Evaluate();
-      xla::Evaluator::BufferPack& first_output = first_ret.output;
+      Evaluator::BufferPack& first_output = first_ret.output;
 
       evaluator_.Compile(second_module->hlo_module_ptr()->ToProto(),
                          /* rerun_hlo = */ false,
                          HloEnvGpuBackend::PjRtClient());
       auto second_ret = evaluator_.Evaluate();
-      xla::Evaluator::BufferPack& second_output = second_ret.output;
+      Evaluator::BufferPack& second_output = second_ret.output;
 
       if (first_output.size() != second_output.size()) {
         LOG(ERROR)
@@ -100,7 +102,7 @@ HloEnv::EvaluationResult HloEnv::Evaluate(int times) {
                        /* rerun_hlo = */ false, HloEnvGpuBackend::PjRtClient());
     auto ret = evaluator_.Evaluate(times);
 
-    xla::Evaluator::BufferPack& output = ret.output;
+    Evaluator::BufferPack& output = ret.output;
 
     for (auto& pjrt_buf_vector : output) {
       result.output.push_back(std::vector<py::object>());
@@ -131,7 +133,7 @@ void HloEnv::LoadHloModule(std::shared_ptr<AltHloModule> saved_hlo_module) {
 }
 
 void HloEnv::LoadHloModule(const std::string& hlo_input,
-                             const std::string& format) {
+                           const std::string& format) {
   alt_hlo_module_ = std::make_shared<AltHloModule>(hlo_input, format);
 }
 
@@ -232,9 +234,8 @@ std::shared_ptr<AltHloModule> HloEnv::GetHloModule() { return alt_hlo_module_; }
 // rebuilding the HloGraph
 void HloEnv::ApplyAlternatives(py::array_t<size_t> decisions) {
   if (platform_ == "gpu") {
-    xla::HloGraph hlo_graph =
-        xla::HloGraph(alt_hlo_module_->hlo_module_ptr(), false);
-    const xla::NodeFeats& node_feats = hlo_graph.get_node_feats();
+    HloGraph hlo_graph = HloGraph(alt_hlo_module_->hlo_module_ptr(), false);
+    const NodeFeats& node_feats = hlo_graph.get_node_feats();
 
     py::buffer_info decisions_buf = decisions.request();
     size_t* decisions_ptr = static_cast<size_t*>(decisions_buf.ptr);
@@ -279,3 +280,5 @@ void HloEnv::ApplyAlternatives(py::array_t<size_t> decisions) {
 }
 
 uint64_t HloEnv::GetHloModuleHash() { return alt_hlo_module_->Hash(); }
+
+}  // namespace altgraph

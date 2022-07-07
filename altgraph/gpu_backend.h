@@ -14,6 +14,8 @@
 #include "tensorflow/compiler/xla/service/hlo_module_config.h"
 #include "tensorflow/compiler/xla/tools/hlo_module_loader.h"
 
+namespace altgraph {
+
 struct HloEnvGpuBackend {
   static HloEnvGpuBackend& Instance() {
     static HloEnvGpuBackend s;
@@ -89,5 +91,7 @@ struct HloEnvGpuBackend {
   }
   ~HloEnvGpuBackend() {}
 };  // struct HloEnvGpuBackend
+
+}  // namespace altgraph
 
 #endif  // ALTGRAPH_GPU_BACKEND_H_

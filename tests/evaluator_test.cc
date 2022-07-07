@@ -27,7 +27,7 @@ std::unique_ptr<HloModule> GetHloModule(const std::string& fn) {
 
 TEST(EvaluatorTestBase, Basic) {
   std::unique_ptr<HloModule> hlo = GetHloModule("hlo_texts/fn_hlo.txt");
-  xla::Evaluator evaluator;
+  altgraph::Evaluator evaluator;
   auto client = xla::GetCpuClient(true).ValueOrDie();
   evaluator.Compile(hlo->ToProto(), /* rerun_hlo = */ false, client.get());
 

@@ -7,50 +7,53 @@
 
 #include "tensorflow/compiler/xla/literal_util.h"
 
-namespace xla {
+namespace altgraph {
 namespace {
 xla::Literal CreateRandomLiteral(
-    const Shape& shape,
+    const xla::Shape& shape,
     const std::function<double(absl::Span<const int64_t>)>& generator) {
   switch (shape.element_type()) {
-    case F32:
-      return xla::LiteralUtil::CreateLiteralWithGenerator<F32>(shape, generator)
+    case xla::F32:
+      return xla::LiteralUtil::CreateLiteralWithGenerator<xla::F32>(shape,
+                                                                    generator)
           .ValueOrDie();
-    case F64:
-      return xla::LiteralUtil::CreateLiteralWithGenerator<F64>(shape, generator)
+    case xla::F64:
+      return xla::LiteralUtil::CreateLiteralWithGenerator<xla::F64>(shape,
+                                                                    generator)
           .ValueOrDie();
-    case TUPLE: {
-      std::vector<Literal> tuple;
+    case xla::TUPLE: {
+      std::vector<xla::Literal> tuple;
       for (int i = 0; i < shape.tuple_shapes_size(); i++) {
         tuple.push_back(CreateRandomLiteral(shape.tuple_shapes(i), generator));
       }
       return xla::LiteralUtil::MakeTupleOwned(std::move(tuple));
     }
-    case F16: {
-      std::function<half(absl::Span<const int64_t>)> wrap =
+    case xla::F16: {
+      std::function<xla::half(absl::Span<const int64_t>)> wrap =
           [&generator](absl::Span<const int64_t> args) {
-            return static_cast<half>(generator(args));
+            return static_cast<xla::half>(generator(args));
           };
-      return xla::LiteralUtil::CreateLiteralWithGenerator<F16>(shape, wrap)
+      return xla::LiteralUtil::CreateLiteralWithGenerator<xla::F16>(shape, wrap)
           .ValueOrDie();
     }
-    case BF16: {
-      std::function<bfloat16(absl::Span<const int64_t>)> wrap =
+    case xla::BF16: {
+      std::function<xla::bfloat16(absl::Span<const int64_t>)> wrap =
           [&generator](absl::Span<const int64_t> args) {
-            return static_cast<bfloat16>(generator(args));
+            return static_cast<xla::bfloat16>(generator(args));
           };
-      return xla::LiteralUtil::CreateLiteralWithGenerator<BF16>(shape, wrap)
+      return xla::LiteralUtil::CreateLiteralWithGenerator<xla::BF16>(shape,
+                                                                     wrap)
           .ValueOrDie();
     }
     default:
       // Zero init
-      return Literal::CreateFromShape(shape);
+      return xla::Literal::CreateFromShape(shape);
   }
 }
 }  // namespace
 
 void Evaluator::Compile(const xla::HloModuleProto& hlo_module_proto,
-                        bool rerun_hlo, PjRtClient* client) {
+                        bool rerun_hlo, xla::PjRtClient* client) {
   xla::XlaComputation xla_computation(hlo_module_proto);
   xla::CompileOptions compile_options;
   if (!rerun_hlo) {
@@ -67,14 +70,14 @@ void Evaluator::GenerateParameters(int rand_seed) {
 }
 
 void Evaluator::GenerateParametersImpl(const xla::HloModule& hlo_module,
-                                       int rand_seed, PjRtClient* client,
+                                       int rand_seed, xla::PjRtClient* client,
                                        BufferPack* parameters) {
   parameters->clear();
-  std::vector<HloInstruction*> parameter_instructions =
+  std::vector<xla::HloInstruction*> parameter_instructions =
       hlo_module.entry_computation()->parameter_instructions();
   // We keep the literals in this pool to keep them alive until all parameters's
   // BlockHostUntilReady
-  std::vector<Literal> literal_pool;
+  std::vector<xla::Literal> literal_pool;
   parameters->emplace_back();
   std::minstd_rand0 engine;
   engine.seed(rand_seed);
@@ -83,8 +86,8 @@ void Evaluator::GenerateParametersImpl(const xla::HloModule& hlo_module,
       [&distribution, &engine](absl::Span<const int64_t>) {
         return distribution(engine);
       };
-  for (HloInstruction* parameter : parameter_instructions) {
-    Shape shape = parameter->shape();
+  for (xla::HloInstruction* parameter : parameter_instructions) {
+    xla::Shape shape = parameter->shape();
     literal_pool.emplace_back(CreateRandomLiteral(shape, generator));
     LOG(INFO) << "Assumed parameter(" << parameter->name()
               << "): " << literal_pool.back().shape().ToString();
@@ -105,7 +108,7 @@ Evaluator::EvaluationResult Evaluator::Evaluate(int times) {
   }
   EvaluationResult ret;
   xla::ExecuteOptions execute_options;
-  std::vector<std::vector<PjRtBuffer*>> parameters;
+  std::vector<std::vector<xla::PjRtBuffer*>> parameters;
   for (auto& p : parameters_) {
     parameters.emplace_back();
     for (auto& pp : p) {
@@ -142,4 +145,4 @@ Evaluator::EvaluationResult Evaluator::Evaluate(int times) {
   return ret;
 }
 
-}  // namespace xla
+}  // namespace altgraph

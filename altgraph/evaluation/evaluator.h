@@ -10,7 +10,7 @@
 #include "tensorflow/compiler/xla/pjrt/pjrt_client.h"
 #include "tensorflow/compiler/xla/service/hlo_module.h"
 
-namespace xla {
+namespace altgraph {
 
 class Evaluator {
  public:
@@ -34,12 +34,12 @@ class Evaluator {
 
  private:
   static void GenerateParametersImpl(const xla::HloModule& hlo_module,
-                                     int rand_seed, PjRtClient* client,
+                                     int rand_seed, xla::PjRtClient* client,
                                      BufferPack* parameters);
   BufferPack parameters_;
   std::unique_ptr<xla::PjRtExecutable> executable_;
 };
 
-}  // namespace xla
+}  // namespace altgraph
 
 #endif  // ALTGRAPH_EVALUATION_EVALUATOR_H_

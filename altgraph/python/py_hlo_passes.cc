@@ -2,6 +2,8 @@
 
 #include "altgraph/python/py_hlo_passes.h"
 
+namespace altgraph {
+
 void py_init_hlo_passes(const py::module& m) {
   py::class_<xla::HloPassInterface, std::shared_ptr<xla::HloPassInterface>>(
       m, "HloPassInterface");
@@ -974,3 +976,5 @@ void py_init_hlo_passes(const py::module& m) {
   // "HloControlFlowFlattening")
   //     .def(py::init<const Options&>(), py::arg("options"));
 }  // NOLINT(readability/fn_size)
+
+}  // namespace altgraph

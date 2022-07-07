@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
     cpu_intercept = std::move(e);
   } catch (xla::Intercept<xla::gpu::GpuCompiler>& e) {
     gpu_intercept = std::move(e);
-    xla::HloGraph graph(gpu_intercept.module.get());
+    altgraph::HloGraph graph(gpu_intercept.module.get());
     graph.ShowStats();
     gpu_intercept.compiler->RunHloPasses(gpu_intercept.module.get(),
                                          gpu_intercept.stream_exec,

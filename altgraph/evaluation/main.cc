@@ -76,7 +76,7 @@ int main(int argc, char** argv) {
       LoadModuleFromFile(hlo_fn, xla::hlo_module_loader_details::Config(),
                          "txt", config_modifier_hook)
           .ValueOrDie();
-  xla::Evaluator evaluator;
+  altgraph::Evaluator evaluator;
   xla::GpuAllocatorConfig gpu_config;
   auto client =
       gpu ? xla::GetGpuClient(true, gpu_config, nullptr, 0).ValueOrDie()

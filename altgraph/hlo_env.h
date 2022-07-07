@@ -33,6 +33,8 @@
 #include "tensorflow/core/platform/init_main.h"
 #include "tensorflow/core/platform/logging.h"
 
+namespace altgraph {
+
 class HloEnv {
  public:
   struct EvaluationResult {
@@ -43,7 +45,7 @@ class HloEnv {
  private:
   std::shared_ptr<AltHloModule> alt_hlo_module_;
   const std::string platform_;
-  xla::Evaluator evaluator_;
+  Evaluator evaluator_;
 
  public:
   // Currently, JAX automatically preallocates 90% of the currently-available
@@ -105,5 +107,7 @@ class HloEnv {
 
   void PrepareHloModuleForIrEmitting();
 };
+
+}  // namespace altgraph
 
 #endif  // ALTGRAPH_HLO_ENV_H_

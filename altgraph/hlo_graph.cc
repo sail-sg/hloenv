@@ -14,15 +14,15 @@
 #include "tensorflow/core/lib/hash/hash.h"
 #include "tensorflow/core/platform/types.h"
 
-namespace xla {
+namespace altgraph {
 
-HloGraph::HloGraph(const HloModule* m, bool inline_fused_comp,
+HloGraph::HloGraph(const xla::HloModule* m, bool inline_fused_comp,
                    bool do_hash_verification)
-    : kNumOpcodes(xla::HloOpcodeCount()),
-      parent_hlo_module_(const_cast<HloModule*>(m)),
+    : graph_load_errors_(0),
+      kNumOpcodes(xla::HloOpcodeCount()),
+      parent_hlo_module_(const_cast<xla::HloModule*>(m)),
       uid_(m->unique_id()),
-      name_(m->name()),
-      graph_load_errors_(0) {
+      name_(m->name()) {
   user_list_offsets_ = std::make_shared<std::vector<size_t>>();
   user_list_indices_ = std::make_shared<std::vector<size_t>>();
   operand_list_offsets_ = std::make_shared<std::vector<size_t>>();
@@ -53,7 +53,7 @@ void HloGraph::Clear() {
   out_edge_lists_.clear();
 }
 
-void HloGraph::BuildGraphTopology(const HloComputation* c, int gid) {
+void HloGraph::BuildGraphTopology(const xla::HloComputation* c, int gid) {
   // build in/out edge lists with toposort order.
   for (auto inst : c->MakeInstructionPostOrder()) {
     int uid = inst->unique_id();
@@ -93,7 +93,7 @@ void HloGraph::BuildGraphTopology(const HloComputation* c, int gid) {
 }
 
 void HloGraph::SetFusedCompId(
-    const absl::flat_hash_map<HloComputation*, int>& comp_id_map) {
+    const absl::flat_hash_map<xla::HloComputation*, int>& comp_id_map) {
   int num_nodes = node_feats_.uids->size();
   node_feats_.fused_comp_ids->resize(num_nodes);
   for (int ii = 0; ii < num_nodes; ++ii) {
@@ -103,7 +103,7 @@ void HloGraph::SetFusedCompId(
     // For fusion instruction, record the computation id of its fused
     // computation; For all non-fusion instructions, set their fused_comp_ids to
     // zero.
-    if (instruction->opcode() == HloOpcode::kFusion) {
+    if (instruction->opcode() == xla::HloOpcode::kFusion) {
       auto comp_p = instruction->fused_instructions_computation();
       int comp_id = comp_id_map.at(comp_p);
       node_feats_.fused_comp_ids->at(ii) = comp_id;
@@ -167,7 +167,7 @@ void HloGraph::FusedComputationInlining() {
 }
 
 void HloGraph::BuildRaggedTensors(
-    const absl::flat_hash_map<HloComputation*, int>& comp_id_map) {
+    const absl::flat_hash_map<xla::HloComputation*, int>& comp_id_map) {
   int num_nodes = node_feats_.uids->size();
   // Resize offsets arrays (need one extra space at the end)
   user_list_offsets_->resize(num_nodes + 1);
@@ -222,7 +222,7 @@ void HloGraph::PrepareFeatures() {
     auto cur_inst = uid_to_inst_[cur_uid];
 
     // add to node features
-    if (cur_inst->opcode() == HloOpcode::kAlternatives) {
+    if (cur_inst->opcode() == xla::HloOpcode::kAlternatives) {
       node_feats_.is_alternative->at(i) = true;
       alternative_indices_->push_back(i);
     }
@@ -241,7 +241,7 @@ void HloGraph::PrepareFeatures() {
       out_edge_feats_.srcs->push_back(i);
       out_edge_feats_.dsts->push_back(user_node_idx);
       // put in shapes, layouts, lehmer codes, and dtypes for cur_inst
-      Shape shape = cur_inst->shape();
+      xla::Shape shape = cur_inst->shape();
       auto minor_to_major = shape.layout().minor_to_major();
       int dim_size = shape.dimensions_size();
       for (int k = 0; k < 8; ++k) {
@@ -277,7 +277,7 @@ void HloGraph::PrepareFeatures() {
       in_edge_feats_.srcs->push_back(operand_node_idx);
       in_edge_feats_.dsts->push_back(i);
       // put in shapes, layouts, and dtypes for operand_inst
-      Shape shape = operand_inst->shape();
+      xla::Shape shape = operand_inst->shape();
       auto minor_to_major = shape.layout().minor_to_major();
       int dim_size = shape.dimensions_size();
       for (int k = 0; k < 8; ++k) {
@@ -315,9 +315,9 @@ void HloGraph::PrepareFeatures() {
   }
 }
 
-bool HloGraph::Build(const HloModule* m, bool inline_fused_comp,
+bool HloGraph::Build(const xla::HloModule* m, bool inline_fused_comp,
                      bool do_hash_verification) {
-  parent_hlo_module_ = const_cast<HloModule*>(m);
+  parent_hlo_module_ = const_cast<xla::HloModule*>(m);
   uid_ = m->unique_id();
   name_ = m->name();
 
@@ -328,11 +328,11 @@ bool HloGraph::Build(const HloModule* m, bool inline_fused_comp,
   // For each sub computation, build its graph topology.
   auto post_order_comps = m->MakeComputationPostOrder();
   int gid = 0;
-  absl::flat_hash_map<HloComputation*, int> fused_comp_id_map;
+  absl::flat_hash_map<xla::HloComputation*, int> fused_comp_id_map;
   while (!post_order_comps.empty()) {
     // We iterate in reverse post order, so remove from the back of the
     // vector.
-    HloComputation* comp = post_order_comps.back();
+    xla::HloComputation* comp = post_order_comps.back();
     post_order_comps.pop_back();
     if (!comp->IsFusionComputation() && !comp->IsEntryComputation()) {
       // only consider entry computation and fused computation,
@@ -380,7 +380,7 @@ bool HloGraph::Build(const HloModule* m, bool inline_fused_comp,
 uint64_t HloGraph::Hash() {
   // only consider if cross-computation edges are correctly built.
   // Since all operands and users are added properly by calling
-  // HloInstruction's operands() and users() function.
+  // xla::HloInstruction's operands() and users() function.
   uint64_t hash_value = absl::HashOf(parent_hlo_module_);
   for (int i = 0; i < in_edge_feats_.uids->size(); ++i) {
     // add euid of cross computation edge to hash_value
@@ -411,32 +411,39 @@ void HloGraph::GenOpcodeAttrCounts() {
     opcode_attr_counts_->at(idx * 2 + 1) = enum_count;
   };
 
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kBroadcast), 0, 6 * 7);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kSetDimensionSize), 0,
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kBroadcast), 0,
                             6 * 7);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kConcatenate), 0,
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kSetDimensionSize),
+                            0, 6 * 7);
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kConcatenate), 0,
                             6 * 7);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kReduce), 0, 6 * 7);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kReverse), 0, 6 * 7);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kTranspose), 0, 6 * 7);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kCompare), 0, 6 + 4);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kConvolution), 16,
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kReduce), 0,
+                            6 * 7);
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kReverse), 0,
+                            6 * 7);
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kTranspose), 0,
+                            6 * 7);
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kCompare), 0,
+                            6 + 4);
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kConvolution), 16,
                             24 * 7);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kDot), 0, 24 * 7 + 3);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kDynamicSlice), 6, 0);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kGather), 7,
-                            18 * 7 + 2);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kGetTupleElement), 1,
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kDot), 0,
+                            24 * 7 + 3);
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kDynamicSlice), 6,
                             0);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kIota), 0, 7);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kPad), 18, 0);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kScatter), 1,
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kGather), 7,
+                            18 * 7 + 2);
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kGetTupleElement),
+                            1, 0);
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kIota), 0, 7);
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kPad), 18, 0);
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kScatter), 1,
                             18 * 7 + 2 * 2);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kSlice), 18, 0);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kSort), 0, 7 + 2);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kTriangularSolve), 0,
-                            2 * 3 + 4);
-  update_opcode_attr_counts(static_cast<int>(HloOpcode::kCustomCall), 0,
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kSlice), 18, 0);
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kSort), 0, 7 + 2);
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kTriangularSolve),
+                            0, 2 * 3 + 4);
+  update_opcode_attr_counts(static_cast<int>(xla::HloOpcode::kCustomCall), 0,
                             1 * 13);
   return;
 }
@@ -524,4 +531,4 @@ void HloGraph::ShowStats() {
   }
 }
 
-}  // namespace xla
+}  // namespace altgraph

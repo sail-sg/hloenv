@@ -19,7 +19,7 @@
 #include "tensorflow/compiler/xla/service/hlo_module.h"
 #include "tensorflow/compiler/xla/service/hlo_opcode.h"
 
-namespace xla {
+namespace altgraph {
 
 // NodeFeatures holds all tensors with #node length
 // uids: unique_id of HloInstruction
@@ -168,10 +168,10 @@ struct EdgeFeats {
 class HloGraph {
  public:
   HloGraph() : kNumOpcodes(xla::HloOpcodeCount()) {}
-  explicit HloGraph(const HloModule* m, bool inline_fused_comp = false,
+  explicit HloGraph(const xla::HloModule* m, bool inline_fused_comp = false,
                     bool do_hash_verification = false);
 
-  bool Build(const HloModule* m, bool inline_fused_comp = false,
+  bool Build(const xla::HloModule* m, bool inline_fused_comp = false,
              bool do_hash_verification = false);
 
   void Clear();
@@ -262,20 +262,20 @@ class HloGraph {
   std::shared_ptr<std::vector<int>> get_alternative_indices_ptr() {
     return alternative_indices_;
   }
-  absl::flat_hash_map<int, HloInstruction*>& get_uid_to_inst() {
+  absl::flat_hash_map<int, xla::HloInstruction*>& get_uid_to_inst() {
     return uid_to_inst_;
   }
 
  protected:
   // For each computation, build in/out edge lists for all instructions.
-  void BuildGraphTopology(const HloComputation* c, int gid);
+  void BuildGraphTopology(const xla::HloComputation* c, int gid);
 
   // Inlining all fused computations into entry computation.
   void FusedComputationInlining();
 
   // Fill content of each in/out edge lists according to topology.
   void BuildRaggedTensors(
-      const absl::flat_hash_map<HloComputation*, int>& comp_id_map);
+      const absl::flat_hash_map<xla::HloComputation*, int>& comp_id_map);
 
   // Fill the rest of contents in node/edge features.
   void PrepareFeatures();
@@ -285,7 +285,7 @@ class HloGraph {
  private:
   // Internal function call to set fused_comp_ids for each instruction.
   void SetFusedCompId(
-      const absl::flat_hash_map<HloComputation*, int>& comp_id_map);
+      const absl::flat_hash_map<xla::HloComputation*, int>& comp_id_map);
 
   // Internal function that returns indices of instructions from one specific
   // fused computation.
@@ -295,11 +295,11 @@ class HloGraph {
   void GenOpcodeAttrCounts();
 
   const int kNumOpcodes;
-  HloModule* parent_hlo_module_;
+  xla::HloModule* parent_hlo_module_;
   int uid_;
   std::string name_;
 
-  std::vector<HloInstruction*> inst_list_;
+  std::vector<xla::HloInstruction*> inst_list_;
   absl::flat_hash_map<int, std::vector<int>> in_edge_lists_;
   absl::flat_hash_map<int, std::vector<int>> out_edge_lists_;
 
@@ -307,7 +307,7 @@ class HloGraph {
   // utility to lookup node and its neighbor
   absl::flat_hash_set<int> uid_set_;
   absl::flat_hash_map<int, int> uid_to_node_idx_;
-  absl::flat_hash_map<int, HloInstruction*> uid_to_inst_;
+  absl::flat_hash_map<int, xla::HloInstruction*> uid_to_inst_;
   absl::flat_hash_map<int64_t, int> uid_to_in_edge_idx_;
   absl::flat_hash_map<int64_t, int> uid_to_out_edge_idx_;
 
@@ -332,6 +332,6 @@ class HloGraph {
   EdgeFeats out_edge_feats_;
 };
 
-}  // namespace xla
+}  // namespace altgraph
 
 #endif  // ALTGRAPH_HLO_GRAPH_H_

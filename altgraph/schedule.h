@@ -15,6 +15,8 @@
 #include "tensorflow/compiler/xla/service/hlo_module.h"
 #include "tensorflow/compiler/xla/service/hlo_pass_interface.h"
 
+namespace altgraph {
+
 #define CASE_NO_ARG_PASS(PASS_NAME, NAMESPACE)        \
   case PassType::PASS_NAME:                           \
     pass_ = std::make_unique<NAMESPACE::PASS_NAME>(); \
@@ -238,5 +240,7 @@ class AltPipeline : public Pipeline {
     return {generated_alts, changed_this_run_, true};
   }
 };
+
+}  // namespace altgraph
 
 #endif  // ALTGRAPH_SCHEDULE_H_

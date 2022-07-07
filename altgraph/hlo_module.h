@@ -17,6 +17,8 @@
 
 namespace py = pybind11;
 
+namespace altgraph {
+
 class AltHloModule {
  public:
   explicit AltHloModule(std::unique_ptr<xla::HloModule> hlo_module) {
@@ -106,5 +108,7 @@ class AltHloModule {
  private:
   std::unique_ptr<xla::HloModule> hlo_module_;
 };
+
+}  // namespace altgraph
 
 #endif  // ALTGRAPH_HLO_MODULE_H_

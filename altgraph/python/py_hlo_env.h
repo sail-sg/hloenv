@@ -14,6 +14,8 @@
 
 namespace py = pybind11;
 
+namespace altgraph {
+
 class PyHloEnv : public HloEnv {
  public:
   PyHloEnv(std::shared_ptr<AltHloModule> alt_hlo_module,
@@ -32,5 +34,7 @@ class PyHloEnv : public HloEnv {
                       do_hash_verification);
   }
 };
+
+}  // namespace altgraph
 
 #endif  // ALTGRAPH_PYTHON_PY_HLO_ENV_H_

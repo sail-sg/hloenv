@@ -1,6 +1,8 @@
 // Copyright 2021 Garena Online Private Limited
 #include "altgraph/python/py_hlo_env.h"
 
+namespace altgraph {
+
 PYBIND11_MODULE(py_hlo_env, m) {
   // TODO(ohcy) Change PyHloGraph and PyHloEnv names to remove the Py prefix
   py::class_<PyHloGraph> py_hlo_graph(m, "PyHloGraph");
@@ -322,3 +324,5 @@ PYBIND11_MODULE(py_hlo_env, m) {
       .def_property_readonly("name", &AltPipeline::name)
       .def_property_readonly("changed", &AltPipeline::changed);
 }
+
+}  // namespace altgraph
