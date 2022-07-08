@@ -140,17 +140,22 @@ void HloGraph::FusedComputationInlining() {
         // Iterate over all instructions in the fused computation.
         int fused_comp_uid =
             node_feats_.uids->at(instr_indices[idx_instr_indices]);
-        while (in_edge_lists_[fused_comp_uid].empty()) {
+
+        auto instruction = uid_to_inst_[fused_comp_uid];
+        if (instruction->opcode() == xla::HloOpcode::kParameter) {
           // param of fused comp instructions, we rewire fusion instruction's
           // operand to params inside fused computation
           int operand_fusion = in_edge_lists_[uid].front();
           in_edge_lists_[uid].erase(in_edge_lists_[uid].begin());
           in_edge_lists_[fused_comp_uid].push_back(operand_fusion);
-          idx_instr_indices++;
-          fused_comp_uid =
-              node_feats_.uids->at(instr_indices[idx_instr_indices]);
+          // remove fusion instruction from user list of its operand.
+          auto& operand_oel = out_edge_lists_[operand_fusion];
+          operand_oel.erase(
+              std::remove(operand_oel.begin(), operand_oel.end(), uid),
+              operand_oel.end());
+          operand_oel.push_back(fused_comp_uid);
         }
-        if (out_edge_lists_[fused_comp_uid].empty()) {
+        if (instruction->IsRoot()) {
           // root instruction of fused comp, we set user of fused computation
           // root to fusion instruction.
           out_edge_lists_[fused_comp_uid].push_back(uid);
@@ -431,7 +436,8 @@ void HloGraph::GenOpcodeAttrCounts() {
   update_opcode_attr_counts(static_cast<int>(HloOpcode::kSort), 0, 7 + 2);
   update_opcode_attr_counts(static_cast<int>(HloOpcode::kTriangularSolve), 0,
                             2 * 3 + 4);
-
+  update_opcode_attr_counts(static_cast<int>(HloOpcode::kCustomCall), 0,
+                            1 * 13);
   return;
 }
 

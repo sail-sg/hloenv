@@ -14,6 +14,6 @@
 
 namespace py = pybind11;
 
-void py_init_hlo_passes(const py::module &m);
+void py_init_hlo_passes(const py::module& m);
 
 #endif  // ALTGRAPH_PY_HLO_PASSES_H_

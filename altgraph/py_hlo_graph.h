@@ -39,6 +39,7 @@ struct PyNodeFeats : public xla::NodeFeats {
   // Expose to pybind interface in py_hlo_env.cc using DEF_PYBIND_READONLY macro
   SHARED_VEC_TO_PYARRAY(uids, int, uids)
   SHARED_VEC_TO_PYARRAY(gids, size_t, gids)
+  SHARED_VEC_TO_PYARRAY(fused_comp_ids, size_t, fused_comp_ids)
   SHARED_VEC_TO_PYARRAY(num_users, int, num_users)
   SHARED_VEC_TO_PYARRAY(num_operands, int, num_operands)
   SHARED_VEC_TO_PYARRAY(opcodes, int, opcodes)

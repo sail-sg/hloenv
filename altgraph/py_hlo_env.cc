@@ -308,6 +308,7 @@ PYBIND11_MODULE(hlo_env, m) {
       .DEF_PYBIND_READONLY(PyNodeFeats, uids)
       .DEF_PYBIND_READONLY(PyNodeFeats, names)
       .DEF_PYBIND_READONLY(PyNodeFeats, gids)
+      .DEF_PYBIND_READONLY(PyNodeFeats, fused_comp_ids)
       .DEF_PYBIND_READONLY(PyNodeFeats, num_users)
       .DEF_PYBIND_READONLY(PyNodeFeats, num_operands)
       .DEF_PYBIND_READONLY(PyNodeFeats, opcodes)
