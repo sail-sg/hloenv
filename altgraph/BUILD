@@ -1,5 +1,4 @@
-load("@org_tensorflow//tensorflow:tensorflow.bzl", "pybind_extension", "tf_cc_binary")
-load("@pybind11_bazel//:build_defs.bzl", "pybind_library")
+load("@org_tensorflow//tensorflow:tensorflow.bzl", "tf_cc_binary")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -43,17 +42,10 @@ cc_library(
     ],
 )
 
-pybind_library(
-    name = "py_hlo_graph",
-    srcs = ["py_hlo_graph.h"],
-    deps = [
-        ":hlo_graph",
-    ],
-)
 
-pybind_library(
-    name = "py_hlo_module",
-    srcs = ["py_hlo_module.h"],
+cc_library(
+    name = "hlo_module",
+    srcs = ["hlo_module.h"],
     deps = [
         "//altgraph/utils:hlo_utils",
         "@org_tensorflow//tensorflow/compiler/xla/service:hlo",
@@ -83,30 +75,10 @@ cc_library(
 )
 
 cc_library(
-    name = "schedule_pass_defs",
-    hdrs = ["schedule_pass_defs.h"],
-    deps = [
-        ":hlo_pass_defs",
-    ],
-)
-
-pybind_library(
-    name = "hlo_pass",
-    srcs = ["py_hlo_passes.cc"],
-    hdrs = ["py_hlo_passes.h"],
-    deps = [
-        ":gpu_backend",
-        ":hlo_pass_defs",
-        ":py_hlo_module",
-    ],
-)
-
-pybind_library(
     name = "schedule",
     srcs = ["schedule.h"],
     deps = [
-        ":py_hlo_module",
-        ":schedule_pass_defs",
+        ":hlo_module",
         "@org_tensorflow//tensorflow/compiler/xla/service:hlo",
         "@org_tensorflow//tensorflow/compiler/xla/pjrt:cpu_device",
         "@org_tensorflow//tensorflow/compiler/xla/pjrt:gpu_device",
@@ -114,22 +86,14 @@ pybind_library(
     ],
 )
 
-pybind_extension(
+cc_library(
     name = "hlo_env",
-    srcs = ["py_hlo_env.cc"],
-    hdrs = ["py_hlo_env.h"],
-    copts = [
-        "-fexceptions",
-    ],
-    link_in_framework = False,
-    linkopts = [
-    ],
-    module_name = "hlo_env",
+    srcs = ["hlo_env.cc"],
+    hdrs = ["hlo_env.h"],
     deps = [
         ":gpu_backend",
-        ":hlo_pass",
-        ":py_hlo_graph",
-        ":py_hlo_module",
+        ":hlo_graph",
+        ":hlo_module",
         ":schedule",
         "//altgraph/evaluation:evaluator",
         "@com_google_absl//absl/hash",
@@ -148,7 +112,7 @@ pybind_extension(
         "@org_tensorflow//tensorflow/compiler/xla/service:hlo_pass_pipeline",
         "@org_tensorflow//tensorflow/compiler/xla/service:hlo_proto_cc",
         "@org_tensorflow//tensorflow/compiler/xla/tools:hlo_module_loader",
-        "@org_tensorflow//tensorflow/python:pybind11_lib",
+        # "@org_tensorflow//tensorflow/python:pybind11_lib",
     ],
 )
 
@@ -163,7 +127,7 @@ py_library(
     name = "altgraph",
     srcs = ["__init__.py"],
     data = [
-        "hlo_env.so",
+        "//altgraph/python:py_hlo_env.so",
         ":gen_extract_subgraphs",
     ],
 )

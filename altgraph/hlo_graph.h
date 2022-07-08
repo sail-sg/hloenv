@@ -169,10 +169,10 @@ class HloGraph {
  public:
   HloGraph() : kNumOpcodes(xla::HloOpcodeCount()) {}
   explicit HloGraph(const HloModule* m, bool inline_fused_comp = false,
-                    bool do_hash_verification = true);
+                    bool do_hash_verification = false);
 
   bool Build(const HloModule* m, bool inline_fused_comp = false,
-             bool do_hash_verification = true);
+             bool do_hash_verification = false);
 
   void Clear();
 

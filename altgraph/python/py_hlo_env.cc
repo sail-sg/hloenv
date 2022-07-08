@@ -1,292 +1,7 @@
 // Copyright 2021 Garena Online Private Limited
+#include "altgraph/python/py_hlo_env.h"
 
-#include "altgraph/py_hlo_env.h"
-
-PyHloEnv::PyHloEnv(std::shared_ptr<PyHloModule> py_hlo_module,
-                   const std::string& platform)
-    : platform_(platform) {
-  py_hlo_module_ = py_hlo_module;
-}
-
-PyHloEnv::PyHloEnv(const std::string& hlo_input, const std::string& format,
-                   const std::string& platform)
-    : platform_(platform) {
-  py_hlo_module_ = std::make_shared<PyHloModule>(hlo_input, format);
-}
-
-bool PyHloEnv::HasEqualOutputAs(std::shared_ptr<PyHloModule> other_module,
-                                int times) {
-  return HasEqualOutput(py_hlo_module_, other_module, times);
-}
-
-// Callback helper that prints the different literals when they are
-// not equal
-void OnMiscompare(const xla::LiteralSlice& expected,
-                  const xla::LiteralSlice& actual,
-                  const xla::LiteralSlice& mismatches,
-                  const xla::ShapeIndex& /*shape_index*/) {
-  LOG(INFO) << "expected: " << xla::ShapeUtil::HumanString(expected.shape())
-            << " " << xla::literal_comparison::ToStringTruncated(expected);
-  LOG(INFO) << "actual:   " << xla::ShapeUtil::HumanString(actual.shape())
-            << " " << xla::literal_comparison::ToStringTruncated(actual);
-}
-
-bool PyHloEnv::HasEqualOutput(std::shared_ptr<PyHloModule> first_module,
-                              std::shared_ptr<PyHloModule> second_module,
-                              int times) {
-  if (platform_ == "gpu") {
-    for (int run = 0; run < times; run++) {
-      evaluator_.Compile(first_module->hlo_module_ptr()->ToProto(),
-                         /* rerun_hlo = */ false,
-                         HloEnvGpuBackend::PjRtClient());
-      auto first_ret = evaluator_.Evaluate();
-      xla::Evaluator::BufferPack& first_output = first_ret.output;
-
-      evaluator_.Compile(second_module->hlo_module_ptr()->ToProto(),
-                         /* rerun_hlo = */ false,
-                         HloEnvGpuBackend::PjRtClient());
-      auto second_ret = evaluator_.Evaluate();
-      xla::Evaluator::BufferPack& second_output = second_ret.output;
-
-      if (first_output.size() != second_output.size()) {
-        LOG(ERROR)
-            << "Evaluation output length of compared HloModule is different!";
-        return false;
-      }
-
-      for (int i = 0; i < first_output.size(); i++) {
-        auto& first_buf_vector = first_output[i];
-        auto& second_buf_vector = second_output[i];
-        if (first_buf_vector.size() != second_buf_vector.size()) {
-          LOG(ERROR) << "Evaluation output (internal vector) of compared "
-                        "HloModule length is different!";
-          return false;
-        }
-
-        for (int j = 0; j < first_buf_vector.size(); j++) {
-          auto first_literal = std::make_shared<xla::Literal>(
-              first_buf_vector[j]->on_device_shape());
-          auto second_literal = std::make_shared<xla::Literal>(
-              second_buf_vector[j]->on_device_shape());
-
-          first_buf_vector[j]->ToLiteralSync(first_literal.get());
-          second_buf_vector[j]->ToLiteralSync(second_literal.get());
-
-          xla::ErrorSpec error_spec(static_cast<float>(1e-6),
-                                    static_cast<float>(1e-6));
-
-          xla::Status comparison_res = xla::literal_comparison::Near(
-              /*expected=*/*first_literal,
-              /*actual=*/*second_literal,
-              /*error=*/error_spec,
-              /*detailed_message=*/true, &OnMiscompare);
-
-          return comparison_res.ok();
-        }
-      }
-    }
-    return true;
-  } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
-  }
-}
-
-PyHloEnv::EvaluationResult PyHloEnv::Evaluate(int times) {
-  PyHloEnv::EvaluationResult result;
-  result.durations.reserve(times);
-
-  if (platform_ == "gpu") {
-    evaluator_.Compile(py_hlo_module_->hlo_module_ptr()->ToProto(),
-                       /* rerun_hlo = */ false, HloEnvGpuBackend::PjRtClient());
-    auto ret = evaluator_.Evaluate(times);
-
-    xla::Evaluator::BufferPack& output = ret.output;
-
-    for (auto& pjrt_buf_vector : output) {
-      result.output.push_back(std::vector<py::object>());
-      for (auto& pjrt_buf_ptr : pjrt_buf_vector) {
-        std::shared_ptr<xla::Literal> literal =
-            pjrt_buf_ptr->ToLiteralSync().ValueOrDie();
-        result.output.back().push_back(
-            std::move(xla::LiteralToPython(literal).ValueOrDie()));
-      }
-    }
-    std::transform(ret.durations.begin(), ret.durations.end(),
-                   std::back_inserter(result.durations),
-                   [](absl::Duration duration) -> uint64_t {
-                     return duration / absl::Nanoseconds(1);
-                   });
-  } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
-  }
-  return result;
-}
-
-std::shared_ptr<PyHloModule> PyHloEnv::SaveHloModule() {
-  return py_hlo_module_->Clone();
-}
-
-void PyHloEnv::LoadHloModule(std::shared_ptr<PyHloModule> saved_hlo_module) {
-  py_hlo_module_ = saved_hlo_module;
-}
-
-void PyHloEnv::LoadHloModule(const std::string& hlo_input,
-                             const std::string& format) {
-  py_hlo_module_ = std::make_shared<PyHloModule>(hlo_input, format);
-}
-
-std::string PyHloEnv::ExportHloModuleToStr() {
-  return py_hlo_module_->ToString();
-}
-
-void PyHloEnv::PreFusionOptimizations() {
-  if (platform_ == "gpu") {
-    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModulePreFusion(
-        py_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
-        HloEnvGpuBackend::DeviceMemoryAllocator());
-  } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
-  }
-}
-
-void PyHloEnv::PreFusionDryPasses() {
-  if (platform_ == "gpu") {
-    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModuleFusionRunPre(
-        py_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
-        HloEnvGpuBackend::DeviceMemoryAllocator());
-  } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
-  }
-}
-
-void PyHloEnv::FusionDryRun(bool may_duplicate) {
-  if (platform_ == "gpu") {
-    py_hlo_module_->hlo_module_ptr()->SetDry(true);
-    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModuleFusionRun(
-        py_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
-        HloEnvGpuBackend::DeviceMemoryAllocator(), may_duplicate);
-    py_hlo_module_->hlo_module_ptr()->SetDry(false);
-  } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
-  }
-}
-
-void PyHloEnv::PostFusionDryPasses() {
-  if (platform_ == "gpu") {
-    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModuleFusionRunPost(
-        py_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
-        HloEnvGpuBackend::DeviceMemoryAllocator());
-  } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
-  }
-}
-
-void PyHloEnv::PostFusionOptimizations() {
-  if (platform_ == "gpu") {
-    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModulePostFusion(
-        py_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
-        HloEnvGpuBackend::DeviceMemoryAllocator());
-    // TODO(ohcy) To be refactored out of PostFusionOptimizations when we
-    // can do multiple passes and have a pre/post passes phase
-    this->PrepareHloModuleForIrEmitting();
-  } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
-  }
-}
-
-void PyHloEnv::PrepareHloModuleForIrEmitting() {
-  if (platform_ == "gpu") {
-    HloEnvGpuBackend::GpuCompiler()->PrepareHloModuleForIrEmitting(
-        py_hlo_module_->hlo_module_ptr());
-  } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
-  }
-}
-
-void PyHloEnv::OriginalOptimizeHloModule() {
-  if (platform_ == "gpu") {
-    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModule(
-        py_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
-        HloEnvGpuBackend::DeviceMemoryAllocator());
-
-    HloEnvGpuBackend::GpuCompiler()->PrepareHloModuleForIrEmitting(
-        py_hlo_module_->hlo_module_ptr());
-  } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
-  }
-}
-
-// Returns whether or not the pass is run to completion or has stopped in the
-// middle (due to completing a dry_run pass, and needing apply alternatives)
-bool PyHloEnv::Run(std::shared_ptr<PassInterface> pass) {
-  if (platform_ == "gpu") {
-    return pass->Run(py_hlo_module_->hlo_module_ptr());
-  } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
-  }
-}
-
-PyHloGraph PyHloEnv::GetHloGraph(bool inline_fused_comp,
-                                 bool do_hash_verification) {
-  return PyHloGraph(py_hlo_module_->hlo_module_ptr(), inline_fused_comp,
-                    do_hash_verification);
-}
-
-std::shared_ptr<PyHloModule> PyHloEnv::GetHloModule() { return py_hlo_module_; }
-
-// TODO(ohcy): Make it take a (uid_ptr, decision) arg instead, save time on
-// rebuilding the HloGraph
-void PyHloEnv::ApplyAlternatives(py::array_t<size_t> decisions) {
-  if (platform_ == "gpu") {
-    PyHloGraph py_hlo_graph =
-        PyHloGraph(py_hlo_module_->hlo_module_ptr(), false);
-    xla::NodeFeats& node_feats = py_hlo_graph.py_get_node_features();
-
-    py::buffer_info decisions_buf = decisions.request();
-    size_t* decisions_ptr = static_cast<size_t*>(decisions_buf.ptr);
-    int num_decisions = decisions_buf.shape[0];
-
-    // TODO(ohcy): Remove this
-    // OCYTEMP -> sanity checks while debugging
-    if (decisions_buf.shape[0] !=
-        py_hlo_graph.get_alternative_indices_ptr()->size()) {
-      LOG(FATAL) << "Decisions length != num alternatives length!";
-    }
-    if (decisions_buf.shape[1] != 2) {
-      LOG(FATAL) << "Incorrect decisions shape!";
-    }
-
-    absl::flat_hash_map<int, xla::HloInstruction*>& uid_to_inst =
-        py_hlo_graph.get_uid_to_inst();
-    for (size_t decisions_idx = 0; decisions_idx < num_decisions;
-         decisions_idx++) {
-      size_t node_uid = node_feats.uids->at(decisions_ptr[decisions_idx * 2]);
-      size_t decision = decisions_ptr[decisions_idx * 2 + 1];
-
-      xla::HloInstruction* instruction = uid_to_inst.at(node_uid);
-
-      // OCYTEMP -> sanity checks while debugging
-      if (instruction->opcode() != xla::HloOpcode::kAlternatives) {
-        LOG(FATAL) << "Applying alternatives to non-kAlternatives node -> "
-                   << decisions_ptr[decisions_idx * 2] << " -> "
-                   << instruction->name();
-      }
-      static_cast<xla::HloAlternatives*>(instruction)->Select(decision);
-    }
-
-    py_hlo_module_->hlo_module_ptr()->Prune();
-    // Remove unused computations created during fusion
-    py_hlo_module_->hlo_module_ptr()->RemoveUnusedComputations();
-    py_hlo_module_->hlo_module_ptr()->Cleanup();
-
-  } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
-  }
-}
-
-uint64_t PyHloEnv::GetHloModuleHash() { return py_hlo_module_->Hash(); }
-
-PYBIND11_MODULE(hlo_env, m) {
+PYBIND11_MODULE(py_hlo_env, m) {
   // TODO(ohcy) Change PyHloGraph and PyHloEnv names to remove the Py prefix
   py::class_<PyHloGraph> py_hlo_graph(m, "PyHloGraph");
 
@@ -479,17 +194,17 @@ PYBIND11_MODULE(hlo_env, m) {
           "allow_spmd_sharding_propagation_to_output",
           &xla::HloModuleConfig::allow_spmd_sharding_propagation_to_output);
 
-  py::class_<PyHloModule, std::shared_ptr<PyHloModule>>(m, "PyHloModule")
+  py::class_<AltHloModule, std::shared_ptr<AltHloModule>>(m, "AltHloModule")
       .def(py::init<const std::string&>())
       .def(py::init<const std::string&, const std::string&>())
-      .def("to_string", &PyHloModule::ToString)
-      .def_property_readonly("config", &PyHloModule::config)
-      .def("hash", &PyHloModule::Hash)
-      .def("extract_random_submodule", &PyHloModule::ExtractRandomSubmodule)
+      .def("to_string", &AltHloModule::ToString)
+      .def_property_readonly("config", &AltHloModule::config)
+      .def("hash", &AltHloModule::Hash)
+      .def("extract_random_submodule", &AltHloModule::ExtractRandomSubmodule)
       .def("extract_instructions_as_module",
-           &PyHloModule::ExtractInstructionsAsModule)
-      .def("is_bef_enabled", &PyHloModule::IsBefEnabled)
-      .def("clone", &PyHloModule::Clone);
+           &AltHloModule::ExtractInstructionsAsModule)
+      .def("is_bef_enabled", &AltHloModule::IsBefEnabled)
+      .def("clone", &AltHloModule::Clone);
 
   py::class_<PyHloEnv>(m, "PyHloEnv")
       .def(py::init<const std::string&, const std::string&>(),
@@ -497,8 +212,8 @@ PYBIND11_MODULE(hlo_env, m) {
       .def(py::init<const std::string&, const std::string&,
                     const std::string&>(),
            py::arg("hlo_data"), py::arg("format"), py::arg("platform"))
-      .def(py::init<std::shared_ptr<PyHloModule>, const std::string&>(),
-           py::arg("py_hlo_module"), py::arg("platform"))
+      .def(py::init<std::shared_ptr<AltHloModule>, const std::string&>(),
+           py::arg("alt_hlo_module"), py::arg("platform"))
       .def("evaluate", &PyHloEnv::Evaluate)
       .def("has_equal_output", &PyHloEnv::HasEqualOutput,
            py::arg("first_module"), py::arg("second_module"),
@@ -507,7 +222,7 @@ PYBIND11_MODULE(hlo_env, m) {
            py::arg("other_module"), py::arg("times") = 1)
       .def("save_hlo", &PyHloEnv::SaveHloModule)
       .def("load_hlo",
-           static_cast<void (PyHloEnv::*)(std::shared_ptr<PyHloModule>)>(
+           static_cast<void (PyHloEnv::*)(std::shared_ptr<AltHloModule>)>(
                &PyHloEnv::LoadHloModule))
       .def("load_hlo",
            static_cast<void (PyHloEnv::*)(const std::string&,
@@ -518,7 +233,7 @@ PYBIND11_MODULE(hlo_env, m) {
       .def("get_hlo_module", &PyHloEnv::GetHloModule)
       .def("get_hlo_graph", &PyHloEnv::GetHloGraph,
            py::arg("inline_fused_comp") = false,
-           py::arg("do_hash_verification") = true)
+           py::arg("do_hash_verification") = false)
       .def("pre_fusion_optimizations", &PyHloEnv::PreFusionOptimizations)
       .def("fusion_dry_run", &PyHloEnv::FusionDryRun,
            py::arg("may_duplicate") = true)
@@ -567,7 +282,7 @@ PYBIND11_MODULE(hlo_env, m) {
 
   py::class_<PassInterface, std::shared_ptr<PassInterface>>(m, "PassInterface")
       .def("Run",
-           static_cast<bool (PassInterface::*)(std::shared_ptr<PyHloModule>)>(
+           static_cast<bool (PassInterface::*)(std::shared_ptr<AltHloModule>)>(
                &PassInterface::Run),
            py::arg("hlo_pass"))
       .def_property_readonly("name", &PassInterface::name);

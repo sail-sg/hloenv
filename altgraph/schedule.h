@@ -3,15 +3,12 @@
 #ifndef ALTGRAPH_SCHEDULE_H_
 #define ALTGRAPH_SCHEDULE_H_
 
-#include <pybind11/pybind11.h>
-
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include "altgraph/py_hlo_module.h"
-#include "altgraph/schedule_pass_defs.h"
+#include "altgraph/hlo_module.h"
 #include "tensorflow/compiler/xla/service/gpu/gpu_compiler.h"
 #include "tensorflow/compiler/xla/service/hlo_computation.h"
 #include "tensorflow/compiler/xla/service/hlo_instruction.h"
@@ -42,8 +39,8 @@ class PassInterface {
 
   virtual bool IsPipeline() = 0;
 
-  bool Run(std::shared_ptr<PyHloModule> py_hlo_module) {
-    return Run(py_hlo_module->hlo_module_ptr());
+  bool Run(std::shared_ptr<AltHloModule> alt_hlo_module) {
+    return Run(alt_hlo_module->hlo_module_ptr());
   }
 
   // Returns true if alternatives are generated, else false if a normal graph

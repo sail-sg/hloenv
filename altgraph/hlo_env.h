@@ -1,9 +1,7 @@
 // Copyright 2021 Garena Online Private Limited
 
-#ifndef ALTGRAPH_PY_HLO_ENV_H_
-#define ALTGRAPH_PY_HLO_ENV_H_
-
-#include <pybind11/pybind11.h>
+#ifndef ALTGRAPH_HLO_ENV_H_
+#define ALTGRAPH_HLO_ENV_H_
 
 #include <algorithm>
 #include <iostream>
@@ -16,9 +14,8 @@
 #include "absl/hash/hash.h"
 #include "altgraph/evaluation/evaluator.h"
 #include "altgraph/gpu_backend.h"
-#include "altgraph/py_hlo_graph.h"
-#include "altgraph/py_hlo_module.h"
-#include "altgraph/py_hlo_passes.h"
+#include "altgraph/hlo_graph.h"
+#include "altgraph/hlo_module.h"
 #include "altgraph/schedule.h"
 #include "tensorflow/compiler/xla/literal.h"
 #include "tensorflow/compiler/xla/literal_comparison.h"
@@ -36,9 +33,7 @@
 #include "tensorflow/core/platform/init_main.h"
 #include "tensorflow/core/platform/logging.h"
 
-namespace py = pybind11;
-
-class PyHloEnv {
+class HloEnv {
  public:
   struct EvaluationResult {
     std::vector<uint64_t> durations;
@@ -46,7 +41,7 @@ class PyHloEnv {
   };
 
  private:
-  std::shared_ptr<PyHloModule> py_hlo_module_;
+  std::shared_ptr<AltHloModule> alt_hlo_module_;
   const std::string platform_;
   xla::Evaluator evaluator_;
 
@@ -60,20 +55,19 @@ class PyHloEnv {
   // memory_fraction can be used to control the percentage of
   // currently available GPU memory that is preallocated. However if preallocat
   // is set to false, this parameter will be ignored.
-  explicit PyHloEnv(std::shared_ptr<PyHloModule>, const std::string& platform);
+  explicit HloEnv(std::shared_ptr<AltHloModule>, const std::string& platform);
 
-  explicit PyHloEnv(const std::string& hlo_filepath, const std::string& format,
-                    const std::string& platform);
+  explicit HloEnv(const std::string& hlo_filepath, const std::string& format,
+                  const std::string& platform);
 
-  explicit PyHloEnv(const std::string& hlo_filepath,
-                    const std::string& platform)
-      : PyHloEnv(hlo_filepath, "path", platform) {}
+  explicit HloEnv(const std::string& hlo_filepath, const std::string& platform)
+      : HloEnv(hlo_filepath, "path", platform) {}
 
   void Init(bool preallocate, double memory_fraction);
 
-  std::shared_ptr<PyHloModule> SaveHloModule();
+  std::shared_ptr<AltHloModule> SaveHloModule();
 
-  void LoadHloModule(std::shared_ptr<PyHloModule> saved_hlo_module);
+  void LoadHloModule(std::shared_ptr<AltHloModule> saved_hlo_module);
 
   void LoadHloModule(const std::string& hlo_input, const std::string& format);
 
@@ -81,11 +75,11 @@ class PyHloEnv {
 
   EvaluationResult Evaluate(int times);
 
-  bool HasEqualOutputAs(std::shared_ptr<PyHloModule> other_module,
+  bool HasEqualOutputAs(std::shared_ptr<AltHloModule> other_module,
                         int times = 1);
 
-  bool HasEqualOutput(std::shared_ptr<PyHloModule> first_module,
-                      std::shared_ptr<PyHloModule> second_module,
+  bool HasEqualOutput(std::shared_ptr<AltHloModule> first_module,
+                      std::shared_ptr<AltHloModule> second_module,
                       int times = 1);
 
   void PreFusionOptimizations();
@@ -100,12 +94,10 @@ class PyHloEnv {
 
   bool Run(std::shared_ptr<PassInterface> pass);
 
-  // TODO(ohcy): Move to utility/PyHloModule
+  // TODO(ohcy): Move to utility/AltHloModule
   uint64_t GetHloModuleHash();
 
-  PyHloGraph GetHloGraph(bool inline_fused_comp, bool do_hash_verification);
-
-  std::shared_ptr<PyHloModule> GetHloModule();
+  std::shared_ptr<AltHloModule> GetHloModule();
 
   void ApplyAlternatives(py::array_t<size_t> decisions);
 
@@ -114,4 +106,4 @@ class PyHloEnv {
   void PrepareHloModuleForIrEmitting();
 };
 
-#endif  // ALTGRAPH_PY_HLO_ENV_H_
+#endif  // ALTGRAPH_HLO_ENV_H_

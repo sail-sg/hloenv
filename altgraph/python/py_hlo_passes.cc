@@ -1,6 +1,6 @@
 // Copyright 2021 Garena Online Private Limited
 
-#include "altgraph/py_hlo_passes.h"
+#include "altgraph/python/py_hlo_passes.h"
 
 void py_init_hlo_passes(const py::module& m) {
   py::class_<xla::HloPassInterface, std::shared_ptr<xla::HloPassInterface>>(
@@ -238,12 +238,13 @@ void py_init_hlo_passes(const py::module& m) {
       //               ChannelLayoutConstraints*>(),
       //      py::arg("entry_computation_layout"), py::arg("stream_executor"),
       //      py::arg("channel_constraints") = nullptr);
-      .def(py::init([](std::shared_ptr<PyHloModule> py_hlo_module) {
+      .def(py::init([](std::shared_ptr<AltHloModule> alt_hlo_module) {
         // TODO(ohcy): Currently we just default to normal LayoutConstraints,
         // we do not have the ability to add more LayoutConstraints
         xla::ChannelLayoutConstraints layout_constraints;
         return std::make_shared<xla::gpu::GpuLayoutAssignment>(
-            py_hlo_module->hlo_module_ptr()->mutable_entry_computation_layout(),
+            alt_hlo_module->hlo_module_ptr()
+                ->mutable_entry_computation_layout(),
             HloEnvGpuBackend::StreamExecutor(), &layout_constraints);
       }));
 

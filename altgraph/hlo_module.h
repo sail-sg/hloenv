@@ -1,7 +1,7 @@
 // Copyright 2021 Garena Online Private Limited
 
-#ifndef ALTGRAPH_PY_HLO_MODULE_H_
-#define ALTGRAPH_PY_HLO_MODULE_H_
+#ifndef ALTGRAPH_HLO_MODULE_H_
+#define ALTGRAPH_HLO_MODULE_H_
 
 #include <pybind11/pybind11.h>
 
@@ -17,13 +17,13 @@
 
 namespace py = pybind11;
 
-class PyHloModule {
+class AltHloModule {
  public:
-  explicit PyHloModule(std::unique_ptr<xla::HloModule> hlo_module) {
+  explicit AltHloModule(std::unique_ptr<xla::HloModule> hlo_module) {
     hlo_module_ = std::move(hlo_module);
   }
 
-  explicit PyHloModule(const std::string& input, const std::string& format) {
+  explicit AltHloModule(const std::string& input, const std::string& format) {
     std::function<void(xla::HloModuleConfig*)> config_modifier_hook =
         [](xla::HloModuleConfig* config) { config->set_seed(42); };
 
@@ -41,7 +41,7 @@ class PyHloModule {
     }
   }
 
-  explicit PyHloModule(const std::string& hlo_filepath) {
+  explicit AltHloModule(const std::string& hlo_filepath) {
     std::function<void(xla::HloModuleConfig*)> config_modifier_hook =
         [](xla::HloModuleConfig* config) { config->set_seed(42); };
 
@@ -51,48 +51,48 @@ class PyHloModule {
                                      "txt", config_modifier_hook)
                       .ValueOrDie());
   }
-  explicit PyHloModule(PyHloModule&& other) {
+  explicit AltHloModule(AltHloModule&& other) {
     hlo_module_ = std::move(other.hlo_module_);
   }
-  PyHloModule& operator=(PyHloModule&& other) {
+  AltHloModule& operator=(AltHloModule&& other) {
     if (this != &other) {
       hlo_module_ = std::move(other.hlo_module_);
     }
     return *this;
   }
 
-  virtual ~PyHloModule() {}
+  virtual ~AltHloModule() {}
 
   xla::HloModule* hlo_module_ptr() { return hlo_module_.get(); }
 
-  std::shared_ptr<PyHloModule> Clone() {
+  std::shared_ptr<AltHloModule> Clone() {
     std::unique_ptr<xla::HloModule> saved_hlo_module = std::move(hlo_module_);
     hlo_module_ = std::move(saved_hlo_module->Clone());
-    return std::make_shared<PyHloModule>(std::move(saved_hlo_module));
+    return std::make_shared<AltHloModule>(std::move(saved_hlo_module));
   }
 
   std::string ToString() { return hlo_module_->ToString(); }
 
   uint64_t Hash() { return xla::HloModuleHash(hlo_module_.get()); }
 
-  std::shared_ptr<PyHloModule> ExtractRandomSubmodule(
+  std::shared_ptr<AltHloModule> ExtractRandomSubmodule(
       int instruction_count_threshold, int height) {
     auto returned_submodule = xla::ExtractRandomSubmodule(
         hlo_module_, instruction_count_threshold, height);
     return returned_submodule == nullptr
                ? nullptr
-               : std::make_shared<PyHloModule>(std::move(returned_submodule));
+               : std::make_shared<AltHloModule>(std::move(returned_submodule));
   }
 
   // TODO(wanxy): Might need a better reprensentation for HloInstruction besides
   // serialized string
-  std::vector<std::pair<std::string, std::shared_ptr<PyHloModule>>>
+  std::vector<std::pair<std::string, std::shared_ptr<AltHloModule>>>
   ExtractInstructionsAsModule(int repeat = 1000) {
-    std::vector<std::pair<std::string, std::shared_ptr<PyHloModule>>> ret;
+    std::vector<std::pair<std::string, std::shared_ptr<AltHloModule>>> ret;
     for (auto& ins : xla::ExtractInstructionsAsModule(*hlo_module_, repeat)) {
-      ret.emplace_back(
-          std::make_pair(ins.first->ToString(),
-                         std::make_shared<PyHloModule>(std::move(ins.second))));
+      ret.emplace_back(std::make_pair(
+          ins.first->ToString(),
+          std::make_shared<AltHloModule>(std::move(ins.second))));
     }
     return ret;
   }
@@ -107,4 +107,4 @@ class PyHloModule {
   std::unique_ptr<xla::HloModule> hlo_module_;
 };
 
-#endif  // ALTGRAPH_PY_HLO_MODULE_H_
+#endif  // ALTGRAPH_HLO_MODULE_H_

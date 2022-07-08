@@ -16,6 +16,7 @@ py_binary(
     ],
     data = [
         "setup.cfg",
+        "//altgraph",
     ],
     main = "@third_party//setup:setup.py",
     python_version = "PY3",

@@ -1,7 +1,7 @@
 // Copyright 2021 Garena Online Private Limited
 
-#ifndef ALTGRAPH_PY_HLO_GRAPH_H_
-#define ALTGRAPH_PY_HLO_GRAPH_H_
+#ifndef ALTGRAPH_PYTHON_PY_HLO_GRAPH_H_
+#define ALTGRAPH_PYTHON_PY_HLO_GRAPH_H_
 
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
@@ -23,9 +23,10 @@ inline py::array_t<typename Sequence::value_type> as_pyarray(
     std::shared_ptr<Sequence> s_ptr) {
   return py::array_t<typename Sequence::value_type>{
       s_ptr->size(), s_ptr->data(),
-      py::capsule(
-          new auto(s_ptr),  // <- can leak
-          [](void* p) { delete reinterpret_cast<decltype(s_ptr)*>(p); })};
+      py::capsule(new auto(s_ptr),
+                  [](void* p) {
+                    delete reinterpret_cast<decltype(s_ptr)*>(p);
+                  })};
 }
 
 #define SHARED_VEC_TO_PYARRAY(NAME, TYPE, SHARED_PTR) \
@@ -90,7 +91,7 @@ class PyHloGraph : public xla::HloGraph {
 
   PyHloGraph() {}
   explicit PyHloGraph(const xla::HloModule* m, bool inline_fused_comp = false,
-                      bool do_hash_verification = true)
+                      bool do_hash_verification = false)
       : xla::HloGraph(m, inline_fused_comp, do_hash_verification) {
     node_features_ = PyNodeFeats(get_node_feats());
     in_edge_features_ = PyEdgeFeats(get_in_edge_feats());
@@ -104,4 +105,4 @@ class PyHloGraph : public xla::HloGraph {
   uint64_t py_hash() { return Hash(); }
 };
 
-#endif  // ALTGRAPH_PY_HLO_GRAPH_H_
+#endif  // ALTGRAPH_PYTHON_PY_HLO_GRAPH_H_

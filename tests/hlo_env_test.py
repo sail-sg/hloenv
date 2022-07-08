@@ -85,7 +85,7 @@ class HloEnvTest(absltest.TestCase):
     assert (len(out_edge_features.dtypes) == num_out_edges)
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
-  def test_py_hlo_module(self) -> None:
+  def test_alt_hlo_module(self) -> None:
     from random import randrange
 
     import numpy as np
