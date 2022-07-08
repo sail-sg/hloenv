@@ -99,6 +99,15 @@ class AltHloModule {
     return ret;
   }
 
+  std::vector<std::shared_ptr<AltHloModule>> ExtractFusionsAsModule(
+      int repeat = 1000) {
+    std::vector<std::shared_ptr<AltHloModule>> ret;
+    for (auto& module : xla::ExtractFusionsAsModule(*hlo_module_, repeat)) {
+      ret.emplace_back(std::make_shared<AltHloModule>(std::move(module)));
+    }
+    return ret;
+  }
+
   xla::HloModuleProto ToProto() { return hlo_module_->ToProto(); }
 
   bool IsBefEnabled() { return xla::gpu::IsBefEnabled(hlo_module_->config()); }

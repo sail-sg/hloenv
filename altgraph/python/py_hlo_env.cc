@@ -205,6 +205,7 @@ PYBIND11_MODULE(py_hlo_env, m) {
       .def("extract_random_submodule", &AltHloModule::ExtractRandomSubmodule)
       .def("extract_instructions_as_module",
            &AltHloModule::ExtractInstructionsAsModule)
+      .def("extract_fusions_as_module", &AltHloModule::ExtractFusionsAsModule)
       .def("is_bef_enabled", &AltHloModule::IsBefEnabled)
       .def("clone", &AltHloModule::Clone);
 

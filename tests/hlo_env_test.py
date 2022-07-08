@@ -626,13 +626,29 @@ class HloEnvTest(absltest.TestCase):
       assert (len(hlo_graph.to_string()) > 0)
       print(instruction)
       print(hlo_graph.to_string())
+      
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_extract_fusions(self) -> None:
+    from altgraph import HloEnv, HloModule
+
+    hlo_ir = HloEnv(self.hlo_main_test_file, "gpu")
+    hlo_ir.pre_fusion_optimizations()
+    hlo_ir.pre_fusion_dry_passes()
+    hlo_ir.fusion_dry_run()
+    m = hlo_ir.get_hlo_module()
+    fusions = m.extract_fusions_as_module(10)
+    assert (len(fusions) > 0)
+    assert (len(fusions[0].to_string()) > 0)
+    print(fusions[0].to_string())
+
 
   # Test general pipeline
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_general_pipeline_main(self) -> None:
-    from altgraph import Pipeline, Pass, AltPipeline, HloEnv, HloPass
     from random import randrange
+
     import numpy as np
+    from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     hlo_env.pre_fusion_optimizations()
@@ -724,9 +740,10 @@ class HloEnvTest(absltest.TestCase):
   # Test general pipeline run till next dry pass functionality
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_general_pipeline_run_to_dry(self) -> None:
-    from altgraph import Pipeline, Pass, AltPipeline, HloEnv, HloPass
     from random import randrange
+
     import numpy as np
+    from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     hlo_env.pre_fusion_optimizations()
@@ -815,9 +832,10 @@ class HloEnvTest(absltest.TestCase):
   # Test general pipeline fixed pipeline functionality
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_general_pipeline_fixed(self) -> None:
-    from altgraph import Pipeline, Pass, AltPipeline, HloEnv, HloPass
     from random import randrange
+
     import numpy as np
+    from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     hlo_env.pre_fusion_optimizations()
@@ -894,8 +912,8 @@ class HloEnvTest(absltest.TestCase):
   # Test general pipeline fixed single pass functionality
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_general_pipeline_loop_count(self) -> None:
-    from altgraph import Pipeline, Pass, AltPipeline, HloEnv, HloPass
     import numpy as np
+    from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     hlo_env.pre_fusion_optimizations()
@@ -942,8 +960,8 @@ class HloEnvTest(absltest.TestCase):
   # Test general pipeline fixed single pass functionality
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_general_pipeline_fixed_pass(self) -> None:
-    from altgraph import Pipeline, Pass, AltPipeline, HloEnv, HloPass
     import numpy as np
+    from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     hlo_env.pre_fusion_optimizations()
@@ -989,9 +1007,10 @@ class HloEnvTest(absltest.TestCase):
   # Test general pipeline
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_general_pipeline_identical_hash(self) -> None:
-    from altgraph import Pipeline, Pass, AltPipeline, HloEnv, HloPass
     from random import randrange
+
     import numpy as np
+    from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     hlo_env.pre_fusion_optimizations()
@@ -1079,7 +1098,7 @@ class HloEnvTest(absltest.TestCase):
   # Test general pipeline reproducing the full OptimizeHloModule pipeline
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_general_pipeline_full_optimize_hlo(self) -> None:
-    from altgraph import Pipeline, Pass, AltPipeline, HloEnv, HloPass, GpuBackend
+    from altgraph import AltPipeline, GpuBackend, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     hlo_module = hlo_env.get_hlo_module()

@@ -588,4 +588,51 @@ ExtractInstructionsAsModule(const HloModule& module, int repeat) {
   return ret;
 }
 
+std::vector<std::unique_ptr<HloModule>> ExtractFusionsAsModule(
+    const HloModule& module, int repeat) {
+  std::vector<std::unique_ptr<HloModule>> ret;
+  xla::HloComputation* computation = module.entry_computation();
+  for (auto instruction : computation->instructions()) {
+    // find fusion instructions
+    if (instruction->opcode() == xla::HloOpcode::kFusion) {
+      std::vector<xla::HloInstruction*> params;
+      xla::HloComputation::Builder computation_builder("fused_comp");
+
+      int param_num = 0;
+      // Build params
+      for (int i = 0; i < instruction->operand_count(); i++) {
+        auto parameter = xla::HloInstruction::CreateParameter(
+            param_num++, instruction->operand(i)->shape(),
+            "param" + std::to_string(i));
+        params.emplace_back(parameter.get());
+        computation_builder.AddInstruction(std::move(parameter));
+      }
+      xla::HloModuleConfig config;
+      std::unique_ptr<xla::HloModule> module =
+          std::make_unique<xla::HloModule>("module", config);
+      // Repeat repeat times, add control dependency
+      xla::HloInstruction* last_fusion = nullptr;
+      for (int rep = 0; rep < repeat; rep++) {
+        // Add fusion itself and fused_computation (clone)
+        auto new_fused_computation = module->AddEmbeddedComputation(
+            instruction->fused_instructions_computation()->Clone("clone"));
+        auto cloned_fusion = absl::make_unique<HloFusionInstruction>(
+            instruction->shape(), instruction->fusion_kind(), params,
+            new_fused_computation);
+        if (last_fusion != nullptr) {
+          // old must run before new instruction
+          CHECK(last_fusion->AddControlDependencyTo(cloned_fusion.get()).ok());
+        }
+        last_fusion = cloned_fusion.get();
+        computation_builder.AddInstruction(std::move(cloned_fusion));
+      }
+      auto new_computation = computation_builder.Build(last_fusion);
+      module->AddEntryComputation(std::move(new_computation));
+      // emplace_back to vector
+      ret.emplace_back(std::move(module));
+    }
+  }
+  return ret;
+}
+
 }  // namespace xla
