@@ -626,7 +626,7 @@ class HloEnvTest(absltest.TestCase):
       assert (len(hlo_graph.to_string()) > 0)
       print(instruction)
       print(hlo_graph.to_string())
-      
+
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_extract_fusions(self) -> None:
     from altgraph import HloEnv, HloModule
@@ -640,7 +640,6 @@ class HloEnvTest(absltest.TestCase):
     assert (len(fusions) > 0)
     assert (len(fusions[0].to_string()) > 0)
     print(fusions[0].to_string())
-
 
   # Test general pipeline
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
@@ -1507,6 +1506,155 @@ class HloEnvTest(absltest.TestCase):
     original_pipeline_hash = hlo_env.get_hlo_module_hash()
 
     assert (general_pipeline_hash == original_pipeline_hash)
+
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_general_fusion(self) -> None:
+    from random import randrange
+
+    import numpy as np
+    from altgraph import HloEnv, AltPipeline, HloPass, Pass, Pipeline
+
+    # Note you have to make an Pass, cannot just run the HloPass directly.
+    general_fusion_dry_pass = AltPipeline(Pass(HloPass.GeneralFusion(),))
+
+    post_general_fusion_dry_passes = Pipeline("post-general-fusion")
+    post_general_fusion_dry_passes.add_pass(HloPass.HloCSE(True, True))
+    post_general_fusion_dry_passes.add_pass(HloPass.HloDCE())
+
+    base_dir = os.path.dirname(os.path.realpath(__file__))
+    hlo_base_dir = base_dir + "/hlo_texts/test_hlos"
+    for root, dirs, files in os.walk(hlo_base_dir):
+      for file in files:
+
+        filepath = os.path.join(root, file)
+        logging.info("Testing general fusion for file: " + filepath)
+
+        hlo_env = HloEnv(filepath, "gpu")
+
+        saved_hlo_module = hlo_env.save_hlo()
+        # Original TF pipelines
+        hlo_env.optimize_hlo_module()
+        hlo_env.prepare_hlo_module_for_ir_emitting()
+
+        # Save reference copy of the module after a non dry-run RunHloPasses call
+        reference_hlo_module = hlo_env.save_hlo()
+        hlo_env.load_hlo(saved_hlo_module)
+
+        hlo_env.pre_fusion_optimizations()
+        num_alts = 1
+        while num_alts > 0:
+          hlo_env.pre_fusion_dry_passes()
+          hlo_env.run(general_fusion_dry_pass)
+
+          hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
+          node_features = hlo_graph.node_features
+          num_operands = node_features.num_operands
+          num_alts = len(hlo_graph.alternative_indices)
+
+          if num_alts > 0:
+            decisions = []
+            for alt_idx in hlo_graph.alternative_indices:
+              node_uid = node_features.uids[alt_idx]
+              decisions.append(
+                [alt_idx, get_rand_action(num_operands[alt_idx])]
+              )
+
+            decisions = np.asarray(decisions)
+            hlo_env.apply_alternatives(decisions)
+
+            hlo_env.run(post_general_fusion_dry_passes)
+
+        hlo_env.post_fusion_optimizations()
+        post_fusion_module = hlo_env.save_hlo()
+
+        assert (
+          hlo_env.has_equal_output(post_fusion_module, reference_hlo_module)
+        )
+
+  @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
+  def test_deterministic_node_ids(self) -> None:
+    from random import randrange
+    import numpy as np
+    from altgraph import HloEnv, AltPipeline, HloPass, Pass, Pipeline
+
+    general_fusion_dry_pass = AltPipeline(Pass(HloPass.GeneralFusion(),))
+    post_general_fusion_dry_passes = Pipeline("post-general-fusion")
+    post_general_fusion_dry_passes.add_pass(HloPass.HloCSE(True, True))
+    post_general_fusion_dry_passes.add_pass(HloPass.HloDCE())
+
+    # filepath = "./hlo_texts/large_hlo.txt"
+    filepath = "hlo_texts/test_hlos/maml_flax/module_0082.jit_divmod.28.before_optimizations.txt"
+    print("Testing general fusion for file: " + filepath)
+
+    all_alt_indices = []
+    all_alt_ids = []
+    all_dag_hashes = []
+
+    for i in range(10):
+      hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+
+      run_alt_indices = []
+      run_alt_ids = []
+
+      hashes = []
+      hashes.append(hlo_env.get_hlo_module_hash())
+
+      hlo_env.pre_fusion_optimizations()
+      hashes.append(hlo_env.get_hlo_module_hash())
+
+      num_alts = 1
+      while num_alts > 0:
+        hlo_env.pre_fusion_dry_passes()
+        hashes.append(hlo_env.get_hlo_module_hash())
+
+        hlo_env.run(general_fusion_dry_pass)
+        hashes.append(hlo_env.get_hlo_module_hash())
+
+        hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
+        node_features = hlo_graph.node_features
+        num_operands = node_features.num_operands
+        num_alts = len(hlo_graph.alternative_indices)
+
+        alt_ids = [
+          node_features.uids[idx] for idx in hlo_graph.alternative_indices
+        ]
+        run_alt_indices += list(hlo_graph.alternative_indices)
+        run_alt_ids += alt_ids
+
+        if num_alts > 0:
+          decisions = []
+          for alt_idx in hlo_graph.alternative_indices:
+            node_uid = node_features.uids[alt_idx]
+            decisions.append([alt_idx, 1])
+
+          decisions = np.asarray(decisions)
+          hlo_env.apply_alternatives(decisions)
+          hashes.append(hlo_env.get_hlo_module_hash())
+
+          hlo_env.run(post_general_fusion_dry_passes)
+          hashes.append(hlo_env.get_hlo_module_hash())
+
+      hlo_env.post_fusion_optimizations()
+      hashes.append(hlo_env.get_hlo_module_hash())
+      all_dag_hashes.append(hashes)
+      all_alt_indices.append(run_alt_indices)
+      all_alt_ids.append(run_alt_ids)
+
+    assert (all_alt_indices.count(all_alt_indices[0]) == len(all_alt_indices))
+    assert (all_alt_ids.count(all_alt_ids[0]) == len(all_alt_ids))
+    assert (all_dag_hashes.count(all_dag_hashes[0]) == len(all_dag_hashes))
+
+    logging.info("---------IDX--------")
+    for alt_idx in all_alt_indices:
+      logging.info(alt_idx[:25])
+
+    logging.info("--------IDS---------")
+    for alt_id in all_alt_ids:
+      logging.info(alt_id[:25])
+
+    logging.info("-------HASH--------")
+    for dag_hash in all_dag_hashes:
+      logging.info(dag_hash)
 
 
 if __name__ == "__main__":
