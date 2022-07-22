@@ -9,12 +9,15 @@ from absl.testing import absltest
 LARGE_HLO_INSTRUCTION_MIN = 100
 
 SELECT_ORIGINAL_CHANCE = 0.05
+
+
 def get_rand_action(num_operands, allow_original=True):
   select_original = random.random() <= SELECT_ORIGINAL_CHANCE
   if select_original and allow_original:
     return 0
   else:
     return random.randrange(1, num_operands)
+
 
 class HloEnvTest(absltest.TestCase):
   """Placeholder for some real tests
@@ -416,7 +419,8 @@ class HloEnvTest(absltest.TestCase):
             for alt_idx in hlo_graph.alternative_indices:
               node_uid = node_features.uids[alt_idx]
               decisions.append(
-                [alt_idx, get_rand_action(num_operands[alt_idx], False)]
+                [alt_idx,
+                 get_rand_action(num_operands[alt_idx], False)]
               )
 
             decisions = np.asarray(decisions)
@@ -1595,6 +1599,7 @@ class HloEnvTest(absltest.TestCase):
         )
         end = timer()
         logging.info("    Time taken for eval: %f" % (end - start))
+
   logging.info("-------------------------------------------------")
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")

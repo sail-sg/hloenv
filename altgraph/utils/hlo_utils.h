@@ -121,6 +121,12 @@ class HloInstructionHashWrapper {
       h = H::combine(std::move(h), *inst->fused_expression_root(),
                      inst->fusion_kind(), inst->fused_instruction_count(),
                      inst->fused_parameters().size());
+    } else if (inst->opcode() == HloOpcode::kConstant) {
+      // For constants, hash in the literal value
+      h = H::combine(std::move(h), inst->literal());
+    } else if (inst->opcode() == HloOpcode::kParameter) {
+      // For parameters, hash in the parameter number
+      h = H::combine(std::move(h), inst->parameter_number());
     }
 
     // Hash in instruction attributes
