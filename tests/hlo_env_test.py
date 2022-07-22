@@ -4,16 +4,17 @@ import random
 from absl import logging
 from absl.testing import absltest
 
-SELECT_ORIGINAL_CHANCE = 0.1
+# We consider hlos with more instructions than this number to be "large"
+# For these hlos, we should no allow selecting original
+LARGE_HLO_INSTRUCTION_MIN = 100
 
-
-def get_rand_action(num_operands):
+SELECT_ORIGINAL_CHANCE = 0.05
+def get_rand_action(num_operands, allow_original=True):
   select_original = random.random() <= SELECT_ORIGINAL_CHANCE
-  if select_original:
+  if select_original and allow_original:
     return 0
   else:
     return random.randrange(1, num_operands)
-
 
 class HloEnvTest(absltest.TestCase):
   """Placeholder for some real tests
@@ -384,6 +385,12 @@ class HloEnvTest(absltest.TestCase):
         logging.info("Testing validation for file: " + filepath)
 
         hlo_env = HloEnv(filepath, "gpu")
+        instruction_count = hlo_env.get_hlo_module().instruction_count
+        is_large = instruction_count > LARGE_HLO_INSTRUCTION_MIN
+        # We can skip this test for large files, since it does not involve
+        # General Fusion, and is just meant to test alternative generation
+        if (is_large):
+          continue
 
         saved_hlo_module = hlo_env.save_hlo()
         # Original TF pipelines
@@ -409,7 +416,7 @@ class HloEnvTest(absltest.TestCase):
             for alt_idx in hlo_graph.alternative_indices:
               node_uid = node_features.uids[alt_idx]
               decisions.append(
-                [alt_idx, get_rand_action(num_operands[alt_idx])]
+                [alt_idx, get_rand_action(num_operands[alt_idx], False)]
               )
 
             decisions = np.asarray(decisions)
@@ -624,8 +631,8 @@ class HloEnvTest(absltest.TestCase):
         ) in hlo_ir.get_hlo_module().extract_instructions_as_module(10):
       assert (len(instruction) > 0)
       assert (len(hlo_graph.to_string()) > 0)
-      print(instruction)
-      print(hlo_graph.to_string())
+      logging.info(instruction)
+      logging.info(hlo_graph.to_string())
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_extract_fusions(self) -> None:
@@ -639,7 +646,7 @@ class HloEnvTest(absltest.TestCase):
     fusions = m.extract_fusions_as_module(10)
     assert (len(fusions) > 0)
     assert (len(fusions[0].to_string()) > 0)
-    print(fusions[0].to_string())
+    logging.info(fusions[0].to_string())
 
   # Test general pipeline
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
@@ -709,7 +716,7 @@ class HloEnvTest(absltest.TestCase):
     num_alts = 1
     count = 0
     while num_alts > 0:
-      print(count)
+      logging.info(count)
       hlo_env.pre_fusion_dry_passes()
       hlo_env.fusion_dry_run()
 
@@ -771,7 +778,7 @@ class HloEnvTest(absltest.TestCase):
     has_alt = True
     while has_alt:
       has_alt = hlo_env.run(fusion_pipeline)
-      print("COUNT: ", count, has_alt)
+      logging.info("COUNT: %d, HAS_ALT:%s" % (count, has_alt))
       # We hit a dry run pass
       if has_alt:
         hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
@@ -975,7 +982,7 @@ class HloEnvTest(absltest.TestCase):
     init_hlo = hlo_env.save_hlo()
     has_alt = True
     while (has_alt):
-      print(count)
+      logging.info(count)
       hlo_env.pre_fusion_dry_passes()
       has_alt = hlo_env.run(fusion_dry_pass)
       # We hit a dry run pass
@@ -1068,7 +1075,7 @@ class HloEnvTest(absltest.TestCase):
     num_alts = 1
     count = 0
     while num_alts > 0:
-      print(count)
+      logging.info(count)
       hlo_env.pre_fusion_dry_passes()
       hlo_env.fusion_dry_run()
 
@@ -1514,6 +1521,8 @@ class HloEnvTest(absltest.TestCase):
     import numpy as np
     from altgraph import HloEnv, AltPipeline, HloPass, Pass, Pipeline
 
+    from timeit import default_timer as timer
+
     # Note you have to make an Pass, cannot just run the HloPass directly.
     general_fusion_dry_pass = AltPipeline(Pass(HloPass.GeneralFusion(),))
 
@@ -1527,9 +1536,15 @@ class HloEnvTest(absltest.TestCase):
       for file in files:
 
         filepath = os.path.join(root, file)
-        logging.info("Testing general fusion for file: " + filepath)
 
         hlo_env = HloEnv(filepath, "gpu")
+        instruction_count = hlo_env.get_hlo_module().instruction_count
+        is_large = instruction_count > LARGE_HLO_INSTRUCTION_MIN
+
+        logging.info("-------------------------------------------------")
+        logging.info("Testing general fusion for file: " + filepath)
+        logging.info("    num instructions = %d" % instruction_count)
+        logging.info("    num is_large = %s" % is_large)
 
         saved_hlo_module = hlo_env.save_hlo()
         # Original TF pipelines
@@ -1539,6 +1554,8 @@ class HloEnvTest(absltest.TestCase):
         # Save reference copy of the module after a non dry-run RunHloPasses call
         reference_hlo_module = hlo_env.save_hlo()
         hlo_env.load_hlo(saved_hlo_module)
+
+        start = timer()
 
         hlo_env.pre_fusion_optimizations()
         num_alts = 1
@@ -1555,9 +1572,12 @@ class HloEnvTest(absltest.TestCase):
             decisions = []
             for alt_idx in hlo_graph.alternative_indices:
               node_uid = node_features.uids[alt_idx]
-              decisions.append(
-                [alt_idx, get_rand_action(num_operands[alt_idx])]
-              )
+              if is_large:
+                decisions.append([alt_idx, 1])
+              else:
+                decisions.append(
+                  [alt_idx, get_rand_action(num_operands[alt_idx])]
+                )
 
             decisions = np.asarray(decisions)
             hlo_env.apply_alternatives(decisions)
@@ -1567,9 +1587,15 @@ class HloEnvTest(absltest.TestCase):
         hlo_env.post_fusion_optimizations()
         post_fusion_module = hlo_env.save_hlo()
 
+        end = timer()
+        logging.info("    Time taken for fusion: %f" % (end - start))
+        start = timer()
         assert (
           hlo_env.has_equal_output(post_fusion_module, reference_hlo_module)
         )
+        end = timer()
+        logging.info("    Time taken for eval: %f" % (end - start))
+  logging.info("-------------------------------------------------")
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_deterministic_node_ids(self) -> None:
@@ -1584,7 +1610,7 @@ class HloEnvTest(absltest.TestCase):
 
     # filepath = "./hlo_texts/large_hlo.txt"
     filepath = "hlo_texts/test_hlos/maml_flax/module_0082.jit_divmod.28.before_optimizations.txt"
-    print("Testing general fusion for file: " + filepath)
+    logging.info("Testing general fusion for file: " + filepath)
 
     all_alt_indices = []
     all_alt_ids = []

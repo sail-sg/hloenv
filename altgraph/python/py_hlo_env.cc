@@ -207,6 +207,8 @@ PYBIND11_MODULE(py_hlo_env, m) {
            &AltHloModule::ExtractInstructionsAsModule)
       .def("extract_fusions_as_module", &AltHloModule::ExtractFusionsAsModule)
       .def("is_bef_enabled", &AltHloModule::IsBefEnabled)
+      .def_property_readonly("instruction_count",
+                             &AltHloModule::InstructionCount)
       .def("clone", &AltHloModule::Clone);
 
   py::class_<PyHloEnv>(m, "PyHloEnv")

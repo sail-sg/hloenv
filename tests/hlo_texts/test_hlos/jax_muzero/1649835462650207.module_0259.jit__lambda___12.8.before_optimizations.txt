@@ -1,0 +1,12 @@
+HloModule jit__lambda___12.8
+
+ENTRY %jit__lambda___12.8 (parameter.1: f32[32], parameter.2: s32[]) -> (f32[32]) {
+  %constant.3 = pred[] constant(false)
+  %parameter.1 = f32[32]{0} parameter(0)
+  %parameter.2 = s32[] parameter(1)
+  %convert.4 = f32[] convert(s32[] %parameter.2)
+  %broadcast.5 = f32[32]{0} broadcast(f32[] %convert.4), dimensions={}
+  %maximum.6 = f32[32]{0} maximum(f32[32]{0} %parameter.1, f32[32]{0} %broadcast.5)
+  ROOT %tuple.7 = (f32[32]{0}) tuple(f32[32]{0} %maximum.6)
+}
+

@@ -1,0 +1,701 @@
+HloModule jit_get_td_target.657
+
+%primitive_computation_add__4.31 (parameter.32: f32[], parameter.33: f32[]) -> f32[] {
+  %constant.34 = pred[] constant(false)
+  %parameter.32 = f32[] parameter(0)
+  %parameter.33 = f32[] parameter(1)
+  ROOT %add.35 = f32[] add(f32[] %parameter.32, f32[] %parameter.33)
+}
+
+%primitive_computation_add__5.36 (parameter.37: f32[], parameter.38: f32[]) -> f32[] {
+  %constant.39 = pred[] constant(false)
+  %parameter.37 = f32[] parameter(0)
+  %parameter.38 = f32[] parameter(1)
+  ROOT %add.40 = f32[] add(f32[] %parameter.37, f32[] %parameter.38)
+}
+
+%jit__where__6.41 (parameter.42: pred[256,200], parameter.43: f32[], parameter.44: f32[256,200]) -> (f32[256,200]) {
+  %constant.45 = pred[] constant(false)
+  %parameter.42 = pred[256,200]{1,0} parameter(0)
+  %parameter.43 = f32[] parameter(1)
+  %convert.46 = f32[] convert(f32[] %parameter.43)
+  %broadcast.47 = f32[256,200]{1,0} broadcast(f32[] %convert.46), dimensions={}
+  %parameter.44 = f32[256,200]{1,0} parameter(2)
+  %select.48 = f32[256,200]{1,0} select(pred[256,200]{1,0} %parameter.42, f32[256,200]{1,0} %broadcast.47, f32[256,200]{1,0} %parameter.44)
+  ROOT %tuple.49 = (f32[256,200]{1,0}) tuple(f32[256,200]{1,0} %select.48)
+}
+
+%jit__where__7.50 (parameter.51: pred[256,200], parameter.52: f32[256,200], parameter.53: f32[256,200]) -> (f32[256,200]) {
+  %constant.54 = pred[] constant(false)
+  %parameter.51 = pred[256,200]{1,0} parameter(0)
+  %parameter.52 = f32[256,200]{1,0} parameter(1)
+  %parameter.53 = f32[256,200]{1,0} parameter(2)
+  %select.55 = f32[256,200]{1,0} select(pred[256,200]{1,0} %parameter.51, f32[256,200]{1,0} %parameter.52, f32[256,200]{1,0} %parameter.53)
+  ROOT %tuple.56 = (f32[256,200]{1,0}) tuple(f32[256,200]{1,0} %select.55)
+}
+
+%jit_clip__12.57 (parameter.58: f32[256,1], parameter.59: f32[]) -> (f32[256,1]) {
+  %constant.60 = pred[] constant(false)
+  %parameter.59 = f32[] parameter(1)
+  %convert.61 = f32[] convert(f32[] %parameter.59)
+  %broadcast.62 = f32[256,1]{1,0} broadcast(f32[] %convert.61), dimensions={}
+  %parameter.58 = f32[256,1]{1,0} parameter(0)
+  %maximum.63 = f32[256,1]{1,0} maximum(f32[256,1]{1,0} %broadcast.62, f32[256,1]{1,0} %parameter.58)
+  ROOT %tuple.64 = (f32[256,1]{1,0}) tuple(f32[256,1]{1,0} %maximum.63)
+}
+
+%body_computation__11.65 (parameter.66: (s32[], s32[], u32[128], u32[128], u32[], /*index=5*/u32[], u32[], u32[4], u32[4])) -> (s32[], s32[], u32[128], u32[128], u32[], /*index=5*/u32[], u32[], u32[4], u32[4]) {
+  %constant.76 = pred[] constant(false)
+  %parameter.66 = (s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) parameter(0)
+  %get-tuple-element.67 = s32[] get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.66), index=0
+  %constant.132 = s32[] constant(1)
+  %add.133 = s32[] add(s32[] %get-tuple-element.67, s32[] %constant.132)
+  %get-tuple-element.68 = s32[] get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.66), index=1
+  %constant.77 = s32[] constant(1)
+  %add.78 = s32[] add(s32[] %get-tuple-element.68, s32[] %constant.77)
+  %get-tuple-element.69 = u32[128]{0} get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.66), index=2
+  %get-tuple-element.70 = u32[128]{0} get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.66), index=3
+  %add.87 = u32[128]{0} add(u32[128]{0} %get-tuple-element.69, u32[128]{0} %get-tuple-element.70)
+  %get-tuple-element.74 = u32[4]{0} get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.66), index=7
+  %slice.79 = u32[1]{0} slice(u32[4]{0} %get-tuple-element.74), slice={[0:1]}
+  %reshape.80 = u32[] reshape(u32[1]{0} %slice.79)
+  %broadcast.88 = u32[128]{0} broadcast(u32[] %reshape.80), dimensions={}
+  %shift-left.89 = u32[128]{0} shift-left(u32[128]{0} %get-tuple-element.70, u32[128]{0} %broadcast.88)
+  %constant.90 = u32[] constant(32)
+  %subtract.91 = u32[] subtract(u32[] %constant.90, u32[] %reshape.80)
+  %broadcast.92 = u32[128]{0} broadcast(u32[] %subtract.91), dimensions={}
+  %shift-right-logical.93 = u32[128]{0} shift-right-logical(u32[128]{0} %get-tuple-element.70, u32[128]{0} %broadcast.92)
+  %or.94 = u32[128]{0} or(u32[128]{0} %shift-left.89, u32[128]{0} %shift-right-logical.93)
+  %xor.95 = u32[128]{0} xor(u32[128]{0} %add.87, u32[128]{0} %or.94)
+  %add.96 = u32[128]{0} add(u32[128]{0} %add.87, u32[128]{0} %xor.95)
+  %slice.81 = u32[1]{0} slice(u32[4]{0} %get-tuple-element.74), slice={[1:2]}
+  %reshape.82 = u32[] reshape(u32[1]{0} %slice.81)
+  %broadcast.97 = u32[128]{0} broadcast(u32[] %reshape.82), dimensions={}
+  %shift-left.98 = u32[128]{0} shift-left(u32[128]{0} %xor.95, u32[128]{0} %broadcast.97)
+  %constant.99 = u32[] constant(32)
+  %subtract.100 = u32[] subtract(u32[] %constant.99, u32[] %reshape.82)
+  %broadcast.101 = u32[128]{0} broadcast(u32[] %subtract.100), dimensions={}
+  %shift-right-logical.102 = u32[128]{0} shift-right-logical(u32[128]{0} %xor.95, u32[128]{0} %broadcast.101)
+  %or.103 = u32[128]{0} or(u32[128]{0} %shift-left.98, u32[128]{0} %shift-right-logical.102)
+  %xor.104 = u32[128]{0} xor(u32[128]{0} %add.96, u32[128]{0} %or.103)
+  %add.105 = u32[128]{0} add(u32[128]{0} %add.96, u32[128]{0} %xor.104)
+  %slice.83 = u32[1]{0} slice(u32[4]{0} %get-tuple-element.74), slice={[2:3]}
+  %reshape.84 = u32[] reshape(u32[1]{0} %slice.83)
+  %broadcast.106 = u32[128]{0} broadcast(u32[] %reshape.84), dimensions={}
+  %shift-left.107 = u32[128]{0} shift-left(u32[128]{0} %xor.104, u32[128]{0} %broadcast.106)
+  %constant.108 = u32[] constant(32)
+  %subtract.109 = u32[] subtract(u32[] %constant.108, u32[] %reshape.84)
+  %broadcast.110 = u32[128]{0} broadcast(u32[] %subtract.109), dimensions={}
+  %shift-right-logical.111 = u32[128]{0} shift-right-logical(u32[128]{0} %xor.104, u32[128]{0} %broadcast.110)
+  %or.112 = u32[128]{0} or(u32[128]{0} %shift-left.107, u32[128]{0} %shift-right-logical.111)
+  %xor.113 = u32[128]{0} xor(u32[128]{0} %add.105, u32[128]{0} %or.112)
+  %add.114 = u32[128]{0} add(u32[128]{0} %add.105, u32[128]{0} %xor.113)
+  %get-tuple-element.71 = u32[] get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.66), index=4
+  %broadcast.123 = u32[128]{0} broadcast(u32[] %get-tuple-element.71), dimensions={}
+  %add.124 = u32[128]{0} add(u32[128]{0} %add.114, u32[128]{0} %broadcast.123)
+  %slice.85 = u32[1]{0} slice(u32[4]{0} %get-tuple-element.74), slice={[3:4]}
+  %reshape.86 = u32[] reshape(u32[1]{0} %slice.85)
+  %broadcast.115 = u32[128]{0} broadcast(u32[] %reshape.86), dimensions={}
+  %shift-left.116 = u32[128]{0} shift-left(u32[128]{0} %xor.113, u32[128]{0} %broadcast.115)
+  %constant.117 = u32[] constant(32)
+  %subtract.118 = u32[] subtract(u32[] %constant.117, u32[] %reshape.86)
+  %broadcast.119 = u32[128]{0} broadcast(u32[] %subtract.118), dimensions={}
+  %shift-right-logical.120 = u32[128]{0} shift-right-logical(u32[128]{0} %xor.113, u32[128]{0} %broadcast.119)
+  %or.121 = u32[128]{0} or(u32[128]{0} %shift-left.116, u32[128]{0} %shift-right-logical.120)
+  %xor.122 = u32[128]{0} xor(u32[128]{0} %add.114, u32[128]{0} %or.121)
+  %get-tuple-element.72 = u32[] get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.66), index=5
+  %broadcast.125 = u32[128]{0} broadcast(u32[] %get-tuple-element.72), dimensions={}
+  %add.126 = u32[128]{0} add(u32[128]{0} %xor.122, u32[128]{0} %broadcast.125)
+  %constant.127 = s32[] constant(1)
+  %add.128 = s32[] add(s32[] %get-tuple-element.68, s32[] %constant.127)
+  %convert.129 = u32[] convert(s32[] %add.128)
+  %broadcast.130 = u32[128]{0} broadcast(u32[] %convert.129), dimensions={}
+  %add.131 = u32[128]{0} add(u32[128]{0} %add.126, u32[128]{0} %broadcast.130)
+  %get-tuple-element.73 = u32[] get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.66), index=6
+  %get-tuple-element.75 = u32[4]{0} get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.66), index=8
+  ROOT %tuple.134 = (s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) tuple(s32[] %add.133, s32[] %add.78, u32[128]{0} %add.124, u32[128]{0} %add.131, u32[] %get-tuple-element.72, /*index=5*/u32[] %get-tuple-element.73, u32[] %get-tuple-element.71, u32[4]{0} %get-tuple-element.75, u32[4]{0} %get-tuple-element.74)
+}
+
+%cond_computation__11.135 (parameter.136: (s32[], s32[], u32[128], u32[128], u32[], /*index=5*/u32[], u32[], u32[4], u32[4])) -> pred[] {
+  %parameter.136 = (s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) parameter(0)
+  %get-tuple-element.138 = s32[] get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.136), index=1
+  %get-tuple-element.139 = u32[128]{0} get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.136), index=2
+  %get-tuple-element.140 = u32[128]{0} get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.136), index=3
+  %get-tuple-element.141 = u32[] get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.136), index=4
+  %get-tuple-element.142 = u32[] get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.136), index=5
+  %get-tuple-element.143 = u32[] get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.136), index=6
+  %get-tuple-element.144 = u32[4]{0} get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.136), index=7
+  %get-tuple-element.145 = u32[4]{0} get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.136), index=8
+  %constant.146 = pred[] constant(false)
+  %get-tuple-element.137 = s32[] get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %parameter.136), index=0
+  %constant.147 = s32[] constant(5)
+  ROOT %compare.148 = pred[] compare(s32[] %get-tuple-element.137, s32[] %constant.147), direction=LT
+}
+
+%jit_gaussian_likelihood.149 (parameter.150: f32[256,1], parameter.151: f32[256,1], parameter.152: f32[256,1]) -> (f32[256,1]) {
+  %constant.153 = pred[] constant(false)
+  %parameter.150 = f32[256,1]{1,0} parameter(0)
+  %parameter.151 = f32[256,1]{1,0} parameter(1)
+  %subtract.154 = f32[256,1]{1,0} subtract(f32[256,1]{1,0} %parameter.150, f32[256,1]{1,0} %parameter.151)
+  %parameter.152 = f32[256,1]{1,0} parameter(2)
+  %exponential.155 = f32[256,1]{1,0} exponential(f32[256,1]{1,0} %parameter.152)
+  %constant.156 = f32[] constant(1e-06)
+  %broadcast.157 = f32[256,1]{1,0} broadcast(f32[] %constant.156), dimensions={}
+  %add.158 = f32[256,1]{1,0} add(f32[256,1]{1,0} %exponential.155, f32[256,1]{1,0} %broadcast.157)
+  %divide.159 = f32[256,1]{1,0} divide(f32[256,1]{1,0} %subtract.154, f32[256,1]{1,0} %add.158)
+  %multiply.160 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %divide.159, f32[256,1]{1,0} %divide.159)
+  %constant.161 = f32[] constant(2)
+  %broadcast.162 = f32[256,1]{1,0} broadcast(f32[] %constant.161), dimensions={}
+  %multiply.163 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %parameter.152, f32[256,1]{1,0} %broadcast.162)
+  %add.164 = f32[256,1]{1,0} add(f32[256,1]{1,0} %multiply.160, f32[256,1]{1,0} %multiply.163)
+  %constant.165 = f32[] constant(6.28318548)
+  %log.166 = f32[] log(f32[] %constant.165)
+  %convert.167 = f32[] convert(f32[] %log.166)
+  %broadcast.168 = f32[256,1]{1,0} broadcast(f32[] %convert.167), dimensions={}
+  %add.169 = f32[256,1]{1,0} add(f32[256,1]{1,0} %add.164, f32[256,1]{1,0} %broadcast.168)
+  %constant.170 = f32[] constant(-0.5)
+  %broadcast.171 = f32[256,1]{1,0} broadcast(f32[] %constant.170), dimensions={}
+  %multiply.172 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %add.169, f32[256,1]{1,0} %broadcast.171)
+  ROOT %tuple.173 = (f32[256,1]{1,0}) tuple(f32[256,1]{1,0} %multiply.172)
+}
+
+%primitive_computation_add__6.174 (parameter.175: f32[], parameter.176: f32[]) -> f32[] {
+  %constant.177 = pred[] constant(false)
+  %parameter.175 = f32[] parameter(0)
+  %parameter.176 = f32[] parameter(1)
+  ROOT %add.178 = f32[] add(f32[] %parameter.175, f32[] %parameter.176)
+}
+
+%jit_apply_gaussian_policy_model__1.179 (parameter.180: f32[200], parameter.181: f32[5,200], parameter.182: f32[200], parameter.183: f32[200,200], parameter.184: f32[2], parameter.185: f32[200,2], parameter.186: f32[200], parameter.187: f32[200], parameter.188: f32[256,5], parameter.189: u32[2]) -> (f32[256,1], f32[256,1]) {
+  %constant.190 = pred[] constant(false)
+  %constant.274 = pred[] constant(false)
+  %constant.283 = pred[] constant(false)
+  %constant.284 = s32[] constant(0)
+  %constant.282 = s32[] constant(0)
+  %iota.265 = u32[256] iota(), iota_dimension=0
+  %slice.270 = u32[128]{0} slice(u32[256] %iota.265), slice={[0:128]}
+  %parameter.189 = u32[2]{0} parameter(9)
+  %slice.266 = u32[1]{0} slice(u32[2]{0} %parameter.189), slice={[0:1]}
+  %reshape.267 = u32[] reshape(u32[1]{0} %slice.266)
+  %broadcast.278 = u32[128]{0} broadcast(u32[] %reshape.267), dimensions={}
+  %add.279 = u32[128]{0} add(u32[128]{0} %slice.270, u32[128]{0} %broadcast.278)
+  %slice.271 = u32[128]{0} slice(u32[256] %iota.265), slice={[128:256]}
+  %slice.268 = u32[1]{0} slice(u32[2]{0} %parameter.189), slice={[1:2]}
+  %reshape.269 = u32[] reshape(u32[1]{0} %slice.268)
+  %broadcast.280 = u32[128]{0} broadcast(u32[] %reshape.269), dimensions={}
+  %add.281 = u32[128]{0} add(u32[128]{0} %slice.271, u32[128]{0} %broadcast.280)
+  %xor.275 = u32[] xor(u32[] %reshape.267, u32[] %reshape.269)
+  %constant.276 = u32[] constant(466688986)
+  %xor.277 = u32[] xor(u32[] %xor.275, u32[] %constant.276)
+  %constant.272 = u32[4]{0} constant({13, 15, 26, 6})
+  %constant.273 = u32[4]{0} constant({17, 29, 16, 24})
+  %tuple.285 = (s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) tuple(s32[] %constant.284, s32[] %constant.282, u32[128]{0} %add.279, u32[128]{0} %add.281, u32[] %reshape.269, /*index=5*/u32[] %xor.277, u32[] %reshape.267, u32[4]{0} %constant.272, u32[4]{0} %constant.273)
+  %while.286 = (s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) while((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %tuple.285), condition=%cond_computation__11.135, body=%body_computation__11.65
+  %get-tuple-element.287 = s32[] get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.286), index=0
+  %get-tuple-element.288 = s32[] get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.286), index=1
+  %get-tuple-element.291 = u32[] get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.286), index=4
+  %get-tuple-element.292 = u32[] get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.286), index=5
+  %get-tuple-element.293 = u32[] get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.286), index=6
+  %get-tuple-element.294 = u32[4]{0} get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.286), index=7
+  %get-tuple-element.295 = u32[4]{0} get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.286), index=8
+  %constant.415 = pred[] constant(false)
+  %parameter.188 = f32[256,5]{1,0} parameter(8)
+  %parameter.181 = f32[5,200]{1,0} parameter(1)
+  %dot.191 = f32[256,200]{1,0} dot(f32[256,5]{1,0} %parameter.188, f32[5,200]{1,0} %parameter.181), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  %parameter.180 = f32[200]{0} parameter(0)
+  %broadcast.192 = f32[1,200]{1,0} broadcast(f32[200]{0} %parameter.180), dimensions={1}
+  %reshape.193 = f32[200]{0} reshape(f32[1,200]{1,0} %broadcast.192)
+  %broadcast.194 = f32[256,200]{1,0} broadcast(f32[200]{0} %reshape.193), dimensions={1}
+  %add.195 = f32[256,200]{1,0} add(f32[256,200]{1,0} %dot.191, f32[256,200]{1,0} %broadcast.194)
+  %constant.196 = f32[] constant(0)
+  %reduce.197 = f32[256]{0} reduce(f32[256,200]{1,0} %add.195, f32[] %constant.196), dimensions={1}, to_apply=%primitive_computation_add__4.31
+  %broadcast.198 = f32[256,1]{1,0} broadcast(f32[256]{0} %reduce.197), dimensions={0}
+  %constant.199 = f32[] constant(200)
+  %broadcast.200 = f32[256,1]{1,0} broadcast(f32[] %constant.199), dimensions={}
+  %divide.201 = f32[256,1]{1,0} divide(f32[256,1]{1,0} %broadcast.198, f32[256,1]{1,0} %broadcast.200)
+  %reshape.221 = f32[256]{0} reshape(f32[256,1]{1,0} %divide.201)
+  %broadcast.222 = f32[256,200]{1,0} broadcast(f32[256]{0} %reshape.221), dimensions={0}
+  %subtract.223 = f32[256,200]{1,0} subtract(f32[256,200]{1,0} %add.195, f32[256,200]{1,0} %broadcast.222)
+  %multiply.202 = f32[256,200]{1,0} multiply(f32[256,200]{1,0} %add.195, f32[256,200]{1,0} %add.195)
+  %constant.203 = f32[] constant(0)
+  %reduce.204 = f32[256]{0} reduce(f32[256,200]{1,0} %multiply.202, f32[] %constant.203), dimensions={1}, to_apply=%primitive_computation_add__5.36
+  %broadcast.205 = f32[256,1]{1,0} broadcast(f32[256]{0} %reduce.204), dimensions={0}
+  %constant.206 = f32[] constant(200)
+  %broadcast.207 = f32[256,1]{1,0} broadcast(f32[] %constant.206), dimensions={}
+  %divide.208 = f32[256,1]{1,0} divide(f32[256,1]{1,0} %broadcast.205, f32[256,1]{1,0} %broadcast.207)
+  %multiply.209 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %divide.201, f32[256,1]{1,0} %divide.201)
+  %subtract.210 = f32[256,1]{1,0} subtract(f32[256,1]{1,0} %divide.208, f32[256,1]{1,0} %multiply.209)
+  %constant.211 = f32[] constant(1e-06)
+  %broadcast.212 = f32[256,1]{1,0} broadcast(f32[] %constant.211), dimensions={}
+  %add.213 = f32[256,1]{1,0} add(f32[256,1]{1,0} %subtract.210, f32[256,1]{1,0} %broadcast.212)
+  %rsqrt.214 = f32[256,1]{1,0} rsqrt(f32[256,1]{1,0} %add.213)
+  %reshape.216 = f32[256]{0} reshape(f32[256,1]{1,0} %rsqrt.214)
+  %broadcast.217 = f32[256,200]{1,0} broadcast(f32[256]{0} %reshape.216), dimensions={0}
+  %parameter.187 = f32[200]{0} parameter(7)
+  %broadcast.215 = f32[1,200]{1,0} broadcast(f32[200]{0} %parameter.187), dimensions={1}
+  %reshape.218 = f32[200]{0} reshape(f32[1,200]{1,0} %broadcast.215)
+  %broadcast.219 = f32[256,200]{1,0} broadcast(f32[200]{0} %reshape.218), dimensions={1}
+  %multiply.220 = f32[256,200]{1,0} multiply(f32[256,200]{1,0} %broadcast.217, f32[256,200]{1,0} %broadcast.219)
+  %multiply.224 = f32[256,200]{1,0} multiply(f32[256,200]{1,0} %subtract.223, f32[256,200]{1,0} %multiply.220)
+  %parameter.186 = f32[200]{0} parameter(6)
+  %broadcast.225 = f32[1,200]{1,0} broadcast(f32[200]{0} %parameter.186), dimensions={1}
+  %reshape.226 = f32[200]{0} reshape(f32[1,200]{1,0} %broadcast.225)
+  %broadcast.227 = f32[256,200]{1,0} broadcast(f32[200]{0} %reshape.226), dimensions={1}
+  %add.228 = f32[256,200]{1,0} add(f32[256,200]{1,0} %multiply.224, f32[256,200]{1,0} %broadcast.227)
+  %tanh.229 = f32[256,200]{1,0} tanh(f32[256,200]{1,0} %add.228)
+  %parameter.183 = f32[200,200]{1,0} parameter(3)
+  %dot.230 = f32[256,200]{1,0} dot(f32[256,200]{1,0} %tanh.229, f32[200,200]{1,0} %parameter.183), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  %parameter.182 = f32[200]{0} parameter(2)
+  %broadcast.231 = f32[1,200]{1,0} broadcast(f32[200]{0} %parameter.182), dimensions={1}
+  %reshape.232 = f32[200]{0} reshape(f32[1,200]{1,0} %broadcast.231)
+  %broadcast.233 = f32[256,200]{1,0} broadcast(f32[200]{0} %reshape.232), dimensions={1}
+  %add.234 = f32[256,200]{1,0} add(f32[256,200]{1,0} %dot.230, f32[256,200]{1,0} %broadcast.233)
+  %constant.241 = f32[] constant(0)
+  %broadcast.242 = f32[256,200]{1,0} broadcast(f32[] %constant.241), dimensions={}
+  %compare.243 = pred[256,200]{1,0} compare(f32[256,200]{1,0} %add.234, f32[256,200]{1,0} %broadcast.242), direction=GT
+  %constant.235 = f32[] constant(0)
+  %broadcast.236 = f32[256,200]{1,0} broadcast(f32[] %constant.235), dimensions={}
+  %compare.237 = pred[256,200]{1,0} compare(f32[256,200]{1,0} %add.234, f32[256,200]{1,0} %broadcast.236), direction=GT
+  %constant.238 = f32[] constant(0)
+  %call.239 = (f32[256,200]{1,0}) call(pred[256,200]{1,0} %compare.237, f32[] %constant.238, f32[256,200]{1,0} %add.234), to_apply=%jit__where__6.41
+  %get-tuple-element.240 = f32[256,200]{1,0} get-tuple-element((f32[256,200]{1,0}) %call.239), index=0
+  %exponential-minus-one.244 = f32[256,200]{1,0} exponential-minus-one(f32[256,200]{1,0} %get-tuple-element.240)
+  %constant.245 = f32[] constant(1)
+  %broadcast.246 = f32[256,200]{1,0} broadcast(f32[] %constant.245), dimensions={}
+  %multiply.247 = f32[256,200]{1,0} multiply(f32[256,200]{1,0} %exponential-minus-one.244, f32[256,200]{1,0} %broadcast.246)
+  %call.248 = (f32[256,200]{1,0}) call(pred[256,200]{1,0} %compare.243, f32[256,200]{1,0} %add.234, f32[256,200]{1,0} %multiply.247), to_apply=%jit__where__7.50
+  %get-tuple-element.249 = f32[256,200]{1,0} get-tuple-element((f32[256,200]{1,0}) %call.248), index=0
+  %parameter.185 = f32[200,2]{1,0} parameter(5)
+  %dot.250 = f32[256,2]{1,0} dot(f32[256,200]{1,0} %get-tuple-element.249, f32[200,2]{1,0} %parameter.185), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  %parameter.184 = f32[2]{0} parameter(4)
+  %broadcast.251 = f32[1,2]{1,0} broadcast(f32[2]{0} %parameter.184), dimensions={1}
+  %reshape.252 = f32[2]{0} reshape(f32[1,2]{1,0} %broadcast.251)
+  %broadcast.253 = f32[256,2]{1,0} broadcast(f32[2]{0} %reshape.252), dimensions={1}
+  %add.254 = f32[256,2]{1,0} add(f32[256,2]{1,0} %dot.250, f32[256,2]{1,0} %broadcast.253)
+  %slice.255 = f32[256,1]{1,0} slice(f32[256,2]{1,0} %add.254), slice={[0:256], [0:1]}
+  %constant.261 = f32[] constant(-0.99999994)
+  %broadcast.262 = f32[1,1]{1,0} broadcast(f32[] %constant.261), dimensions={}
+  %reshape.315 = f32[1]{0} reshape(f32[1,1]{1,0} %broadcast.262)
+  %broadcast.316 = f32[256,1]{1,0} broadcast(f32[1]{0} %reshape.315), dimensions={1}
+  %get-tuple-element.289 = u32[128]{0} get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.286), index=2
+  %get-tuple-element.290 = u32[128]{0} get-tuple-element((s32[], s32[], u32[128]{0}, u32[128]{0}, u32[], /*index=5*/u32[], u32[], u32[4]{0}, u32[4]{0}) %while.286), index=3
+  %concatenate.296 = u32[256]{0} concatenate(u32[128]{0} %get-tuple-element.289, u32[128]{0} %get-tuple-element.290), dimensions={0}
+  %reshape.297 = u32[256,1]{1,0} reshape(u32[256]{0} %concatenate.296)
+  %constant.298 = u32[] constant(9)
+  %broadcast.299 = u32[256,1]{1,0} broadcast(u32[] %constant.298), dimensions={}
+  %shift-right-logical.300 = u32[256,1]{1,0} shift-right-logical(u32[256,1]{1,0} %reshape.297, u32[256,1]{1,0} %broadcast.299)
+  %constant.301 = u32[] constant(1065353216)
+  %broadcast.302 = u32[256,1]{1,0} broadcast(u32[] %constant.301), dimensions={}
+  %or.303 = u32[256,1]{1,0} or(u32[256,1]{1,0} %shift-right-logical.300, u32[256,1]{1,0} %broadcast.302)
+  %bitcast-convert.304 = f32[256,1]{1,0} bitcast-convert(u32[256,1]{1,0} %or.303)
+  %constant.305 = f32[] constant(1)
+  %broadcast.306 = f32[256,1]{1,0} broadcast(f32[] %constant.305), dimensions={}
+  %subtract.307 = f32[256,1]{1,0} subtract(f32[256,1]{1,0} %bitcast-convert.304, f32[256,1]{1,0} %broadcast.306)
+  %constant.263 = f32[] constant(1)
+  %broadcast.264 = f32[1,1]{1,0} broadcast(f32[] %constant.263), dimensions={}
+  %subtract.308 = f32[1,1]{1,0} subtract(f32[1,1]{1,0} %broadcast.264, f32[1,1]{1,0} %broadcast.262)
+  %reshape.309 = f32[1]{0} reshape(f32[1,1]{1,0} %subtract.308)
+  %broadcast.310 = f32[256,1]{1,0} broadcast(f32[1]{0} %reshape.309), dimensions={1}
+  %multiply.311 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %subtract.307, f32[256,1]{1,0} %broadcast.310)
+  %reshape.312 = f32[1]{0} reshape(f32[1,1]{1,0} %broadcast.262)
+  %broadcast.313 = f32[256,1]{1,0} broadcast(f32[1]{0} %reshape.312), dimensions={1}
+  %add.314 = f32[256,1]{1,0} add(f32[256,1]{1,0} %multiply.311, f32[256,1]{1,0} %broadcast.313)
+  %maximum.317 = f32[256,1]{1,0} maximum(f32[256,1]{1,0} %broadcast.316, f32[256,1]{1,0} %add.314)
+  %abs.399 = f32[256,1]{1,0} abs(f32[256,1]{1,0} %maximum.317)
+  %constant.398 = f32[] constant(1)
+  %broadcast.400 = f32[256,1]{1,0} broadcast(f32[] %constant.398), dimensions={}
+  %compare.401 = pred[256,1]{1,0} compare(f32[256,1]{1,0} %abs.399, f32[256,1]{1,0} %broadcast.400), direction=EQ
+  %constant.395 = f32[] constant(inf)
+  %broadcast.396 = f32[256,1]{1,0} broadcast(f32[] %constant.395), dimensions={}
+  %multiply.397 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %maximum.317, f32[256,1]{1,0} %broadcast.396)
+  %negate.318 = f32[256,1]{1,0} negate(f32[256,1]{1,0} %maximum.317)
+  %multiply.319 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %negate.318, f32[256,1]{1,0} %maximum.317)
+  %log-plus-one.320 = f32[256,1]{1,0} log-plus-one(f32[256,1]{1,0} %multiply.319)
+  %negate.321 = f32[256,1]{1,0} negate(f32[256,1]{1,0} %log-plus-one.320)
+  %constant.322 = f32[] constant(5)
+  %broadcast.323 = f32[256,1]{1,0} broadcast(f32[] %constant.322), dimensions={}
+  %compare.324 = pred[256,1]{1,0} compare(f32[256,1]{1,0} %negate.321, f32[256,1]{1,0} %broadcast.323), direction=LT
+  %constant.390 = f32[] constant(1.50140941)
+  %broadcast.391 = f32[256,1]{1,0} broadcast(f32[] %constant.390), dimensions={}
+  %constant.388 = f32[] constant(2.83297682)
+  %broadcast.389 = f32[256,1]{1,0} broadcast(f32[] %constant.388), dimensions={}
+  %select.392 = f32[256,1]{1,0} select(pred[256,1]{1,0} %compare.324, f32[256,1]{1,0} %broadcast.391, f32[256,1]{1,0} %broadcast.389)
+  %constant.383 = f32[] constant(0.246640727)
+  %broadcast.384 = f32[256,1]{1,0} broadcast(f32[] %constant.383), dimensions={}
+  %constant.381 = f32[] constant(1.00167406)
+  %broadcast.382 = f32[256,1]{1,0} broadcast(f32[] %constant.381), dimensions={}
+  %select.385 = f32[256,1]{1,0} select(pred[256,1]{1,0} %compare.324, f32[256,1]{1,0} %broadcast.384, f32[256,1]{1,0} %broadcast.382)
+  %constant.376 = f32[] constant(-0.00417768164)
+  %broadcast.377 = f32[256,1]{1,0} broadcast(f32[] %constant.376), dimensions={}
+  %constant.374 = f32[] constant(0.00943887047)
+  %broadcast.375 = f32[256,1]{1,0} broadcast(f32[] %constant.374), dimensions={}
+  %select.378 = f32[256,1]{1,0} select(pred[256,1]{1,0} %compare.324, f32[256,1]{1,0} %broadcast.377, f32[256,1]{1,0} %broadcast.375)
+  %constant.369 = f32[] constant(-0.00125372503)
+  %broadcast.370 = f32[256,1]{1,0} broadcast(f32[] %constant.369), dimensions={}
+  %constant.367 = f32[] constant(-0.0076224613)
+  %broadcast.368 = f32[256,1]{1,0} broadcast(f32[] %constant.367), dimensions={}
+  %select.371 = f32[256,1]{1,0} select(pred[256,1]{1,0} %compare.324, f32[256,1]{1,0} %broadcast.370, f32[256,1]{1,0} %broadcast.368)
+  %constant.362 = f32[] constant(0.00021858087)
+  %broadcast.363 = f32[256,1]{1,0} broadcast(f32[] %constant.362), dimensions={}
+  %constant.360 = f32[] constant(0.00573950773)
+  %broadcast.361 = f32[256,1]{1,0} broadcast(f32[] %constant.360), dimensions={}
+  %select.364 = f32[256,1]{1,0} select(pred[256,1]{1,0} %compare.324, f32[256,1]{1,0} %broadcast.363, f32[256,1]{1,0} %broadcast.361)
+  %constant.355 = f32[] constant(-4.39150654e-06)
+  %broadcast.356 = f32[256,1]{1,0} broadcast(f32[] %constant.355), dimensions={}
+  %constant.353 = f32[] constant(-0.00367342844)
+  %broadcast.354 = f32[256,1]{1,0} broadcast(f32[] %constant.353), dimensions={}
+  %select.357 = f32[256,1]{1,0} select(pred[256,1]{1,0} %compare.324, f32[256,1]{1,0} %broadcast.356, f32[256,1]{1,0} %broadcast.354)
+  %constant.348 = f32[] constant(-3.5233877e-06)
+  %broadcast.349 = f32[256,1]{1,0} broadcast(f32[] %constant.348), dimensions={}
+  %constant.346 = f32[] constant(0.00134934322)
+  %broadcast.347 = f32[256,1]{1,0} broadcast(f32[] %constant.346), dimensions={}
+  %select.350 = f32[256,1]{1,0} select(pred[256,1]{1,0} %compare.324, f32[256,1]{1,0} %broadcast.349, f32[256,1]{1,0} %broadcast.347)
+  %constant.341 = f32[] constant(3.43273939e-07)
+  %broadcast.342 = f32[256,1]{1,0} broadcast(f32[] %constant.341), dimensions={}
+  %constant.339 = f32[] constant(0.000100950558)
+  %broadcast.340 = f32[256,1]{1,0} broadcast(f32[] %constant.339), dimensions={}
+  %select.343 = f32[256,1]{1,0} select(pred[256,1]{1,0} %compare.324, f32[256,1]{1,0} %broadcast.342, f32[256,1]{1,0} %broadcast.340)
+  %constant.335 = f32[] constant(2.81022636e-08)
+  %broadcast.336 = f32[256,1]{1,0} broadcast(f32[] %constant.335), dimensions={}
+  %constant.333 = f32[] constant(-0.000200214257)
+  %broadcast.334 = f32[256,1]{1,0} broadcast(f32[] %constant.333), dimensions={}
+  %select.337 = f32[256,1]{1,0} select(pred[256,1]{1,0} %compare.324, f32[256,1]{1,0} %broadcast.336, f32[256,1]{1,0} %broadcast.334)
+  %constant.329 = f32[] constant(2.5)
+  %broadcast.330 = f32[256,1]{1,0} broadcast(f32[] %constant.329), dimensions={}
+  %subtract.331 = f32[256,1]{1,0} subtract(f32[256,1]{1,0} %negate.321, f32[256,1]{1,0} %broadcast.330)
+  %sqrt.326 = f32[256,1]{1,0} sqrt(f32[256,1]{1,0} %negate.321)
+  %constant.325 = f32[] constant(3)
+  %broadcast.327 = f32[256,1]{1,0} broadcast(f32[] %constant.325), dimensions={}
+  %subtract.328 = f32[256,1]{1,0} subtract(f32[256,1]{1,0} %sqrt.326, f32[256,1]{1,0} %broadcast.327)
+  %select.332 = f32[256,1]{1,0} select(pred[256,1]{1,0} %compare.324, f32[256,1]{1,0} %subtract.331, f32[256,1]{1,0} %subtract.328)
+  %multiply.338 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %select.337, f32[256,1]{1,0} %select.332)
+  %add.344 = f32[256,1]{1,0} add(f32[256,1]{1,0} %select.343, f32[256,1]{1,0} %multiply.338)
+  %multiply.345 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %add.344, f32[256,1]{1,0} %select.332)
+  %add.351 = f32[256,1]{1,0} add(f32[256,1]{1,0} %select.350, f32[256,1]{1,0} %multiply.345)
+  %multiply.352 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %add.351, f32[256,1]{1,0} %select.332)
+  %add.358 = f32[256,1]{1,0} add(f32[256,1]{1,0} %select.357, f32[256,1]{1,0} %multiply.352)
+  %multiply.359 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %add.358, f32[256,1]{1,0} %select.332)
+  %add.365 = f32[256,1]{1,0} add(f32[256,1]{1,0} %select.364, f32[256,1]{1,0} %multiply.359)
+  %multiply.366 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %add.365, f32[256,1]{1,0} %select.332)
+  %add.372 = f32[256,1]{1,0} add(f32[256,1]{1,0} %select.371, f32[256,1]{1,0} %multiply.366)
+  %multiply.373 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %add.372, f32[256,1]{1,0} %select.332)
+  %add.379 = f32[256,1]{1,0} add(f32[256,1]{1,0} %select.378, f32[256,1]{1,0} %multiply.373)
+  %multiply.380 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %add.379, f32[256,1]{1,0} %select.332)
+  %add.386 = f32[256,1]{1,0} add(f32[256,1]{1,0} %select.385, f32[256,1]{1,0} %multiply.380)
+  %multiply.387 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %add.386, f32[256,1]{1,0} %select.332)
+  %add.393 = f32[256,1]{1,0} add(f32[256,1]{1,0} %select.392, f32[256,1]{1,0} %multiply.387)
+  %multiply.394 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %add.393, f32[256,1]{1,0} %maximum.317)
+  %select.402 = f32[256,1]{1,0} select(pred[256,1]{1,0} %compare.401, f32[256,1]{1,0} %multiply.397, f32[256,1]{1,0} %multiply.394)
+  %constant.403 = f32[] constant(1.41421354)
+  %broadcast.404 = f32[256,1]{1,0} broadcast(f32[] %constant.403), dimensions={}
+  %multiply.405 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %select.402, f32[256,1]{1,0} %broadcast.404)
+  %slice.256 = f32[256,1]{1,0} slice(f32[256,2]{1,0} %add.254), slice={[0:256], [1:2]}
+  %constant.257 = f32[] constant(-20)
+  %call.258 = (f32[256,1]{1,0}) call(f32[256,1]{1,0} %slice.256, f32[] %constant.257), to_apply=%jit_clip__12.57
+  %get-tuple-element.259 = f32[256,1]{1,0} get-tuple-element((f32[256,1]{1,0}) %call.258), index=0
+  %exponential.260 = f32[256,1]{1,0} exponential(f32[256,1]{1,0} %get-tuple-element.259)
+  %multiply.406 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %multiply.405, f32[256,1]{1,0} %exponential.260)
+  %add.407 = f32[256,1]{1,0} add(f32[256,1]{1,0} %slice.255, f32[256,1]{1,0} %multiply.406)
+  %tanh.410 = f32[256,1]{1,0} tanh(f32[256,1]{1,0} %add.407)
+  %constant.427 = f32[] constant(1)
+  %broadcast.428 = f32[256,1]{1,0} broadcast(f32[] %constant.427), dimensions={}
+  %multiply.429 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %tanh.410, f32[256,1]{1,0} %broadcast.428)
+  %call.408 = (f32[256,1]{1,0}) call(f32[256,1]{1,0} %add.407, f32[256,1]{1,0} %slice.255, f32[256,1]{1,0} %get-tuple-element.259), to_apply=%jit_gaussian_likelihood.149
+  %get-tuple-element.409 = f32[256,1]{1,0} get-tuple-element((f32[256,1]{1,0}) %call.408), index=0
+  %constant.412 = f32[] constant(1)
+  %broadcast.413 = f32[256,1]{1,0} broadcast(f32[] %constant.412), dimensions={}
+  %multiply.411 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %tanh.410, f32[256,1]{1,0} %tanh.410)
+  %subtract.414 = f32[256,1]{1,0} subtract(f32[256,1]{1,0} %broadcast.413, f32[256,1]{1,0} %multiply.411)
+  %constant.416 = f32[] constant(0)
+  %broadcast.417 = f32[256,1]{1,0} broadcast(f32[] %constant.416), dimensions={}
+  %maximum.418 = f32[256,1]{1,0} maximum(f32[256,1]{1,0} %subtract.414, f32[256,1]{1,0} %broadcast.417)
+  %constant.419 = f32[] constant(1e-06)
+  %broadcast.420 = f32[256,1]{1,0} broadcast(f32[] %constant.419), dimensions={}
+  %add.421 = f32[256,1]{1,0} add(f32[256,1]{1,0} %maximum.418, f32[256,1]{1,0} %broadcast.420)
+  %log.422 = f32[256,1]{1,0} log(f32[256,1]{1,0} %add.421)
+  %constant.423 = f32[] constant(0)
+  %reduce.424 = f32[256]{0} reduce(f32[256,1]{1,0} %log.422, f32[] %constant.423), dimensions={1}, to_apply=%primitive_computation_add__6.174
+  %broadcast.425 = f32[256,1]{1,0} broadcast(f32[256]{0} %reduce.424), dimensions={0}
+  %subtract.426 = f32[256,1]{1,0} subtract(f32[256,1]{1,0} %get-tuple-element.409, f32[256,1]{1,0} %broadcast.425)
+  ROOT %tuple.430 = (f32[256,1]{1,0}, f32[256,1]{1,0}) tuple(f32[256,1]{1,0} %multiply.429, f32[256,1]{1,0} %subtract.426)
+}
+
+%primitive_computation_add__7.434 (parameter.435: f32[], parameter.436: f32[]) -> f32[] {
+  %constant.437 = pred[] constant(false)
+  %parameter.435 = f32[] parameter(0)
+  %parameter.436 = f32[] parameter(1)
+  ROOT %add.438 = f32[] add(f32[] %parameter.435, f32[] %parameter.436)
+}
+
+%primitive_computation_add__8.439 (parameter.440: f32[], parameter.441: f32[]) -> f32[] {
+  %constant.442 = pred[] constant(false)
+  %parameter.440 = f32[] parameter(0)
+  %parameter.441 = f32[] parameter(1)
+  ROOT %add.443 = f32[] add(f32[] %parameter.440, f32[] %parameter.441)
+}
+
+%jit__where__8.444 (parameter.445: pred[256,500], parameter.446: f32[], parameter.447: f32[256,500]) -> (f32[256,500]) {
+  %constant.448 = pred[] constant(false)
+  %parameter.445 = pred[256,500]{1,0} parameter(0)
+  %parameter.446 = f32[] parameter(1)
+  %convert.449 = f32[] convert(f32[] %parameter.446)
+  %broadcast.450 = f32[256,500]{1,0} broadcast(f32[] %convert.449), dimensions={}
+  %parameter.447 = f32[256,500]{1,0} parameter(2)
+  %select.451 = f32[256,500]{1,0} select(pred[256,500]{1,0} %parameter.445, f32[256,500]{1,0} %broadcast.450, f32[256,500]{1,0} %parameter.447)
+  ROOT %tuple.452 = (f32[256,500]{1,0}) tuple(f32[256,500]{1,0} %select.451)
+}
+
+%jit__where__9.453 (parameter.454: pred[256,500], parameter.455: f32[256,500], parameter.456: f32[256,500]) -> (f32[256,500]) {
+  %constant.457 = pred[] constant(false)
+  %parameter.454 = pred[256,500]{1,0} parameter(0)
+  %parameter.455 = f32[256,500]{1,0} parameter(1)
+  %parameter.456 = f32[256,500]{1,0} parameter(2)
+  %select.458 = f32[256,500]{1,0} select(pred[256,500]{1,0} %parameter.454, f32[256,500]{1,0} %parameter.455, f32[256,500]{1,0} %parameter.456)
+  ROOT %tuple.459 = (f32[256,500]{1,0}) tuple(f32[256,500]{1,0} %select.458)
+}
+
+%primitive_computation_add__9.460 (parameter.461: f32[], parameter.462: f32[]) -> f32[] {
+  %constant.463 = pred[] constant(false)
+  %parameter.461 = f32[] parameter(0)
+  %parameter.462 = f32[] parameter(1)
+  ROOT %add.464 = f32[] add(f32[] %parameter.461, f32[] %parameter.462)
+}
+
+%primitive_computation_add__10.465 (parameter.466: f32[], parameter.467: f32[]) -> f32[] {
+  %constant.468 = pred[] constant(false)
+  %parameter.466 = f32[] parameter(0)
+  %parameter.467 = f32[] parameter(1)
+  ROOT %add.469 = f32[] add(f32[] %parameter.466, f32[] %parameter.467)
+}
+
+%jit__where__10.470 (parameter.471: pred[256,500], parameter.472: f32[], parameter.473: f32[256,500]) -> (f32[256,500]) {
+  %constant.474 = pred[] constant(false)
+  %parameter.471 = pred[256,500]{1,0} parameter(0)
+  %parameter.472 = f32[] parameter(1)
+  %convert.475 = f32[] convert(f32[] %parameter.472)
+  %broadcast.476 = f32[256,500]{1,0} broadcast(f32[] %convert.475), dimensions={}
+  %parameter.473 = f32[256,500]{1,0} parameter(2)
+  %select.477 = f32[256,500]{1,0} select(pred[256,500]{1,0} %parameter.471, f32[256,500]{1,0} %broadcast.476, f32[256,500]{1,0} %parameter.473)
+  ROOT %tuple.478 = (f32[256,500]{1,0}) tuple(f32[256,500]{1,0} %select.477)
+}
+
+%jit__where__11.479 (parameter.480: pred[256,500], parameter.481: f32[256,500], parameter.482: f32[256,500]) -> (f32[256,500]) {
+  %constant.483 = pred[] constant(false)
+  %parameter.480 = pred[256,500]{1,0} parameter(0)
+  %parameter.481 = f32[256,500]{1,0} parameter(1)
+  %parameter.482 = f32[256,500]{1,0} parameter(2)
+  %select.484 = f32[256,500]{1,0} select(pred[256,500]{1,0} %parameter.480, f32[256,500]{1,0} %parameter.481, f32[256,500]{1,0} %parameter.482)
+  ROOT %tuple.485 = (f32[256,500]{1,0}) tuple(f32[256,500]{1,0} %select.484)
+}
+
+%jit_apply_double_critic_model.486 (parameter.487: f32[500], parameter.488: f32[6,500], parameter.489: f32[500], parameter.490: f32[500,500], parameter.491: f32[1], parameter.492: f32[500,1], parameter.493: f32[500], parameter.494: f32[6,500], parameter.495: f32[500], parameter.496: f32[500,500], parameter.497: f32[1], parameter.498: f32[500,1], parameter.499: f32[500], parameter.500: f32[500], parameter.501: f32[500], parameter.502: f32[500], parameter.503: f32[256,5], parameter.504: f32[256,1]) -> (f32[256,1], f32[256,1]) {
+  %constant.505 = pred[] constant(false)
+  %parameter.503 = f32[256,5]{1,0} parameter(16)
+  %parameter.504 = f32[256,1]{1,0} parameter(17)
+  %concatenate.506 = f32[256,6]{1,0} concatenate(f32[256,5]{1,0} %parameter.503, f32[256,1]{1,0} %parameter.504), dimensions={1}
+  %parameter.488 = f32[6,500]{1,0} parameter(1)
+  %dot.507 = f32[256,500]{1,0} dot(f32[256,6]{1,0} %concatenate.506, f32[6,500]{1,0} %parameter.488), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  %parameter.487 = f32[500]{0} parameter(0)
+  %broadcast.508 = f32[1,500]{1,0} broadcast(f32[500]{0} %parameter.487), dimensions={1}
+  %reshape.509 = f32[500]{0} reshape(f32[1,500]{1,0} %broadcast.508)
+  %broadcast.510 = f32[256,500]{1,0} broadcast(f32[500]{0} %reshape.509), dimensions={1}
+  %add.511 = f32[256,500]{1,0} add(f32[256,500]{1,0} %dot.507, f32[256,500]{1,0} %broadcast.510)
+  %constant.512 = f32[] constant(0)
+  %reduce.513 = f32[256]{0} reduce(f32[256,500]{1,0} %add.511, f32[] %constant.512), dimensions={1}, to_apply=%primitive_computation_add__7.434
+  %broadcast.514 = f32[256,1]{1,0} broadcast(f32[256]{0} %reduce.513), dimensions={0}
+  %constant.515 = f32[] constant(500)
+  %broadcast.516 = f32[256,1]{1,0} broadcast(f32[] %constant.515), dimensions={}
+  %divide.517 = f32[256,1]{1,0} divide(f32[256,1]{1,0} %broadcast.514, f32[256,1]{1,0} %broadcast.516)
+  %reshape.537 = f32[256]{0} reshape(f32[256,1]{1,0} %divide.517)
+  %broadcast.538 = f32[256,500]{1,0} broadcast(f32[256]{0} %reshape.537), dimensions={0}
+  %subtract.539 = f32[256,500]{1,0} subtract(f32[256,500]{1,0} %add.511, f32[256,500]{1,0} %broadcast.538)
+  %multiply.518 = f32[256,500]{1,0} multiply(f32[256,500]{1,0} %add.511, f32[256,500]{1,0} %add.511)
+  %constant.519 = f32[] constant(0)
+  %reduce.520 = f32[256]{0} reduce(f32[256,500]{1,0} %multiply.518, f32[] %constant.519), dimensions={1}, to_apply=%primitive_computation_add__8.439
+  %broadcast.521 = f32[256,1]{1,0} broadcast(f32[256]{0} %reduce.520), dimensions={0}
+  %constant.522 = f32[] constant(500)
+  %broadcast.523 = f32[256,1]{1,0} broadcast(f32[] %constant.522), dimensions={}
+  %divide.524 = f32[256,1]{1,0} divide(f32[256,1]{1,0} %broadcast.521, f32[256,1]{1,0} %broadcast.523)
+  %multiply.525 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %divide.517, f32[256,1]{1,0} %divide.517)
+  %subtract.526 = f32[256,1]{1,0} subtract(f32[256,1]{1,0} %divide.524, f32[256,1]{1,0} %multiply.525)
+  %constant.527 = f32[] constant(1e-06)
+  %broadcast.528 = f32[256,1]{1,0} broadcast(f32[] %constant.527), dimensions={}
+  %add.529 = f32[256,1]{1,0} add(f32[256,1]{1,0} %subtract.526, f32[256,1]{1,0} %broadcast.528)
+  %rsqrt.530 = f32[256,1]{1,0} rsqrt(f32[256,1]{1,0} %add.529)
+  %reshape.532 = f32[256]{0} reshape(f32[256,1]{1,0} %rsqrt.530)
+  %broadcast.533 = f32[256,500]{1,0} broadcast(f32[256]{0} %reshape.532), dimensions={0}
+  %parameter.500 = f32[500]{0} parameter(13)
+  %broadcast.531 = f32[1,500]{1,0} broadcast(f32[500]{0} %parameter.500), dimensions={1}
+  %reshape.534 = f32[500]{0} reshape(f32[1,500]{1,0} %broadcast.531)
+  %broadcast.535 = f32[256,500]{1,0} broadcast(f32[500]{0} %reshape.534), dimensions={1}
+  %multiply.536 = f32[256,500]{1,0} multiply(f32[256,500]{1,0} %broadcast.533, f32[256,500]{1,0} %broadcast.535)
+  %multiply.540 = f32[256,500]{1,0} multiply(f32[256,500]{1,0} %subtract.539, f32[256,500]{1,0} %multiply.536)
+  %parameter.499 = f32[500]{0} parameter(12)
+  %broadcast.541 = f32[1,500]{1,0} broadcast(f32[500]{0} %parameter.499), dimensions={1}
+  %reshape.542 = f32[500]{0} reshape(f32[1,500]{1,0} %broadcast.541)
+  %broadcast.543 = f32[256,500]{1,0} broadcast(f32[500]{0} %reshape.542), dimensions={1}
+  %add.544 = f32[256,500]{1,0} add(f32[256,500]{1,0} %multiply.540, f32[256,500]{1,0} %broadcast.543)
+  %tanh.545 = f32[256,500]{1,0} tanh(f32[256,500]{1,0} %add.544)
+  %parameter.490 = f32[500,500]{1,0} parameter(3)
+  %dot.546 = f32[256,500]{1,0} dot(f32[256,500]{1,0} %tanh.545, f32[500,500]{1,0} %parameter.490), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  %parameter.489 = f32[500]{0} parameter(2)
+  %broadcast.547 = f32[1,500]{1,0} broadcast(f32[500]{0} %parameter.489), dimensions={1}
+  %reshape.548 = f32[500]{0} reshape(f32[1,500]{1,0} %broadcast.547)
+  %broadcast.549 = f32[256,500]{1,0} broadcast(f32[500]{0} %reshape.548), dimensions={1}
+  %add.550 = f32[256,500]{1,0} add(f32[256,500]{1,0} %dot.546, f32[256,500]{1,0} %broadcast.549)
+  %constant.557 = f32[] constant(0)
+  %broadcast.558 = f32[256,500]{1,0} broadcast(f32[] %constant.557), dimensions={}
+  %compare.559 = pred[256,500]{1,0} compare(f32[256,500]{1,0} %add.550, f32[256,500]{1,0} %broadcast.558), direction=GT
+  %constant.551 = f32[] constant(0)
+  %broadcast.552 = f32[256,500]{1,0} broadcast(f32[] %constant.551), dimensions={}
+  %compare.553 = pred[256,500]{1,0} compare(f32[256,500]{1,0} %add.550, f32[256,500]{1,0} %broadcast.552), direction=GT
+  %constant.554 = f32[] constant(0)
+  %call.555 = (f32[256,500]{1,0}) call(pred[256,500]{1,0} %compare.553, f32[] %constant.554, f32[256,500]{1,0} %add.550), to_apply=%jit__where__8.444
+  %get-tuple-element.556 = f32[256,500]{1,0} get-tuple-element((f32[256,500]{1,0}) %call.555), index=0
+  %exponential-minus-one.560 = f32[256,500]{1,0} exponential-minus-one(f32[256,500]{1,0} %get-tuple-element.556)
+  %constant.561 = f32[] constant(1)
+  %broadcast.562 = f32[256,500]{1,0} broadcast(f32[] %constant.561), dimensions={}
+  %multiply.563 = f32[256,500]{1,0} multiply(f32[256,500]{1,0} %exponential-minus-one.560, f32[256,500]{1,0} %broadcast.562)
+  %call.564 = (f32[256,500]{1,0}) call(pred[256,500]{1,0} %compare.559, f32[256,500]{1,0} %add.550, f32[256,500]{1,0} %multiply.563), to_apply=%jit__where__9.453
+  %get-tuple-element.565 = f32[256,500]{1,0} get-tuple-element((f32[256,500]{1,0}) %call.564), index=0
+  %parameter.492 = f32[500,1]{1,0} parameter(5)
+  %dot.566 = f32[256,1]{1,0} dot(f32[256,500]{1,0} %get-tuple-element.565, f32[500,1]{1,0} %parameter.492), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  %parameter.491 = f32[1]{0} parameter(4)
+  %broadcast.567 = f32[1,1]{1,0} broadcast(f32[1]{0} %parameter.491), dimensions={1}
+  %reshape.568 = f32[1]{0} reshape(f32[1,1]{1,0} %broadcast.567)
+  %broadcast.569 = f32[256,1]{1,0} broadcast(f32[1]{0} %reshape.568), dimensions={1}
+  %add.570 = f32[256,1]{1,0} add(f32[256,1]{1,0} %dot.566, f32[256,1]{1,0} %broadcast.569)
+  %parameter.494 = f32[6,500]{1,0} parameter(7)
+  %dot.571 = f32[256,500]{1,0} dot(f32[256,6]{1,0} %concatenate.506, f32[6,500]{1,0} %parameter.494), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  %parameter.493 = f32[500]{0} parameter(6)
+  %broadcast.572 = f32[1,500]{1,0} broadcast(f32[500]{0} %parameter.493), dimensions={1}
+  %reshape.573 = f32[500]{0} reshape(f32[1,500]{1,0} %broadcast.572)
+  %broadcast.574 = f32[256,500]{1,0} broadcast(f32[500]{0} %reshape.573), dimensions={1}
+  %add.575 = f32[256,500]{1,0} add(f32[256,500]{1,0} %dot.571, f32[256,500]{1,0} %broadcast.574)
+  %constant.576 = f32[] constant(0)
+  %reduce.577 = f32[256]{0} reduce(f32[256,500]{1,0} %add.575, f32[] %constant.576), dimensions={1}, to_apply=%primitive_computation_add__9.460
+  %broadcast.578 = f32[256,1]{1,0} broadcast(f32[256]{0} %reduce.577), dimensions={0}
+  %constant.579 = f32[] constant(500)
+  %broadcast.580 = f32[256,1]{1,0} broadcast(f32[] %constant.579), dimensions={}
+  %divide.581 = f32[256,1]{1,0} divide(f32[256,1]{1,0} %broadcast.578, f32[256,1]{1,0} %broadcast.580)
+  %reshape.601 = f32[256]{0} reshape(f32[256,1]{1,0} %divide.581)
+  %broadcast.602 = f32[256,500]{1,0} broadcast(f32[256]{0} %reshape.601), dimensions={0}
+  %subtract.603 = f32[256,500]{1,0} subtract(f32[256,500]{1,0} %add.575, f32[256,500]{1,0} %broadcast.602)
+  %multiply.582 = f32[256,500]{1,0} multiply(f32[256,500]{1,0} %add.575, f32[256,500]{1,0} %add.575)
+  %constant.583 = f32[] constant(0)
+  %reduce.584 = f32[256]{0} reduce(f32[256,500]{1,0} %multiply.582, f32[] %constant.583), dimensions={1}, to_apply=%primitive_computation_add__10.465
+  %broadcast.585 = f32[256,1]{1,0} broadcast(f32[256]{0} %reduce.584), dimensions={0}
+  %constant.586 = f32[] constant(500)
+  %broadcast.587 = f32[256,1]{1,0} broadcast(f32[] %constant.586), dimensions={}
+  %divide.588 = f32[256,1]{1,0} divide(f32[256,1]{1,0} %broadcast.585, f32[256,1]{1,0} %broadcast.587)
+  %multiply.589 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %divide.581, f32[256,1]{1,0} %divide.581)
+  %subtract.590 = f32[256,1]{1,0} subtract(f32[256,1]{1,0} %divide.588, f32[256,1]{1,0} %multiply.589)
+  %constant.591 = f32[] constant(1e-06)
+  %broadcast.592 = f32[256,1]{1,0} broadcast(f32[] %constant.591), dimensions={}
+  %add.593 = f32[256,1]{1,0} add(f32[256,1]{1,0} %subtract.590, f32[256,1]{1,0} %broadcast.592)
+  %rsqrt.594 = f32[256,1]{1,0} rsqrt(f32[256,1]{1,0} %add.593)
+  %reshape.596 = f32[256]{0} reshape(f32[256,1]{1,0} %rsqrt.594)
+  %broadcast.597 = f32[256,500]{1,0} broadcast(f32[256]{0} %reshape.596), dimensions={0}
+  %parameter.502 = f32[500]{0} parameter(15)
+  %broadcast.595 = f32[1,500]{1,0} broadcast(f32[500]{0} %parameter.502), dimensions={1}
+  %reshape.598 = f32[500]{0} reshape(f32[1,500]{1,0} %broadcast.595)
+  %broadcast.599 = f32[256,500]{1,0} broadcast(f32[500]{0} %reshape.598), dimensions={1}
+  %multiply.600 = f32[256,500]{1,0} multiply(f32[256,500]{1,0} %broadcast.597, f32[256,500]{1,0} %broadcast.599)
+  %multiply.604 = f32[256,500]{1,0} multiply(f32[256,500]{1,0} %subtract.603, f32[256,500]{1,0} %multiply.600)
+  %parameter.501 = f32[500]{0} parameter(14)
+  %broadcast.605 = f32[1,500]{1,0} broadcast(f32[500]{0} %parameter.501), dimensions={1}
+  %reshape.606 = f32[500]{0} reshape(f32[1,500]{1,0} %broadcast.605)
+  %broadcast.607 = f32[256,500]{1,0} broadcast(f32[500]{0} %reshape.606), dimensions={1}
+  %add.608 = f32[256,500]{1,0} add(f32[256,500]{1,0} %multiply.604, f32[256,500]{1,0} %broadcast.607)
+  %tanh.609 = f32[256,500]{1,0} tanh(f32[256,500]{1,0} %add.608)
+  %parameter.496 = f32[500,500]{1,0} parameter(9)
+  %dot.610 = f32[256,500]{1,0} dot(f32[256,500]{1,0} %tanh.609, f32[500,500]{1,0} %parameter.496), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  %parameter.495 = f32[500]{0} parameter(8)
+  %broadcast.611 = f32[1,500]{1,0} broadcast(f32[500]{0} %parameter.495), dimensions={1}
+  %reshape.612 = f32[500]{0} reshape(f32[1,500]{1,0} %broadcast.611)
+  %broadcast.613 = f32[256,500]{1,0} broadcast(f32[500]{0} %reshape.612), dimensions={1}
+  %add.614 = f32[256,500]{1,0} add(f32[256,500]{1,0} %dot.610, f32[256,500]{1,0} %broadcast.613)
+  %constant.621 = f32[] constant(0)
+  %broadcast.622 = f32[256,500]{1,0} broadcast(f32[] %constant.621), dimensions={}
+  %compare.623 = pred[256,500]{1,0} compare(f32[256,500]{1,0} %add.614, f32[256,500]{1,0} %broadcast.622), direction=GT
+  %constant.615 = f32[] constant(0)
+  %broadcast.616 = f32[256,500]{1,0} broadcast(f32[] %constant.615), dimensions={}
+  %compare.617 = pred[256,500]{1,0} compare(f32[256,500]{1,0} %add.614, f32[256,500]{1,0} %broadcast.616), direction=GT
+  %constant.618 = f32[] constant(0)
+  %call.619 = (f32[256,500]{1,0}) call(pred[256,500]{1,0} %compare.617, f32[] %constant.618, f32[256,500]{1,0} %add.614), to_apply=%jit__where__10.470
+  %get-tuple-element.620 = f32[256,500]{1,0} get-tuple-element((f32[256,500]{1,0}) %call.619), index=0
+  %exponential-minus-one.624 = f32[256,500]{1,0} exponential-minus-one(f32[256,500]{1,0} %get-tuple-element.620)
+  %constant.625 = f32[] constant(1)
+  %broadcast.626 = f32[256,500]{1,0} broadcast(f32[] %constant.625), dimensions={}
+  %multiply.627 = f32[256,500]{1,0} multiply(f32[256,500]{1,0} %exponential-minus-one.624, f32[256,500]{1,0} %broadcast.626)
+  %call.628 = (f32[256,500]{1,0}) call(pred[256,500]{1,0} %compare.623, f32[256,500]{1,0} %add.614, f32[256,500]{1,0} %multiply.627), to_apply=%jit__where__11.479
+  %get-tuple-element.629 = f32[256,500]{1,0} get-tuple-element((f32[256,500]{1,0}) %call.628), index=0
+  %parameter.498 = f32[500,1]{1,0} parameter(11)
+  %dot.630 = f32[256,1]{1,0} dot(f32[256,500]{1,0} %get-tuple-element.629, f32[500,1]{1,0} %parameter.498), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  %parameter.497 = f32[1]{0} parameter(10)
+  %broadcast.631 = f32[1,1]{1,0} broadcast(f32[1]{0} %parameter.497), dimensions={1}
+  %reshape.632 = f32[1]{0} reshape(f32[1,1]{1,0} %broadcast.631)
+  %broadcast.633 = f32[256,1]{1,0} broadcast(f32[1]{0} %reshape.632), dimensions={1}
+  %add.634 = f32[256,1]{1,0} add(f32[256,1]{1,0} %dot.630, f32[256,1]{1,0} %broadcast.633)
+  ROOT %tuple.635 = (f32[256,1]{1,0}, f32[256,1]{1,0}) tuple(f32[256,1]{1,0} %add.570, f32[256,1]{1,0} %add.634)
+}
+
+%jit_apply_constant_model.640 (parameter.641: f32[1]) -> (f32[1]) {
+  %constant.642 = pred[] constant(false)
+  %parameter.641 = f32[1]{0} parameter(0)
+  ROOT %tuple.643 = (f32[1]{0}) tuple(f32[1]{0} %parameter.641)
+}
+
+ENTRY %jit_get_td_target.657 (parameter.1: u32[2], parameter.2: f32[256,5], parameter.3: f32[256,1], parameter.4: f32[256,1], parameter.5: f32[200], parameter.6: f32[5,200], parameter.7: f32[200], parameter.8: f32[200,200], parameter.9: f32[2], parameter.10: f32[200,2], parameter.11: f32[200], parameter.12: f32[200], parameter.13: f32[500], parameter.14: f32[6,500], parameter.15: f32[500], parameter.16: f32[500,500], parameter.17: f32[1], parameter.18: f32[500,1], parameter.19: f32[500], parameter.20: f32[6,500], parameter.21: f32[500], parameter.22: f32[500,500], parameter.23: f32[1], parameter.24: f32[500,1], parameter.25: f32[500], parameter.26: f32[500], parameter.27: f32[500], parameter.28: f32[500], parameter.29: f32[1]) -> f32[256,1] {
+  %constant.30 = pred[] constant(false)
+  %parameter.3 = f32[256,1]{1,0} parameter(2)
+  %parameter.4 = f32[256,1]{1,0} parameter(3)
+  %constant.652 = f32[] constant(0.99)
+  %broadcast.653 = f32[256,1]{1,0} broadcast(f32[] %constant.652), dimensions={}
+  %multiply.654 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %parameter.4, f32[256,1]{1,0} %broadcast.653)
+  %parameter.13 = f32[500]{0} parameter(12)
+  %parameter.14 = f32[6,500]{1,0} parameter(13)
+  %parameter.15 = f32[500]{0} parameter(14)
+  %parameter.16 = f32[500,500]{1,0} parameter(15)
+  %parameter.17 = f32[1]{0} parameter(16)
+  %parameter.18 = f32[500,1]{1,0} parameter(17)
+  %parameter.19 = f32[500]{0} parameter(18)
+  %parameter.20 = f32[6,500]{1,0} parameter(19)
+  %parameter.21 = f32[500]{0} parameter(20)
+  %parameter.22 = f32[500,500]{1,0} parameter(21)
+  %parameter.23 = f32[1]{0} parameter(22)
+  %parameter.24 = f32[500,1]{1,0} parameter(23)
+  %parameter.25 = f32[500]{0} parameter(24)
+  %parameter.26 = f32[500]{0} parameter(25)
+  %parameter.27 = f32[500]{0} parameter(26)
+  %parameter.28 = f32[500]{0} parameter(27)
+  %parameter.2 = f32[256,5]{1,0} parameter(1)
+  %parameter.5 = f32[200]{0} parameter(4)
+  %parameter.6 = f32[5,200]{1,0} parameter(5)
+  %parameter.7 = f32[200]{0} parameter(6)
+  %parameter.8 = f32[200,200]{1,0} parameter(7)
+  %parameter.9 = f32[2]{0} parameter(8)
+  %parameter.10 = f32[200,2]{1,0} parameter(9)
+  %parameter.11 = f32[200]{0} parameter(10)
+  %parameter.12 = f32[200]{0} parameter(11)
+  %parameter.1 = u32[2]{0} parameter(0)
+  %call.431 = (f32[256,1]{1,0}, f32[256,1]{1,0}) call(f32[200]{0} %parameter.5, f32[5,200]{1,0} %parameter.6, f32[200]{0} %parameter.7, f32[200,200]{1,0} %parameter.8, f32[2]{0} %parameter.9, /*index=5*/f32[200,2]{1,0} %parameter.10, f32[200]{0} %parameter.11, f32[200]{0} %parameter.12, f32[256,5]{1,0} %parameter.2, u32[2]{0} %parameter.1), to_apply=%jit_apply_gaussian_policy_model__1.179
+  %get-tuple-element.432 = f32[256,1]{1,0} get-tuple-element((f32[256,1]{1,0}, f32[256,1]{1,0}) %call.431), index=0
+  %call.636 = (f32[256,1]{1,0}, f32[256,1]{1,0}) call(f32[500]{0} %parameter.13, f32[6,500]{1,0} %parameter.14, f32[500]{0} %parameter.15, f32[500,500]{1,0} %parameter.16, f32[1]{0} %parameter.17, /*index=5*/f32[500,1]{1,0} %parameter.18, f32[500]{0} %parameter.19, f32[6,500]{1,0} %parameter.20, f32[500]{0} %parameter.21, f32[500,500]{1,0} %parameter.22, /*index=10*/f32[1]{0} %parameter.23, f32[500,1]{1,0} %parameter.24, f32[500]{0} %parameter.25, f32[500]{0} %parameter.26, f32[500]{0} %parameter.27, /*index=15*/f32[500]{0} %parameter.28, f32[256,5]{1,0} %parameter.2, f32[256,1]{1,0} %get-tuple-element.432), to_apply=%jit_apply_double_critic_model.486
+  %get-tuple-element.637 = f32[256,1]{1,0} get-tuple-element((f32[256,1]{1,0}, f32[256,1]{1,0}) %call.636), index=0
+  %get-tuple-element.638 = f32[256,1]{1,0} get-tuple-element((f32[256,1]{1,0}, f32[256,1]{1,0}) %call.636), index=1
+  %minimum.639 = f32[256,1]{1,0} minimum(f32[256,1]{1,0} %get-tuple-element.637, f32[256,1]{1,0} %get-tuple-element.638)
+  %parameter.29 = f32[1]{0} parameter(28)
+  %call.644 = (f32[1]{0}) call(f32[1]{0} %parameter.29), to_apply=%jit_apply_constant_model.640
+  %get-tuple-element.645 = f32[1]{0} get-tuple-element((f32[1]{0}) %call.644), index=0
+  %exponential.646 = f32[1]{0} exponential(f32[1]{0} %get-tuple-element.645)
+  %broadcast.647 = f32[1,1]{1,0} broadcast(f32[1]{0} %exponential.646), dimensions={1}
+  %reshape.648 = f32[1]{0} reshape(f32[1,1]{1,0} %broadcast.647)
+  %broadcast.649 = f32[256,1]{1,0} broadcast(f32[1]{0} %reshape.648), dimensions={1}
+  %get-tuple-element.433 = f32[256,1]{1,0} get-tuple-element((f32[256,1]{1,0}, f32[256,1]{1,0}) %call.431), index=1
+  %multiply.650 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %broadcast.649, f32[256,1]{1,0} %get-tuple-element.433)
+  %subtract.651 = f32[256,1]{1,0} subtract(f32[256,1]{1,0} %minimum.639, f32[256,1]{1,0} %multiply.650)
+  %multiply.655 = f32[256,1]{1,0} multiply(f32[256,1]{1,0} %multiply.654, f32[256,1]{1,0} %subtract.651)
+  ROOT %add.656 = f32[256,1]{1,0} add(f32[256,1]{1,0} %parameter.3, f32[256,1]{1,0} %multiply.655)
+}
+

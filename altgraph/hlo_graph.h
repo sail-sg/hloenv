@@ -64,7 +64,6 @@ struct NodeFeats {
     uids = std::make_shared<std::vector<int>>();
     names = std::make_shared<std::vector<std::string>>();
     gids = std::make_shared<std::vector<size_t>>();
-    fused_comp_ids = std::make_shared<std::vector<size_t>>();
     num_users = std::make_shared<std::vector<int>>();
     num_operands = std::make_shared<std::vector<int>>();
     opcodes = std::make_shared<std::vector<int>>();
@@ -81,7 +80,6 @@ struct NodeFeats {
     uids->clear();
     names->clear();
     gids->clear();
-    fused_comp_ids->clear();
     num_users->clear();
     num_operands->clear();
     opcodes->clear();
@@ -203,9 +201,6 @@ class HloGraph {
     return *node_feats_.names;
   }
   const std::vector<size_t>& get_gids() { return *node_feats_.gids; }
-  const std::vector<size_t>& get_fused_comp_ids() {
-    return *node_feats_.fused_comp_ids;
-  }
   const std::vector<int>& get_user_counts() { return *node_feats_.num_users; }
   const std::vector<int>& get_operand_counts() {
     return *node_feats_.num_operands;
@@ -302,10 +297,10 @@ class HloGraph {
   std::vector<xla::HloInstruction*> inst_list_;
   absl::flat_hash_map<int, std::vector<int>> in_edge_lists_;
   absl::flat_hash_map<int, std::vector<int>> out_edge_lists_;
+  absl::flat_hash_map<int, std::vector<int>> called_comp_lists_;
 
   // Ignore control deps for now
   // utility to lookup node and its neighbor
-  absl::flat_hash_set<int> uid_set_;
   absl::flat_hash_map<int, int> uid_to_node_idx_;
   absl::flat_hash_map<int, xla::HloInstruction*> uid_to_inst_;
   absl::flat_hash_map<int64_t, int> uid_to_in_edge_idx_;

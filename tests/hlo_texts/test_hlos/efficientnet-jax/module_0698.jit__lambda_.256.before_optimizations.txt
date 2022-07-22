@@ -1,0 +1,2172 @@
+HloModule jit__lambda_.256
+
+%jit_relu6.390 (Arg_0.391: f32[250,150,150,32]) -> f32[250,150,150,32] {
+  %Arg_0.391 = f32[250,150,150,32]{3,2,1,0} parameter(0)
+  %constant.394 = f32[] constant(0)
+  %broadcast.395 = f32[250,150,150,32]{3,2,1,0} broadcast(f32[] %constant.394), dimensions={}
+  %maximum.396 = f32[250,150,150,32]{3,2,1,0} maximum(f32[250,150,150,32]{3,2,1,0} %Arg_0.391, f32[250,150,150,32]{3,2,1,0} %broadcast.395)
+  %constant.392 = f32[] constant(6)
+  %broadcast.393 = f32[250,150,150,32]{3,2,1,0} broadcast(f32[] %constant.392), dimensions={}
+  ROOT %minimum.397 = f32[250,150,150,32]{3,2,1,0} minimum(f32[250,150,150,32]{3,2,1,0} %maximum.396, f32[250,150,150,32]{3,2,1,0} %broadcast.393)
+}
+
+%jit_relu6_0.415 (Arg_0.416: f32[250,150,150,32]) -> f32[250,150,150,32] {
+  %Arg_0.416 = f32[250,150,150,32]{3,2,1,0} parameter(0)
+  %constant.419 = f32[] constant(0)
+  %broadcast.420 = f32[250,150,150,32]{3,2,1,0} broadcast(f32[] %constant.419), dimensions={}
+  %maximum.421 = f32[250,150,150,32]{3,2,1,0} maximum(f32[250,150,150,32]{3,2,1,0} %Arg_0.416, f32[250,150,150,32]{3,2,1,0} %broadcast.420)
+  %constant.417 = f32[] constant(6)
+  %broadcast.418 = f32[250,150,150,32]{3,2,1,0} broadcast(f32[] %constant.417), dimensions={}
+  ROOT %minimum.422 = f32[250,150,150,32]{3,2,1,0} minimum(f32[250,150,150,32]{3,2,1,0} %maximum.421, f32[250,150,150,32]{3,2,1,0} %broadcast.418)
+}
+
+%jit_relu6_1.456 (Arg_0.457: f32[250,150,150,144]) -> f32[250,150,150,144] {
+  %Arg_0.457 = f32[250,150,150,144]{3,2,1,0} parameter(0)
+  %constant.460 = f32[] constant(0)
+  %broadcast.461 = f32[250,150,150,144]{3,2,1,0} broadcast(f32[] %constant.460), dimensions={}
+  %maximum.462 = f32[250,150,150,144]{3,2,1,0} maximum(f32[250,150,150,144]{3,2,1,0} %Arg_0.457, f32[250,150,150,144]{3,2,1,0} %broadcast.461)
+  %constant.458 = f32[] constant(6)
+  %broadcast.459 = f32[250,150,150,144]{3,2,1,0} broadcast(f32[] %constant.458), dimensions={}
+  ROOT %minimum.463 = f32[250,150,150,144]{3,2,1,0} minimum(f32[250,150,150,144]{3,2,1,0} %maximum.462, f32[250,150,150,144]{3,2,1,0} %broadcast.459)
+}
+
+%jit_relu6_2.481 (Arg_0.482: f32[250,75,75,144]) -> f32[250,75,75,144] {
+  %Arg_0.482 = f32[250,75,75,144]{3,2,1,0} parameter(0)
+  %constant.485 = f32[] constant(0)
+  %broadcast.486 = f32[250,75,75,144]{3,2,1,0} broadcast(f32[] %constant.485), dimensions={}
+  %maximum.487 = f32[250,75,75,144]{3,2,1,0} maximum(f32[250,75,75,144]{3,2,1,0} %Arg_0.482, f32[250,75,75,144]{3,2,1,0} %broadcast.486)
+  %constant.483 = f32[] constant(6)
+  %broadcast.484 = f32[250,75,75,144]{3,2,1,0} broadcast(f32[] %constant.483), dimensions={}
+  ROOT %minimum.488 = f32[250,75,75,144]{3,2,1,0} minimum(f32[250,75,75,144]{3,2,1,0} %maximum.487, f32[250,75,75,144]{3,2,1,0} %broadcast.484)
+}
+
+%jit_relu6_3.522 (Arg_0.523: f32[250,75,75,192]) -> f32[250,75,75,192] {
+  %Arg_0.523 = f32[250,75,75,192]{3,2,1,0} parameter(0)
+  %constant.526 = f32[] constant(0)
+  %broadcast.527 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[] %constant.526), dimensions={}
+  %maximum.528 = f32[250,75,75,192]{3,2,1,0} maximum(f32[250,75,75,192]{3,2,1,0} %Arg_0.523, f32[250,75,75,192]{3,2,1,0} %broadcast.527)
+  %constant.524 = f32[] constant(6)
+  %broadcast.525 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[] %constant.524), dimensions={}
+  ROOT %minimum.529 = f32[250,75,75,192]{3,2,1,0} minimum(f32[250,75,75,192]{3,2,1,0} %maximum.528, f32[250,75,75,192]{3,2,1,0} %broadcast.525)
+}
+
+%jit_relu6_4.547 (Arg_0.548: f32[250,75,75,192]) -> f32[250,75,75,192] {
+  %Arg_0.548 = f32[250,75,75,192]{3,2,1,0} parameter(0)
+  %constant.551 = f32[] constant(0)
+  %broadcast.552 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[] %constant.551), dimensions={}
+  %maximum.553 = f32[250,75,75,192]{3,2,1,0} maximum(f32[250,75,75,192]{3,2,1,0} %Arg_0.548, f32[250,75,75,192]{3,2,1,0} %broadcast.552)
+  %constant.549 = f32[] constant(6)
+  %broadcast.550 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[] %constant.549), dimensions={}
+  ROOT %minimum.554 = f32[250,75,75,192]{3,2,1,0} minimum(f32[250,75,75,192]{3,2,1,0} %maximum.553, f32[250,75,75,192]{3,2,1,0} %broadcast.550)
+}
+
+%jit_relu6_5.589 (Arg_0.590: f32[250,75,75,192]) -> f32[250,75,75,192] {
+  %Arg_0.590 = f32[250,75,75,192]{3,2,1,0} parameter(0)
+  %constant.593 = f32[] constant(0)
+  %broadcast.594 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[] %constant.593), dimensions={}
+  %maximum.595 = f32[250,75,75,192]{3,2,1,0} maximum(f32[250,75,75,192]{3,2,1,0} %Arg_0.590, f32[250,75,75,192]{3,2,1,0} %broadcast.594)
+  %constant.591 = f32[] constant(6)
+  %broadcast.592 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[] %constant.591), dimensions={}
+  ROOT %minimum.596 = f32[250,75,75,192]{3,2,1,0} minimum(f32[250,75,75,192]{3,2,1,0} %maximum.595, f32[250,75,75,192]{3,2,1,0} %broadcast.592)
+}
+
+%jit_relu6_6.614 (Arg_0.615: f32[250,75,75,192]) -> f32[250,75,75,192] {
+  %Arg_0.615 = f32[250,75,75,192]{3,2,1,0} parameter(0)
+  %constant.618 = f32[] constant(0)
+  %broadcast.619 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[] %constant.618), dimensions={}
+  %maximum.620 = f32[250,75,75,192]{3,2,1,0} maximum(f32[250,75,75,192]{3,2,1,0} %Arg_0.615, f32[250,75,75,192]{3,2,1,0} %broadcast.619)
+  %constant.616 = f32[] constant(6)
+  %broadcast.617 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[] %constant.616), dimensions={}
+  ROOT %minimum.621 = f32[250,75,75,192]{3,2,1,0} minimum(f32[250,75,75,192]{3,2,1,0} %maximum.620, f32[250,75,75,192]{3,2,1,0} %broadcast.617)
+}
+
+%jit_relu6_7.656 (Arg_0.657: f32[250,75,75,192]) -> f32[250,75,75,192] {
+  %Arg_0.657 = f32[250,75,75,192]{3,2,1,0} parameter(0)
+  %constant.660 = f32[] constant(0)
+  %broadcast.661 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[] %constant.660), dimensions={}
+  %maximum.662 = f32[250,75,75,192]{3,2,1,0} maximum(f32[250,75,75,192]{3,2,1,0} %Arg_0.657, f32[250,75,75,192]{3,2,1,0} %broadcast.661)
+  %constant.658 = f32[] constant(6)
+  %broadcast.659 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[] %constant.658), dimensions={}
+  ROOT %minimum.663 = f32[250,75,75,192]{3,2,1,0} minimum(f32[250,75,75,192]{3,2,1,0} %maximum.662, f32[250,75,75,192]{3,2,1,0} %broadcast.659)
+}
+
+%jit_relu6_8.681 (Arg_0.682: f32[250,38,38,192]) -> f32[250,38,38,192] {
+  %Arg_0.682 = f32[250,38,38,192]{3,2,1,0} parameter(0)
+  %constant.685 = f32[] constant(0)
+  %broadcast.686 = f32[250,38,38,192]{3,2,1,0} broadcast(f32[] %constant.685), dimensions={}
+  %maximum.687 = f32[250,38,38,192]{3,2,1,0} maximum(f32[250,38,38,192]{3,2,1,0} %Arg_0.682, f32[250,38,38,192]{3,2,1,0} %broadcast.686)
+  %constant.683 = f32[] constant(6)
+  %broadcast.684 = f32[250,38,38,192]{3,2,1,0} broadcast(f32[] %constant.683), dimensions={}
+  ROOT %minimum.688 = f32[250,38,38,192]{3,2,1,0} minimum(f32[250,38,38,192]{3,2,1,0} %maximum.687, f32[250,38,38,192]{3,2,1,0} %broadcast.684)
+}
+
+%jit_relu6_9.722 (Arg_0.723: f32[250,38,38,288]) -> f32[250,38,38,288] {
+  %Arg_0.723 = f32[250,38,38,288]{3,2,1,0} parameter(0)
+  %constant.726 = f32[] constant(0)
+  %broadcast.727 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[] %constant.726), dimensions={}
+  %maximum.728 = f32[250,38,38,288]{3,2,1,0} maximum(f32[250,38,38,288]{3,2,1,0} %Arg_0.723, f32[250,38,38,288]{3,2,1,0} %broadcast.727)
+  %constant.724 = f32[] constant(6)
+  %broadcast.725 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[] %constant.724), dimensions={}
+  ROOT %minimum.729 = f32[250,38,38,288]{3,2,1,0} minimum(f32[250,38,38,288]{3,2,1,0} %maximum.728, f32[250,38,38,288]{3,2,1,0} %broadcast.725)
+}
+
+%jit_relu6_10.747 (Arg_0.748: f32[250,38,38,288]) -> f32[250,38,38,288] {
+  %Arg_0.748 = f32[250,38,38,288]{3,2,1,0} parameter(0)
+  %constant.751 = f32[] constant(0)
+  %broadcast.752 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[] %constant.751), dimensions={}
+  %maximum.753 = f32[250,38,38,288]{3,2,1,0} maximum(f32[250,38,38,288]{3,2,1,0} %Arg_0.748, f32[250,38,38,288]{3,2,1,0} %broadcast.752)
+  %constant.749 = f32[] constant(6)
+  %broadcast.750 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[] %constant.749), dimensions={}
+  ROOT %minimum.754 = f32[250,38,38,288]{3,2,1,0} minimum(f32[250,38,38,288]{3,2,1,0} %maximum.753, f32[250,38,38,288]{3,2,1,0} %broadcast.750)
+}
+
+%jit_relu6_11.789 (Arg_0.790: f32[250,38,38,288]) -> f32[250,38,38,288] {
+  %Arg_0.790 = f32[250,38,38,288]{3,2,1,0} parameter(0)
+  %constant.793 = f32[] constant(0)
+  %broadcast.794 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[] %constant.793), dimensions={}
+  %maximum.795 = f32[250,38,38,288]{3,2,1,0} maximum(f32[250,38,38,288]{3,2,1,0} %Arg_0.790, f32[250,38,38,288]{3,2,1,0} %broadcast.794)
+  %constant.791 = f32[] constant(6)
+  %broadcast.792 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[] %constant.791), dimensions={}
+  ROOT %minimum.796 = f32[250,38,38,288]{3,2,1,0} minimum(f32[250,38,38,288]{3,2,1,0} %maximum.795, f32[250,38,38,288]{3,2,1,0} %broadcast.792)
+}
+
+%jit_relu6_12.814 (Arg_0.815: f32[250,38,38,288]) -> f32[250,38,38,288] {
+  %Arg_0.815 = f32[250,38,38,288]{3,2,1,0} parameter(0)
+  %constant.818 = f32[] constant(0)
+  %broadcast.819 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[] %constant.818), dimensions={}
+  %maximum.820 = f32[250,38,38,288]{3,2,1,0} maximum(f32[250,38,38,288]{3,2,1,0} %Arg_0.815, f32[250,38,38,288]{3,2,1,0} %broadcast.819)
+  %constant.816 = f32[] constant(6)
+  %broadcast.817 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[] %constant.816), dimensions={}
+  ROOT %minimum.821 = f32[250,38,38,288]{3,2,1,0} minimum(f32[250,38,38,288]{3,2,1,0} %maximum.820, f32[250,38,38,288]{3,2,1,0} %broadcast.817)
+}
+
+%jit_relu6_13.856 (Arg_0.857: f32[250,38,38,288]) -> f32[250,38,38,288] {
+  %Arg_0.857 = f32[250,38,38,288]{3,2,1,0} parameter(0)
+  %constant.860 = f32[] constant(0)
+  %broadcast.861 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[] %constant.860), dimensions={}
+  %maximum.862 = f32[250,38,38,288]{3,2,1,0} maximum(f32[250,38,38,288]{3,2,1,0} %Arg_0.857, f32[250,38,38,288]{3,2,1,0} %broadcast.861)
+  %constant.858 = f32[] constant(6)
+  %broadcast.859 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[] %constant.858), dimensions={}
+  ROOT %minimum.863 = f32[250,38,38,288]{3,2,1,0} minimum(f32[250,38,38,288]{3,2,1,0} %maximum.862, f32[250,38,38,288]{3,2,1,0} %broadcast.859)
+}
+
+%jit_relu6_14.881 (Arg_0.882: f32[250,19,19,288]) -> f32[250,19,19,288] {
+  %Arg_0.882 = f32[250,19,19,288]{3,2,1,0} parameter(0)
+  %constant.885 = f32[] constant(0)
+  %broadcast.886 = f32[250,19,19,288]{3,2,1,0} broadcast(f32[] %constant.885), dimensions={}
+  %maximum.887 = f32[250,19,19,288]{3,2,1,0} maximum(f32[250,19,19,288]{3,2,1,0} %Arg_0.882, f32[250,19,19,288]{3,2,1,0} %broadcast.886)
+  %constant.883 = f32[] constant(6)
+  %broadcast.884 = f32[250,19,19,288]{3,2,1,0} broadcast(f32[] %constant.883), dimensions={}
+  ROOT %minimum.888 = f32[250,19,19,288]{3,2,1,0} minimum(f32[250,19,19,288]{3,2,1,0} %maximum.887, f32[250,19,19,288]{3,2,1,0} %broadcast.884)
+}
+
+%jit_relu6_15.922 (Arg_0.923: f32[250,19,19,576]) -> f32[250,19,19,576] {
+  %Arg_0.923 = f32[250,19,19,576]{3,2,1,0} parameter(0)
+  %constant.926 = f32[] constant(0)
+  %broadcast.927 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.926), dimensions={}
+  %maximum.928 = f32[250,19,19,576]{3,2,1,0} maximum(f32[250,19,19,576]{3,2,1,0} %Arg_0.923, f32[250,19,19,576]{3,2,1,0} %broadcast.927)
+  %constant.924 = f32[] constant(6)
+  %broadcast.925 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.924), dimensions={}
+  ROOT %minimum.929 = f32[250,19,19,576]{3,2,1,0} minimum(f32[250,19,19,576]{3,2,1,0} %maximum.928, f32[250,19,19,576]{3,2,1,0} %broadcast.925)
+}
+
+%jit_relu6_16.947 (Arg_0.948: f32[250,19,19,576]) -> f32[250,19,19,576] {
+  %Arg_0.948 = f32[250,19,19,576]{3,2,1,0} parameter(0)
+  %constant.951 = f32[] constant(0)
+  %broadcast.952 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.951), dimensions={}
+  %maximum.953 = f32[250,19,19,576]{3,2,1,0} maximum(f32[250,19,19,576]{3,2,1,0} %Arg_0.948, f32[250,19,19,576]{3,2,1,0} %broadcast.952)
+  %constant.949 = f32[] constant(6)
+  %broadcast.950 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.949), dimensions={}
+  ROOT %minimum.954 = f32[250,19,19,576]{3,2,1,0} minimum(f32[250,19,19,576]{3,2,1,0} %maximum.953, f32[250,19,19,576]{3,2,1,0} %broadcast.950)
+}
+
+%jit_relu6_17.989 (Arg_0.990: f32[250,19,19,576]) -> f32[250,19,19,576] {
+  %Arg_0.990 = f32[250,19,19,576]{3,2,1,0} parameter(0)
+  %constant.993 = f32[] constant(0)
+  %broadcast.994 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.993), dimensions={}
+  %maximum.995 = f32[250,19,19,576]{3,2,1,0} maximum(f32[250,19,19,576]{3,2,1,0} %Arg_0.990, f32[250,19,19,576]{3,2,1,0} %broadcast.994)
+  %constant.991 = f32[] constant(6)
+  %broadcast.992 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.991), dimensions={}
+  ROOT %minimum.996 = f32[250,19,19,576]{3,2,1,0} minimum(f32[250,19,19,576]{3,2,1,0} %maximum.995, f32[250,19,19,576]{3,2,1,0} %broadcast.992)
+}
+
+%jit_relu6_18.1014 (Arg_0.1015: f32[250,19,19,576]) -> f32[250,19,19,576] {
+  %Arg_0.1015 = f32[250,19,19,576]{3,2,1,0} parameter(0)
+  %constant.1018 = f32[] constant(0)
+  %broadcast.1019 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.1018), dimensions={}
+  %maximum.1020 = f32[250,19,19,576]{3,2,1,0} maximum(f32[250,19,19,576]{3,2,1,0} %Arg_0.1015, f32[250,19,19,576]{3,2,1,0} %broadcast.1019)
+  %constant.1016 = f32[] constant(6)
+  %broadcast.1017 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.1016), dimensions={}
+  ROOT %minimum.1021 = f32[250,19,19,576]{3,2,1,0} minimum(f32[250,19,19,576]{3,2,1,0} %maximum.1020, f32[250,19,19,576]{3,2,1,0} %broadcast.1017)
+}
+
+%jit_relu6_19.1056 (Arg_0.1057: f32[250,19,19,576]) -> f32[250,19,19,576] {
+  %Arg_0.1057 = f32[250,19,19,576]{3,2,1,0} parameter(0)
+  %constant.1060 = f32[] constant(0)
+  %broadcast.1061 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.1060), dimensions={}
+  %maximum.1062 = f32[250,19,19,576]{3,2,1,0} maximum(f32[250,19,19,576]{3,2,1,0} %Arg_0.1057, f32[250,19,19,576]{3,2,1,0} %broadcast.1061)
+  %constant.1058 = f32[] constant(6)
+  %broadcast.1059 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.1058), dimensions={}
+  ROOT %minimum.1063 = f32[250,19,19,576]{3,2,1,0} minimum(f32[250,19,19,576]{3,2,1,0} %maximum.1062, f32[250,19,19,576]{3,2,1,0} %broadcast.1059)
+}
+
+%jit_relu6_20.1081 (Arg_0.1082: f32[250,19,19,576]) -> f32[250,19,19,576] {
+  %Arg_0.1082 = f32[250,19,19,576]{3,2,1,0} parameter(0)
+  %constant.1085 = f32[] constant(0)
+  %broadcast.1086 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.1085), dimensions={}
+  %maximum.1087 = f32[250,19,19,576]{3,2,1,0} maximum(f32[250,19,19,576]{3,2,1,0} %Arg_0.1082, f32[250,19,19,576]{3,2,1,0} %broadcast.1086)
+  %constant.1083 = f32[] constant(6)
+  %broadcast.1084 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.1083), dimensions={}
+  ROOT %minimum.1088 = f32[250,19,19,576]{3,2,1,0} minimum(f32[250,19,19,576]{3,2,1,0} %maximum.1087, f32[250,19,19,576]{3,2,1,0} %broadcast.1084)
+}
+
+%jit_relu6_21.1123 (Arg_0.1124: f32[250,19,19,576]) -> f32[250,19,19,576] {
+  %Arg_0.1124 = f32[250,19,19,576]{3,2,1,0} parameter(0)
+  %constant.1127 = f32[] constant(0)
+  %broadcast.1128 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.1127), dimensions={}
+  %maximum.1129 = f32[250,19,19,576]{3,2,1,0} maximum(f32[250,19,19,576]{3,2,1,0} %Arg_0.1124, f32[250,19,19,576]{3,2,1,0} %broadcast.1128)
+  %constant.1125 = f32[] constant(6)
+  %broadcast.1126 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.1125), dimensions={}
+  ROOT %minimum.1130 = f32[250,19,19,576]{3,2,1,0} minimum(f32[250,19,19,576]{3,2,1,0} %maximum.1129, f32[250,19,19,576]{3,2,1,0} %broadcast.1126)
+}
+
+%jit_relu6_22.1148 (Arg_0.1149: f32[250,19,19,576]) -> f32[250,19,19,576] {
+  %Arg_0.1149 = f32[250,19,19,576]{3,2,1,0} parameter(0)
+  %constant.1152 = f32[] constant(0)
+  %broadcast.1153 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.1152), dimensions={}
+  %maximum.1154 = f32[250,19,19,576]{3,2,1,0} maximum(f32[250,19,19,576]{3,2,1,0} %Arg_0.1149, f32[250,19,19,576]{3,2,1,0} %broadcast.1153)
+  %constant.1150 = f32[] constant(6)
+  %broadcast.1151 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.1150), dimensions={}
+  ROOT %minimum.1155 = f32[250,19,19,576]{3,2,1,0} minimum(f32[250,19,19,576]{3,2,1,0} %maximum.1154, f32[250,19,19,576]{3,2,1,0} %broadcast.1151)
+}
+
+%jit_relu6_23.1190 (Arg_0.1191: f32[250,19,19,576]) -> f32[250,19,19,576] {
+  %Arg_0.1191 = f32[250,19,19,576]{3,2,1,0} parameter(0)
+  %constant.1194 = f32[] constant(0)
+  %broadcast.1195 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.1194), dimensions={}
+  %maximum.1196 = f32[250,19,19,576]{3,2,1,0} maximum(f32[250,19,19,576]{3,2,1,0} %Arg_0.1191, f32[250,19,19,576]{3,2,1,0} %broadcast.1195)
+  %constant.1192 = f32[] constant(6)
+  %broadcast.1193 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.1192), dimensions={}
+  ROOT %minimum.1197 = f32[250,19,19,576]{3,2,1,0} minimum(f32[250,19,19,576]{3,2,1,0} %maximum.1196, f32[250,19,19,576]{3,2,1,0} %broadcast.1193)
+}
+
+%jit_relu6_24.1215 (Arg_0.1216: f32[250,19,19,576]) -> f32[250,19,19,576] {
+  %Arg_0.1216 = f32[250,19,19,576]{3,2,1,0} parameter(0)
+  %constant.1219 = f32[] constant(0)
+  %broadcast.1220 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.1219), dimensions={}
+  %maximum.1221 = f32[250,19,19,576]{3,2,1,0} maximum(f32[250,19,19,576]{3,2,1,0} %Arg_0.1216, f32[250,19,19,576]{3,2,1,0} %broadcast.1220)
+  %constant.1217 = f32[] constant(6)
+  %broadcast.1218 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[] %constant.1217), dimensions={}
+  ROOT %minimum.1222 = f32[250,19,19,576]{3,2,1,0} minimum(f32[250,19,19,576]{3,2,1,0} %maximum.1221, f32[250,19,19,576]{3,2,1,0} %broadcast.1218)
+}
+
+%jit_relu6_25.1256 (Arg_0.1257: f32[250,19,19,816]) -> f32[250,19,19,816] {
+  %Arg_0.1257 = f32[250,19,19,816]{3,2,1,0} parameter(0)
+  %constant.1260 = f32[] constant(0)
+  %broadcast.1261 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[] %constant.1260), dimensions={}
+  %maximum.1262 = f32[250,19,19,816]{3,2,1,0} maximum(f32[250,19,19,816]{3,2,1,0} %Arg_0.1257, f32[250,19,19,816]{3,2,1,0} %broadcast.1261)
+  %constant.1258 = f32[] constant(6)
+  %broadcast.1259 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[] %constant.1258), dimensions={}
+  ROOT %minimum.1263 = f32[250,19,19,816]{3,2,1,0} minimum(f32[250,19,19,816]{3,2,1,0} %maximum.1262, f32[250,19,19,816]{3,2,1,0} %broadcast.1259)
+}
+
+%jit_relu6_26.1281 (Arg_0.1282: f32[250,19,19,816]) -> f32[250,19,19,816] {
+  %Arg_0.1282 = f32[250,19,19,816]{3,2,1,0} parameter(0)
+  %constant.1285 = f32[] constant(0)
+  %broadcast.1286 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[] %constant.1285), dimensions={}
+  %maximum.1287 = f32[250,19,19,816]{3,2,1,0} maximum(f32[250,19,19,816]{3,2,1,0} %Arg_0.1282, f32[250,19,19,816]{3,2,1,0} %broadcast.1286)
+  %constant.1283 = f32[] constant(6)
+  %broadcast.1284 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[] %constant.1283), dimensions={}
+  ROOT %minimum.1288 = f32[250,19,19,816]{3,2,1,0} minimum(f32[250,19,19,816]{3,2,1,0} %maximum.1287, f32[250,19,19,816]{3,2,1,0} %broadcast.1284)
+}
+
+%jit_relu6_27.1323 (Arg_0.1324: f32[250,19,19,816]) -> f32[250,19,19,816] {
+  %Arg_0.1324 = f32[250,19,19,816]{3,2,1,0} parameter(0)
+  %constant.1327 = f32[] constant(0)
+  %broadcast.1328 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[] %constant.1327), dimensions={}
+  %maximum.1329 = f32[250,19,19,816]{3,2,1,0} maximum(f32[250,19,19,816]{3,2,1,0} %Arg_0.1324, f32[250,19,19,816]{3,2,1,0} %broadcast.1328)
+  %constant.1325 = f32[] constant(6)
+  %broadcast.1326 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[] %constant.1325), dimensions={}
+  ROOT %minimum.1330 = f32[250,19,19,816]{3,2,1,0} minimum(f32[250,19,19,816]{3,2,1,0} %maximum.1329, f32[250,19,19,816]{3,2,1,0} %broadcast.1326)
+}
+
+%jit_relu6_28.1348 (Arg_0.1349: f32[250,19,19,816]) -> f32[250,19,19,816] {
+  %Arg_0.1349 = f32[250,19,19,816]{3,2,1,0} parameter(0)
+  %constant.1352 = f32[] constant(0)
+  %broadcast.1353 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[] %constant.1352), dimensions={}
+  %maximum.1354 = f32[250,19,19,816]{3,2,1,0} maximum(f32[250,19,19,816]{3,2,1,0} %Arg_0.1349, f32[250,19,19,816]{3,2,1,0} %broadcast.1353)
+  %constant.1350 = f32[] constant(6)
+  %broadcast.1351 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[] %constant.1350), dimensions={}
+  ROOT %minimum.1355 = f32[250,19,19,816]{3,2,1,0} minimum(f32[250,19,19,816]{3,2,1,0} %maximum.1354, f32[250,19,19,816]{3,2,1,0} %broadcast.1351)
+}
+
+%jit_relu6_29.1390 (Arg_0.1391: f32[250,19,19,816]) -> f32[250,19,19,816] {
+  %Arg_0.1391 = f32[250,19,19,816]{3,2,1,0} parameter(0)
+  %constant.1394 = f32[] constant(0)
+  %broadcast.1395 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[] %constant.1394), dimensions={}
+  %maximum.1396 = f32[250,19,19,816]{3,2,1,0} maximum(f32[250,19,19,816]{3,2,1,0} %Arg_0.1391, f32[250,19,19,816]{3,2,1,0} %broadcast.1395)
+  %constant.1392 = f32[] constant(6)
+  %broadcast.1393 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[] %constant.1392), dimensions={}
+  ROOT %minimum.1397 = f32[250,19,19,816]{3,2,1,0} minimum(f32[250,19,19,816]{3,2,1,0} %maximum.1396, f32[250,19,19,816]{3,2,1,0} %broadcast.1393)
+}
+
+%jit_relu6_30.1415 (Arg_0.1416: f32[250,19,19,816]) -> f32[250,19,19,816] {
+  %Arg_0.1416 = f32[250,19,19,816]{3,2,1,0} parameter(0)
+  %constant.1419 = f32[] constant(0)
+  %broadcast.1420 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[] %constant.1419), dimensions={}
+  %maximum.1421 = f32[250,19,19,816]{3,2,1,0} maximum(f32[250,19,19,816]{3,2,1,0} %Arg_0.1416, f32[250,19,19,816]{3,2,1,0} %broadcast.1420)
+  %constant.1417 = f32[] constant(6)
+  %broadcast.1418 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[] %constant.1417), dimensions={}
+  ROOT %minimum.1422 = f32[250,19,19,816]{3,2,1,0} minimum(f32[250,19,19,816]{3,2,1,0} %maximum.1421, f32[250,19,19,816]{3,2,1,0} %broadcast.1418)
+}
+
+%jit_relu6_31.1457 (Arg_0.1458: f32[250,19,19,816]) -> f32[250,19,19,816] {
+  %Arg_0.1458 = f32[250,19,19,816]{3,2,1,0} parameter(0)
+  %constant.1461 = f32[] constant(0)
+  %broadcast.1462 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[] %constant.1461), dimensions={}
+  %maximum.1463 = f32[250,19,19,816]{3,2,1,0} maximum(f32[250,19,19,816]{3,2,1,0} %Arg_0.1458, f32[250,19,19,816]{3,2,1,0} %broadcast.1462)
+  %constant.1459 = f32[] constant(6)
+  %broadcast.1460 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[] %constant.1459), dimensions={}
+  ROOT %minimum.1464 = f32[250,19,19,816]{3,2,1,0} minimum(f32[250,19,19,816]{3,2,1,0} %maximum.1463, f32[250,19,19,816]{3,2,1,0} %broadcast.1460)
+}
+
+%jit_relu6_32.1482 (Arg_0.1483: f32[250,19,19,816]) -> f32[250,19,19,816] {
+  %Arg_0.1483 = f32[250,19,19,816]{3,2,1,0} parameter(0)
+  %constant.1486 = f32[] constant(0)
+  %broadcast.1487 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[] %constant.1486), dimensions={}
+  %maximum.1488 = f32[250,19,19,816]{3,2,1,0} maximum(f32[250,19,19,816]{3,2,1,0} %Arg_0.1483, f32[250,19,19,816]{3,2,1,0} %broadcast.1487)
+  %constant.1484 = f32[] constant(6)
+  %broadcast.1485 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[] %constant.1484), dimensions={}
+  ROOT %minimum.1489 = f32[250,19,19,816]{3,2,1,0} minimum(f32[250,19,19,816]{3,2,1,0} %maximum.1488, f32[250,19,19,816]{3,2,1,0} %broadcast.1485)
+}
+
+%jit_relu6_33.1524 (Arg_0.1525: f32[250,19,19,816]) -> f32[250,19,19,816] {
+  %Arg_0.1525 = f32[250,19,19,816]{3,2,1,0} parameter(0)
+  %constant.1528 = f32[] constant(0)
+  %broadcast.1529 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[] %constant.1528), dimensions={}
+  %maximum.1530 = f32[250,19,19,816]{3,2,1,0} maximum(f32[250,19,19,816]{3,2,1,0} %Arg_0.1525, f32[250,19,19,816]{3,2,1,0} %broadcast.1529)
+  %constant.1526 = f32[] constant(6)
+  %broadcast.1527 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[] %constant.1526), dimensions={}
+  ROOT %minimum.1531 = f32[250,19,19,816]{3,2,1,0} minimum(f32[250,19,19,816]{3,2,1,0} %maximum.1530, f32[250,19,19,816]{3,2,1,0} %broadcast.1527)
+}
+
+%jit_relu6_34.1549 (Arg_0.1550: f32[250,10,10,816]) -> f32[250,10,10,816] {
+  %Arg_0.1550 = f32[250,10,10,816]{3,2,1,0} parameter(0)
+  %constant.1553 = f32[] constant(0)
+  %broadcast.1554 = f32[250,10,10,816]{3,2,1,0} broadcast(f32[] %constant.1553), dimensions={}
+  %maximum.1555 = f32[250,10,10,816]{3,2,1,0} maximum(f32[250,10,10,816]{3,2,1,0} %Arg_0.1550, f32[250,10,10,816]{3,2,1,0} %broadcast.1554)
+  %constant.1551 = f32[] constant(6)
+  %broadcast.1552 = f32[250,10,10,816]{3,2,1,0} broadcast(f32[] %constant.1551), dimensions={}
+  ROOT %minimum.1556 = f32[250,10,10,816]{3,2,1,0} minimum(f32[250,10,10,816]{3,2,1,0} %maximum.1555, f32[250,10,10,816]{3,2,1,0} %broadcast.1552)
+}
+
+%jit_relu6_35.1590 (Arg_0.1591: f32[250,10,10,1392]) -> f32[250,10,10,1392] {
+  %Arg_0.1591 = f32[250,10,10,1392]{3,2,1,0} parameter(0)
+  %constant.1594 = f32[] constant(0)
+  %broadcast.1595 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1594), dimensions={}
+  %maximum.1596 = f32[250,10,10,1392]{3,2,1,0} maximum(f32[250,10,10,1392]{3,2,1,0} %Arg_0.1591, f32[250,10,10,1392]{3,2,1,0} %broadcast.1595)
+  %constant.1592 = f32[] constant(6)
+  %broadcast.1593 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1592), dimensions={}
+  ROOT %minimum.1597 = f32[250,10,10,1392]{3,2,1,0} minimum(f32[250,10,10,1392]{3,2,1,0} %maximum.1596, f32[250,10,10,1392]{3,2,1,0} %broadcast.1593)
+}
+
+%jit_relu6_36.1615 (Arg_0.1616: f32[250,10,10,1392]) -> f32[250,10,10,1392] {
+  %Arg_0.1616 = f32[250,10,10,1392]{3,2,1,0} parameter(0)
+  %constant.1619 = f32[] constant(0)
+  %broadcast.1620 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1619), dimensions={}
+  %maximum.1621 = f32[250,10,10,1392]{3,2,1,0} maximum(f32[250,10,10,1392]{3,2,1,0} %Arg_0.1616, f32[250,10,10,1392]{3,2,1,0} %broadcast.1620)
+  %constant.1617 = f32[] constant(6)
+  %broadcast.1618 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1617), dimensions={}
+  ROOT %minimum.1622 = f32[250,10,10,1392]{3,2,1,0} minimum(f32[250,10,10,1392]{3,2,1,0} %maximum.1621, f32[250,10,10,1392]{3,2,1,0} %broadcast.1618)
+}
+
+%jit_relu6_37.1657 (Arg_0.1658: f32[250,10,10,1392]) -> f32[250,10,10,1392] {
+  %Arg_0.1658 = f32[250,10,10,1392]{3,2,1,0} parameter(0)
+  %constant.1661 = f32[] constant(0)
+  %broadcast.1662 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1661), dimensions={}
+  %maximum.1663 = f32[250,10,10,1392]{3,2,1,0} maximum(f32[250,10,10,1392]{3,2,1,0} %Arg_0.1658, f32[250,10,10,1392]{3,2,1,0} %broadcast.1662)
+  %constant.1659 = f32[] constant(6)
+  %broadcast.1660 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1659), dimensions={}
+  ROOT %minimum.1664 = f32[250,10,10,1392]{3,2,1,0} minimum(f32[250,10,10,1392]{3,2,1,0} %maximum.1663, f32[250,10,10,1392]{3,2,1,0} %broadcast.1660)
+}
+
+%jit_relu6_38.1682 (Arg_0.1683: f32[250,10,10,1392]) -> f32[250,10,10,1392] {
+  %Arg_0.1683 = f32[250,10,10,1392]{3,2,1,0} parameter(0)
+  %constant.1686 = f32[] constant(0)
+  %broadcast.1687 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1686), dimensions={}
+  %maximum.1688 = f32[250,10,10,1392]{3,2,1,0} maximum(f32[250,10,10,1392]{3,2,1,0} %Arg_0.1683, f32[250,10,10,1392]{3,2,1,0} %broadcast.1687)
+  %constant.1684 = f32[] constant(6)
+  %broadcast.1685 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1684), dimensions={}
+  ROOT %minimum.1689 = f32[250,10,10,1392]{3,2,1,0} minimum(f32[250,10,10,1392]{3,2,1,0} %maximum.1688, f32[250,10,10,1392]{3,2,1,0} %broadcast.1685)
+}
+
+%jit_relu6_39.1724 (Arg_0.1725: f32[250,10,10,1392]) -> f32[250,10,10,1392] {
+  %Arg_0.1725 = f32[250,10,10,1392]{3,2,1,0} parameter(0)
+  %constant.1728 = f32[] constant(0)
+  %broadcast.1729 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1728), dimensions={}
+  %maximum.1730 = f32[250,10,10,1392]{3,2,1,0} maximum(f32[250,10,10,1392]{3,2,1,0} %Arg_0.1725, f32[250,10,10,1392]{3,2,1,0} %broadcast.1729)
+  %constant.1726 = f32[] constant(6)
+  %broadcast.1727 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1726), dimensions={}
+  ROOT %minimum.1731 = f32[250,10,10,1392]{3,2,1,0} minimum(f32[250,10,10,1392]{3,2,1,0} %maximum.1730, f32[250,10,10,1392]{3,2,1,0} %broadcast.1727)
+}
+
+%jit_relu6_40.1749 (Arg_0.1750: f32[250,10,10,1392]) -> f32[250,10,10,1392] {
+  %Arg_0.1750 = f32[250,10,10,1392]{3,2,1,0} parameter(0)
+  %constant.1753 = f32[] constant(0)
+  %broadcast.1754 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1753), dimensions={}
+  %maximum.1755 = f32[250,10,10,1392]{3,2,1,0} maximum(f32[250,10,10,1392]{3,2,1,0} %Arg_0.1750, f32[250,10,10,1392]{3,2,1,0} %broadcast.1754)
+  %constant.1751 = f32[] constant(6)
+  %broadcast.1752 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1751), dimensions={}
+  ROOT %minimum.1756 = f32[250,10,10,1392]{3,2,1,0} minimum(f32[250,10,10,1392]{3,2,1,0} %maximum.1755, f32[250,10,10,1392]{3,2,1,0} %broadcast.1752)
+}
+
+%jit_relu6_41.1791 (Arg_0.1792: f32[250,10,10,1392]) -> f32[250,10,10,1392] {
+  %Arg_0.1792 = f32[250,10,10,1392]{3,2,1,0} parameter(0)
+  %constant.1795 = f32[] constant(0)
+  %broadcast.1796 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1795), dimensions={}
+  %maximum.1797 = f32[250,10,10,1392]{3,2,1,0} maximum(f32[250,10,10,1392]{3,2,1,0} %Arg_0.1792, f32[250,10,10,1392]{3,2,1,0} %broadcast.1796)
+  %constant.1793 = f32[] constant(6)
+  %broadcast.1794 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1793), dimensions={}
+  ROOT %minimum.1798 = f32[250,10,10,1392]{3,2,1,0} minimum(f32[250,10,10,1392]{3,2,1,0} %maximum.1797, f32[250,10,10,1392]{3,2,1,0} %broadcast.1794)
+}
+
+%jit_relu6_42.1816 (Arg_0.1817: f32[250,10,10,1392]) -> f32[250,10,10,1392] {
+  %Arg_0.1817 = f32[250,10,10,1392]{3,2,1,0} parameter(0)
+  %constant.1820 = f32[] constant(0)
+  %broadcast.1821 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1820), dimensions={}
+  %maximum.1822 = f32[250,10,10,1392]{3,2,1,0} maximum(f32[250,10,10,1392]{3,2,1,0} %Arg_0.1817, f32[250,10,10,1392]{3,2,1,0} %broadcast.1821)
+  %constant.1818 = f32[] constant(6)
+  %broadcast.1819 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1818), dimensions={}
+  ROOT %minimum.1823 = f32[250,10,10,1392]{3,2,1,0} minimum(f32[250,10,10,1392]{3,2,1,0} %maximum.1822, f32[250,10,10,1392]{3,2,1,0} %broadcast.1819)
+}
+
+%jit_relu6_43.1858 (Arg_0.1859: f32[250,10,10,1392]) -> f32[250,10,10,1392] {
+  %Arg_0.1859 = f32[250,10,10,1392]{3,2,1,0} parameter(0)
+  %constant.1862 = f32[] constant(0)
+  %broadcast.1863 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1862), dimensions={}
+  %maximum.1864 = f32[250,10,10,1392]{3,2,1,0} maximum(f32[250,10,10,1392]{3,2,1,0} %Arg_0.1859, f32[250,10,10,1392]{3,2,1,0} %broadcast.1863)
+  %constant.1860 = f32[] constant(6)
+  %broadcast.1861 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1860), dimensions={}
+  ROOT %minimum.1865 = f32[250,10,10,1392]{3,2,1,0} minimum(f32[250,10,10,1392]{3,2,1,0} %maximum.1864, f32[250,10,10,1392]{3,2,1,0} %broadcast.1861)
+}
+
+%jit_relu6_44.1883 (Arg_0.1884: f32[250,10,10,1392]) -> f32[250,10,10,1392] {
+  %Arg_0.1884 = f32[250,10,10,1392]{3,2,1,0} parameter(0)
+  %constant.1887 = f32[] constant(0)
+  %broadcast.1888 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1887), dimensions={}
+  %maximum.1889 = f32[250,10,10,1392]{3,2,1,0} maximum(f32[250,10,10,1392]{3,2,1,0} %Arg_0.1884, f32[250,10,10,1392]{3,2,1,0} %broadcast.1888)
+  %constant.1885 = f32[] constant(6)
+  %broadcast.1886 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1885), dimensions={}
+  ROOT %minimum.1890 = f32[250,10,10,1392]{3,2,1,0} minimum(f32[250,10,10,1392]{3,2,1,0} %maximum.1889, f32[250,10,10,1392]{3,2,1,0} %broadcast.1886)
+}
+
+%jit_relu6_45.1925 (Arg_0.1926: f32[250,10,10,1392]) -> f32[250,10,10,1392] {
+  %Arg_0.1926 = f32[250,10,10,1392]{3,2,1,0} parameter(0)
+  %constant.1929 = f32[] constant(0)
+  %broadcast.1930 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1929), dimensions={}
+  %maximum.1931 = f32[250,10,10,1392]{3,2,1,0} maximum(f32[250,10,10,1392]{3,2,1,0} %Arg_0.1926, f32[250,10,10,1392]{3,2,1,0} %broadcast.1930)
+  %constant.1927 = f32[] constant(6)
+  %broadcast.1928 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1927), dimensions={}
+  ROOT %minimum.1932 = f32[250,10,10,1392]{3,2,1,0} minimum(f32[250,10,10,1392]{3,2,1,0} %maximum.1931, f32[250,10,10,1392]{3,2,1,0} %broadcast.1928)
+}
+
+%jit_relu6_46.1950 (Arg_0.1951: f32[250,10,10,1392]) -> f32[250,10,10,1392] {
+  %Arg_0.1951 = f32[250,10,10,1392]{3,2,1,0} parameter(0)
+  %constant.1954 = f32[] constant(0)
+  %broadcast.1955 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1954), dimensions={}
+  %maximum.1956 = f32[250,10,10,1392]{3,2,1,0} maximum(f32[250,10,10,1392]{3,2,1,0} %Arg_0.1951, f32[250,10,10,1392]{3,2,1,0} %broadcast.1955)
+  %constant.1952 = f32[] constant(6)
+  %broadcast.1953 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[] %constant.1952), dimensions={}
+  ROOT %minimum.1957 = f32[250,10,10,1392]{3,2,1,0} minimum(f32[250,10,10,1392]{3,2,1,0} %maximum.1956, f32[250,10,10,1392]{3,2,1,0} %broadcast.1953)
+}
+
+%jit_relu6_47.1991 (Arg_0.1992: f32[250,10,10,1280]) -> f32[250,10,10,1280] {
+  %Arg_0.1992 = f32[250,10,10,1280]{3,2,1,0} parameter(0)
+  %constant.1995 = f32[] constant(0)
+  %broadcast.1996 = f32[250,10,10,1280]{3,2,1,0} broadcast(f32[] %constant.1995), dimensions={}
+  %maximum.1997 = f32[250,10,10,1280]{3,2,1,0} maximum(f32[250,10,10,1280]{3,2,1,0} %Arg_0.1992, f32[250,10,10,1280]{3,2,1,0} %broadcast.1996)
+  %constant.1993 = f32[] constant(6)
+  %broadcast.1994 = f32[250,10,10,1280]{3,2,1,0} broadcast(f32[] %constant.1993), dimensions={}
+  ROOT %minimum.1998 = f32[250,10,10,1280]{3,2,1,0} minimum(f32[250,10,10,1280]{3,2,1,0} %maximum.1997, f32[250,10,10,1280]{3,2,1,0} %broadcast.1994)
+}
+
+%region_0.2000 (Arg_0.2001: f32[], Arg_1.2002: f32[]) -> f32[] {
+  %Arg_0.2001 = f32[] parameter(0)
+  %Arg_1.2002 = f32[] parameter(1)
+  ROOT %add.2003 = f32[] add(f32[] %Arg_0.2001, f32[] %Arg_1.2002)
+}
+
+%region_1.2011 (Arg_0.2012: f32[], Arg_1.2013: f32[], Arg_2.2014: s32[], Arg_3.2015: s32[]) -> pred[] {
+  %Arg_2.2014 = s32[] parameter(2)
+  %Arg_3.2015 = s32[] parameter(3)
+  %Arg_0.2012 = f32[] parameter(0)
+  %Arg_1.2013 = f32[] parameter(1)
+  ROOT %compare.2016 = pred[] compare(f32[] %Arg_0.2012, f32[] %Arg_1.2013), direction=GT, type=TOTALORDER
+}
+
+%xla_fallback_top_k.2017 (Arg_0.2018: f32[250,1000]) -> (f32[250,5], s32[250,5]) {
+  %Arg_0.2018 = f32[250,1000]{1,0} parameter(0)
+  %iota.2019 = s32[1000]{0} iota(), iota_dimension=0
+  %broadcast.2020 = s32[250,1000]{1,0} broadcast(s32[1000]{0} %iota.2019), dimensions={1}
+  %sort.2021 = (f32[250,1000]{1,0}, s32[250,1000]{1,0}) sort(f32[250,1000]{1,0} %Arg_0.2018, s32[250,1000]{1,0} %broadcast.2020), dimensions={1}, is_stable=true, to_apply=%region_1.2011
+  %get-tuple-element.2022 = f32[250,1000]{1,0} get-tuple-element((f32[250,1000]{1,0}, s32[250,1000]{1,0}) %sort.2021), index=0
+  %slice.2024 = f32[250,5]{1,0} slice(f32[250,1000]{1,0} %get-tuple-element.2022), slice={[0:250], [0:5]}
+  %get-tuple-element.2023 = s32[250,1000]{1,0} get-tuple-element((f32[250,1000]{1,0}, s32[250,1000]{1,0}) %sort.2021), index=1
+  %slice.2025 = s32[250,5]{1,0} slice(s32[250,1000]{1,0} %get-tuple-element.2023), slice={[0:250], [0:5]}
+  ROOT %tuple.2026 = (f32[250,5]{1,0}, s32[250,5]{1,0}) tuple(f32[250,5]{1,0} %slice.2024, s32[250,5]{1,0} %slice.2025)
+}
+
+%top_k.2027 (Arg_0.2028: f32[250,1000]) -> (f32[250,5], s32[250,5]) {
+  %Arg_0.2028 = f32[250,1000]{1,0} parameter(0)
+  %call.2029 = (f32[250,5]{1,0}, s32[250,5]{1,0}) call(f32[250,1000]{1,0} %Arg_0.2028), to_apply=%xla_fallback_top_k.2017
+  %get-tuple-element.2030 = f32[250,5]{1,0} get-tuple-element((f32[250,5]{1,0}, s32[250,5]{1,0}) %call.2029), index=0
+  %get-tuple-element.2031 = s32[250,5]{1,0} get-tuple-element((f32[250,5]{1,0}, s32[250,5]{1,0}) %call.2029), index=1
+  ROOT %tuple.2032 = (f32[250,5]{1,0}, s32[250,5]{1,0}) tuple(f32[250,5]{1,0} %get-tuple-element.2030, s32[250,5]{1,0} %get-tuple-element.2031)
+}
+
+%region_2.2045 (Arg_0.2046: s32[], Arg_1.2047: s32[]) -> s32[] {
+  %Arg_0.2046 = s32[] parameter(0)
+  %Arg_1.2047 = s32[] parameter(1)
+  ROOT %add.2048 = s32[] add(s32[] %Arg_0.2046, s32[] %Arg_1.2047)
+}
+
+%region_3.2052 (Arg_0.2053: s32[], Arg_1.2054: s32[]) -> s32[] {
+  %Arg_0.2053 = s32[] parameter(0)
+  %Arg_1.2054 = s32[] parameter(1)
+  ROOT %add.2055 = s32[] add(s32[] %Arg_0.2053, s32[] %Arg_1.2054)
+}
+
+ENTRY %main.2058 (Arg_0.1: f32[250,300,300,3], Arg_1.2: s32[250]) -> (s32[], s32[]) {
+  %Arg_0.1 = f32[250,300,300,3]{3,2,1,0} parameter(0)
+  %constant.373 = f32[3,3,3,32]{3,2,1,0} constant({...})
+  %convolution.374 = f32[250,150,150,32]{3,2,1,0} convolution(f32[250,300,300,3]{3,2,1,0} %Arg_0.1, f32[3,3,3,32]{3,2,1,0} %constant.373), window={size=3x3 stride=2x2 pad=0_1x0_1}, dim_labels=b01f_01io->b01f
+  %constant.299 = f32[1,1,1,32]{3,2,1,0} constant({...})
+  %broadcast.375 = f32[1,1,1,32]{3,2,1,0} broadcast(f32[1,1,1,32]{3,2,1,0} %constant.299), dimensions={0,1,2,3}
+  %reshape.376 = f32[32]{0} reshape(f32[1,1,1,32]{3,2,1,0} %broadcast.375)
+  %broadcast.377 = f32[250,150,150,32]{3,2,1,0} broadcast(f32[32]{0} %reshape.376), dimensions={3}
+  %subtract.378 = f32[250,150,150,32]{3,2,1,0} subtract(f32[250,150,150,32]{3,2,1,0} %convolution.374, f32[250,150,150,32]{3,2,1,0} %broadcast.377)
+  %constant.298 = f32[32]{0} constant({...})
+  %rsqrt.379 = f32[32]{0} rsqrt(f32[32]{0} %constant.298)
+  %reshape.380 = f32[1,1,1,32]{3,2,1,0} reshape(f32[32]{0} %rsqrt.379)
+  %constant.297 = f32[1,1,1,32]{3,2,1,0} constant({...})
+  %multiply.381 = f32[1,1,1,32]{3,2,1,0} multiply(f32[1,1,1,32]{3,2,1,0} %reshape.380, f32[1,1,1,32]{3,2,1,0} %constant.297)
+  %broadcast.382 = f32[1,1,1,32]{3,2,1,0} broadcast(f32[1,1,1,32]{3,2,1,0} %multiply.381), dimensions={0,1,2,3}
+  %reshape.383 = f32[32]{0} reshape(f32[1,1,1,32]{3,2,1,0} %broadcast.382)
+  %broadcast.384 = f32[250,150,150,32]{3,2,1,0} broadcast(f32[32]{0} %reshape.383), dimensions={3}
+  %multiply.385 = f32[250,150,150,32]{3,2,1,0} multiply(f32[250,150,150,32]{3,2,1,0} %subtract.378, f32[250,150,150,32]{3,2,1,0} %broadcast.384)
+  %constant.296 = f32[1,1,1,32]{3,2,1,0} constant({...})
+  %broadcast.386 = f32[1,1,1,32]{3,2,1,0} broadcast(f32[1,1,1,32]{3,2,1,0} %constant.296), dimensions={0,1,2,3}
+  %reshape.387 = f32[32]{0} reshape(f32[1,1,1,32]{3,2,1,0} %broadcast.386)
+  %broadcast.388 = f32[250,150,150,32]{3,2,1,0} broadcast(f32[32]{0} %reshape.387), dimensions={3}
+  %add.389 = f32[250,150,150,32]{3,2,1,0} add(f32[250,150,150,32]{3,2,1,0} %multiply.385, f32[250,150,150,32]{3,2,1,0} %broadcast.388)
+  %call.398 = f32[250,150,150,32]{3,2,1,0} call(f32[250,150,150,32]{3,2,1,0} %add.389), to_apply=%jit_relu6.390
+  %constant.372 = f32[3,3,1,32]{3,2,1,0} constant({...})
+  %convolution.399 = f32[250,150,150,32]{3,2,1,0} convolution(f32[250,150,150,32]{3,2,1,0} %call.398, f32[3,3,1,32]{3,2,1,0} %constant.372), window={size=3x3 pad=1_1x1_1}, dim_labels=b01f_01io->b01f, feature_group_count=32
+  %constant.295 = f32[1,1,1,32]{3,2,1,0} constant({...})
+  %broadcast.400 = f32[1,1,1,32]{3,2,1,0} broadcast(f32[1,1,1,32]{3,2,1,0} %constant.295), dimensions={0,1,2,3}
+  %reshape.401 = f32[32]{0} reshape(f32[1,1,1,32]{3,2,1,0} %broadcast.400)
+  %broadcast.402 = f32[250,150,150,32]{3,2,1,0} broadcast(f32[32]{0} %reshape.401), dimensions={3}
+  %subtract.403 = f32[250,150,150,32]{3,2,1,0} subtract(f32[250,150,150,32]{3,2,1,0} %convolution.399, f32[250,150,150,32]{3,2,1,0} %broadcast.402)
+  %constant.294 = f32[32]{0} constant({...})
+  %rsqrt.404 = f32[32]{0} rsqrt(f32[32]{0} %constant.294)
+  %reshape.405 = f32[1,1,1,32]{3,2,1,0} reshape(f32[32]{0} %rsqrt.404)
+  %constant.293 = f32[1,1,1,32]{3,2,1,0} constant({...})
+  %multiply.406 = f32[1,1,1,32]{3,2,1,0} multiply(f32[1,1,1,32]{3,2,1,0} %reshape.405, f32[1,1,1,32]{3,2,1,0} %constant.293)
+  %broadcast.407 = f32[1,1,1,32]{3,2,1,0} broadcast(f32[1,1,1,32]{3,2,1,0} %multiply.406), dimensions={0,1,2,3}
+  %reshape.408 = f32[32]{0} reshape(f32[1,1,1,32]{3,2,1,0} %broadcast.407)
+  %broadcast.409 = f32[250,150,150,32]{3,2,1,0} broadcast(f32[32]{0} %reshape.408), dimensions={3}
+  %multiply.410 = f32[250,150,150,32]{3,2,1,0} multiply(f32[250,150,150,32]{3,2,1,0} %subtract.403, f32[250,150,150,32]{3,2,1,0} %broadcast.409)
+  %constant.292 = f32[1,1,1,32]{3,2,1,0} constant({...})
+  %broadcast.411 = f32[1,1,1,32]{3,2,1,0} broadcast(f32[1,1,1,32]{3,2,1,0} %constant.292), dimensions={0,1,2,3}
+  %reshape.412 = f32[32]{0} reshape(f32[1,1,1,32]{3,2,1,0} %broadcast.411)
+  %broadcast.413 = f32[250,150,150,32]{3,2,1,0} broadcast(f32[32]{0} %reshape.412), dimensions={3}
+  %add.414 = f32[250,150,150,32]{3,2,1,0} add(f32[250,150,150,32]{3,2,1,0} %multiply.410, f32[250,150,150,32]{3,2,1,0} %broadcast.413)
+  %call.423 = f32[250,150,150,32]{3,2,1,0} call(f32[250,150,150,32]{3,2,1,0} %add.414), to_apply=%jit_relu6_0.415
+  %constant.371 = f32[1,1,32,24]{3,2,1,0} constant({...})
+  %convolution.424 = f32[250,150,150,24]{3,2,1,0} convolution(f32[250,150,150,32]{3,2,1,0} %call.423, f32[1,1,32,24]{3,2,1,0} %constant.371), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.291 = f32[1,1,1,24]{3,2,1,0} constant({...})
+  %broadcast.425 = f32[1,1,1,24]{3,2,1,0} broadcast(f32[1,1,1,24]{3,2,1,0} %constant.291), dimensions={0,1,2,3}
+  %reshape.426 = f32[24]{0} reshape(f32[1,1,1,24]{3,2,1,0} %broadcast.425)
+  %broadcast.427 = f32[250,150,150,24]{3,2,1,0} broadcast(f32[24]{0} %reshape.426), dimensions={3}
+  %subtract.428 = f32[250,150,150,24]{3,2,1,0} subtract(f32[250,150,150,24]{3,2,1,0} %convolution.424, f32[250,150,150,24]{3,2,1,0} %broadcast.427)
+  %constant.290 = f32[24]{0} constant({...})
+  %rsqrt.429 = f32[24]{0} rsqrt(f32[24]{0} %constant.290)
+  %reshape.430 = f32[1,1,1,24]{3,2,1,0} reshape(f32[24]{0} %rsqrt.429)
+  %constant.289 = f32[1,1,1,24]{3,2,1,0} constant({...})
+  %multiply.431 = f32[1,1,1,24]{3,2,1,0} multiply(f32[1,1,1,24]{3,2,1,0} %reshape.430, f32[1,1,1,24]{3,2,1,0} %constant.289)
+  %broadcast.432 = f32[1,1,1,24]{3,2,1,0} broadcast(f32[1,1,1,24]{3,2,1,0} %multiply.431), dimensions={0,1,2,3}
+  %reshape.433 = f32[24]{0} reshape(f32[1,1,1,24]{3,2,1,0} %broadcast.432)
+  %broadcast.434 = f32[250,150,150,24]{3,2,1,0} broadcast(f32[24]{0} %reshape.433), dimensions={3}
+  %multiply.435 = f32[250,150,150,24]{3,2,1,0} multiply(f32[250,150,150,24]{3,2,1,0} %subtract.428, f32[250,150,150,24]{3,2,1,0} %broadcast.434)
+  %constant.288 = f32[1,1,1,24]{3,2,1,0} constant({...})
+  %broadcast.436 = f32[1,1,1,24]{3,2,1,0} broadcast(f32[1,1,1,24]{3,2,1,0} %constant.288), dimensions={0,1,2,3}
+  %reshape.437 = f32[24]{0} reshape(f32[1,1,1,24]{3,2,1,0} %broadcast.436)
+  %broadcast.438 = f32[250,150,150,24]{3,2,1,0} broadcast(f32[24]{0} %reshape.437), dimensions={3}
+  %add.439 = f32[250,150,150,24]{3,2,1,0} add(f32[250,150,150,24]{3,2,1,0} %multiply.435, f32[250,150,150,24]{3,2,1,0} %broadcast.438)
+  %constant.370 = f32[1,1,24,144]{3,2,1,0} constant({...})
+  %convolution.440 = f32[250,150,150,144]{3,2,1,0} convolution(f32[250,150,150,24]{3,2,1,0} %add.439, f32[1,1,24,144]{3,2,1,0} %constant.370), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.287 = f32[1,1,1,144]{3,2,1,0} constant({...})
+  %broadcast.441 = f32[1,1,1,144]{3,2,1,0} broadcast(f32[1,1,1,144]{3,2,1,0} %constant.287), dimensions={0,1,2,3}
+  %reshape.442 = f32[144]{0} reshape(f32[1,1,1,144]{3,2,1,0} %broadcast.441)
+  %broadcast.443 = f32[250,150,150,144]{3,2,1,0} broadcast(f32[144]{0} %reshape.442), dimensions={3}
+  %subtract.444 = f32[250,150,150,144]{3,2,1,0} subtract(f32[250,150,150,144]{3,2,1,0} %convolution.440, f32[250,150,150,144]{3,2,1,0} %broadcast.443)
+  %constant.286 = f32[144]{0} constant({...})
+  %rsqrt.445 = f32[144]{0} rsqrt(f32[144]{0} %constant.286)
+  %reshape.446 = f32[1,1,1,144]{3,2,1,0} reshape(f32[144]{0} %rsqrt.445)
+  %constant.285 = f32[1,1,1,144]{3,2,1,0} constant({...})
+  %multiply.447 = f32[1,1,1,144]{3,2,1,0} multiply(f32[1,1,1,144]{3,2,1,0} %reshape.446, f32[1,1,1,144]{3,2,1,0} %constant.285)
+  %broadcast.448 = f32[1,1,1,144]{3,2,1,0} broadcast(f32[1,1,1,144]{3,2,1,0} %multiply.447), dimensions={0,1,2,3}
+  %reshape.449 = f32[144]{0} reshape(f32[1,1,1,144]{3,2,1,0} %broadcast.448)
+  %broadcast.450 = f32[250,150,150,144]{3,2,1,0} broadcast(f32[144]{0} %reshape.449), dimensions={3}
+  %multiply.451 = f32[250,150,150,144]{3,2,1,0} multiply(f32[250,150,150,144]{3,2,1,0} %subtract.444, f32[250,150,150,144]{3,2,1,0} %broadcast.450)
+  %constant.284 = f32[1,1,1,144]{3,2,1,0} constant({...})
+  %broadcast.452 = f32[1,1,1,144]{3,2,1,0} broadcast(f32[1,1,1,144]{3,2,1,0} %constant.284), dimensions={0,1,2,3}
+  %reshape.453 = f32[144]{0} reshape(f32[1,1,1,144]{3,2,1,0} %broadcast.452)
+  %broadcast.454 = f32[250,150,150,144]{3,2,1,0} broadcast(f32[144]{0} %reshape.453), dimensions={3}
+  %add.455 = f32[250,150,150,144]{3,2,1,0} add(f32[250,150,150,144]{3,2,1,0} %multiply.451, f32[250,150,150,144]{3,2,1,0} %broadcast.454)
+  %call.464 = f32[250,150,150,144]{3,2,1,0} call(f32[250,150,150,144]{3,2,1,0} %add.455), to_apply=%jit_relu6_1.456
+  %constant.369 = f32[3,3,1,144]{3,2,1,0} constant({...})
+  %convolution.465 = f32[250,75,75,144]{3,2,1,0} convolution(f32[250,150,150,144]{3,2,1,0} %call.464, f32[3,3,1,144]{3,2,1,0} %constant.369), window={size=3x3 stride=2x2 pad=0_1x0_1}, dim_labels=b01f_01io->b01f, feature_group_count=144
+  %constant.283 = f32[1,1,1,144]{3,2,1,0} constant({...})
+  %broadcast.466 = f32[1,1,1,144]{3,2,1,0} broadcast(f32[1,1,1,144]{3,2,1,0} %constant.283), dimensions={0,1,2,3}
+  %reshape.467 = f32[144]{0} reshape(f32[1,1,1,144]{3,2,1,0} %broadcast.466)
+  %broadcast.468 = f32[250,75,75,144]{3,2,1,0} broadcast(f32[144]{0} %reshape.467), dimensions={3}
+  %subtract.469 = f32[250,75,75,144]{3,2,1,0} subtract(f32[250,75,75,144]{3,2,1,0} %convolution.465, f32[250,75,75,144]{3,2,1,0} %broadcast.468)
+  %constant.282 = f32[144]{0} constant({...})
+  %rsqrt.470 = f32[144]{0} rsqrt(f32[144]{0} %constant.282)
+  %reshape.471 = f32[1,1,1,144]{3,2,1,0} reshape(f32[144]{0} %rsqrt.470)
+  %constant.281 = f32[1,1,1,144]{3,2,1,0} constant({...})
+  %multiply.472 = f32[1,1,1,144]{3,2,1,0} multiply(f32[1,1,1,144]{3,2,1,0} %reshape.471, f32[1,1,1,144]{3,2,1,0} %constant.281)
+  %broadcast.473 = f32[1,1,1,144]{3,2,1,0} broadcast(f32[1,1,1,144]{3,2,1,0} %multiply.472), dimensions={0,1,2,3}
+  %reshape.474 = f32[144]{0} reshape(f32[1,1,1,144]{3,2,1,0} %broadcast.473)
+  %broadcast.475 = f32[250,75,75,144]{3,2,1,0} broadcast(f32[144]{0} %reshape.474), dimensions={3}
+  %multiply.476 = f32[250,75,75,144]{3,2,1,0} multiply(f32[250,75,75,144]{3,2,1,0} %subtract.469, f32[250,75,75,144]{3,2,1,0} %broadcast.475)
+  %constant.280 = f32[1,1,1,144]{3,2,1,0} constant({...})
+  %broadcast.477 = f32[1,1,1,144]{3,2,1,0} broadcast(f32[1,1,1,144]{3,2,1,0} %constant.280), dimensions={0,1,2,3}
+  %reshape.478 = f32[144]{0} reshape(f32[1,1,1,144]{3,2,1,0} %broadcast.477)
+  %broadcast.479 = f32[250,75,75,144]{3,2,1,0} broadcast(f32[144]{0} %reshape.478), dimensions={3}
+  %add.480 = f32[250,75,75,144]{3,2,1,0} add(f32[250,75,75,144]{3,2,1,0} %multiply.476, f32[250,75,75,144]{3,2,1,0} %broadcast.479)
+  %call.489 = f32[250,75,75,144]{3,2,1,0} call(f32[250,75,75,144]{3,2,1,0} %add.480), to_apply=%jit_relu6_2.481
+  %constant.368 = f32[1,1,144,32]{3,2,1,0} constant({...})
+  %convolution.490 = f32[250,75,75,32]{3,2,1,0} convolution(f32[250,75,75,144]{3,2,1,0} %call.489, f32[1,1,144,32]{3,2,1,0} %constant.368), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.279 = f32[1,1,1,32]{3,2,1,0} constant({...})
+  %broadcast.491 = f32[1,1,1,32]{3,2,1,0} broadcast(f32[1,1,1,32]{3,2,1,0} %constant.279), dimensions={0,1,2,3}
+  %reshape.492 = f32[32]{0} reshape(f32[1,1,1,32]{3,2,1,0} %broadcast.491)
+  %broadcast.493 = f32[250,75,75,32]{3,2,1,0} broadcast(f32[32]{0} %reshape.492), dimensions={3}
+  %subtract.494 = f32[250,75,75,32]{3,2,1,0} subtract(f32[250,75,75,32]{3,2,1,0} %convolution.490, f32[250,75,75,32]{3,2,1,0} %broadcast.493)
+  %constant.278 = f32[32]{0} constant({...})
+  %rsqrt.495 = f32[32]{0} rsqrt(f32[32]{0} %constant.278)
+  %reshape.496 = f32[1,1,1,32]{3,2,1,0} reshape(f32[32]{0} %rsqrt.495)
+  %constant.277 = f32[1,1,1,32]{3,2,1,0} constant({...})
+  %multiply.497 = f32[1,1,1,32]{3,2,1,0} multiply(f32[1,1,1,32]{3,2,1,0} %reshape.496, f32[1,1,1,32]{3,2,1,0} %constant.277)
+  %broadcast.498 = f32[1,1,1,32]{3,2,1,0} broadcast(f32[1,1,1,32]{3,2,1,0} %multiply.497), dimensions={0,1,2,3}
+  %reshape.499 = f32[32]{0} reshape(f32[1,1,1,32]{3,2,1,0} %broadcast.498)
+  %broadcast.500 = f32[250,75,75,32]{3,2,1,0} broadcast(f32[32]{0} %reshape.499), dimensions={3}
+  %multiply.501 = f32[250,75,75,32]{3,2,1,0} multiply(f32[250,75,75,32]{3,2,1,0} %subtract.494, f32[250,75,75,32]{3,2,1,0} %broadcast.500)
+  %constant.276 = f32[1,1,1,32]{3,2,1,0} constant({...})
+  %broadcast.502 = f32[1,1,1,32]{3,2,1,0} broadcast(f32[1,1,1,32]{3,2,1,0} %constant.276), dimensions={0,1,2,3}
+  %reshape.503 = f32[32]{0} reshape(f32[1,1,1,32]{3,2,1,0} %broadcast.502)
+  %broadcast.504 = f32[250,75,75,32]{3,2,1,0} broadcast(f32[32]{0} %reshape.503), dimensions={3}
+  %add.505 = f32[250,75,75,32]{3,2,1,0} add(f32[250,75,75,32]{3,2,1,0} %multiply.501, f32[250,75,75,32]{3,2,1,0} %broadcast.504)
+  %constant.367 = f32[1,1,32,192]{3,2,1,0} constant({...})
+  %convolution.506 = f32[250,75,75,192]{3,2,1,0} convolution(f32[250,75,75,32]{3,2,1,0} %add.505, f32[1,1,32,192]{3,2,1,0} %constant.367), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.275 = f32[1,1,1,192]{3,2,1,0} constant({...})
+  %broadcast.507 = f32[1,1,1,192]{3,2,1,0} broadcast(f32[1,1,1,192]{3,2,1,0} %constant.275), dimensions={0,1,2,3}
+  %reshape.508 = f32[192]{0} reshape(f32[1,1,1,192]{3,2,1,0} %broadcast.507)
+  %broadcast.509 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[192]{0} %reshape.508), dimensions={3}
+  %subtract.510 = f32[250,75,75,192]{3,2,1,0} subtract(f32[250,75,75,192]{3,2,1,0} %convolution.506, f32[250,75,75,192]{3,2,1,0} %broadcast.509)
+  %constant.274 = f32[192]{0} constant({...})
+  %rsqrt.511 = f32[192]{0} rsqrt(f32[192]{0} %constant.274)
+  %reshape.512 = f32[1,1,1,192]{3,2,1,0} reshape(f32[192]{0} %rsqrt.511)
+  %constant.273 = f32[1,1,1,192]{3,2,1,0} constant({...})
+  %multiply.513 = f32[1,1,1,192]{3,2,1,0} multiply(f32[1,1,1,192]{3,2,1,0} %reshape.512, f32[1,1,1,192]{3,2,1,0} %constant.273)
+  %broadcast.514 = f32[1,1,1,192]{3,2,1,0} broadcast(f32[1,1,1,192]{3,2,1,0} %multiply.513), dimensions={0,1,2,3}
+  %reshape.515 = f32[192]{0} reshape(f32[1,1,1,192]{3,2,1,0} %broadcast.514)
+  %broadcast.516 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[192]{0} %reshape.515), dimensions={3}
+  %multiply.517 = f32[250,75,75,192]{3,2,1,0} multiply(f32[250,75,75,192]{3,2,1,0} %subtract.510, f32[250,75,75,192]{3,2,1,0} %broadcast.516)
+  %constant.272 = f32[1,1,1,192]{3,2,1,0} constant({...})
+  %broadcast.518 = f32[1,1,1,192]{3,2,1,0} broadcast(f32[1,1,1,192]{3,2,1,0} %constant.272), dimensions={0,1,2,3}
+  %reshape.519 = f32[192]{0} reshape(f32[1,1,1,192]{3,2,1,0} %broadcast.518)
+  %broadcast.520 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[192]{0} %reshape.519), dimensions={3}
+  %add.521 = f32[250,75,75,192]{3,2,1,0} add(f32[250,75,75,192]{3,2,1,0} %multiply.517, f32[250,75,75,192]{3,2,1,0} %broadcast.520)
+  %call.530 = f32[250,75,75,192]{3,2,1,0} call(f32[250,75,75,192]{3,2,1,0} %add.521), to_apply=%jit_relu6_3.522
+  %constant.366 = f32[3,3,1,192]{3,2,1,0} constant({...})
+  %convolution.531 = f32[250,75,75,192]{3,2,1,0} convolution(f32[250,75,75,192]{3,2,1,0} %call.530, f32[3,3,1,192]{3,2,1,0} %constant.366), window={size=3x3 pad=1_1x1_1}, dim_labels=b01f_01io->b01f, feature_group_count=192
+  %constant.271 = f32[1,1,1,192]{3,2,1,0} constant({...})
+  %broadcast.532 = f32[1,1,1,192]{3,2,1,0} broadcast(f32[1,1,1,192]{3,2,1,0} %constant.271), dimensions={0,1,2,3}
+  %reshape.533 = f32[192]{0} reshape(f32[1,1,1,192]{3,2,1,0} %broadcast.532)
+  %broadcast.534 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[192]{0} %reshape.533), dimensions={3}
+  %subtract.535 = f32[250,75,75,192]{3,2,1,0} subtract(f32[250,75,75,192]{3,2,1,0} %convolution.531, f32[250,75,75,192]{3,2,1,0} %broadcast.534)
+  %constant.270 = f32[192]{0} constant({...})
+  %rsqrt.536 = f32[192]{0} rsqrt(f32[192]{0} %constant.270)
+  %reshape.537 = f32[1,1,1,192]{3,2,1,0} reshape(f32[192]{0} %rsqrt.536)
+  %constant.269 = f32[1,1,1,192]{3,2,1,0} constant({...})
+  %multiply.538 = f32[1,1,1,192]{3,2,1,0} multiply(f32[1,1,1,192]{3,2,1,0} %reshape.537, f32[1,1,1,192]{3,2,1,0} %constant.269)
+  %broadcast.539 = f32[1,1,1,192]{3,2,1,0} broadcast(f32[1,1,1,192]{3,2,1,0} %multiply.538), dimensions={0,1,2,3}
+  %reshape.540 = f32[192]{0} reshape(f32[1,1,1,192]{3,2,1,0} %broadcast.539)
+  %broadcast.541 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[192]{0} %reshape.540), dimensions={3}
+  %multiply.542 = f32[250,75,75,192]{3,2,1,0} multiply(f32[250,75,75,192]{3,2,1,0} %subtract.535, f32[250,75,75,192]{3,2,1,0} %broadcast.541)
+  %constant.268 = f32[1,1,1,192]{3,2,1,0} constant({...})
+  %broadcast.543 = f32[1,1,1,192]{3,2,1,0} broadcast(f32[1,1,1,192]{3,2,1,0} %constant.268), dimensions={0,1,2,3}
+  %reshape.544 = f32[192]{0} reshape(f32[1,1,1,192]{3,2,1,0} %broadcast.543)
+  %broadcast.545 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[192]{0} %reshape.544), dimensions={3}
+  %add.546 = f32[250,75,75,192]{3,2,1,0} add(f32[250,75,75,192]{3,2,1,0} %multiply.542, f32[250,75,75,192]{3,2,1,0} %broadcast.545)
+  %call.555 = f32[250,75,75,192]{3,2,1,0} call(f32[250,75,75,192]{3,2,1,0} %add.546), to_apply=%jit_relu6_4.547
+  %constant.365 = f32[1,1,192,32]{3,2,1,0} constant({...})
+  %convolution.556 = f32[250,75,75,32]{3,2,1,0} convolution(f32[250,75,75,192]{3,2,1,0} %call.555, f32[1,1,192,32]{3,2,1,0} %constant.365), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.267 = f32[1,1,1,32]{3,2,1,0} constant({...})
+  %broadcast.557 = f32[1,1,1,32]{3,2,1,0} broadcast(f32[1,1,1,32]{3,2,1,0} %constant.267), dimensions={0,1,2,3}
+  %reshape.558 = f32[32]{0} reshape(f32[1,1,1,32]{3,2,1,0} %broadcast.557)
+  %broadcast.559 = f32[250,75,75,32]{3,2,1,0} broadcast(f32[32]{0} %reshape.558), dimensions={3}
+  %subtract.560 = f32[250,75,75,32]{3,2,1,0} subtract(f32[250,75,75,32]{3,2,1,0} %convolution.556, f32[250,75,75,32]{3,2,1,0} %broadcast.559)
+  %constant.266 = f32[32]{0} constant({...})
+  %rsqrt.561 = f32[32]{0} rsqrt(f32[32]{0} %constant.266)
+  %reshape.562 = f32[1,1,1,32]{3,2,1,0} reshape(f32[32]{0} %rsqrt.561)
+  %constant.265 = f32[1,1,1,32]{3,2,1,0} constant({...})
+  %multiply.563 = f32[1,1,1,32]{3,2,1,0} multiply(f32[1,1,1,32]{3,2,1,0} %reshape.562, f32[1,1,1,32]{3,2,1,0} %constant.265)
+  %broadcast.564 = f32[1,1,1,32]{3,2,1,0} broadcast(f32[1,1,1,32]{3,2,1,0} %multiply.563), dimensions={0,1,2,3}
+  %reshape.565 = f32[32]{0} reshape(f32[1,1,1,32]{3,2,1,0} %broadcast.564)
+  %broadcast.566 = f32[250,75,75,32]{3,2,1,0} broadcast(f32[32]{0} %reshape.565), dimensions={3}
+  %multiply.567 = f32[250,75,75,32]{3,2,1,0} multiply(f32[250,75,75,32]{3,2,1,0} %subtract.560, f32[250,75,75,32]{3,2,1,0} %broadcast.566)
+  %constant.264 = f32[1,1,1,32]{3,2,1,0} constant({...})
+  %broadcast.568 = f32[1,1,1,32]{3,2,1,0} broadcast(f32[1,1,1,32]{3,2,1,0} %constant.264), dimensions={0,1,2,3}
+  %reshape.569 = f32[32]{0} reshape(f32[1,1,1,32]{3,2,1,0} %broadcast.568)
+  %broadcast.570 = f32[250,75,75,32]{3,2,1,0} broadcast(f32[32]{0} %reshape.569), dimensions={3}
+  %add.571 = f32[250,75,75,32]{3,2,1,0} add(f32[250,75,75,32]{3,2,1,0} %multiply.567, f32[250,75,75,32]{3,2,1,0} %broadcast.570)
+  %add.572 = f32[250,75,75,32]{3,2,1,0} add(f32[250,75,75,32]{3,2,1,0} %add.571, f32[250,75,75,32]{3,2,1,0} %add.505)
+  %constant.364 = f32[1,1,32,192]{3,2,1,0} constant({...})
+  %convolution.573 = f32[250,75,75,192]{3,2,1,0} convolution(f32[250,75,75,32]{3,2,1,0} %add.572, f32[1,1,32,192]{3,2,1,0} %constant.364), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.263 = f32[1,1,1,192]{3,2,1,0} constant({...})
+  %broadcast.574 = f32[1,1,1,192]{3,2,1,0} broadcast(f32[1,1,1,192]{3,2,1,0} %constant.263), dimensions={0,1,2,3}
+  %reshape.575 = f32[192]{0} reshape(f32[1,1,1,192]{3,2,1,0} %broadcast.574)
+  %broadcast.576 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[192]{0} %reshape.575), dimensions={3}
+  %subtract.577 = f32[250,75,75,192]{3,2,1,0} subtract(f32[250,75,75,192]{3,2,1,0} %convolution.573, f32[250,75,75,192]{3,2,1,0} %broadcast.576)
+  %constant.262 = f32[192]{0} constant({...})
+  %rsqrt.578 = f32[192]{0} rsqrt(f32[192]{0} %constant.262)
+  %reshape.579 = f32[1,1,1,192]{3,2,1,0} reshape(f32[192]{0} %rsqrt.578)
+  %constant.261 = f32[1,1,1,192]{3,2,1,0} constant({...})
+  %multiply.580 = f32[1,1,1,192]{3,2,1,0} multiply(f32[1,1,1,192]{3,2,1,0} %reshape.579, f32[1,1,1,192]{3,2,1,0} %constant.261)
+  %broadcast.581 = f32[1,1,1,192]{3,2,1,0} broadcast(f32[1,1,1,192]{3,2,1,0} %multiply.580), dimensions={0,1,2,3}
+  %reshape.582 = f32[192]{0} reshape(f32[1,1,1,192]{3,2,1,0} %broadcast.581)
+  %broadcast.583 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[192]{0} %reshape.582), dimensions={3}
+  %multiply.584 = f32[250,75,75,192]{3,2,1,0} multiply(f32[250,75,75,192]{3,2,1,0} %subtract.577, f32[250,75,75,192]{3,2,1,0} %broadcast.583)
+  %constant.260 = f32[1,1,1,192]{3,2,1,0} constant({...})
+  %broadcast.585 = f32[1,1,1,192]{3,2,1,0} broadcast(f32[1,1,1,192]{3,2,1,0} %constant.260), dimensions={0,1,2,3}
+  %reshape.586 = f32[192]{0} reshape(f32[1,1,1,192]{3,2,1,0} %broadcast.585)
+  %broadcast.587 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[192]{0} %reshape.586), dimensions={3}
+  %add.588 = f32[250,75,75,192]{3,2,1,0} add(f32[250,75,75,192]{3,2,1,0} %multiply.584, f32[250,75,75,192]{3,2,1,0} %broadcast.587)
+  %call.597 = f32[250,75,75,192]{3,2,1,0} call(f32[250,75,75,192]{3,2,1,0} %add.588), to_apply=%jit_relu6_5.589
+  %constant.363 = f32[3,3,1,192]{3,2,1,0} constant({...})
+  %convolution.598 = f32[250,75,75,192]{3,2,1,0} convolution(f32[250,75,75,192]{3,2,1,0} %call.597, f32[3,3,1,192]{3,2,1,0} %constant.363), window={size=3x3 pad=1_1x1_1}, dim_labels=b01f_01io->b01f, feature_group_count=192
+  %constant.259 = f32[1,1,1,192]{3,2,1,0} constant({...})
+  %broadcast.599 = f32[1,1,1,192]{3,2,1,0} broadcast(f32[1,1,1,192]{3,2,1,0} %constant.259), dimensions={0,1,2,3}
+  %reshape.600 = f32[192]{0} reshape(f32[1,1,1,192]{3,2,1,0} %broadcast.599)
+  %broadcast.601 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[192]{0} %reshape.600), dimensions={3}
+  %subtract.602 = f32[250,75,75,192]{3,2,1,0} subtract(f32[250,75,75,192]{3,2,1,0} %convolution.598, f32[250,75,75,192]{3,2,1,0} %broadcast.601)
+  %constant.258 = f32[192]{0} constant({...})
+  %rsqrt.603 = f32[192]{0} rsqrt(f32[192]{0} %constant.258)
+  %reshape.604 = f32[1,1,1,192]{3,2,1,0} reshape(f32[192]{0} %rsqrt.603)
+  %constant.257 = f32[1,1,1,192]{3,2,1,0} constant({...})
+  %multiply.605 = f32[1,1,1,192]{3,2,1,0} multiply(f32[1,1,1,192]{3,2,1,0} %reshape.604, f32[1,1,1,192]{3,2,1,0} %constant.257)
+  %broadcast.606 = f32[1,1,1,192]{3,2,1,0} broadcast(f32[1,1,1,192]{3,2,1,0} %multiply.605), dimensions={0,1,2,3}
+  %reshape.607 = f32[192]{0} reshape(f32[1,1,1,192]{3,2,1,0} %broadcast.606)
+  %broadcast.608 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[192]{0} %reshape.607), dimensions={3}
+  %multiply.609 = f32[250,75,75,192]{3,2,1,0} multiply(f32[250,75,75,192]{3,2,1,0} %subtract.602, f32[250,75,75,192]{3,2,1,0} %broadcast.608)
+  %constant.256 = f32[1,1,1,192]{3,2,1,0} constant({...})
+  %broadcast.610 = f32[1,1,1,192]{3,2,1,0} broadcast(f32[1,1,1,192]{3,2,1,0} %constant.256), dimensions={0,1,2,3}
+  %reshape.611 = f32[192]{0} reshape(f32[1,1,1,192]{3,2,1,0} %broadcast.610)
+  %broadcast.612 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[192]{0} %reshape.611), dimensions={3}
+  %add.613 = f32[250,75,75,192]{3,2,1,0} add(f32[250,75,75,192]{3,2,1,0} %multiply.609, f32[250,75,75,192]{3,2,1,0} %broadcast.612)
+  %call.622 = f32[250,75,75,192]{3,2,1,0} call(f32[250,75,75,192]{3,2,1,0} %add.613), to_apply=%jit_relu6_6.614
+  %constant.362 = f32[1,1,192,32]{3,2,1,0} constant({...})
+  %convolution.623 = f32[250,75,75,32]{3,2,1,0} convolution(f32[250,75,75,192]{3,2,1,0} %call.622, f32[1,1,192,32]{3,2,1,0} %constant.362), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.255 = f32[1,1,1,32]{3,2,1,0} constant({...})
+  %broadcast.624 = f32[1,1,1,32]{3,2,1,0} broadcast(f32[1,1,1,32]{3,2,1,0} %constant.255), dimensions={0,1,2,3}
+  %reshape.625 = f32[32]{0} reshape(f32[1,1,1,32]{3,2,1,0} %broadcast.624)
+  %broadcast.626 = f32[250,75,75,32]{3,2,1,0} broadcast(f32[32]{0} %reshape.625), dimensions={3}
+  %subtract.627 = f32[250,75,75,32]{3,2,1,0} subtract(f32[250,75,75,32]{3,2,1,0} %convolution.623, f32[250,75,75,32]{3,2,1,0} %broadcast.626)
+  %constant.254 = f32[32]{0} constant({...})
+  %rsqrt.628 = f32[32]{0} rsqrt(f32[32]{0} %constant.254)
+  %reshape.629 = f32[1,1,1,32]{3,2,1,0} reshape(f32[32]{0} %rsqrt.628)
+  %constant.253 = f32[1,1,1,32]{3,2,1,0} constant({...})
+  %multiply.630 = f32[1,1,1,32]{3,2,1,0} multiply(f32[1,1,1,32]{3,2,1,0} %reshape.629, f32[1,1,1,32]{3,2,1,0} %constant.253)
+  %broadcast.631 = f32[1,1,1,32]{3,2,1,0} broadcast(f32[1,1,1,32]{3,2,1,0} %multiply.630), dimensions={0,1,2,3}
+  %reshape.632 = f32[32]{0} reshape(f32[1,1,1,32]{3,2,1,0} %broadcast.631)
+  %broadcast.633 = f32[250,75,75,32]{3,2,1,0} broadcast(f32[32]{0} %reshape.632), dimensions={3}
+  %multiply.634 = f32[250,75,75,32]{3,2,1,0} multiply(f32[250,75,75,32]{3,2,1,0} %subtract.627, f32[250,75,75,32]{3,2,1,0} %broadcast.633)
+  %constant.252 = f32[1,1,1,32]{3,2,1,0} constant({...})
+  %broadcast.635 = f32[1,1,1,32]{3,2,1,0} broadcast(f32[1,1,1,32]{3,2,1,0} %constant.252), dimensions={0,1,2,3}
+  %reshape.636 = f32[32]{0} reshape(f32[1,1,1,32]{3,2,1,0} %broadcast.635)
+  %broadcast.637 = f32[250,75,75,32]{3,2,1,0} broadcast(f32[32]{0} %reshape.636), dimensions={3}
+  %add.638 = f32[250,75,75,32]{3,2,1,0} add(f32[250,75,75,32]{3,2,1,0} %multiply.634, f32[250,75,75,32]{3,2,1,0} %broadcast.637)
+  %add.639 = f32[250,75,75,32]{3,2,1,0} add(f32[250,75,75,32]{3,2,1,0} %add.638, f32[250,75,75,32]{3,2,1,0} %add.572)
+  %constant.361 = f32[1,1,32,192]{3,2,1,0} constant({...})
+  %convolution.640 = f32[250,75,75,192]{3,2,1,0} convolution(f32[250,75,75,32]{3,2,1,0} %add.639, f32[1,1,32,192]{3,2,1,0} %constant.361), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.251 = f32[1,1,1,192]{3,2,1,0} constant({...})
+  %broadcast.641 = f32[1,1,1,192]{3,2,1,0} broadcast(f32[1,1,1,192]{3,2,1,0} %constant.251), dimensions={0,1,2,3}
+  %reshape.642 = f32[192]{0} reshape(f32[1,1,1,192]{3,2,1,0} %broadcast.641)
+  %broadcast.643 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[192]{0} %reshape.642), dimensions={3}
+  %subtract.644 = f32[250,75,75,192]{3,2,1,0} subtract(f32[250,75,75,192]{3,2,1,0} %convolution.640, f32[250,75,75,192]{3,2,1,0} %broadcast.643)
+  %constant.250 = f32[192]{0} constant({...})
+  %rsqrt.645 = f32[192]{0} rsqrt(f32[192]{0} %constant.250)
+  %reshape.646 = f32[1,1,1,192]{3,2,1,0} reshape(f32[192]{0} %rsqrt.645)
+  %constant.249 = f32[1,1,1,192]{3,2,1,0} constant({...})
+  %multiply.647 = f32[1,1,1,192]{3,2,1,0} multiply(f32[1,1,1,192]{3,2,1,0} %reshape.646, f32[1,1,1,192]{3,2,1,0} %constant.249)
+  %broadcast.648 = f32[1,1,1,192]{3,2,1,0} broadcast(f32[1,1,1,192]{3,2,1,0} %multiply.647), dimensions={0,1,2,3}
+  %reshape.649 = f32[192]{0} reshape(f32[1,1,1,192]{3,2,1,0} %broadcast.648)
+  %broadcast.650 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[192]{0} %reshape.649), dimensions={3}
+  %multiply.651 = f32[250,75,75,192]{3,2,1,0} multiply(f32[250,75,75,192]{3,2,1,0} %subtract.644, f32[250,75,75,192]{3,2,1,0} %broadcast.650)
+  %constant.248 = f32[1,1,1,192]{3,2,1,0} constant({...})
+  %broadcast.652 = f32[1,1,1,192]{3,2,1,0} broadcast(f32[1,1,1,192]{3,2,1,0} %constant.248), dimensions={0,1,2,3}
+  %reshape.653 = f32[192]{0} reshape(f32[1,1,1,192]{3,2,1,0} %broadcast.652)
+  %broadcast.654 = f32[250,75,75,192]{3,2,1,0} broadcast(f32[192]{0} %reshape.653), dimensions={3}
+  %add.655 = f32[250,75,75,192]{3,2,1,0} add(f32[250,75,75,192]{3,2,1,0} %multiply.651, f32[250,75,75,192]{3,2,1,0} %broadcast.654)
+  %call.664 = f32[250,75,75,192]{3,2,1,0} call(f32[250,75,75,192]{3,2,1,0} %add.655), to_apply=%jit_relu6_7.656
+  %constant.360 = f32[5,5,1,192]{3,2,1,0} constant({...})
+  %convolution.665 = f32[250,38,38,192]{3,2,1,0} convolution(f32[250,75,75,192]{3,2,1,0} %call.664, f32[5,5,1,192]{3,2,1,0} %constant.360), window={size=5x5 stride=2x2 pad=2_2x2_2}, dim_labels=b01f_01io->b01f, feature_group_count=192
+  %constant.247 = f32[1,1,1,192]{3,2,1,0} constant({...})
+  %broadcast.666 = f32[1,1,1,192]{3,2,1,0} broadcast(f32[1,1,1,192]{3,2,1,0} %constant.247), dimensions={0,1,2,3}
+  %reshape.667 = f32[192]{0} reshape(f32[1,1,1,192]{3,2,1,0} %broadcast.666)
+  %broadcast.668 = f32[250,38,38,192]{3,2,1,0} broadcast(f32[192]{0} %reshape.667), dimensions={3}
+  %subtract.669 = f32[250,38,38,192]{3,2,1,0} subtract(f32[250,38,38,192]{3,2,1,0} %convolution.665, f32[250,38,38,192]{3,2,1,0} %broadcast.668)
+  %constant.246 = f32[192]{0} constant({...})
+  %rsqrt.670 = f32[192]{0} rsqrt(f32[192]{0} %constant.246)
+  %reshape.671 = f32[1,1,1,192]{3,2,1,0} reshape(f32[192]{0} %rsqrt.670)
+  %constant.245 = f32[1,1,1,192]{3,2,1,0} constant({...})
+  %multiply.672 = f32[1,1,1,192]{3,2,1,0} multiply(f32[1,1,1,192]{3,2,1,0} %reshape.671, f32[1,1,1,192]{3,2,1,0} %constant.245)
+  %broadcast.673 = f32[1,1,1,192]{3,2,1,0} broadcast(f32[1,1,1,192]{3,2,1,0} %multiply.672), dimensions={0,1,2,3}
+  %reshape.674 = f32[192]{0} reshape(f32[1,1,1,192]{3,2,1,0} %broadcast.673)
+  %broadcast.675 = f32[250,38,38,192]{3,2,1,0} broadcast(f32[192]{0} %reshape.674), dimensions={3}
+  %multiply.676 = f32[250,38,38,192]{3,2,1,0} multiply(f32[250,38,38,192]{3,2,1,0} %subtract.669, f32[250,38,38,192]{3,2,1,0} %broadcast.675)
+  %constant.244 = f32[1,1,1,192]{3,2,1,0} constant({...})
+  %broadcast.677 = f32[1,1,1,192]{3,2,1,0} broadcast(f32[1,1,1,192]{3,2,1,0} %constant.244), dimensions={0,1,2,3}
+  %reshape.678 = f32[192]{0} reshape(f32[1,1,1,192]{3,2,1,0} %broadcast.677)
+  %broadcast.679 = f32[250,38,38,192]{3,2,1,0} broadcast(f32[192]{0} %reshape.678), dimensions={3}
+  %add.680 = f32[250,38,38,192]{3,2,1,0} add(f32[250,38,38,192]{3,2,1,0} %multiply.676, f32[250,38,38,192]{3,2,1,0} %broadcast.679)
+  %call.689 = f32[250,38,38,192]{3,2,1,0} call(f32[250,38,38,192]{3,2,1,0} %add.680), to_apply=%jit_relu6_8.681
+  %constant.359 = f32[1,1,192,48]{3,2,1,0} constant({...})
+  %convolution.690 = f32[250,38,38,48]{3,2,1,0} convolution(f32[250,38,38,192]{3,2,1,0} %call.689, f32[1,1,192,48]{3,2,1,0} %constant.359), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.243 = f32[1,1,1,48]{3,2,1,0} constant({...})
+  %broadcast.691 = f32[1,1,1,48]{3,2,1,0} broadcast(f32[1,1,1,48]{3,2,1,0} %constant.243), dimensions={0,1,2,3}
+  %reshape.692 = f32[48]{0} reshape(f32[1,1,1,48]{3,2,1,0} %broadcast.691)
+  %broadcast.693 = f32[250,38,38,48]{3,2,1,0} broadcast(f32[48]{0} %reshape.692), dimensions={3}
+  %subtract.694 = f32[250,38,38,48]{3,2,1,0} subtract(f32[250,38,38,48]{3,2,1,0} %convolution.690, f32[250,38,38,48]{3,2,1,0} %broadcast.693)
+  %constant.242 = f32[48]{0} constant({...})
+  %rsqrt.695 = f32[48]{0} rsqrt(f32[48]{0} %constant.242)
+  %reshape.696 = f32[1,1,1,48]{3,2,1,0} reshape(f32[48]{0} %rsqrt.695)
+  %constant.241 = f32[1,1,1,48]{3,2,1,0} constant({...})
+  %multiply.697 = f32[1,1,1,48]{3,2,1,0} multiply(f32[1,1,1,48]{3,2,1,0} %reshape.696, f32[1,1,1,48]{3,2,1,0} %constant.241)
+  %broadcast.698 = f32[1,1,1,48]{3,2,1,0} broadcast(f32[1,1,1,48]{3,2,1,0} %multiply.697), dimensions={0,1,2,3}
+  %reshape.699 = f32[48]{0} reshape(f32[1,1,1,48]{3,2,1,0} %broadcast.698)
+  %broadcast.700 = f32[250,38,38,48]{3,2,1,0} broadcast(f32[48]{0} %reshape.699), dimensions={3}
+  %multiply.701 = f32[250,38,38,48]{3,2,1,0} multiply(f32[250,38,38,48]{3,2,1,0} %subtract.694, f32[250,38,38,48]{3,2,1,0} %broadcast.700)
+  %constant.240 = f32[1,1,1,48]{3,2,1,0} constant({...})
+  %broadcast.702 = f32[1,1,1,48]{3,2,1,0} broadcast(f32[1,1,1,48]{3,2,1,0} %constant.240), dimensions={0,1,2,3}
+  %reshape.703 = f32[48]{0} reshape(f32[1,1,1,48]{3,2,1,0} %broadcast.702)
+  %broadcast.704 = f32[250,38,38,48]{3,2,1,0} broadcast(f32[48]{0} %reshape.703), dimensions={3}
+  %add.705 = f32[250,38,38,48]{3,2,1,0} add(f32[250,38,38,48]{3,2,1,0} %multiply.701, f32[250,38,38,48]{3,2,1,0} %broadcast.704)
+  %constant.358 = f32[1,1,48,288]{3,2,1,0} constant({...})
+  %convolution.706 = f32[250,38,38,288]{3,2,1,0} convolution(f32[250,38,38,48]{3,2,1,0} %add.705, f32[1,1,48,288]{3,2,1,0} %constant.358), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.239 = f32[1,1,1,288]{3,2,1,0} constant({...})
+  %broadcast.707 = f32[1,1,1,288]{3,2,1,0} broadcast(f32[1,1,1,288]{3,2,1,0} %constant.239), dimensions={0,1,2,3}
+  %reshape.708 = f32[288]{0} reshape(f32[1,1,1,288]{3,2,1,0} %broadcast.707)
+  %broadcast.709 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[288]{0} %reshape.708), dimensions={3}
+  %subtract.710 = f32[250,38,38,288]{3,2,1,0} subtract(f32[250,38,38,288]{3,2,1,0} %convolution.706, f32[250,38,38,288]{3,2,1,0} %broadcast.709)
+  %constant.238 = f32[288]{0} constant({...})
+  %rsqrt.711 = f32[288]{0} rsqrt(f32[288]{0} %constant.238)
+  %reshape.712 = f32[1,1,1,288]{3,2,1,0} reshape(f32[288]{0} %rsqrt.711)
+  %constant.237 = f32[1,1,1,288]{3,2,1,0} constant({...})
+  %multiply.713 = f32[1,1,1,288]{3,2,1,0} multiply(f32[1,1,1,288]{3,2,1,0} %reshape.712, f32[1,1,1,288]{3,2,1,0} %constant.237)
+  %broadcast.714 = f32[1,1,1,288]{3,2,1,0} broadcast(f32[1,1,1,288]{3,2,1,0} %multiply.713), dimensions={0,1,2,3}
+  %reshape.715 = f32[288]{0} reshape(f32[1,1,1,288]{3,2,1,0} %broadcast.714)
+  %broadcast.716 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[288]{0} %reshape.715), dimensions={3}
+  %multiply.717 = f32[250,38,38,288]{3,2,1,0} multiply(f32[250,38,38,288]{3,2,1,0} %subtract.710, f32[250,38,38,288]{3,2,1,0} %broadcast.716)
+  %constant.236 = f32[1,1,1,288]{3,2,1,0} constant({...})
+  %broadcast.718 = f32[1,1,1,288]{3,2,1,0} broadcast(f32[1,1,1,288]{3,2,1,0} %constant.236), dimensions={0,1,2,3}
+  %reshape.719 = f32[288]{0} reshape(f32[1,1,1,288]{3,2,1,0} %broadcast.718)
+  %broadcast.720 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[288]{0} %reshape.719), dimensions={3}
+  %add.721 = f32[250,38,38,288]{3,2,1,0} add(f32[250,38,38,288]{3,2,1,0} %multiply.717, f32[250,38,38,288]{3,2,1,0} %broadcast.720)
+  %call.730 = f32[250,38,38,288]{3,2,1,0} call(f32[250,38,38,288]{3,2,1,0} %add.721), to_apply=%jit_relu6_9.722
+  %constant.357 = f32[5,5,1,288]{3,2,1,0} constant({...})
+  %convolution.731 = f32[250,38,38,288]{3,2,1,0} convolution(f32[250,38,38,288]{3,2,1,0} %call.730, f32[5,5,1,288]{3,2,1,0} %constant.357), window={size=5x5 pad=2_2x2_2}, dim_labels=b01f_01io->b01f, feature_group_count=288
+  %constant.235 = f32[1,1,1,288]{3,2,1,0} constant({...})
+  %broadcast.732 = f32[1,1,1,288]{3,2,1,0} broadcast(f32[1,1,1,288]{3,2,1,0} %constant.235), dimensions={0,1,2,3}
+  %reshape.733 = f32[288]{0} reshape(f32[1,1,1,288]{3,2,1,0} %broadcast.732)
+  %broadcast.734 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[288]{0} %reshape.733), dimensions={3}
+  %subtract.735 = f32[250,38,38,288]{3,2,1,0} subtract(f32[250,38,38,288]{3,2,1,0} %convolution.731, f32[250,38,38,288]{3,2,1,0} %broadcast.734)
+  %constant.234 = f32[288]{0} constant({...})
+  %rsqrt.736 = f32[288]{0} rsqrt(f32[288]{0} %constant.234)
+  %reshape.737 = f32[1,1,1,288]{3,2,1,0} reshape(f32[288]{0} %rsqrt.736)
+  %constant.233 = f32[1,1,1,288]{3,2,1,0} constant({...})
+  %multiply.738 = f32[1,1,1,288]{3,2,1,0} multiply(f32[1,1,1,288]{3,2,1,0} %reshape.737, f32[1,1,1,288]{3,2,1,0} %constant.233)
+  %broadcast.739 = f32[1,1,1,288]{3,2,1,0} broadcast(f32[1,1,1,288]{3,2,1,0} %multiply.738), dimensions={0,1,2,3}
+  %reshape.740 = f32[288]{0} reshape(f32[1,1,1,288]{3,2,1,0} %broadcast.739)
+  %broadcast.741 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[288]{0} %reshape.740), dimensions={3}
+  %multiply.742 = f32[250,38,38,288]{3,2,1,0} multiply(f32[250,38,38,288]{3,2,1,0} %subtract.735, f32[250,38,38,288]{3,2,1,0} %broadcast.741)
+  %constant.232 = f32[1,1,1,288]{3,2,1,0} constant({...})
+  %broadcast.743 = f32[1,1,1,288]{3,2,1,0} broadcast(f32[1,1,1,288]{3,2,1,0} %constant.232), dimensions={0,1,2,3}
+  %reshape.744 = f32[288]{0} reshape(f32[1,1,1,288]{3,2,1,0} %broadcast.743)
+  %broadcast.745 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[288]{0} %reshape.744), dimensions={3}
+  %add.746 = f32[250,38,38,288]{3,2,1,0} add(f32[250,38,38,288]{3,2,1,0} %multiply.742, f32[250,38,38,288]{3,2,1,0} %broadcast.745)
+  %call.755 = f32[250,38,38,288]{3,2,1,0} call(f32[250,38,38,288]{3,2,1,0} %add.746), to_apply=%jit_relu6_10.747
+  %constant.356 = f32[1,1,288,48]{3,2,1,0} constant({...})
+  %convolution.756 = f32[250,38,38,48]{3,2,1,0} convolution(f32[250,38,38,288]{3,2,1,0} %call.755, f32[1,1,288,48]{3,2,1,0} %constant.356), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.231 = f32[1,1,1,48]{3,2,1,0} constant({...})
+  %broadcast.757 = f32[1,1,1,48]{3,2,1,0} broadcast(f32[1,1,1,48]{3,2,1,0} %constant.231), dimensions={0,1,2,3}
+  %reshape.758 = f32[48]{0} reshape(f32[1,1,1,48]{3,2,1,0} %broadcast.757)
+  %broadcast.759 = f32[250,38,38,48]{3,2,1,0} broadcast(f32[48]{0} %reshape.758), dimensions={3}
+  %subtract.760 = f32[250,38,38,48]{3,2,1,0} subtract(f32[250,38,38,48]{3,2,1,0} %convolution.756, f32[250,38,38,48]{3,2,1,0} %broadcast.759)
+  %constant.230 = f32[48]{0} constant({...})
+  %rsqrt.761 = f32[48]{0} rsqrt(f32[48]{0} %constant.230)
+  %reshape.762 = f32[1,1,1,48]{3,2,1,0} reshape(f32[48]{0} %rsqrt.761)
+  %constant.229 = f32[1,1,1,48]{3,2,1,0} constant({...})
+  %multiply.763 = f32[1,1,1,48]{3,2,1,0} multiply(f32[1,1,1,48]{3,2,1,0} %reshape.762, f32[1,1,1,48]{3,2,1,0} %constant.229)
+  %broadcast.764 = f32[1,1,1,48]{3,2,1,0} broadcast(f32[1,1,1,48]{3,2,1,0} %multiply.763), dimensions={0,1,2,3}
+  %reshape.765 = f32[48]{0} reshape(f32[1,1,1,48]{3,2,1,0} %broadcast.764)
+  %broadcast.766 = f32[250,38,38,48]{3,2,1,0} broadcast(f32[48]{0} %reshape.765), dimensions={3}
+  %multiply.767 = f32[250,38,38,48]{3,2,1,0} multiply(f32[250,38,38,48]{3,2,1,0} %subtract.760, f32[250,38,38,48]{3,2,1,0} %broadcast.766)
+  %constant.228 = f32[1,1,1,48]{3,2,1,0} constant({...})
+  %broadcast.768 = f32[1,1,1,48]{3,2,1,0} broadcast(f32[1,1,1,48]{3,2,1,0} %constant.228), dimensions={0,1,2,3}
+  %reshape.769 = f32[48]{0} reshape(f32[1,1,1,48]{3,2,1,0} %broadcast.768)
+  %broadcast.770 = f32[250,38,38,48]{3,2,1,0} broadcast(f32[48]{0} %reshape.769), dimensions={3}
+  %add.771 = f32[250,38,38,48]{3,2,1,0} add(f32[250,38,38,48]{3,2,1,0} %multiply.767, f32[250,38,38,48]{3,2,1,0} %broadcast.770)
+  %add.772 = f32[250,38,38,48]{3,2,1,0} add(f32[250,38,38,48]{3,2,1,0} %add.771, f32[250,38,38,48]{3,2,1,0} %add.705)
+  %constant.355 = f32[1,1,48,288]{3,2,1,0} constant({...})
+  %convolution.773 = f32[250,38,38,288]{3,2,1,0} convolution(f32[250,38,38,48]{3,2,1,0} %add.772, f32[1,1,48,288]{3,2,1,0} %constant.355), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.227 = f32[1,1,1,288]{3,2,1,0} constant({...})
+  %broadcast.774 = f32[1,1,1,288]{3,2,1,0} broadcast(f32[1,1,1,288]{3,2,1,0} %constant.227), dimensions={0,1,2,3}
+  %reshape.775 = f32[288]{0} reshape(f32[1,1,1,288]{3,2,1,0} %broadcast.774)
+  %broadcast.776 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[288]{0} %reshape.775), dimensions={3}
+  %subtract.777 = f32[250,38,38,288]{3,2,1,0} subtract(f32[250,38,38,288]{3,2,1,0} %convolution.773, f32[250,38,38,288]{3,2,1,0} %broadcast.776)
+  %constant.226 = f32[288]{0} constant({...})
+  %rsqrt.778 = f32[288]{0} rsqrt(f32[288]{0} %constant.226)
+  %reshape.779 = f32[1,1,1,288]{3,2,1,0} reshape(f32[288]{0} %rsqrt.778)
+  %constant.225 = f32[1,1,1,288]{3,2,1,0} constant({...})
+  %multiply.780 = f32[1,1,1,288]{3,2,1,0} multiply(f32[1,1,1,288]{3,2,1,0} %reshape.779, f32[1,1,1,288]{3,2,1,0} %constant.225)
+  %broadcast.781 = f32[1,1,1,288]{3,2,1,0} broadcast(f32[1,1,1,288]{3,2,1,0} %multiply.780), dimensions={0,1,2,3}
+  %reshape.782 = f32[288]{0} reshape(f32[1,1,1,288]{3,2,1,0} %broadcast.781)
+  %broadcast.783 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[288]{0} %reshape.782), dimensions={3}
+  %multiply.784 = f32[250,38,38,288]{3,2,1,0} multiply(f32[250,38,38,288]{3,2,1,0} %subtract.777, f32[250,38,38,288]{3,2,1,0} %broadcast.783)
+  %constant.224 = f32[1,1,1,288]{3,2,1,0} constant({...})
+  %broadcast.785 = f32[1,1,1,288]{3,2,1,0} broadcast(f32[1,1,1,288]{3,2,1,0} %constant.224), dimensions={0,1,2,3}
+  %reshape.786 = f32[288]{0} reshape(f32[1,1,1,288]{3,2,1,0} %broadcast.785)
+  %broadcast.787 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[288]{0} %reshape.786), dimensions={3}
+  %add.788 = f32[250,38,38,288]{3,2,1,0} add(f32[250,38,38,288]{3,2,1,0} %multiply.784, f32[250,38,38,288]{3,2,1,0} %broadcast.787)
+  %call.797 = f32[250,38,38,288]{3,2,1,0} call(f32[250,38,38,288]{3,2,1,0} %add.788), to_apply=%jit_relu6_11.789
+  %constant.354 = f32[5,5,1,288]{3,2,1,0} constant({...})
+  %convolution.798 = f32[250,38,38,288]{3,2,1,0} convolution(f32[250,38,38,288]{3,2,1,0} %call.797, f32[5,5,1,288]{3,2,1,0} %constant.354), window={size=5x5 pad=2_2x2_2}, dim_labels=b01f_01io->b01f, feature_group_count=288
+  %constant.223 = f32[1,1,1,288]{3,2,1,0} constant({...})
+  %broadcast.799 = f32[1,1,1,288]{3,2,1,0} broadcast(f32[1,1,1,288]{3,2,1,0} %constant.223), dimensions={0,1,2,3}
+  %reshape.800 = f32[288]{0} reshape(f32[1,1,1,288]{3,2,1,0} %broadcast.799)
+  %broadcast.801 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[288]{0} %reshape.800), dimensions={3}
+  %subtract.802 = f32[250,38,38,288]{3,2,1,0} subtract(f32[250,38,38,288]{3,2,1,0} %convolution.798, f32[250,38,38,288]{3,2,1,0} %broadcast.801)
+  %constant.222 = f32[288]{0} constant({...})
+  %rsqrt.803 = f32[288]{0} rsqrt(f32[288]{0} %constant.222)
+  %reshape.804 = f32[1,1,1,288]{3,2,1,0} reshape(f32[288]{0} %rsqrt.803)
+  %constant.221 = f32[1,1,1,288]{3,2,1,0} constant({...})
+  %multiply.805 = f32[1,1,1,288]{3,2,1,0} multiply(f32[1,1,1,288]{3,2,1,0} %reshape.804, f32[1,1,1,288]{3,2,1,0} %constant.221)
+  %broadcast.806 = f32[1,1,1,288]{3,2,1,0} broadcast(f32[1,1,1,288]{3,2,1,0} %multiply.805), dimensions={0,1,2,3}
+  %reshape.807 = f32[288]{0} reshape(f32[1,1,1,288]{3,2,1,0} %broadcast.806)
+  %broadcast.808 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[288]{0} %reshape.807), dimensions={3}
+  %multiply.809 = f32[250,38,38,288]{3,2,1,0} multiply(f32[250,38,38,288]{3,2,1,0} %subtract.802, f32[250,38,38,288]{3,2,1,0} %broadcast.808)
+  %constant.220 = f32[1,1,1,288]{3,2,1,0} constant({...})
+  %broadcast.810 = f32[1,1,1,288]{3,2,1,0} broadcast(f32[1,1,1,288]{3,2,1,0} %constant.220), dimensions={0,1,2,3}
+  %reshape.811 = f32[288]{0} reshape(f32[1,1,1,288]{3,2,1,0} %broadcast.810)
+  %broadcast.812 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[288]{0} %reshape.811), dimensions={3}
+  %add.813 = f32[250,38,38,288]{3,2,1,0} add(f32[250,38,38,288]{3,2,1,0} %multiply.809, f32[250,38,38,288]{3,2,1,0} %broadcast.812)
+  %call.822 = f32[250,38,38,288]{3,2,1,0} call(f32[250,38,38,288]{3,2,1,0} %add.813), to_apply=%jit_relu6_12.814
+  %constant.353 = f32[1,1,288,48]{3,2,1,0} constant({...})
+  %convolution.823 = f32[250,38,38,48]{3,2,1,0} convolution(f32[250,38,38,288]{3,2,1,0} %call.822, f32[1,1,288,48]{3,2,1,0} %constant.353), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.219 = f32[1,1,1,48]{3,2,1,0} constant({...})
+  %broadcast.824 = f32[1,1,1,48]{3,2,1,0} broadcast(f32[1,1,1,48]{3,2,1,0} %constant.219), dimensions={0,1,2,3}
+  %reshape.825 = f32[48]{0} reshape(f32[1,1,1,48]{3,2,1,0} %broadcast.824)
+  %broadcast.826 = f32[250,38,38,48]{3,2,1,0} broadcast(f32[48]{0} %reshape.825), dimensions={3}
+  %subtract.827 = f32[250,38,38,48]{3,2,1,0} subtract(f32[250,38,38,48]{3,2,1,0} %convolution.823, f32[250,38,38,48]{3,2,1,0} %broadcast.826)
+  %constant.218 = f32[48]{0} constant({...})
+  %rsqrt.828 = f32[48]{0} rsqrt(f32[48]{0} %constant.218)
+  %reshape.829 = f32[1,1,1,48]{3,2,1,0} reshape(f32[48]{0} %rsqrt.828)
+  %constant.217 = f32[1,1,1,48]{3,2,1,0} constant({...})
+  %multiply.830 = f32[1,1,1,48]{3,2,1,0} multiply(f32[1,1,1,48]{3,2,1,0} %reshape.829, f32[1,1,1,48]{3,2,1,0} %constant.217)
+  %broadcast.831 = f32[1,1,1,48]{3,2,1,0} broadcast(f32[1,1,1,48]{3,2,1,0} %multiply.830), dimensions={0,1,2,3}
+  %reshape.832 = f32[48]{0} reshape(f32[1,1,1,48]{3,2,1,0} %broadcast.831)
+  %broadcast.833 = f32[250,38,38,48]{3,2,1,0} broadcast(f32[48]{0} %reshape.832), dimensions={3}
+  %multiply.834 = f32[250,38,38,48]{3,2,1,0} multiply(f32[250,38,38,48]{3,2,1,0} %subtract.827, f32[250,38,38,48]{3,2,1,0} %broadcast.833)
+  %constant.216 = f32[1,1,1,48]{3,2,1,0} constant({...})
+  %broadcast.835 = f32[1,1,1,48]{3,2,1,0} broadcast(f32[1,1,1,48]{3,2,1,0} %constant.216), dimensions={0,1,2,3}
+  %reshape.836 = f32[48]{0} reshape(f32[1,1,1,48]{3,2,1,0} %broadcast.835)
+  %broadcast.837 = f32[250,38,38,48]{3,2,1,0} broadcast(f32[48]{0} %reshape.836), dimensions={3}
+  %add.838 = f32[250,38,38,48]{3,2,1,0} add(f32[250,38,38,48]{3,2,1,0} %multiply.834, f32[250,38,38,48]{3,2,1,0} %broadcast.837)
+  %add.839 = f32[250,38,38,48]{3,2,1,0} add(f32[250,38,38,48]{3,2,1,0} %add.838, f32[250,38,38,48]{3,2,1,0} %add.772)
+  %constant.352 = f32[1,1,48,288]{3,2,1,0} constant({...})
+  %convolution.840 = f32[250,38,38,288]{3,2,1,0} convolution(f32[250,38,38,48]{3,2,1,0} %add.839, f32[1,1,48,288]{3,2,1,0} %constant.352), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.215 = f32[1,1,1,288]{3,2,1,0} constant({...})
+  %broadcast.841 = f32[1,1,1,288]{3,2,1,0} broadcast(f32[1,1,1,288]{3,2,1,0} %constant.215), dimensions={0,1,2,3}
+  %reshape.842 = f32[288]{0} reshape(f32[1,1,1,288]{3,2,1,0} %broadcast.841)
+  %broadcast.843 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[288]{0} %reshape.842), dimensions={3}
+  %subtract.844 = f32[250,38,38,288]{3,2,1,0} subtract(f32[250,38,38,288]{3,2,1,0} %convolution.840, f32[250,38,38,288]{3,2,1,0} %broadcast.843)
+  %constant.214 = f32[288]{0} constant({...})
+  %rsqrt.845 = f32[288]{0} rsqrt(f32[288]{0} %constant.214)
+  %reshape.846 = f32[1,1,1,288]{3,2,1,0} reshape(f32[288]{0} %rsqrt.845)
+  %constant.213 = f32[1,1,1,288]{3,2,1,0} constant({...})
+  %multiply.847 = f32[1,1,1,288]{3,2,1,0} multiply(f32[1,1,1,288]{3,2,1,0} %reshape.846, f32[1,1,1,288]{3,2,1,0} %constant.213)
+  %broadcast.848 = f32[1,1,1,288]{3,2,1,0} broadcast(f32[1,1,1,288]{3,2,1,0} %multiply.847), dimensions={0,1,2,3}
+  %reshape.849 = f32[288]{0} reshape(f32[1,1,1,288]{3,2,1,0} %broadcast.848)
+  %broadcast.850 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[288]{0} %reshape.849), dimensions={3}
+  %multiply.851 = f32[250,38,38,288]{3,2,1,0} multiply(f32[250,38,38,288]{3,2,1,0} %subtract.844, f32[250,38,38,288]{3,2,1,0} %broadcast.850)
+  %constant.212 = f32[1,1,1,288]{3,2,1,0} constant({...})
+  %broadcast.852 = f32[1,1,1,288]{3,2,1,0} broadcast(f32[1,1,1,288]{3,2,1,0} %constant.212), dimensions={0,1,2,3}
+  %reshape.853 = f32[288]{0} reshape(f32[1,1,1,288]{3,2,1,0} %broadcast.852)
+  %broadcast.854 = f32[250,38,38,288]{3,2,1,0} broadcast(f32[288]{0} %reshape.853), dimensions={3}
+  %add.855 = f32[250,38,38,288]{3,2,1,0} add(f32[250,38,38,288]{3,2,1,0} %multiply.851, f32[250,38,38,288]{3,2,1,0} %broadcast.854)
+  %call.864 = f32[250,38,38,288]{3,2,1,0} call(f32[250,38,38,288]{3,2,1,0} %add.855), to_apply=%jit_relu6_13.856
+  %constant.351 = f32[3,3,1,288]{3,2,1,0} constant({...})
+  %convolution.865 = f32[250,19,19,288]{3,2,1,0} convolution(f32[250,38,38,288]{3,2,1,0} %call.864, f32[3,3,1,288]{3,2,1,0} %constant.351), window={size=3x3 stride=2x2 pad=0_1x0_1}, dim_labels=b01f_01io->b01f, feature_group_count=288
+  %constant.211 = f32[1,1,1,288]{3,2,1,0} constant({...})
+  %broadcast.866 = f32[1,1,1,288]{3,2,1,0} broadcast(f32[1,1,1,288]{3,2,1,0} %constant.211), dimensions={0,1,2,3}
+  %reshape.867 = f32[288]{0} reshape(f32[1,1,1,288]{3,2,1,0} %broadcast.866)
+  %broadcast.868 = f32[250,19,19,288]{3,2,1,0} broadcast(f32[288]{0} %reshape.867), dimensions={3}
+  %subtract.869 = f32[250,19,19,288]{3,2,1,0} subtract(f32[250,19,19,288]{3,2,1,0} %convolution.865, f32[250,19,19,288]{3,2,1,0} %broadcast.868)
+  %constant.210 = f32[288]{0} constant({...})
+  %rsqrt.870 = f32[288]{0} rsqrt(f32[288]{0} %constant.210)
+  %reshape.871 = f32[1,1,1,288]{3,2,1,0} reshape(f32[288]{0} %rsqrt.870)
+  %constant.209 = f32[1,1,1,288]{3,2,1,0} constant({...})
+  %multiply.872 = f32[1,1,1,288]{3,2,1,0} multiply(f32[1,1,1,288]{3,2,1,0} %reshape.871, f32[1,1,1,288]{3,2,1,0} %constant.209)
+  %broadcast.873 = f32[1,1,1,288]{3,2,1,0} broadcast(f32[1,1,1,288]{3,2,1,0} %multiply.872), dimensions={0,1,2,3}
+  %reshape.874 = f32[288]{0} reshape(f32[1,1,1,288]{3,2,1,0} %broadcast.873)
+  %broadcast.875 = f32[250,19,19,288]{3,2,1,0} broadcast(f32[288]{0} %reshape.874), dimensions={3}
+  %multiply.876 = f32[250,19,19,288]{3,2,1,0} multiply(f32[250,19,19,288]{3,2,1,0} %subtract.869, f32[250,19,19,288]{3,2,1,0} %broadcast.875)
+  %constant.208 = f32[1,1,1,288]{3,2,1,0} constant({...})
+  %broadcast.877 = f32[1,1,1,288]{3,2,1,0} broadcast(f32[1,1,1,288]{3,2,1,0} %constant.208), dimensions={0,1,2,3}
+  %reshape.878 = f32[288]{0} reshape(f32[1,1,1,288]{3,2,1,0} %broadcast.877)
+  %broadcast.879 = f32[250,19,19,288]{3,2,1,0} broadcast(f32[288]{0} %reshape.878), dimensions={3}
+  %add.880 = f32[250,19,19,288]{3,2,1,0} add(f32[250,19,19,288]{3,2,1,0} %multiply.876, f32[250,19,19,288]{3,2,1,0} %broadcast.879)
+  %call.889 = f32[250,19,19,288]{3,2,1,0} call(f32[250,19,19,288]{3,2,1,0} %add.880), to_apply=%jit_relu6_14.881
+  %constant.350 = f32[1,1,288,96]{3,2,1,0} constant({...})
+  %convolution.890 = f32[250,19,19,96]{3,2,1,0} convolution(f32[250,19,19,288]{3,2,1,0} %call.889, f32[1,1,288,96]{3,2,1,0} %constant.350), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.207 = f32[1,1,1,96]{3,2,1,0} constant({...})
+  %broadcast.891 = f32[1,1,1,96]{3,2,1,0} broadcast(f32[1,1,1,96]{3,2,1,0} %constant.207), dimensions={0,1,2,3}
+  %reshape.892 = f32[96]{0} reshape(f32[1,1,1,96]{3,2,1,0} %broadcast.891)
+  %broadcast.893 = f32[250,19,19,96]{3,2,1,0} broadcast(f32[96]{0} %reshape.892), dimensions={3}
+  %subtract.894 = f32[250,19,19,96]{3,2,1,0} subtract(f32[250,19,19,96]{3,2,1,0} %convolution.890, f32[250,19,19,96]{3,2,1,0} %broadcast.893)
+  %constant.206 = f32[96]{0} constant({...})
+  %rsqrt.895 = f32[96]{0} rsqrt(f32[96]{0} %constant.206)
+  %reshape.896 = f32[1,1,1,96]{3,2,1,0} reshape(f32[96]{0} %rsqrt.895)
+  %constant.205 = f32[1,1,1,96]{3,2,1,0} constant({...})
+  %multiply.897 = f32[1,1,1,96]{3,2,1,0} multiply(f32[1,1,1,96]{3,2,1,0} %reshape.896, f32[1,1,1,96]{3,2,1,0} %constant.205)
+  %broadcast.898 = f32[1,1,1,96]{3,2,1,0} broadcast(f32[1,1,1,96]{3,2,1,0} %multiply.897), dimensions={0,1,2,3}
+  %reshape.899 = f32[96]{0} reshape(f32[1,1,1,96]{3,2,1,0} %broadcast.898)
+  %broadcast.900 = f32[250,19,19,96]{3,2,1,0} broadcast(f32[96]{0} %reshape.899), dimensions={3}
+  %multiply.901 = f32[250,19,19,96]{3,2,1,0} multiply(f32[250,19,19,96]{3,2,1,0} %subtract.894, f32[250,19,19,96]{3,2,1,0} %broadcast.900)
+  %constant.204 = f32[1,1,1,96]{3,2,1,0} constant({...})
+  %broadcast.902 = f32[1,1,1,96]{3,2,1,0} broadcast(f32[1,1,1,96]{3,2,1,0} %constant.204), dimensions={0,1,2,3}
+  %reshape.903 = f32[96]{0} reshape(f32[1,1,1,96]{3,2,1,0} %broadcast.902)
+  %broadcast.904 = f32[250,19,19,96]{3,2,1,0} broadcast(f32[96]{0} %reshape.903), dimensions={3}
+  %add.905 = f32[250,19,19,96]{3,2,1,0} add(f32[250,19,19,96]{3,2,1,0} %multiply.901, f32[250,19,19,96]{3,2,1,0} %broadcast.904)
+  %constant.349 = f32[1,1,96,576]{3,2,1,0} constant({...})
+  %convolution.906 = f32[250,19,19,576]{3,2,1,0} convolution(f32[250,19,19,96]{3,2,1,0} %add.905, f32[1,1,96,576]{3,2,1,0} %constant.349), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.203 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.907 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.203), dimensions={0,1,2,3}
+  %reshape.908 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.907)
+  %broadcast.909 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.908), dimensions={3}
+  %subtract.910 = f32[250,19,19,576]{3,2,1,0} subtract(f32[250,19,19,576]{3,2,1,0} %convolution.906, f32[250,19,19,576]{3,2,1,0} %broadcast.909)
+  %constant.202 = f32[576]{0} constant({...})
+  %rsqrt.911 = f32[576]{0} rsqrt(f32[576]{0} %constant.202)
+  %reshape.912 = f32[1,1,1,576]{3,2,1,0} reshape(f32[576]{0} %rsqrt.911)
+  %constant.201 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %multiply.913 = f32[1,1,1,576]{3,2,1,0} multiply(f32[1,1,1,576]{3,2,1,0} %reshape.912, f32[1,1,1,576]{3,2,1,0} %constant.201)
+  %broadcast.914 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %multiply.913), dimensions={0,1,2,3}
+  %reshape.915 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.914)
+  %broadcast.916 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.915), dimensions={3}
+  %multiply.917 = f32[250,19,19,576]{3,2,1,0} multiply(f32[250,19,19,576]{3,2,1,0} %subtract.910, f32[250,19,19,576]{3,2,1,0} %broadcast.916)
+  %constant.200 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.918 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.200), dimensions={0,1,2,3}
+  %reshape.919 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.918)
+  %broadcast.920 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.919), dimensions={3}
+  %add.921 = f32[250,19,19,576]{3,2,1,0} add(f32[250,19,19,576]{3,2,1,0} %multiply.917, f32[250,19,19,576]{3,2,1,0} %broadcast.920)
+  %call.930 = f32[250,19,19,576]{3,2,1,0} call(f32[250,19,19,576]{3,2,1,0} %add.921), to_apply=%jit_relu6_15.922
+  %constant.348 = f32[3,3,1,576]{3,2,1,0} constant({...})
+  %convolution.931 = f32[250,19,19,576]{3,2,1,0} convolution(f32[250,19,19,576]{3,2,1,0} %call.930, f32[3,3,1,576]{3,2,1,0} %constant.348), window={size=3x3 pad=1_1x1_1}, dim_labels=b01f_01io->b01f, feature_group_count=576
+  %constant.199 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.932 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.199), dimensions={0,1,2,3}
+  %reshape.933 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.932)
+  %broadcast.934 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.933), dimensions={3}
+  %subtract.935 = f32[250,19,19,576]{3,2,1,0} subtract(f32[250,19,19,576]{3,2,1,0} %convolution.931, f32[250,19,19,576]{3,2,1,0} %broadcast.934)
+  %constant.198 = f32[576]{0} constant({...})
+  %rsqrt.936 = f32[576]{0} rsqrt(f32[576]{0} %constant.198)
+  %reshape.937 = f32[1,1,1,576]{3,2,1,0} reshape(f32[576]{0} %rsqrt.936)
+  %constant.197 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %multiply.938 = f32[1,1,1,576]{3,2,1,0} multiply(f32[1,1,1,576]{3,2,1,0} %reshape.937, f32[1,1,1,576]{3,2,1,0} %constant.197)
+  %broadcast.939 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %multiply.938), dimensions={0,1,2,3}
+  %reshape.940 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.939)
+  %broadcast.941 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.940), dimensions={3}
+  %multiply.942 = f32[250,19,19,576]{3,2,1,0} multiply(f32[250,19,19,576]{3,2,1,0} %subtract.935, f32[250,19,19,576]{3,2,1,0} %broadcast.941)
+  %constant.196 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.943 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.196), dimensions={0,1,2,3}
+  %reshape.944 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.943)
+  %broadcast.945 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.944), dimensions={3}
+  %add.946 = f32[250,19,19,576]{3,2,1,0} add(f32[250,19,19,576]{3,2,1,0} %multiply.942, f32[250,19,19,576]{3,2,1,0} %broadcast.945)
+  %call.955 = f32[250,19,19,576]{3,2,1,0} call(f32[250,19,19,576]{3,2,1,0} %add.946), to_apply=%jit_relu6_16.947
+  %constant.347 = f32[1,1,576,96]{3,2,1,0} constant({...})
+  %convolution.956 = f32[250,19,19,96]{3,2,1,0} convolution(f32[250,19,19,576]{3,2,1,0} %call.955, f32[1,1,576,96]{3,2,1,0} %constant.347), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.195 = f32[1,1,1,96]{3,2,1,0} constant({...})
+  %broadcast.957 = f32[1,1,1,96]{3,2,1,0} broadcast(f32[1,1,1,96]{3,2,1,0} %constant.195), dimensions={0,1,2,3}
+  %reshape.958 = f32[96]{0} reshape(f32[1,1,1,96]{3,2,1,0} %broadcast.957)
+  %broadcast.959 = f32[250,19,19,96]{3,2,1,0} broadcast(f32[96]{0} %reshape.958), dimensions={3}
+  %subtract.960 = f32[250,19,19,96]{3,2,1,0} subtract(f32[250,19,19,96]{3,2,1,0} %convolution.956, f32[250,19,19,96]{3,2,1,0} %broadcast.959)
+  %constant.194 = f32[96]{0} constant({...})
+  %rsqrt.961 = f32[96]{0} rsqrt(f32[96]{0} %constant.194)
+  %reshape.962 = f32[1,1,1,96]{3,2,1,0} reshape(f32[96]{0} %rsqrt.961)
+  %constant.193 = f32[1,1,1,96]{3,2,1,0} constant({...})
+  %multiply.963 = f32[1,1,1,96]{3,2,1,0} multiply(f32[1,1,1,96]{3,2,1,0} %reshape.962, f32[1,1,1,96]{3,2,1,0} %constant.193)
+  %broadcast.964 = f32[1,1,1,96]{3,2,1,0} broadcast(f32[1,1,1,96]{3,2,1,0} %multiply.963), dimensions={0,1,2,3}
+  %reshape.965 = f32[96]{0} reshape(f32[1,1,1,96]{3,2,1,0} %broadcast.964)
+  %broadcast.966 = f32[250,19,19,96]{3,2,1,0} broadcast(f32[96]{0} %reshape.965), dimensions={3}
+  %multiply.967 = f32[250,19,19,96]{3,2,1,0} multiply(f32[250,19,19,96]{3,2,1,0} %subtract.960, f32[250,19,19,96]{3,2,1,0} %broadcast.966)
+  %constant.192 = f32[1,1,1,96]{3,2,1,0} constant({...})
+  %broadcast.968 = f32[1,1,1,96]{3,2,1,0} broadcast(f32[1,1,1,96]{3,2,1,0} %constant.192), dimensions={0,1,2,3}
+  %reshape.969 = f32[96]{0} reshape(f32[1,1,1,96]{3,2,1,0} %broadcast.968)
+  %broadcast.970 = f32[250,19,19,96]{3,2,1,0} broadcast(f32[96]{0} %reshape.969), dimensions={3}
+  %add.971 = f32[250,19,19,96]{3,2,1,0} add(f32[250,19,19,96]{3,2,1,0} %multiply.967, f32[250,19,19,96]{3,2,1,0} %broadcast.970)
+  %add.972 = f32[250,19,19,96]{3,2,1,0} add(f32[250,19,19,96]{3,2,1,0} %add.971, f32[250,19,19,96]{3,2,1,0} %add.905)
+  %constant.346 = f32[1,1,96,576]{3,2,1,0} constant({...})
+  %convolution.973 = f32[250,19,19,576]{3,2,1,0} convolution(f32[250,19,19,96]{3,2,1,0} %add.972, f32[1,1,96,576]{3,2,1,0} %constant.346), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.191 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.974 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.191), dimensions={0,1,2,3}
+  %reshape.975 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.974)
+  %broadcast.976 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.975), dimensions={3}
+  %subtract.977 = f32[250,19,19,576]{3,2,1,0} subtract(f32[250,19,19,576]{3,2,1,0} %convolution.973, f32[250,19,19,576]{3,2,1,0} %broadcast.976)
+  %constant.190 = f32[576]{0} constant({...})
+  %rsqrt.978 = f32[576]{0} rsqrt(f32[576]{0} %constant.190)
+  %reshape.979 = f32[1,1,1,576]{3,2,1,0} reshape(f32[576]{0} %rsqrt.978)
+  %constant.189 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %multiply.980 = f32[1,1,1,576]{3,2,1,0} multiply(f32[1,1,1,576]{3,2,1,0} %reshape.979, f32[1,1,1,576]{3,2,1,0} %constant.189)
+  %broadcast.981 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %multiply.980), dimensions={0,1,2,3}
+  %reshape.982 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.981)
+  %broadcast.983 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.982), dimensions={3}
+  %multiply.984 = f32[250,19,19,576]{3,2,1,0} multiply(f32[250,19,19,576]{3,2,1,0} %subtract.977, f32[250,19,19,576]{3,2,1,0} %broadcast.983)
+  %constant.188 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.985 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.188), dimensions={0,1,2,3}
+  %reshape.986 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.985)
+  %broadcast.987 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.986), dimensions={3}
+  %add.988 = f32[250,19,19,576]{3,2,1,0} add(f32[250,19,19,576]{3,2,1,0} %multiply.984, f32[250,19,19,576]{3,2,1,0} %broadcast.987)
+  %call.997 = f32[250,19,19,576]{3,2,1,0} call(f32[250,19,19,576]{3,2,1,0} %add.988), to_apply=%jit_relu6_17.989
+  %constant.345 = f32[3,3,1,576]{3,2,1,0} constant({...})
+  %convolution.998 = f32[250,19,19,576]{3,2,1,0} convolution(f32[250,19,19,576]{3,2,1,0} %call.997, f32[3,3,1,576]{3,2,1,0} %constant.345), window={size=3x3 pad=1_1x1_1}, dim_labels=b01f_01io->b01f, feature_group_count=576
+  %constant.187 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.999 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.187), dimensions={0,1,2,3}
+  %reshape.1000 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.999)
+  %broadcast.1001 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1000), dimensions={3}
+  %subtract.1002 = f32[250,19,19,576]{3,2,1,0} subtract(f32[250,19,19,576]{3,2,1,0} %convolution.998, f32[250,19,19,576]{3,2,1,0} %broadcast.1001)
+  %constant.186 = f32[576]{0} constant({...})
+  %rsqrt.1003 = f32[576]{0} rsqrt(f32[576]{0} %constant.186)
+  %reshape.1004 = f32[1,1,1,576]{3,2,1,0} reshape(f32[576]{0} %rsqrt.1003)
+  %constant.185 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %multiply.1005 = f32[1,1,1,576]{3,2,1,0} multiply(f32[1,1,1,576]{3,2,1,0} %reshape.1004, f32[1,1,1,576]{3,2,1,0} %constant.185)
+  %broadcast.1006 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %multiply.1005), dimensions={0,1,2,3}
+  %reshape.1007 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1006)
+  %broadcast.1008 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1007), dimensions={3}
+  %multiply.1009 = f32[250,19,19,576]{3,2,1,0} multiply(f32[250,19,19,576]{3,2,1,0} %subtract.1002, f32[250,19,19,576]{3,2,1,0} %broadcast.1008)
+  %constant.184 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.1010 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.184), dimensions={0,1,2,3}
+  %reshape.1011 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1010)
+  %broadcast.1012 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1011), dimensions={3}
+  %add.1013 = f32[250,19,19,576]{3,2,1,0} add(f32[250,19,19,576]{3,2,1,0} %multiply.1009, f32[250,19,19,576]{3,2,1,0} %broadcast.1012)
+  %call.1022 = f32[250,19,19,576]{3,2,1,0} call(f32[250,19,19,576]{3,2,1,0} %add.1013), to_apply=%jit_relu6_18.1014
+  %constant.344 = f32[1,1,576,96]{3,2,1,0} constant({...})
+  %convolution.1023 = f32[250,19,19,96]{3,2,1,0} convolution(f32[250,19,19,576]{3,2,1,0} %call.1022, f32[1,1,576,96]{3,2,1,0} %constant.344), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.183 = f32[1,1,1,96]{3,2,1,0} constant({...})
+  %broadcast.1024 = f32[1,1,1,96]{3,2,1,0} broadcast(f32[1,1,1,96]{3,2,1,0} %constant.183), dimensions={0,1,2,3}
+  %reshape.1025 = f32[96]{0} reshape(f32[1,1,1,96]{3,2,1,0} %broadcast.1024)
+  %broadcast.1026 = f32[250,19,19,96]{3,2,1,0} broadcast(f32[96]{0} %reshape.1025), dimensions={3}
+  %subtract.1027 = f32[250,19,19,96]{3,2,1,0} subtract(f32[250,19,19,96]{3,2,1,0} %convolution.1023, f32[250,19,19,96]{3,2,1,0} %broadcast.1026)
+  %constant.182 = f32[96]{0} constant({...})
+  %rsqrt.1028 = f32[96]{0} rsqrt(f32[96]{0} %constant.182)
+  %reshape.1029 = f32[1,1,1,96]{3,2,1,0} reshape(f32[96]{0} %rsqrt.1028)
+  %constant.181 = f32[1,1,1,96]{3,2,1,0} constant({...})
+  %multiply.1030 = f32[1,1,1,96]{3,2,1,0} multiply(f32[1,1,1,96]{3,2,1,0} %reshape.1029, f32[1,1,1,96]{3,2,1,0} %constant.181)
+  %broadcast.1031 = f32[1,1,1,96]{3,2,1,0} broadcast(f32[1,1,1,96]{3,2,1,0} %multiply.1030), dimensions={0,1,2,3}
+  %reshape.1032 = f32[96]{0} reshape(f32[1,1,1,96]{3,2,1,0} %broadcast.1031)
+  %broadcast.1033 = f32[250,19,19,96]{3,2,1,0} broadcast(f32[96]{0} %reshape.1032), dimensions={3}
+  %multiply.1034 = f32[250,19,19,96]{3,2,1,0} multiply(f32[250,19,19,96]{3,2,1,0} %subtract.1027, f32[250,19,19,96]{3,2,1,0} %broadcast.1033)
+  %constant.180 = f32[1,1,1,96]{3,2,1,0} constant({...})
+  %broadcast.1035 = f32[1,1,1,96]{3,2,1,0} broadcast(f32[1,1,1,96]{3,2,1,0} %constant.180), dimensions={0,1,2,3}
+  %reshape.1036 = f32[96]{0} reshape(f32[1,1,1,96]{3,2,1,0} %broadcast.1035)
+  %broadcast.1037 = f32[250,19,19,96]{3,2,1,0} broadcast(f32[96]{0} %reshape.1036), dimensions={3}
+  %add.1038 = f32[250,19,19,96]{3,2,1,0} add(f32[250,19,19,96]{3,2,1,0} %multiply.1034, f32[250,19,19,96]{3,2,1,0} %broadcast.1037)
+  %add.1039 = f32[250,19,19,96]{3,2,1,0} add(f32[250,19,19,96]{3,2,1,0} %add.1038, f32[250,19,19,96]{3,2,1,0} %add.972)
+  %constant.343 = f32[1,1,96,576]{3,2,1,0} constant({...})
+  %convolution.1040 = f32[250,19,19,576]{3,2,1,0} convolution(f32[250,19,19,96]{3,2,1,0} %add.1039, f32[1,1,96,576]{3,2,1,0} %constant.343), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.179 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.1041 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.179), dimensions={0,1,2,3}
+  %reshape.1042 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1041)
+  %broadcast.1043 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1042), dimensions={3}
+  %subtract.1044 = f32[250,19,19,576]{3,2,1,0} subtract(f32[250,19,19,576]{3,2,1,0} %convolution.1040, f32[250,19,19,576]{3,2,1,0} %broadcast.1043)
+  %constant.178 = f32[576]{0} constant({...})
+  %rsqrt.1045 = f32[576]{0} rsqrt(f32[576]{0} %constant.178)
+  %reshape.1046 = f32[1,1,1,576]{3,2,1,0} reshape(f32[576]{0} %rsqrt.1045)
+  %constant.177 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %multiply.1047 = f32[1,1,1,576]{3,2,1,0} multiply(f32[1,1,1,576]{3,2,1,0} %reshape.1046, f32[1,1,1,576]{3,2,1,0} %constant.177)
+  %broadcast.1048 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %multiply.1047), dimensions={0,1,2,3}
+  %reshape.1049 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1048)
+  %broadcast.1050 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1049), dimensions={3}
+  %multiply.1051 = f32[250,19,19,576]{3,2,1,0} multiply(f32[250,19,19,576]{3,2,1,0} %subtract.1044, f32[250,19,19,576]{3,2,1,0} %broadcast.1050)
+  %constant.176 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.1052 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.176), dimensions={0,1,2,3}
+  %reshape.1053 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1052)
+  %broadcast.1054 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1053), dimensions={3}
+  %add.1055 = f32[250,19,19,576]{3,2,1,0} add(f32[250,19,19,576]{3,2,1,0} %multiply.1051, f32[250,19,19,576]{3,2,1,0} %broadcast.1054)
+  %call.1064 = f32[250,19,19,576]{3,2,1,0} call(f32[250,19,19,576]{3,2,1,0} %add.1055), to_apply=%jit_relu6_19.1056
+  %constant.342 = f32[3,3,1,576]{3,2,1,0} constant({...})
+  %convolution.1065 = f32[250,19,19,576]{3,2,1,0} convolution(f32[250,19,19,576]{3,2,1,0} %call.1064, f32[3,3,1,576]{3,2,1,0} %constant.342), window={size=3x3 pad=1_1x1_1}, dim_labels=b01f_01io->b01f, feature_group_count=576
+  %constant.175 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.1066 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.175), dimensions={0,1,2,3}
+  %reshape.1067 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1066)
+  %broadcast.1068 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1067), dimensions={3}
+  %subtract.1069 = f32[250,19,19,576]{3,2,1,0} subtract(f32[250,19,19,576]{3,2,1,0} %convolution.1065, f32[250,19,19,576]{3,2,1,0} %broadcast.1068)
+  %constant.174 = f32[576]{0} constant({...})
+  %rsqrt.1070 = f32[576]{0} rsqrt(f32[576]{0} %constant.174)
+  %reshape.1071 = f32[1,1,1,576]{3,2,1,0} reshape(f32[576]{0} %rsqrt.1070)
+  %constant.173 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %multiply.1072 = f32[1,1,1,576]{3,2,1,0} multiply(f32[1,1,1,576]{3,2,1,0} %reshape.1071, f32[1,1,1,576]{3,2,1,0} %constant.173)
+  %broadcast.1073 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %multiply.1072), dimensions={0,1,2,3}
+  %reshape.1074 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1073)
+  %broadcast.1075 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1074), dimensions={3}
+  %multiply.1076 = f32[250,19,19,576]{3,2,1,0} multiply(f32[250,19,19,576]{3,2,1,0} %subtract.1069, f32[250,19,19,576]{3,2,1,0} %broadcast.1075)
+  %constant.172 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.1077 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.172), dimensions={0,1,2,3}
+  %reshape.1078 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1077)
+  %broadcast.1079 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1078), dimensions={3}
+  %add.1080 = f32[250,19,19,576]{3,2,1,0} add(f32[250,19,19,576]{3,2,1,0} %multiply.1076, f32[250,19,19,576]{3,2,1,0} %broadcast.1079)
+  %call.1089 = f32[250,19,19,576]{3,2,1,0} call(f32[250,19,19,576]{3,2,1,0} %add.1080), to_apply=%jit_relu6_20.1081
+  %constant.341 = f32[1,1,576,96]{3,2,1,0} constant({...})
+  %convolution.1090 = f32[250,19,19,96]{3,2,1,0} convolution(f32[250,19,19,576]{3,2,1,0} %call.1089, f32[1,1,576,96]{3,2,1,0} %constant.341), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.171 = f32[1,1,1,96]{3,2,1,0} constant({...})
+  %broadcast.1091 = f32[1,1,1,96]{3,2,1,0} broadcast(f32[1,1,1,96]{3,2,1,0} %constant.171), dimensions={0,1,2,3}
+  %reshape.1092 = f32[96]{0} reshape(f32[1,1,1,96]{3,2,1,0} %broadcast.1091)
+  %broadcast.1093 = f32[250,19,19,96]{3,2,1,0} broadcast(f32[96]{0} %reshape.1092), dimensions={3}
+  %subtract.1094 = f32[250,19,19,96]{3,2,1,0} subtract(f32[250,19,19,96]{3,2,1,0} %convolution.1090, f32[250,19,19,96]{3,2,1,0} %broadcast.1093)
+  %constant.170 = f32[96]{0} constant({...})
+  %rsqrt.1095 = f32[96]{0} rsqrt(f32[96]{0} %constant.170)
+  %reshape.1096 = f32[1,1,1,96]{3,2,1,0} reshape(f32[96]{0} %rsqrt.1095)
+  %constant.169 = f32[1,1,1,96]{3,2,1,0} constant({...})
+  %multiply.1097 = f32[1,1,1,96]{3,2,1,0} multiply(f32[1,1,1,96]{3,2,1,0} %reshape.1096, f32[1,1,1,96]{3,2,1,0} %constant.169)
+  %broadcast.1098 = f32[1,1,1,96]{3,2,1,0} broadcast(f32[1,1,1,96]{3,2,1,0} %multiply.1097), dimensions={0,1,2,3}
+  %reshape.1099 = f32[96]{0} reshape(f32[1,1,1,96]{3,2,1,0} %broadcast.1098)
+  %broadcast.1100 = f32[250,19,19,96]{3,2,1,0} broadcast(f32[96]{0} %reshape.1099), dimensions={3}
+  %multiply.1101 = f32[250,19,19,96]{3,2,1,0} multiply(f32[250,19,19,96]{3,2,1,0} %subtract.1094, f32[250,19,19,96]{3,2,1,0} %broadcast.1100)
+  %constant.168 = f32[1,1,1,96]{3,2,1,0} constant({...})
+  %broadcast.1102 = f32[1,1,1,96]{3,2,1,0} broadcast(f32[1,1,1,96]{3,2,1,0} %constant.168), dimensions={0,1,2,3}
+  %reshape.1103 = f32[96]{0} reshape(f32[1,1,1,96]{3,2,1,0} %broadcast.1102)
+  %broadcast.1104 = f32[250,19,19,96]{3,2,1,0} broadcast(f32[96]{0} %reshape.1103), dimensions={3}
+  %add.1105 = f32[250,19,19,96]{3,2,1,0} add(f32[250,19,19,96]{3,2,1,0} %multiply.1101, f32[250,19,19,96]{3,2,1,0} %broadcast.1104)
+  %add.1106 = f32[250,19,19,96]{3,2,1,0} add(f32[250,19,19,96]{3,2,1,0} %add.1105, f32[250,19,19,96]{3,2,1,0} %add.1039)
+  %constant.340 = f32[1,1,96,576]{3,2,1,0} constant({...})
+  %convolution.1107 = f32[250,19,19,576]{3,2,1,0} convolution(f32[250,19,19,96]{3,2,1,0} %add.1106, f32[1,1,96,576]{3,2,1,0} %constant.340), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.167 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.1108 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.167), dimensions={0,1,2,3}
+  %reshape.1109 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1108)
+  %broadcast.1110 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1109), dimensions={3}
+  %subtract.1111 = f32[250,19,19,576]{3,2,1,0} subtract(f32[250,19,19,576]{3,2,1,0} %convolution.1107, f32[250,19,19,576]{3,2,1,0} %broadcast.1110)
+  %constant.166 = f32[576]{0} constant({...})
+  %rsqrt.1112 = f32[576]{0} rsqrt(f32[576]{0} %constant.166)
+  %reshape.1113 = f32[1,1,1,576]{3,2,1,0} reshape(f32[576]{0} %rsqrt.1112)
+  %constant.165 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %multiply.1114 = f32[1,1,1,576]{3,2,1,0} multiply(f32[1,1,1,576]{3,2,1,0} %reshape.1113, f32[1,1,1,576]{3,2,1,0} %constant.165)
+  %broadcast.1115 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %multiply.1114), dimensions={0,1,2,3}
+  %reshape.1116 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1115)
+  %broadcast.1117 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1116), dimensions={3}
+  %multiply.1118 = f32[250,19,19,576]{3,2,1,0} multiply(f32[250,19,19,576]{3,2,1,0} %subtract.1111, f32[250,19,19,576]{3,2,1,0} %broadcast.1117)
+  %constant.164 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.1119 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.164), dimensions={0,1,2,3}
+  %reshape.1120 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1119)
+  %broadcast.1121 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1120), dimensions={3}
+  %add.1122 = f32[250,19,19,576]{3,2,1,0} add(f32[250,19,19,576]{3,2,1,0} %multiply.1118, f32[250,19,19,576]{3,2,1,0} %broadcast.1121)
+  %call.1131 = f32[250,19,19,576]{3,2,1,0} call(f32[250,19,19,576]{3,2,1,0} %add.1122), to_apply=%jit_relu6_21.1123
+  %constant.339 = f32[3,3,1,576]{3,2,1,0} constant({...})
+  %convolution.1132 = f32[250,19,19,576]{3,2,1,0} convolution(f32[250,19,19,576]{3,2,1,0} %call.1131, f32[3,3,1,576]{3,2,1,0} %constant.339), window={size=3x3 pad=1_1x1_1}, dim_labels=b01f_01io->b01f, feature_group_count=576
+  %constant.163 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.1133 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.163), dimensions={0,1,2,3}
+  %reshape.1134 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1133)
+  %broadcast.1135 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1134), dimensions={3}
+  %subtract.1136 = f32[250,19,19,576]{3,2,1,0} subtract(f32[250,19,19,576]{3,2,1,0} %convolution.1132, f32[250,19,19,576]{3,2,1,0} %broadcast.1135)
+  %constant.162 = f32[576]{0} constant({...})
+  %rsqrt.1137 = f32[576]{0} rsqrt(f32[576]{0} %constant.162)
+  %reshape.1138 = f32[1,1,1,576]{3,2,1,0} reshape(f32[576]{0} %rsqrt.1137)
+  %constant.161 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %multiply.1139 = f32[1,1,1,576]{3,2,1,0} multiply(f32[1,1,1,576]{3,2,1,0} %reshape.1138, f32[1,1,1,576]{3,2,1,0} %constant.161)
+  %broadcast.1140 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %multiply.1139), dimensions={0,1,2,3}
+  %reshape.1141 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1140)
+  %broadcast.1142 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1141), dimensions={3}
+  %multiply.1143 = f32[250,19,19,576]{3,2,1,0} multiply(f32[250,19,19,576]{3,2,1,0} %subtract.1136, f32[250,19,19,576]{3,2,1,0} %broadcast.1142)
+  %constant.160 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.1144 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.160), dimensions={0,1,2,3}
+  %reshape.1145 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1144)
+  %broadcast.1146 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1145), dimensions={3}
+  %add.1147 = f32[250,19,19,576]{3,2,1,0} add(f32[250,19,19,576]{3,2,1,0} %multiply.1143, f32[250,19,19,576]{3,2,1,0} %broadcast.1146)
+  %call.1156 = f32[250,19,19,576]{3,2,1,0} call(f32[250,19,19,576]{3,2,1,0} %add.1147), to_apply=%jit_relu6_22.1148
+  %constant.338 = f32[1,1,576,96]{3,2,1,0} constant({...})
+  %convolution.1157 = f32[250,19,19,96]{3,2,1,0} convolution(f32[250,19,19,576]{3,2,1,0} %call.1156, f32[1,1,576,96]{3,2,1,0} %constant.338), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.159 = f32[1,1,1,96]{3,2,1,0} constant({...})
+  %broadcast.1158 = f32[1,1,1,96]{3,2,1,0} broadcast(f32[1,1,1,96]{3,2,1,0} %constant.159), dimensions={0,1,2,3}
+  %reshape.1159 = f32[96]{0} reshape(f32[1,1,1,96]{3,2,1,0} %broadcast.1158)
+  %broadcast.1160 = f32[250,19,19,96]{3,2,1,0} broadcast(f32[96]{0} %reshape.1159), dimensions={3}
+  %subtract.1161 = f32[250,19,19,96]{3,2,1,0} subtract(f32[250,19,19,96]{3,2,1,0} %convolution.1157, f32[250,19,19,96]{3,2,1,0} %broadcast.1160)
+  %constant.158 = f32[96]{0} constant({...})
+  %rsqrt.1162 = f32[96]{0} rsqrt(f32[96]{0} %constant.158)
+  %reshape.1163 = f32[1,1,1,96]{3,2,1,0} reshape(f32[96]{0} %rsqrt.1162)
+  %constant.157 = f32[1,1,1,96]{3,2,1,0} constant({...})
+  %multiply.1164 = f32[1,1,1,96]{3,2,1,0} multiply(f32[1,1,1,96]{3,2,1,0} %reshape.1163, f32[1,1,1,96]{3,2,1,0} %constant.157)
+  %broadcast.1165 = f32[1,1,1,96]{3,2,1,0} broadcast(f32[1,1,1,96]{3,2,1,0} %multiply.1164), dimensions={0,1,2,3}
+  %reshape.1166 = f32[96]{0} reshape(f32[1,1,1,96]{3,2,1,0} %broadcast.1165)
+  %broadcast.1167 = f32[250,19,19,96]{3,2,1,0} broadcast(f32[96]{0} %reshape.1166), dimensions={3}
+  %multiply.1168 = f32[250,19,19,96]{3,2,1,0} multiply(f32[250,19,19,96]{3,2,1,0} %subtract.1161, f32[250,19,19,96]{3,2,1,0} %broadcast.1167)
+  %constant.156 = f32[1,1,1,96]{3,2,1,0} constant({...})
+  %broadcast.1169 = f32[1,1,1,96]{3,2,1,0} broadcast(f32[1,1,1,96]{3,2,1,0} %constant.156), dimensions={0,1,2,3}
+  %reshape.1170 = f32[96]{0} reshape(f32[1,1,1,96]{3,2,1,0} %broadcast.1169)
+  %broadcast.1171 = f32[250,19,19,96]{3,2,1,0} broadcast(f32[96]{0} %reshape.1170), dimensions={3}
+  %add.1172 = f32[250,19,19,96]{3,2,1,0} add(f32[250,19,19,96]{3,2,1,0} %multiply.1168, f32[250,19,19,96]{3,2,1,0} %broadcast.1171)
+  %add.1173 = f32[250,19,19,96]{3,2,1,0} add(f32[250,19,19,96]{3,2,1,0} %add.1172, f32[250,19,19,96]{3,2,1,0} %add.1106)
+  %constant.337 = f32[1,1,96,576]{3,2,1,0} constant({...})
+  %convolution.1174 = f32[250,19,19,576]{3,2,1,0} convolution(f32[250,19,19,96]{3,2,1,0} %add.1173, f32[1,1,96,576]{3,2,1,0} %constant.337), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.155 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.1175 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.155), dimensions={0,1,2,3}
+  %reshape.1176 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1175)
+  %broadcast.1177 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1176), dimensions={3}
+  %subtract.1178 = f32[250,19,19,576]{3,2,1,0} subtract(f32[250,19,19,576]{3,2,1,0} %convolution.1174, f32[250,19,19,576]{3,2,1,0} %broadcast.1177)
+  %constant.154 = f32[576]{0} constant({...})
+  %rsqrt.1179 = f32[576]{0} rsqrt(f32[576]{0} %constant.154)
+  %reshape.1180 = f32[1,1,1,576]{3,2,1,0} reshape(f32[576]{0} %rsqrt.1179)
+  %constant.153 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %multiply.1181 = f32[1,1,1,576]{3,2,1,0} multiply(f32[1,1,1,576]{3,2,1,0} %reshape.1180, f32[1,1,1,576]{3,2,1,0} %constant.153)
+  %broadcast.1182 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %multiply.1181), dimensions={0,1,2,3}
+  %reshape.1183 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1182)
+  %broadcast.1184 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1183), dimensions={3}
+  %multiply.1185 = f32[250,19,19,576]{3,2,1,0} multiply(f32[250,19,19,576]{3,2,1,0} %subtract.1178, f32[250,19,19,576]{3,2,1,0} %broadcast.1184)
+  %constant.152 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.1186 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.152), dimensions={0,1,2,3}
+  %reshape.1187 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1186)
+  %broadcast.1188 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1187), dimensions={3}
+  %add.1189 = f32[250,19,19,576]{3,2,1,0} add(f32[250,19,19,576]{3,2,1,0} %multiply.1185, f32[250,19,19,576]{3,2,1,0} %broadcast.1188)
+  %call.1198 = f32[250,19,19,576]{3,2,1,0} call(f32[250,19,19,576]{3,2,1,0} %add.1189), to_apply=%jit_relu6_23.1190
+  %constant.336 = f32[5,5,1,576]{3,2,1,0} constant({...})
+  %convolution.1199 = f32[250,19,19,576]{3,2,1,0} convolution(f32[250,19,19,576]{3,2,1,0} %call.1198, f32[5,5,1,576]{3,2,1,0} %constant.336), window={size=5x5 pad=2_2x2_2}, dim_labels=b01f_01io->b01f, feature_group_count=576
+  %constant.151 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.1200 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.151), dimensions={0,1,2,3}
+  %reshape.1201 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1200)
+  %broadcast.1202 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1201), dimensions={3}
+  %subtract.1203 = f32[250,19,19,576]{3,2,1,0} subtract(f32[250,19,19,576]{3,2,1,0} %convolution.1199, f32[250,19,19,576]{3,2,1,0} %broadcast.1202)
+  %constant.150 = f32[576]{0} constant({...})
+  %rsqrt.1204 = f32[576]{0} rsqrt(f32[576]{0} %constant.150)
+  %reshape.1205 = f32[1,1,1,576]{3,2,1,0} reshape(f32[576]{0} %rsqrt.1204)
+  %constant.149 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %multiply.1206 = f32[1,1,1,576]{3,2,1,0} multiply(f32[1,1,1,576]{3,2,1,0} %reshape.1205, f32[1,1,1,576]{3,2,1,0} %constant.149)
+  %broadcast.1207 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %multiply.1206), dimensions={0,1,2,3}
+  %reshape.1208 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1207)
+  %broadcast.1209 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1208), dimensions={3}
+  %multiply.1210 = f32[250,19,19,576]{3,2,1,0} multiply(f32[250,19,19,576]{3,2,1,0} %subtract.1203, f32[250,19,19,576]{3,2,1,0} %broadcast.1209)
+  %constant.148 = f32[1,1,1,576]{3,2,1,0} constant({...})
+  %broadcast.1211 = f32[1,1,1,576]{3,2,1,0} broadcast(f32[1,1,1,576]{3,2,1,0} %constant.148), dimensions={0,1,2,3}
+  %reshape.1212 = f32[576]{0} reshape(f32[1,1,1,576]{3,2,1,0} %broadcast.1211)
+  %broadcast.1213 = f32[250,19,19,576]{3,2,1,0} broadcast(f32[576]{0} %reshape.1212), dimensions={3}
+  %add.1214 = f32[250,19,19,576]{3,2,1,0} add(f32[250,19,19,576]{3,2,1,0} %multiply.1210, f32[250,19,19,576]{3,2,1,0} %broadcast.1213)
+  %call.1223 = f32[250,19,19,576]{3,2,1,0} call(f32[250,19,19,576]{3,2,1,0} %add.1214), to_apply=%jit_relu6_24.1215
+  %constant.335 = f32[1,1,576,136]{3,2,1,0} constant({...})
+  %convolution.1224 = f32[250,19,19,136]{3,2,1,0} convolution(f32[250,19,19,576]{3,2,1,0} %call.1223, f32[1,1,576,136]{3,2,1,0} %constant.335), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.147 = f32[1,1,1,136]{3,2,1,0} constant({...})
+  %broadcast.1225 = f32[1,1,1,136]{3,2,1,0} broadcast(f32[1,1,1,136]{3,2,1,0} %constant.147), dimensions={0,1,2,3}
+  %reshape.1226 = f32[136]{0} reshape(f32[1,1,1,136]{3,2,1,0} %broadcast.1225)
+  %broadcast.1227 = f32[250,19,19,136]{3,2,1,0} broadcast(f32[136]{0} %reshape.1226), dimensions={3}
+  %subtract.1228 = f32[250,19,19,136]{3,2,1,0} subtract(f32[250,19,19,136]{3,2,1,0} %convolution.1224, f32[250,19,19,136]{3,2,1,0} %broadcast.1227)
+  %constant.146 = f32[136]{0} constant({...})
+  %rsqrt.1229 = f32[136]{0} rsqrt(f32[136]{0} %constant.146)
+  %reshape.1230 = f32[1,1,1,136]{3,2,1,0} reshape(f32[136]{0} %rsqrt.1229)
+  %constant.145 = f32[1,1,1,136]{3,2,1,0} constant({...})
+  %multiply.1231 = f32[1,1,1,136]{3,2,1,0} multiply(f32[1,1,1,136]{3,2,1,0} %reshape.1230, f32[1,1,1,136]{3,2,1,0} %constant.145)
+  %broadcast.1232 = f32[1,1,1,136]{3,2,1,0} broadcast(f32[1,1,1,136]{3,2,1,0} %multiply.1231), dimensions={0,1,2,3}
+  %reshape.1233 = f32[136]{0} reshape(f32[1,1,1,136]{3,2,1,0} %broadcast.1232)
+  %broadcast.1234 = f32[250,19,19,136]{3,2,1,0} broadcast(f32[136]{0} %reshape.1233), dimensions={3}
+  %multiply.1235 = f32[250,19,19,136]{3,2,1,0} multiply(f32[250,19,19,136]{3,2,1,0} %subtract.1228, f32[250,19,19,136]{3,2,1,0} %broadcast.1234)
+  %constant.144 = f32[1,1,1,136]{3,2,1,0} constant({...})
+  %broadcast.1236 = f32[1,1,1,136]{3,2,1,0} broadcast(f32[1,1,1,136]{3,2,1,0} %constant.144), dimensions={0,1,2,3}
+  %reshape.1237 = f32[136]{0} reshape(f32[1,1,1,136]{3,2,1,0} %broadcast.1236)
+  %broadcast.1238 = f32[250,19,19,136]{3,2,1,0} broadcast(f32[136]{0} %reshape.1237), dimensions={3}
+  %add.1239 = f32[250,19,19,136]{3,2,1,0} add(f32[250,19,19,136]{3,2,1,0} %multiply.1235, f32[250,19,19,136]{3,2,1,0} %broadcast.1238)
+  %constant.334 = f32[1,1,136,816]{3,2,1,0} constant({...})
+  %convolution.1240 = f32[250,19,19,816]{3,2,1,0} convolution(f32[250,19,19,136]{3,2,1,0} %add.1239, f32[1,1,136,816]{3,2,1,0} %constant.334), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.143 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1241 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.143), dimensions={0,1,2,3}
+  %reshape.1242 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1241)
+  %broadcast.1243 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1242), dimensions={3}
+  %subtract.1244 = f32[250,19,19,816]{3,2,1,0} subtract(f32[250,19,19,816]{3,2,1,0} %convolution.1240, f32[250,19,19,816]{3,2,1,0} %broadcast.1243)
+  %constant.142 = f32[816]{0} constant({...})
+  %rsqrt.1245 = f32[816]{0} rsqrt(f32[816]{0} %constant.142)
+  %reshape.1246 = f32[1,1,1,816]{3,2,1,0} reshape(f32[816]{0} %rsqrt.1245)
+  %constant.141 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %multiply.1247 = f32[1,1,1,816]{3,2,1,0} multiply(f32[1,1,1,816]{3,2,1,0} %reshape.1246, f32[1,1,1,816]{3,2,1,0} %constant.141)
+  %broadcast.1248 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %multiply.1247), dimensions={0,1,2,3}
+  %reshape.1249 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1248)
+  %broadcast.1250 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1249), dimensions={3}
+  %multiply.1251 = f32[250,19,19,816]{3,2,1,0} multiply(f32[250,19,19,816]{3,2,1,0} %subtract.1244, f32[250,19,19,816]{3,2,1,0} %broadcast.1250)
+  %constant.140 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1252 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.140), dimensions={0,1,2,3}
+  %reshape.1253 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1252)
+  %broadcast.1254 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1253), dimensions={3}
+  %add.1255 = f32[250,19,19,816]{3,2,1,0} add(f32[250,19,19,816]{3,2,1,0} %multiply.1251, f32[250,19,19,816]{3,2,1,0} %broadcast.1254)
+  %call.1264 = f32[250,19,19,816]{3,2,1,0} call(f32[250,19,19,816]{3,2,1,0} %add.1255), to_apply=%jit_relu6_25.1256
+  %constant.333 = f32[5,5,1,816]{3,2,1,0} constant({...})
+  %convolution.1265 = f32[250,19,19,816]{3,2,1,0} convolution(f32[250,19,19,816]{3,2,1,0} %call.1264, f32[5,5,1,816]{3,2,1,0} %constant.333), window={size=5x5 pad=2_2x2_2}, dim_labels=b01f_01io->b01f, feature_group_count=816
+  %constant.139 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1266 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.139), dimensions={0,1,2,3}
+  %reshape.1267 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1266)
+  %broadcast.1268 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1267), dimensions={3}
+  %subtract.1269 = f32[250,19,19,816]{3,2,1,0} subtract(f32[250,19,19,816]{3,2,1,0} %convolution.1265, f32[250,19,19,816]{3,2,1,0} %broadcast.1268)
+  %constant.138 = f32[816]{0} constant({...})
+  %rsqrt.1270 = f32[816]{0} rsqrt(f32[816]{0} %constant.138)
+  %reshape.1271 = f32[1,1,1,816]{3,2,1,0} reshape(f32[816]{0} %rsqrt.1270)
+  %constant.137 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %multiply.1272 = f32[1,1,1,816]{3,2,1,0} multiply(f32[1,1,1,816]{3,2,1,0} %reshape.1271, f32[1,1,1,816]{3,2,1,0} %constant.137)
+  %broadcast.1273 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %multiply.1272), dimensions={0,1,2,3}
+  %reshape.1274 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1273)
+  %broadcast.1275 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1274), dimensions={3}
+  %multiply.1276 = f32[250,19,19,816]{3,2,1,0} multiply(f32[250,19,19,816]{3,2,1,0} %subtract.1269, f32[250,19,19,816]{3,2,1,0} %broadcast.1275)
+  %constant.136 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1277 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.136), dimensions={0,1,2,3}
+  %reshape.1278 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1277)
+  %broadcast.1279 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1278), dimensions={3}
+  %add.1280 = f32[250,19,19,816]{3,2,1,0} add(f32[250,19,19,816]{3,2,1,0} %multiply.1276, f32[250,19,19,816]{3,2,1,0} %broadcast.1279)
+  %call.1289 = f32[250,19,19,816]{3,2,1,0} call(f32[250,19,19,816]{3,2,1,0} %add.1280), to_apply=%jit_relu6_26.1281
+  %constant.332 = f32[1,1,816,136]{3,2,1,0} constant({...})
+  %convolution.1290 = f32[250,19,19,136]{3,2,1,0} convolution(f32[250,19,19,816]{3,2,1,0} %call.1289, f32[1,1,816,136]{3,2,1,0} %constant.332), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.135 = f32[1,1,1,136]{3,2,1,0} constant({...})
+  %broadcast.1291 = f32[1,1,1,136]{3,2,1,0} broadcast(f32[1,1,1,136]{3,2,1,0} %constant.135), dimensions={0,1,2,3}
+  %reshape.1292 = f32[136]{0} reshape(f32[1,1,1,136]{3,2,1,0} %broadcast.1291)
+  %broadcast.1293 = f32[250,19,19,136]{3,2,1,0} broadcast(f32[136]{0} %reshape.1292), dimensions={3}
+  %subtract.1294 = f32[250,19,19,136]{3,2,1,0} subtract(f32[250,19,19,136]{3,2,1,0} %convolution.1290, f32[250,19,19,136]{3,2,1,0} %broadcast.1293)
+  %constant.134 = f32[136]{0} constant({...})
+  %rsqrt.1295 = f32[136]{0} rsqrt(f32[136]{0} %constant.134)
+  %reshape.1296 = f32[1,1,1,136]{3,2,1,0} reshape(f32[136]{0} %rsqrt.1295)
+  %constant.133 = f32[1,1,1,136]{3,2,1,0} constant({...})
+  %multiply.1297 = f32[1,1,1,136]{3,2,1,0} multiply(f32[1,1,1,136]{3,2,1,0} %reshape.1296, f32[1,1,1,136]{3,2,1,0} %constant.133)
+  %broadcast.1298 = f32[1,1,1,136]{3,2,1,0} broadcast(f32[1,1,1,136]{3,2,1,0} %multiply.1297), dimensions={0,1,2,3}
+  %reshape.1299 = f32[136]{0} reshape(f32[1,1,1,136]{3,2,1,0} %broadcast.1298)
+  %broadcast.1300 = f32[250,19,19,136]{3,2,1,0} broadcast(f32[136]{0} %reshape.1299), dimensions={3}
+  %multiply.1301 = f32[250,19,19,136]{3,2,1,0} multiply(f32[250,19,19,136]{3,2,1,0} %subtract.1294, f32[250,19,19,136]{3,2,1,0} %broadcast.1300)
+  %constant.132 = f32[1,1,1,136]{3,2,1,0} constant({...})
+  %broadcast.1302 = f32[1,1,1,136]{3,2,1,0} broadcast(f32[1,1,1,136]{3,2,1,0} %constant.132), dimensions={0,1,2,3}
+  %reshape.1303 = f32[136]{0} reshape(f32[1,1,1,136]{3,2,1,0} %broadcast.1302)
+  %broadcast.1304 = f32[250,19,19,136]{3,2,1,0} broadcast(f32[136]{0} %reshape.1303), dimensions={3}
+  %add.1305 = f32[250,19,19,136]{3,2,1,0} add(f32[250,19,19,136]{3,2,1,0} %multiply.1301, f32[250,19,19,136]{3,2,1,0} %broadcast.1304)
+  %add.1306 = f32[250,19,19,136]{3,2,1,0} add(f32[250,19,19,136]{3,2,1,0} %add.1305, f32[250,19,19,136]{3,2,1,0} %add.1239)
+  %constant.331 = f32[1,1,136,816]{3,2,1,0} constant({...})
+  %convolution.1307 = f32[250,19,19,816]{3,2,1,0} convolution(f32[250,19,19,136]{3,2,1,0} %add.1306, f32[1,1,136,816]{3,2,1,0} %constant.331), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.131 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1308 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.131), dimensions={0,1,2,3}
+  %reshape.1309 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1308)
+  %broadcast.1310 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1309), dimensions={3}
+  %subtract.1311 = f32[250,19,19,816]{3,2,1,0} subtract(f32[250,19,19,816]{3,2,1,0} %convolution.1307, f32[250,19,19,816]{3,2,1,0} %broadcast.1310)
+  %constant.130 = f32[816]{0} constant({...})
+  %rsqrt.1312 = f32[816]{0} rsqrt(f32[816]{0} %constant.130)
+  %reshape.1313 = f32[1,1,1,816]{3,2,1,0} reshape(f32[816]{0} %rsqrt.1312)
+  %constant.129 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %multiply.1314 = f32[1,1,1,816]{3,2,1,0} multiply(f32[1,1,1,816]{3,2,1,0} %reshape.1313, f32[1,1,1,816]{3,2,1,0} %constant.129)
+  %broadcast.1315 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %multiply.1314), dimensions={0,1,2,3}
+  %reshape.1316 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1315)
+  %broadcast.1317 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1316), dimensions={3}
+  %multiply.1318 = f32[250,19,19,816]{3,2,1,0} multiply(f32[250,19,19,816]{3,2,1,0} %subtract.1311, f32[250,19,19,816]{3,2,1,0} %broadcast.1317)
+  %constant.128 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1319 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.128), dimensions={0,1,2,3}
+  %reshape.1320 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1319)
+  %broadcast.1321 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1320), dimensions={3}
+  %add.1322 = f32[250,19,19,816]{3,2,1,0} add(f32[250,19,19,816]{3,2,1,0} %multiply.1318, f32[250,19,19,816]{3,2,1,0} %broadcast.1321)
+  %call.1331 = f32[250,19,19,816]{3,2,1,0} call(f32[250,19,19,816]{3,2,1,0} %add.1322), to_apply=%jit_relu6_27.1323
+  %constant.330 = f32[5,5,1,816]{3,2,1,0} constant({...})
+  %convolution.1332 = f32[250,19,19,816]{3,2,1,0} convolution(f32[250,19,19,816]{3,2,1,0} %call.1331, f32[5,5,1,816]{3,2,1,0} %constant.330), window={size=5x5 pad=2_2x2_2}, dim_labels=b01f_01io->b01f, feature_group_count=816
+  %constant.127 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1333 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.127), dimensions={0,1,2,3}
+  %reshape.1334 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1333)
+  %broadcast.1335 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1334), dimensions={3}
+  %subtract.1336 = f32[250,19,19,816]{3,2,1,0} subtract(f32[250,19,19,816]{3,2,1,0} %convolution.1332, f32[250,19,19,816]{3,2,1,0} %broadcast.1335)
+  %constant.126 = f32[816]{0} constant({...})
+  %rsqrt.1337 = f32[816]{0} rsqrt(f32[816]{0} %constant.126)
+  %reshape.1338 = f32[1,1,1,816]{3,2,1,0} reshape(f32[816]{0} %rsqrt.1337)
+  %constant.125 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %multiply.1339 = f32[1,1,1,816]{3,2,1,0} multiply(f32[1,1,1,816]{3,2,1,0} %reshape.1338, f32[1,1,1,816]{3,2,1,0} %constant.125)
+  %broadcast.1340 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %multiply.1339), dimensions={0,1,2,3}
+  %reshape.1341 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1340)
+  %broadcast.1342 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1341), dimensions={3}
+  %multiply.1343 = f32[250,19,19,816]{3,2,1,0} multiply(f32[250,19,19,816]{3,2,1,0} %subtract.1336, f32[250,19,19,816]{3,2,1,0} %broadcast.1342)
+  %constant.124 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1344 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.124), dimensions={0,1,2,3}
+  %reshape.1345 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1344)
+  %broadcast.1346 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1345), dimensions={3}
+  %add.1347 = f32[250,19,19,816]{3,2,1,0} add(f32[250,19,19,816]{3,2,1,0} %multiply.1343, f32[250,19,19,816]{3,2,1,0} %broadcast.1346)
+  %call.1356 = f32[250,19,19,816]{3,2,1,0} call(f32[250,19,19,816]{3,2,1,0} %add.1347), to_apply=%jit_relu6_28.1348
+  %constant.329 = f32[1,1,816,136]{3,2,1,0} constant({...})
+  %convolution.1357 = f32[250,19,19,136]{3,2,1,0} convolution(f32[250,19,19,816]{3,2,1,0} %call.1356, f32[1,1,816,136]{3,2,1,0} %constant.329), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.123 = f32[1,1,1,136]{3,2,1,0} constant({...})
+  %broadcast.1358 = f32[1,1,1,136]{3,2,1,0} broadcast(f32[1,1,1,136]{3,2,1,0} %constant.123), dimensions={0,1,2,3}
+  %reshape.1359 = f32[136]{0} reshape(f32[1,1,1,136]{3,2,1,0} %broadcast.1358)
+  %broadcast.1360 = f32[250,19,19,136]{3,2,1,0} broadcast(f32[136]{0} %reshape.1359), dimensions={3}
+  %subtract.1361 = f32[250,19,19,136]{3,2,1,0} subtract(f32[250,19,19,136]{3,2,1,0} %convolution.1357, f32[250,19,19,136]{3,2,1,0} %broadcast.1360)
+  %constant.122 = f32[136]{0} constant({...})
+  %rsqrt.1362 = f32[136]{0} rsqrt(f32[136]{0} %constant.122)
+  %reshape.1363 = f32[1,1,1,136]{3,2,1,0} reshape(f32[136]{0} %rsqrt.1362)
+  %constant.121 = f32[1,1,1,136]{3,2,1,0} constant({...})
+  %multiply.1364 = f32[1,1,1,136]{3,2,1,0} multiply(f32[1,1,1,136]{3,2,1,0} %reshape.1363, f32[1,1,1,136]{3,2,1,0} %constant.121)
+  %broadcast.1365 = f32[1,1,1,136]{3,2,1,0} broadcast(f32[1,1,1,136]{3,2,1,0} %multiply.1364), dimensions={0,1,2,3}
+  %reshape.1366 = f32[136]{0} reshape(f32[1,1,1,136]{3,2,1,0} %broadcast.1365)
+  %broadcast.1367 = f32[250,19,19,136]{3,2,1,0} broadcast(f32[136]{0} %reshape.1366), dimensions={3}
+  %multiply.1368 = f32[250,19,19,136]{3,2,1,0} multiply(f32[250,19,19,136]{3,2,1,0} %subtract.1361, f32[250,19,19,136]{3,2,1,0} %broadcast.1367)
+  %constant.120 = f32[1,1,1,136]{3,2,1,0} constant({...})
+  %broadcast.1369 = f32[1,1,1,136]{3,2,1,0} broadcast(f32[1,1,1,136]{3,2,1,0} %constant.120), dimensions={0,1,2,3}
+  %reshape.1370 = f32[136]{0} reshape(f32[1,1,1,136]{3,2,1,0} %broadcast.1369)
+  %broadcast.1371 = f32[250,19,19,136]{3,2,1,0} broadcast(f32[136]{0} %reshape.1370), dimensions={3}
+  %add.1372 = f32[250,19,19,136]{3,2,1,0} add(f32[250,19,19,136]{3,2,1,0} %multiply.1368, f32[250,19,19,136]{3,2,1,0} %broadcast.1371)
+  %add.1373 = f32[250,19,19,136]{3,2,1,0} add(f32[250,19,19,136]{3,2,1,0} %add.1372, f32[250,19,19,136]{3,2,1,0} %add.1306)
+  %constant.328 = f32[1,1,136,816]{3,2,1,0} constant({...})
+  %convolution.1374 = f32[250,19,19,816]{3,2,1,0} convolution(f32[250,19,19,136]{3,2,1,0} %add.1373, f32[1,1,136,816]{3,2,1,0} %constant.328), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.119 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1375 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.119), dimensions={0,1,2,3}
+  %reshape.1376 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1375)
+  %broadcast.1377 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1376), dimensions={3}
+  %subtract.1378 = f32[250,19,19,816]{3,2,1,0} subtract(f32[250,19,19,816]{3,2,1,0} %convolution.1374, f32[250,19,19,816]{3,2,1,0} %broadcast.1377)
+  %constant.118 = f32[816]{0} constant({...})
+  %rsqrt.1379 = f32[816]{0} rsqrt(f32[816]{0} %constant.118)
+  %reshape.1380 = f32[1,1,1,816]{3,2,1,0} reshape(f32[816]{0} %rsqrt.1379)
+  %constant.117 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %multiply.1381 = f32[1,1,1,816]{3,2,1,0} multiply(f32[1,1,1,816]{3,2,1,0} %reshape.1380, f32[1,1,1,816]{3,2,1,0} %constant.117)
+  %broadcast.1382 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %multiply.1381), dimensions={0,1,2,3}
+  %reshape.1383 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1382)
+  %broadcast.1384 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1383), dimensions={3}
+  %multiply.1385 = f32[250,19,19,816]{3,2,1,0} multiply(f32[250,19,19,816]{3,2,1,0} %subtract.1378, f32[250,19,19,816]{3,2,1,0} %broadcast.1384)
+  %constant.116 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1386 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.116), dimensions={0,1,2,3}
+  %reshape.1387 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1386)
+  %broadcast.1388 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1387), dimensions={3}
+  %add.1389 = f32[250,19,19,816]{3,2,1,0} add(f32[250,19,19,816]{3,2,1,0} %multiply.1385, f32[250,19,19,816]{3,2,1,0} %broadcast.1388)
+  %call.1398 = f32[250,19,19,816]{3,2,1,0} call(f32[250,19,19,816]{3,2,1,0} %add.1389), to_apply=%jit_relu6_29.1390
+  %constant.327 = f32[5,5,1,816]{3,2,1,0} constant({...})
+  %convolution.1399 = f32[250,19,19,816]{3,2,1,0} convolution(f32[250,19,19,816]{3,2,1,0} %call.1398, f32[5,5,1,816]{3,2,1,0} %constant.327), window={size=5x5 pad=2_2x2_2}, dim_labels=b01f_01io->b01f, feature_group_count=816
+  %constant.115 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1400 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.115), dimensions={0,1,2,3}
+  %reshape.1401 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1400)
+  %broadcast.1402 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1401), dimensions={3}
+  %subtract.1403 = f32[250,19,19,816]{3,2,1,0} subtract(f32[250,19,19,816]{3,2,1,0} %convolution.1399, f32[250,19,19,816]{3,2,1,0} %broadcast.1402)
+  %constant.114 = f32[816]{0} constant({...})
+  %rsqrt.1404 = f32[816]{0} rsqrt(f32[816]{0} %constant.114)
+  %reshape.1405 = f32[1,1,1,816]{3,2,1,0} reshape(f32[816]{0} %rsqrt.1404)
+  %constant.113 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %multiply.1406 = f32[1,1,1,816]{3,2,1,0} multiply(f32[1,1,1,816]{3,2,1,0} %reshape.1405, f32[1,1,1,816]{3,2,1,0} %constant.113)
+  %broadcast.1407 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %multiply.1406), dimensions={0,1,2,3}
+  %reshape.1408 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1407)
+  %broadcast.1409 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1408), dimensions={3}
+  %multiply.1410 = f32[250,19,19,816]{3,2,1,0} multiply(f32[250,19,19,816]{3,2,1,0} %subtract.1403, f32[250,19,19,816]{3,2,1,0} %broadcast.1409)
+  %constant.112 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1411 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.112), dimensions={0,1,2,3}
+  %reshape.1412 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1411)
+  %broadcast.1413 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1412), dimensions={3}
+  %add.1414 = f32[250,19,19,816]{3,2,1,0} add(f32[250,19,19,816]{3,2,1,0} %multiply.1410, f32[250,19,19,816]{3,2,1,0} %broadcast.1413)
+  %call.1423 = f32[250,19,19,816]{3,2,1,0} call(f32[250,19,19,816]{3,2,1,0} %add.1414), to_apply=%jit_relu6_30.1415
+  %constant.326 = f32[1,1,816,136]{3,2,1,0} constant({...})
+  %convolution.1424 = f32[250,19,19,136]{3,2,1,0} convolution(f32[250,19,19,816]{3,2,1,0} %call.1423, f32[1,1,816,136]{3,2,1,0} %constant.326), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.111 = f32[1,1,1,136]{3,2,1,0} constant({...})
+  %broadcast.1425 = f32[1,1,1,136]{3,2,1,0} broadcast(f32[1,1,1,136]{3,2,1,0} %constant.111), dimensions={0,1,2,3}
+  %reshape.1426 = f32[136]{0} reshape(f32[1,1,1,136]{3,2,1,0} %broadcast.1425)
+  %broadcast.1427 = f32[250,19,19,136]{3,2,1,0} broadcast(f32[136]{0} %reshape.1426), dimensions={3}
+  %subtract.1428 = f32[250,19,19,136]{3,2,1,0} subtract(f32[250,19,19,136]{3,2,1,0} %convolution.1424, f32[250,19,19,136]{3,2,1,0} %broadcast.1427)
+  %constant.110 = f32[136]{0} constant({...})
+  %rsqrt.1429 = f32[136]{0} rsqrt(f32[136]{0} %constant.110)
+  %reshape.1430 = f32[1,1,1,136]{3,2,1,0} reshape(f32[136]{0} %rsqrt.1429)
+  %constant.109 = f32[1,1,1,136]{3,2,1,0} constant({...})
+  %multiply.1431 = f32[1,1,1,136]{3,2,1,0} multiply(f32[1,1,1,136]{3,2,1,0} %reshape.1430, f32[1,1,1,136]{3,2,1,0} %constant.109)
+  %broadcast.1432 = f32[1,1,1,136]{3,2,1,0} broadcast(f32[1,1,1,136]{3,2,1,0} %multiply.1431), dimensions={0,1,2,3}
+  %reshape.1433 = f32[136]{0} reshape(f32[1,1,1,136]{3,2,1,0} %broadcast.1432)
+  %broadcast.1434 = f32[250,19,19,136]{3,2,1,0} broadcast(f32[136]{0} %reshape.1433), dimensions={3}
+  %multiply.1435 = f32[250,19,19,136]{3,2,1,0} multiply(f32[250,19,19,136]{3,2,1,0} %subtract.1428, f32[250,19,19,136]{3,2,1,0} %broadcast.1434)
+  %constant.108 = f32[1,1,1,136]{3,2,1,0} constant({...})
+  %broadcast.1436 = f32[1,1,1,136]{3,2,1,0} broadcast(f32[1,1,1,136]{3,2,1,0} %constant.108), dimensions={0,1,2,3}
+  %reshape.1437 = f32[136]{0} reshape(f32[1,1,1,136]{3,2,1,0} %broadcast.1436)
+  %broadcast.1438 = f32[250,19,19,136]{3,2,1,0} broadcast(f32[136]{0} %reshape.1437), dimensions={3}
+  %add.1439 = f32[250,19,19,136]{3,2,1,0} add(f32[250,19,19,136]{3,2,1,0} %multiply.1435, f32[250,19,19,136]{3,2,1,0} %broadcast.1438)
+  %add.1440 = f32[250,19,19,136]{3,2,1,0} add(f32[250,19,19,136]{3,2,1,0} %add.1439, f32[250,19,19,136]{3,2,1,0} %add.1373)
+  %constant.325 = f32[1,1,136,816]{3,2,1,0} constant({...})
+  %convolution.1441 = f32[250,19,19,816]{3,2,1,0} convolution(f32[250,19,19,136]{3,2,1,0} %add.1440, f32[1,1,136,816]{3,2,1,0} %constant.325), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.107 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1442 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.107), dimensions={0,1,2,3}
+  %reshape.1443 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1442)
+  %broadcast.1444 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1443), dimensions={3}
+  %subtract.1445 = f32[250,19,19,816]{3,2,1,0} subtract(f32[250,19,19,816]{3,2,1,0} %convolution.1441, f32[250,19,19,816]{3,2,1,0} %broadcast.1444)
+  %constant.106 = f32[816]{0} constant({...})
+  %rsqrt.1446 = f32[816]{0} rsqrt(f32[816]{0} %constant.106)
+  %reshape.1447 = f32[1,1,1,816]{3,2,1,0} reshape(f32[816]{0} %rsqrt.1446)
+  %constant.105 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %multiply.1448 = f32[1,1,1,816]{3,2,1,0} multiply(f32[1,1,1,816]{3,2,1,0} %reshape.1447, f32[1,1,1,816]{3,2,1,0} %constant.105)
+  %broadcast.1449 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %multiply.1448), dimensions={0,1,2,3}
+  %reshape.1450 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1449)
+  %broadcast.1451 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1450), dimensions={3}
+  %multiply.1452 = f32[250,19,19,816]{3,2,1,0} multiply(f32[250,19,19,816]{3,2,1,0} %subtract.1445, f32[250,19,19,816]{3,2,1,0} %broadcast.1451)
+  %constant.104 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1453 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.104), dimensions={0,1,2,3}
+  %reshape.1454 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1453)
+  %broadcast.1455 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1454), dimensions={3}
+  %add.1456 = f32[250,19,19,816]{3,2,1,0} add(f32[250,19,19,816]{3,2,1,0} %multiply.1452, f32[250,19,19,816]{3,2,1,0} %broadcast.1455)
+  %call.1465 = f32[250,19,19,816]{3,2,1,0} call(f32[250,19,19,816]{3,2,1,0} %add.1456), to_apply=%jit_relu6_31.1457
+  %constant.324 = f32[5,5,1,816]{3,2,1,0} constant({...})
+  %convolution.1466 = f32[250,19,19,816]{3,2,1,0} convolution(f32[250,19,19,816]{3,2,1,0} %call.1465, f32[5,5,1,816]{3,2,1,0} %constant.324), window={size=5x5 pad=2_2x2_2}, dim_labels=b01f_01io->b01f, feature_group_count=816
+  %constant.103 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1467 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.103), dimensions={0,1,2,3}
+  %reshape.1468 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1467)
+  %broadcast.1469 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1468), dimensions={3}
+  %subtract.1470 = f32[250,19,19,816]{3,2,1,0} subtract(f32[250,19,19,816]{3,2,1,0} %convolution.1466, f32[250,19,19,816]{3,2,1,0} %broadcast.1469)
+  %constant.102 = f32[816]{0} constant({...})
+  %rsqrt.1471 = f32[816]{0} rsqrt(f32[816]{0} %constant.102)
+  %reshape.1472 = f32[1,1,1,816]{3,2,1,0} reshape(f32[816]{0} %rsqrt.1471)
+  %constant.101 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %multiply.1473 = f32[1,1,1,816]{3,2,1,0} multiply(f32[1,1,1,816]{3,2,1,0} %reshape.1472, f32[1,1,1,816]{3,2,1,0} %constant.101)
+  %broadcast.1474 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %multiply.1473), dimensions={0,1,2,3}
+  %reshape.1475 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1474)
+  %broadcast.1476 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1475), dimensions={3}
+  %multiply.1477 = f32[250,19,19,816]{3,2,1,0} multiply(f32[250,19,19,816]{3,2,1,0} %subtract.1470, f32[250,19,19,816]{3,2,1,0} %broadcast.1476)
+  %constant.100 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1478 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.100), dimensions={0,1,2,3}
+  %reshape.1479 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1478)
+  %broadcast.1480 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1479), dimensions={3}
+  %add.1481 = f32[250,19,19,816]{3,2,1,0} add(f32[250,19,19,816]{3,2,1,0} %multiply.1477, f32[250,19,19,816]{3,2,1,0} %broadcast.1480)
+  %call.1490 = f32[250,19,19,816]{3,2,1,0} call(f32[250,19,19,816]{3,2,1,0} %add.1481), to_apply=%jit_relu6_32.1482
+  %constant.323 = f32[1,1,816,136]{3,2,1,0} constant({...})
+  %convolution.1491 = f32[250,19,19,136]{3,2,1,0} convolution(f32[250,19,19,816]{3,2,1,0} %call.1490, f32[1,1,816,136]{3,2,1,0} %constant.323), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.99 = f32[1,1,1,136]{3,2,1,0} constant({...})
+  %broadcast.1492 = f32[1,1,1,136]{3,2,1,0} broadcast(f32[1,1,1,136]{3,2,1,0} %constant.99), dimensions={0,1,2,3}
+  %reshape.1493 = f32[136]{0} reshape(f32[1,1,1,136]{3,2,1,0} %broadcast.1492)
+  %broadcast.1494 = f32[250,19,19,136]{3,2,1,0} broadcast(f32[136]{0} %reshape.1493), dimensions={3}
+  %subtract.1495 = f32[250,19,19,136]{3,2,1,0} subtract(f32[250,19,19,136]{3,2,1,0} %convolution.1491, f32[250,19,19,136]{3,2,1,0} %broadcast.1494)
+  %constant.98 = f32[136]{0} constant({...})
+  %rsqrt.1496 = f32[136]{0} rsqrt(f32[136]{0} %constant.98)
+  %reshape.1497 = f32[1,1,1,136]{3,2,1,0} reshape(f32[136]{0} %rsqrt.1496)
+  %constant.97 = f32[1,1,1,136]{3,2,1,0} constant({...})
+  %multiply.1498 = f32[1,1,1,136]{3,2,1,0} multiply(f32[1,1,1,136]{3,2,1,0} %reshape.1497, f32[1,1,1,136]{3,2,1,0} %constant.97)
+  %broadcast.1499 = f32[1,1,1,136]{3,2,1,0} broadcast(f32[1,1,1,136]{3,2,1,0} %multiply.1498), dimensions={0,1,2,3}
+  %reshape.1500 = f32[136]{0} reshape(f32[1,1,1,136]{3,2,1,0} %broadcast.1499)
+  %broadcast.1501 = f32[250,19,19,136]{3,2,1,0} broadcast(f32[136]{0} %reshape.1500), dimensions={3}
+  %multiply.1502 = f32[250,19,19,136]{3,2,1,0} multiply(f32[250,19,19,136]{3,2,1,0} %subtract.1495, f32[250,19,19,136]{3,2,1,0} %broadcast.1501)
+  %constant.96 = f32[1,1,1,136]{3,2,1,0} constant({...})
+  %broadcast.1503 = f32[1,1,1,136]{3,2,1,0} broadcast(f32[1,1,1,136]{3,2,1,0} %constant.96), dimensions={0,1,2,3}
+  %reshape.1504 = f32[136]{0} reshape(f32[1,1,1,136]{3,2,1,0} %broadcast.1503)
+  %broadcast.1505 = f32[250,19,19,136]{3,2,1,0} broadcast(f32[136]{0} %reshape.1504), dimensions={3}
+  %add.1506 = f32[250,19,19,136]{3,2,1,0} add(f32[250,19,19,136]{3,2,1,0} %multiply.1502, f32[250,19,19,136]{3,2,1,0} %broadcast.1505)
+  %add.1507 = f32[250,19,19,136]{3,2,1,0} add(f32[250,19,19,136]{3,2,1,0} %add.1506, f32[250,19,19,136]{3,2,1,0} %add.1440)
+  %constant.322 = f32[1,1,136,816]{3,2,1,0} constant({...})
+  %convolution.1508 = f32[250,19,19,816]{3,2,1,0} convolution(f32[250,19,19,136]{3,2,1,0} %add.1507, f32[1,1,136,816]{3,2,1,0} %constant.322), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.95 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1509 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.95), dimensions={0,1,2,3}
+  %reshape.1510 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1509)
+  %broadcast.1511 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1510), dimensions={3}
+  %subtract.1512 = f32[250,19,19,816]{3,2,1,0} subtract(f32[250,19,19,816]{3,2,1,0} %convolution.1508, f32[250,19,19,816]{3,2,1,0} %broadcast.1511)
+  %constant.94 = f32[816]{0} constant({...})
+  %rsqrt.1513 = f32[816]{0} rsqrt(f32[816]{0} %constant.94)
+  %reshape.1514 = f32[1,1,1,816]{3,2,1,0} reshape(f32[816]{0} %rsqrt.1513)
+  %constant.93 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %multiply.1515 = f32[1,1,1,816]{3,2,1,0} multiply(f32[1,1,1,816]{3,2,1,0} %reshape.1514, f32[1,1,1,816]{3,2,1,0} %constant.93)
+  %broadcast.1516 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %multiply.1515), dimensions={0,1,2,3}
+  %reshape.1517 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1516)
+  %broadcast.1518 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1517), dimensions={3}
+  %multiply.1519 = f32[250,19,19,816]{3,2,1,0} multiply(f32[250,19,19,816]{3,2,1,0} %subtract.1512, f32[250,19,19,816]{3,2,1,0} %broadcast.1518)
+  %constant.92 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1520 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.92), dimensions={0,1,2,3}
+  %reshape.1521 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1520)
+  %broadcast.1522 = f32[250,19,19,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1521), dimensions={3}
+  %add.1523 = f32[250,19,19,816]{3,2,1,0} add(f32[250,19,19,816]{3,2,1,0} %multiply.1519, f32[250,19,19,816]{3,2,1,0} %broadcast.1522)
+  %call.1532 = f32[250,19,19,816]{3,2,1,0} call(f32[250,19,19,816]{3,2,1,0} %add.1523), to_apply=%jit_relu6_33.1524
+  %constant.321 = f32[5,5,1,816]{3,2,1,0} constant({...})
+  %convolution.1533 = f32[250,10,10,816]{3,2,1,0} convolution(f32[250,19,19,816]{3,2,1,0} %call.1532, f32[5,5,1,816]{3,2,1,0} %constant.321), window={size=5x5 stride=2x2 pad=2_2x2_2}, dim_labels=b01f_01io->b01f, feature_group_count=816
+  %constant.91 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1534 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.91), dimensions={0,1,2,3}
+  %reshape.1535 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1534)
+  %broadcast.1536 = f32[250,10,10,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1535), dimensions={3}
+  %subtract.1537 = f32[250,10,10,816]{3,2,1,0} subtract(f32[250,10,10,816]{3,2,1,0} %convolution.1533, f32[250,10,10,816]{3,2,1,0} %broadcast.1536)
+  %constant.90 = f32[816]{0} constant({...})
+  %rsqrt.1538 = f32[816]{0} rsqrt(f32[816]{0} %constant.90)
+  %reshape.1539 = f32[1,1,1,816]{3,2,1,0} reshape(f32[816]{0} %rsqrt.1538)
+  %constant.89 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %multiply.1540 = f32[1,1,1,816]{3,2,1,0} multiply(f32[1,1,1,816]{3,2,1,0} %reshape.1539, f32[1,1,1,816]{3,2,1,0} %constant.89)
+  %broadcast.1541 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %multiply.1540), dimensions={0,1,2,3}
+  %reshape.1542 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1541)
+  %broadcast.1543 = f32[250,10,10,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1542), dimensions={3}
+  %multiply.1544 = f32[250,10,10,816]{3,2,1,0} multiply(f32[250,10,10,816]{3,2,1,0} %subtract.1537, f32[250,10,10,816]{3,2,1,0} %broadcast.1543)
+  %constant.88 = f32[1,1,1,816]{3,2,1,0} constant({...})
+  %broadcast.1545 = f32[1,1,1,816]{3,2,1,0} broadcast(f32[1,1,1,816]{3,2,1,0} %constant.88), dimensions={0,1,2,3}
+  %reshape.1546 = f32[816]{0} reshape(f32[1,1,1,816]{3,2,1,0} %broadcast.1545)
+  %broadcast.1547 = f32[250,10,10,816]{3,2,1,0} broadcast(f32[816]{0} %reshape.1546), dimensions={3}
+  %add.1548 = f32[250,10,10,816]{3,2,1,0} add(f32[250,10,10,816]{3,2,1,0} %multiply.1544, f32[250,10,10,816]{3,2,1,0} %broadcast.1547)
+  %call.1557 = f32[250,10,10,816]{3,2,1,0} call(f32[250,10,10,816]{3,2,1,0} %add.1548), to_apply=%jit_relu6_34.1549
+  %constant.320 = f32[1,1,816,232]{3,2,1,0} constant({...})
+  %convolution.1558 = f32[250,10,10,232]{3,2,1,0} convolution(f32[250,10,10,816]{3,2,1,0} %call.1557, f32[1,1,816,232]{3,2,1,0} %constant.320), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.87 = f32[1,1,1,232]{3,2,1,0} constant({...})
+  %broadcast.1559 = f32[1,1,1,232]{3,2,1,0} broadcast(f32[1,1,1,232]{3,2,1,0} %constant.87), dimensions={0,1,2,3}
+  %reshape.1560 = f32[232]{0} reshape(f32[1,1,1,232]{3,2,1,0} %broadcast.1559)
+  %broadcast.1561 = f32[250,10,10,232]{3,2,1,0} broadcast(f32[232]{0} %reshape.1560), dimensions={3}
+  %subtract.1562 = f32[250,10,10,232]{3,2,1,0} subtract(f32[250,10,10,232]{3,2,1,0} %convolution.1558, f32[250,10,10,232]{3,2,1,0} %broadcast.1561)
+  %constant.86 = f32[232]{0} constant({...})
+  %rsqrt.1563 = f32[232]{0} rsqrt(f32[232]{0} %constant.86)
+  %reshape.1564 = f32[1,1,1,232]{3,2,1,0} reshape(f32[232]{0} %rsqrt.1563)
+  %constant.85 = f32[1,1,1,232]{3,2,1,0} constant({...})
+  %multiply.1565 = f32[1,1,1,232]{3,2,1,0} multiply(f32[1,1,1,232]{3,2,1,0} %reshape.1564, f32[1,1,1,232]{3,2,1,0} %constant.85)
+  %broadcast.1566 = f32[1,1,1,232]{3,2,1,0} broadcast(f32[1,1,1,232]{3,2,1,0} %multiply.1565), dimensions={0,1,2,3}
+  %reshape.1567 = f32[232]{0} reshape(f32[1,1,1,232]{3,2,1,0} %broadcast.1566)
+  %broadcast.1568 = f32[250,10,10,232]{3,2,1,0} broadcast(f32[232]{0} %reshape.1567), dimensions={3}
+  %multiply.1569 = f32[250,10,10,232]{3,2,1,0} multiply(f32[250,10,10,232]{3,2,1,0} %subtract.1562, f32[250,10,10,232]{3,2,1,0} %broadcast.1568)
+  %constant.84 = f32[1,1,1,232]{3,2,1,0} constant({...})
+  %broadcast.1570 = f32[1,1,1,232]{3,2,1,0} broadcast(f32[1,1,1,232]{3,2,1,0} %constant.84), dimensions={0,1,2,3}
+  %reshape.1571 = f32[232]{0} reshape(f32[1,1,1,232]{3,2,1,0} %broadcast.1570)
+  %broadcast.1572 = f32[250,10,10,232]{3,2,1,0} broadcast(f32[232]{0} %reshape.1571), dimensions={3}
+  %add.1573 = f32[250,10,10,232]{3,2,1,0} add(f32[250,10,10,232]{3,2,1,0} %multiply.1569, f32[250,10,10,232]{3,2,1,0} %broadcast.1572)
+  %constant.319 = f32[1,1,232,1392]{3,2,1,0} constant({...})
+  %convolution.1574 = f32[250,10,10,1392]{3,2,1,0} convolution(f32[250,10,10,232]{3,2,1,0} %add.1573, f32[1,1,232,1392]{3,2,1,0} %constant.319), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.83 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1575 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.83), dimensions={0,1,2,3}
+  %reshape.1576 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1575)
+  %broadcast.1577 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1576), dimensions={3}
+  %subtract.1578 = f32[250,10,10,1392]{3,2,1,0} subtract(f32[250,10,10,1392]{3,2,1,0} %convolution.1574, f32[250,10,10,1392]{3,2,1,0} %broadcast.1577)
+  %constant.82 = f32[1392]{0} constant({...})
+  %rsqrt.1579 = f32[1392]{0} rsqrt(f32[1392]{0} %constant.82)
+  %reshape.1580 = f32[1,1,1,1392]{3,2,1,0} reshape(f32[1392]{0} %rsqrt.1579)
+  %constant.81 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %multiply.1581 = f32[1,1,1,1392]{3,2,1,0} multiply(f32[1,1,1,1392]{3,2,1,0} %reshape.1580, f32[1,1,1,1392]{3,2,1,0} %constant.81)
+  %broadcast.1582 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %multiply.1581), dimensions={0,1,2,3}
+  %reshape.1583 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1582)
+  %broadcast.1584 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1583), dimensions={3}
+  %multiply.1585 = f32[250,10,10,1392]{3,2,1,0} multiply(f32[250,10,10,1392]{3,2,1,0} %subtract.1578, f32[250,10,10,1392]{3,2,1,0} %broadcast.1584)
+  %constant.80 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1586 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.80), dimensions={0,1,2,3}
+  %reshape.1587 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1586)
+  %broadcast.1588 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1587), dimensions={3}
+  %add.1589 = f32[250,10,10,1392]{3,2,1,0} add(f32[250,10,10,1392]{3,2,1,0} %multiply.1585, f32[250,10,10,1392]{3,2,1,0} %broadcast.1588)
+  %call.1598 = f32[250,10,10,1392]{3,2,1,0} call(f32[250,10,10,1392]{3,2,1,0} %add.1589), to_apply=%jit_relu6_35.1590
+  %constant.318 = f32[5,5,1,1392]{3,2,1,0} constant({...})
+  %convolution.1599 = f32[250,10,10,1392]{3,2,1,0} convolution(f32[250,10,10,1392]{3,2,1,0} %call.1598, f32[5,5,1,1392]{3,2,1,0} %constant.318), window={size=5x5 pad=2_2x2_2}, dim_labels=b01f_01io->b01f, feature_group_count=1392
+  %constant.79 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1600 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.79), dimensions={0,1,2,3}
+  %reshape.1601 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1600)
+  %broadcast.1602 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1601), dimensions={3}
+  %subtract.1603 = f32[250,10,10,1392]{3,2,1,0} subtract(f32[250,10,10,1392]{3,2,1,0} %convolution.1599, f32[250,10,10,1392]{3,2,1,0} %broadcast.1602)
+  %constant.78 = f32[1392]{0} constant({...})
+  %rsqrt.1604 = f32[1392]{0} rsqrt(f32[1392]{0} %constant.78)
+  %reshape.1605 = f32[1,1,1,1392]{3,2,1,0} reshape(f32[1392]{0} %rsqrt.1604)
+  %constant.77 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %multiply.1606 = f32[1,1,1,1392]{3,2,1,0} multiply(f32[1,1,1,1392]{3,2,1,0} %reshape.1605, f32[1,1,1,1392]{3,2,1,0} %constant.77)
+  %broadcast.1607 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %multiply.1606), dimensions={0,1,2,3}
+  %reshape.1608 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1607)
+  %broadcast.1609 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1608), dimensions={3}
+  %multiply.1610 = f32[250,10,10,1392]{3,2,1,0} multiply(f32[250,10,10,1392]{3,2,1,0} %subtract.1603, f32[250,10,10,1392]{3,2,1,0} %broadcast.1609)
+  %constant.76 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1611 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.76), dimensions={0,1,2,3}
+  %reshape.1612 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1611)
+  %broadcast.1613 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1612), dimensions={3}
+  %add.1614 = f32[250,10,10,1392]{3,2,1,0} add(f32[250,10,10,1392]{3,2,1,0} %multiply.1610, f32[250,10,10,1392]{3,2,1,0} %broadcast.1613)
+  %call.1623 = f32[250,10,10,1392]{3,2,1,0} call(f32[250,10,10,1392]{3,2,1,0} %add.1614), to_apply=%jit_relu6_36.1615
+  %constant.317 = f32[1,1,1392,232]{3,2,1,0} constant({...})
+  %convolution.1624 = f32[250,10,10,232]{3,2,1,0} convolution(f32[250,10,10,1392]{3,2,1,0} %call.1623, f32[1,1,1392,232]{3,2,1,0} %constant.317), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.75 = f32[1,1,1,232]{3,2,1,0} constant({...})
+  %broadcast.1625 = f32[1,1,1,232]{3,2,1,0} broadcast(f32[1,1,1,232]{3,2,1,0} %constant.75), dimensions={0,1,2,3}
+  %reshape.1626 = f32[232]{0} reshape(f32[1,1,1,232]{3,2,1,0} %broadcast.1625)
+  %broadcast.1627 = f32[250,10,10,232]{3,2,1,0} broadcast(f32[232]{0} %reshape.1626), dimensions={3}
+  %subtract.1628 = f32[250,10,10,232]{3,2,1,0} subtract(f32[250,10,10,232]{3,2,1,0} %convolution.1624, f32[250,10,10,232]{3,2,1,0} %broadcast.1627)
+  %constant.74 = f32[232]{0} constant({...})
+  %rsqrt.1629 = f32[232]{0} rsqrt(f32[232]{0} %constant.74)
+  %reshape.1630 = f32[1,1,1,232]{3,2,1,0} reshape(f32[232]{0} %rsqrt.1629)
+  %constant.73 = f32[1,1,1,232]{3,2,1,0} constant({...})
+  %multiply.1631 = f32[1,1,1,232]{3,2,1,0} multiply(f32[1,1,1,232]{3,2,1,0} %reshape.1630, f32[1,1,1,232]{3,2,1,0} %constant.73)
+  %broadcast.1632 = f32[1,1,1,232]{3,2,1,0} broadcast(f32[1,1,1,232]{3,2,1,0} %multiply.1631), dimensions={0,1,2,3}
+  %reshape.1633 = f32[232]{0} reshape(f32[1,1,1,232]{3,2,1,0} %broadcast.1632)
+  %broadcast.1634 = f32[250,10,10,232]{3,2,1,0} broadcast(f32[232]{0} %reshape.1633), dimensions={3}
+  %multiply.1635 = f32[250,10,10,232]{3,2,1,0} multiply(f32[250,10,10,232]{3,2,1,0} %subtract.1628, f32[250,10,10,232]{3,2,1,0} %broadcast.1634)
+  %constant.72 = f32[1,1,1,232]{3,2,1,0} constant({...})
+  %broadcast.1636 = f32[1,1,1,232]{3,2,1,0} broadcast(f32[1,1,1,232]{3,2,1,0} %constant.72), dimensions={0,1,2,3}
+  %reshape.1637 = f32[232]{0} reshape(f32[1,1,1,232]{3,2,1,0} %broadcast.1636)
+  %broadcast.1638 = f32[250,10,10,232]{3,2,1,0} broadcast(f32[232]{0} %reshape.1637), dimensions={3}
+  %add.1639 = f32[250,10,10,232]{3,2,1,0} add(f32[250,10,10,232]{3,2,1,0} %multiply.1635, f32[250,10,10,232]{3,2,1,0} %broadcast.1638)
+  %add.1640 = f32[250,10,10,232]{3,2,1,0} add(f32[250,10,10,232]{3,2,1,0} %add.1639, f32[250,10,10,232]{3,2,1,0} %add.1573)
+  %constant.316 = f32[1,1,232,1392]{3,2,1,0} constant({...})
+  %convolution.1641 = f32[250,10,10,1392]{3,2,1,0} convolution(f32[250,10,10,232]{3,2,1,0} %add.1640, f32[1,1,232,1392]{3,2,1,0} %constant.316), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.71 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1642 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.71), dimensions={0,1,2,3}
+  %reshape.1643 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1642)
+  %broadcast.1644 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1643), dimensions={3}
+  %subtract.1645 = f32[250,10,10,1392]{3,2,1,0} subtract(f32[250,10,10,1392]{3,2,1,0} %convolution.1641, f32[250,10,10,1392]{3,2,1,0} %broadcast.1644)
+  %constant.70 = f32[1392]{0} constant({...})
+  %rsqrt.1646 = f32[1392]{0} rsqrt(f32[1392]{0} %constant.70)
+  %reshape.1647 = f32[1,1,1,1392]{3,2,1,0} reshape(f32[1392]{0} %rsqrt.1646)
+  %constant.69 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %multiply.1648 = f32[1,1,1,1392]{3,2,1,0} multiply(f32[1,1,1,1392]{3,2,1,0} %reshape.1647, f32[1,1,1,1392]{3,2,1,0} %constant.69)
+  %broadcast.1649 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %multiply.1648), dimensions={0,1,2,3}
+  %reshape.1650 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1649)
+  %broadcast.1651 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1650), dimensions={3}
+  %multiply.1652 = f32[250,10,10,1392]{3,2,1,0} multiply(f32[250,10,10,1392]{3,2,1,0} %subtract.1645, f32[250,10,10,1392]{3,2,1,0} %broadcast.1651)
+  %constant.68 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1653 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.68), dimensions={0,1,2,3}
+  %reshape.1654 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1653)
+  %broadcast.1655 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1654), dimensions={3}
+  %add.1656 = f32[250,10,10,1392]{3,2,1,0} add(f32[250,10,10,1392]{3,2,1,0} %multiply.1652, f32[250,10,10,1392]{3,2,1,0} %broadcast.1655)
+  %call.1665 = f32[250,10,10,1392]{3,2,1,0} call(f32[250,10,10,1392]{3,2,1,0} %add.1656), to_apply=%jit_relu6_37.1657
+  %constant.315 = f32[5,5,1,1392]{3,2,1,0} constant({...})
+  %convolution.1666 = f32[250,10,10,1392]{3,2,1,0} convolution(f32[250,10,10,1392]{3,2,1,0} %call.1665, f32[5,5,1,1392]{3,2,1,0} %constant.315), window={size=5x5 pad=2_2x2_2}, dim_labels=b01f_01io->b01f, feature_group_count=1392
+  %constant.67 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1667 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.67), dimensions={0,1,2,3}
+  %reshape.1668 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1667)
+  %broadcast.1669 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1668), dimensions={3}
+  %subtract.1670 = f32[250,10,10,1392]{3,2,1,0} subtract(f32[250,10,10,1392]{3,2,1,0} %convolution.1666, f32[250,10,10,1392]{3,2,1,0} %broadcast.1669)
+  %constant.66 = f32[1392]{0} constant({...})
+  %rsqrt.1671 = f32[1392]{0} rsqrt(f32[1392]{0} %constant.66)
+  %reshape.1672 = f32[1,1,1,1392]{3,2,1,0} reshape(f32[1392]{0} %rsqrt.1671)
+  %constant.65 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %multiply.1673 = f32[1,1,1,1392]{3,2,1,0} multiply(f32[1,1,1,1392]{3,2,1,0} %reshape.1672, f32[1,1,1,1392]{3,2,1,0} %constant.65)
+  %broadcast.1674 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %multiply.1673), dimensions={0,1,2,3}
+  %reshape.1675 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1674)
+  %broadcast.1676 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1675), dimensions={3}
+  %multiply.1677 = f32[250,10,10,1392]{3,2,1,0} multiply(f32[250,10,10,1392]{3,2,1,0} %subtract.1670, f32[250,10,10,1392]{3,2,1,0} %broadcast.1676)
+  %constant.64 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1678 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.64), dimensions={0,1,2,3}
+  %reshape.1679 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1678)
+  %broadcast.1680 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1679), dimensions={3}
+  %add.1681 = f32[250,10,10,1392]{3,2,1,0} add(f32[250,10,10,1392]{3,2,1,0} %multiply.1677, f32[250,10,10,1392]{3,2,1,0} %broadcast.1680)
+  %call.1690 = f32[250,10,10,1392]{3,2,1,0} call(f32[250,10,10,1392]{3,2,1,0} %add.1681), to_apply=%jit_relu6_38.1682
+  %constant.314 = f32[1,1,1392,232]{3,2,1,0} constant({...})
+  %convolution.1691 = f32[250,10,10,232]{3,2,1,0} convolution(f32[250,10,10,1392]{3,2,1,0} %call.1690, f32[1,1,1392,232]{3,2,1,0} %constant.314), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.63 = f32[1,1,1,232]{3,2,1,0} constant({...})
+  %broadcast.1692 = f32[1,1,1,232]{3,2,1,0} broadcast(f32[1,1,1,232]{3,2,1,0} %constant.63), dimensions={0,1,2,3}
+  %reshape.1693 = f32[232]{0} reshape(f32[1,1,1,232]{3,2,1,0} %broadcast.1692)
+  %broadcast.1694 = f32[250,10,10,232]{3,2,1,0} broadcast(f32[232]{0} %reshape.1693), dimensions={3}
+  %subtract.1695 = f32[250,10,10,232]{3,2,1,0} subtract(f32[250,10,10,232]{3,2,1,0} %convolution.1691, f32[250,10,10,232]{3,2,1,0} %broadcast.1694)
+  %constant.62 = f32[232]{0} constant({...})
+  %rsqrt.1696 = f32[232]{0} rsqrt(f32[232]{0} %constant.62)
+  %reshape.1697 = f32[1,1,1,232]{3,2,1,0} reshape(f32[232]{0} %rsqrt.1696)
+  %constant.61 = f32[1,1,1,232]{3,2,1,0} constant({...})
+  %multiply.1698 = f32[1,1,1,232]{3,2,1,0} multiply(f32[1,1,1,232]{3,2,1,0} %reshape.1697, f32[1,1,1,232]{3,2,1,0} %constant.61)
+  %broadcast.1699 = f32[1,1,1,232]{3,2,1,0} broadcast(f32[1,1,1,232]{3,2,1,0} %multiply.1698), dimensions={0,1,2,3}
+  %reshape.1700 = f32[232]{0} reshape(f32[1,1,1,232]{3,2,1,0} %broadcast.1699)
+  %broadcast.1701 = f32[250,10,10,232]{3,2,1,0} broadcast(f32[232]{0} %reshape.1700), dimensions={3}
+  %multiply.1702 = f32[250,10,10,232]{3,2,1,0} multiply(f32[250,10,10,232]{3,2,1,0} %subtract.1695, f32[250,10,10,232]{3,2,1,0} %broadcast.1701)
+  %constant.60 = f32[1,1,1,232]{3,2,1,0} constant({...})
+  %broadcast.1703 = f32[1,1,1,232]{3,2,1,0} broadcast(f32[1,1,1,232]{3,2,1,0} %constant.60), dimensions={0,1,2,3}
+  %reshape.1704 = f32[232]{0} reshape(f32[1,1,1,232]{3,2,1,0} %broadcast.1703)
+  %broadcast.1705 = f32[250,10,10,232]{3,2,1,0} broadcast(f32[232]{0} %reshape.1704), dimensions={3}
+  %add.1706 = f32[250,10,10,232]{3,2,1,0} add(f32[250,10,10,232]{3,2,1,0} %multiply.1702, f32[250,10,10,232]{3,2,1,0} %broadcast.1705)
+  %add.1707 = f32[250,10,10,232]{3,2,1,0} add(f32[250,10,10,232]{3,2,1,0} %add.1706, f32[250,10,10,232]{3,2,1,0} %add.1640)
+  %constant.313 = f32[1,1,232,1392]{3,2,1,0} constant({...})
+  %convolution.1708 = f32[250,10,10,1392]{3,2,1,0} convolution(f32[250,10,10,232]{3,2,1,0} %add.1707, f32[1,1,232,1392]{3,2,1,0} %constant.313), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.59 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1709 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.59), dimensions={0,1,2,3}
+  %reshape.1710 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1709)
+  %broadcast.1711 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1710), dimensions={3}
+  %subtract.1712 = f32[250,10,10,1392]{3,2,1,0} subtract(f32[250,10,10,1392]{3,2,1,0} %convolution.1708, f32[250,10,10,1392]{3,2,1,0} %broadcast.1711)
+  %constant.58 = f32[1392]{0} constant({...})
+  %rsqrt.1713 = f32[1392]{0} rsqrt(f32[1392]{0} %constant.58)
+  %reshape.1714 = f32[1,1,1,1392]{3,2,1,0} reshape(f32[1392]{0} %rsqrt.1713)
+  %constant.57 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %multiply.1715 = f32[1,1,1,1392]{3,2,1,0} multiply(f32[1,1,1,1392]{3,2,1,0} %reshape.1714, f32[1,1,1,1392]{3,2,1,0} %constant.57)
+  %broadcast.1716 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %multiply.1715), dimensions={0,1,2,3}
+  %reshape.1717 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1716)
+  %broadcast.1718 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1717), dimensions={3}
+  %multiply.1719 = f32[250,10,10,1392]{3,2,1,0} multiply(f32[250,10,10,1392]{3,2,1,0} %subtract.1712, f32[250,10,10,1392]{3,2,1,0} %broadcast.1718)
+  %constant.56 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1720 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.56), dimensions={0,1,2,3}
+  %reshape.1721 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1720)
+  %broadcast.1722 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1721), dimensions={3}
+  %add.1723 = f32[250,10,10,1392]{3,2,1,0} add(f32[250,10,10,1392]{3,2,1,0} %multiply.1719, f32[250,10,10,1392]{3,2,1,0} %broadcast.1722)
+  %call.1732 = f32[250,10,10,1392]{3,2,1,0} call(f32[250,10,10,1392]{3,2,1,0} %add.1723), to_apply=%jit_relu6_39.1724
+  %constant.312 = f32[5,5,1,1392]{3,2,1,0} constant({...})
+  %convolution.1733 = f32[250,10,10,1392]{3,2,1,0} convolution(f32[250,10,10,1392]{3,2,1,0} %call.1732, f32[5,5,1,1392]{3,2,1,0} %constant.312), window={size=5x5 pad=2_2x2_2}, dim_labels=b01f_01io->b01f, feature_group_count=1392
+  %constant.55 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1734 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.55), dimensions={0,1,2,3}
+  %reshape.1735 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1734)
+  %broadcast.1736 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1735), dimensions={3}
+  %subtract.1737 = f32[250,10,10,1392]{3,2,1,0} subtract(f32[250,10,10,1392]{3,2,1,0} %convolution.1733, f32[250,10,10,1392]{3,2,1,0} %broadcast.1736)
+  %constant.54 = f32[1392]{0} constant({...})
+  %rsqrt.1738 = f32[1392]{0} rsqrt(f32[1392]{0} %constant.54)
+  %reshape.1739 = f32[1,1,1,1392]{3,2,1,0} reshape(f32[1392]{0} %rsqrt.1738)
+  %constant.53 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %multiply.1740 = f32[1,1,1,1392]{3,2,1,0} multiply(f32[1,1,1,1392]{3,2,1,0} %reshape.1739, f32[1,1,1,1392]{3,2,1,0} %constant.53)
+  %broadcast.1741 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %multiply.1740), dimensions={0,1,2,3}
+  %reshape.1742 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1741)
+  %broadcast.1743 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1742), dimensions={3}
+  %multiply.1744 = f32[250,10,10,1392]{3,2,1,0} multiply(f32[250,10,10,1392]{3,2,1,0} %subtract.1737, f32[250,10,10,1392]{3,2,1,0} %broadcast.1743)
+  %constant.52 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1745 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.52), dimensions={0,1,2,3}
+  %reshape.1746 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1745)
+  %broadcast.1747 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1746), dimensions={3}
+  %add.1748 = f32[250,10,10,1392]{3,2,1,0} add(f32[250,10,10,1392]{3,2,1,0} %multiply.1744, f32[250,10,10,1392]{3,2,1,0} %broadcast.1747)
+  %call.1757 = f32[250,10,10,1392]{3,2,1,0} call(f32[250,10,10,1392]{3,2,1,0} %add.1748), to_apply=%jit_relu6_40.1749
+  %constant.311 = f32[1,1,1392,232]{3,2,1,0} constant({...})
+  %convolution.1758 = f32[250,10,10,232]{3,2,1,0} convolution(f32[250,10,10,1392]{3,2,1,0} %call.1757, f32[1,1,1392,232]{3,2,1,0} %constant.311), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.51 = f32[1,1,1,232]{3,2,1,0} constant({...})
+  %broadcast.1759 = f32[1,1,1,232]{3,2,1,0} broadcast(f32[1,1,1,232]{3,2,1,0} %constant.51), dimensions={0,1,2,3}
+  %reshape.1760 = f32[232]{0} reshape(f32[1,1,1,232]{3,2,1,0} %broadcast.1759)
+  %broadcast.1761 = f32[250,10,10,232]{3,2,1,0} broadcast(f32[232]{0} %reshape.1760), dimensions={3}
+  %subtract.1762 = f32[250,10,10,232]{3,2,1,0} subtract(f32[250,10,10,232]{3,2,1,0} %convolution.1758, f32[250,10,10,232]{3,2,1,0} %broadcast.1761)
+  %constant.50 = f32[232]{0} constant({...})
+  %rsqrt.1763 = f32[232]{0} rsqrt(f32[232]{0} %constant.50)
+  %reshape.1764 = f32[1,1,1,232]{3,2,1,0} reshape(f32[232]{0} %rsqrt.1763)
+  %constant.49 = f32[1,1,1,232]{3,2,1,0} constant({...})
+  %multiply.1765 = f32[1,1,1,232]{3,2,1,0} multiply(f32[1,1,1,232]{3,2,1,0} %reshape.1764, f32[1,1,1,232]{3,2,1,0} %constant.49)
+  %broadcast.1766 = f32[1,1,1,232]{3,2,1,0} broadcast(f32[1,1,1,232]{3,2,1,0} %multiply.1765), dimensions={0,1,2,3}
+  %reshape.1767 = f32[232]{0} reshape(f32[1,1,1,232]{3,2,1,0} %broadcast.1766)
+  %broadcast.1768 = f32[250,10,10,232]{3,2,1,0} broadcast(f32[232]{0} %reshape.1767), dimensions={3}
+  %multiply.1769 = f32[250,10,10,232]{3,2,1,0} multiply(f32[250,10,10,232]{3,2,1,0} %subtract.1762, f32[250,10,10,232]{3,2,1,0} %broadcast.1768)
+  %constant.48 = f32[1,1,1,232]{3,2,1,0} constant({...})
+  %broadcast.1770 = f32[1,1,1,232]{3,2,1,0} broadcast(f32[1,1,1,232]{3,2,1,0} %constant.48), dimensions={0,1,2,3}
+  %reshape.1771 = f32[232]{0} reshape(f32[1,1,1,232]{3,2,1,0} %broadcast.1770)
+  %broadcast.1772 = f32[250,10,10,232]{3,2,1,0} broadcast(f32[232]{0} %reshape.1771), dimensions={3}
+  %add.1773 = f32[250,10,10,232]{3,2,1,0} add(f32[250,10,10,232]{3,2,1,0} %multiply.1769, f32[250,10,10,232]{3,2,1,0} %broadcast.1772)
+  %add.1774 = f32[250,10,10,232]{3,2,1,0} add(f32[250,10,10,232]{3,2,1,0} %add.1773, f32[250,10,10,232]{3,2,1,0} %add.1707)
+  %constant.310 = f32[1,1,232,1392]{3,2,1,0} constant({...})
+  %convolution.1775 = f32[250,10,10,1392]{3,2,1,0} convolution(f32[250,10,10,232]{3,2,1,0} %add.1774, f32[1,1,232,1392]{3,2,1,0} %constant.310), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.47 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1776 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.47), dimensions={0,1,2,3}
+  %reshape.1777 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1776)
+  %broadcast.1778 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1777), dimensions={3}
+  %subtract.1779 = f32[250,10,10,1392]{3,2,1,0} subtract(f32[250,10,10,1392]{3,2,1,0} %convolution.1775, f32[250,10,10,1392]{3,2,1,0} %broadcast.1778)
+  %constant.46 = f32[1392]{0} constant({...})
+  %rsqrt.1780 = f32[1392]{0} rsqrt(f32[1392]{0} %constant.46)
+  %reshape.1781 = f32[1,1,1,1392]{3,2,1,0} reshape(f32[1392]{0} %rsqrt.1780)
+  %constant.45 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %multiply.1782 = f32[1,1,1,1392]{3,2,1,0} multiply(f32[1,1,1,1392]{3,2,1,0} %reshape.1781, f32[1,1,1,1392]{3,2,1,0} %constant.45)
+  %broadcast.1783 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %multiply.1782), dimensions={0,1,2,3}
+  %reshape.1784 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1783)
+  %broadcast.1785 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1784), dimensions={3}
+  %multiply.1786 = f32[250,10,10,1392]{3,2,1,0} multiply(f32[250,10,10,1392]{3,2,1,0} %subtract.1779, f32[250,10,10,1392]{3,2,1,0} %broadcast.1785)
+  %constant.44 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1787 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.44), dimensions={0,1,2,3}
+  %reshape.1788 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1787)
+  %broadcast.1789 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1788), dimensions={3}
+  %add.1790 = f32[250,10,10,1392]{3,2,1,0} add(f32[250,10,10,1392]{3,2,1,0} %multiply.1786, f32[250,10,10,1392]{3,2,1,0} %broadcast.1789)
+  %call.1799 = f32[250,10,10,1392]{3,2,1,0} call(f32[250,10,10,1392]{3,2,1,0} %add.1790), to_apply=%jit_relu6_41.1791
+  %constant.309 = f32[5,5,1,1392]{3,2,1,0} constant({...})
+  %convolution.1800 = f32[250,10,10,1392]{3,2,1,0} convolution(f32[250,10,10,1392]{3,2,1,0} %call.1799, f32[5,5,1,1392]{3,2,1,0} %constant.309), window={size=5x5 pad=2_2x2_2}, dim_labels=b01f_01io->b01f, feature_group_count=1392
+  %constant.43 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1801 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.43), dimensions={0,1,2,3}
+  %reshape.1802 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1801)
+  %broadcast.1803 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1802), dimensions={3}
+  %subtract.1804 = f32[250,10,10,1392]{3,2,1,0} subtract(f32[250,10,10,1392]{3,2,1,0} %convolution.1800, f32[250,10,10,1392]{3,2,1,0} %broadcast.1803)
+  %constant.42 = f32[1392]{0} constant({...})
+  %rsqrt.1805 = f32[1392]{0} rsqrt(f32[1392]{0} %constant.42)
+  %reshape.1806 = f32[1,1,1,1392]{3,2,1,0} reshape(f32[1392]{0} %rsqrt.1805)
+  %constant.41 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %multiply.1807 = f32[1,1,1,1392]{3,2,1,0} multiply(f32[1,1,1,1392]{3,2,1,0} %reshape.1806, f32[1,1,1,1392]{3,2,1,0} %constant.41)
+  %broadcast.1808 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %multiply.1807), dimensions={0,1,2,3}
+  %reshape.1809 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1808)
+  %broadcast.1810 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1809), dimensions={3}
+  %multiply.1811 = f32[250,10,10,1392]{3,2,1,0} multiply(f32[250,10,10,1392]{3,2,1,0} %subtract.1804, f32[250,10,10,1392]{3,2,1,0} %broadcast.1810)
+  %constant.40 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1812 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.40), dimensions={0,1,2,3}
+  %reshape.1813 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1812)
+  %broadcast.1814 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1813), dimensions={3}
+  %add.1815 = f32[250,10,10,1392]{3,2,1,0} add(f32[250,10,10,1392]{3,2,1,0} %multiply.1811, f32[250,10,10,1392]{3,2,1,0} %broadcast.1814)
+  %call.1824 = f32[250,10,10,1392]{3,2,1,0} call(f32[250,10,10,1392]{3,2,1,0} %add.1815), to_apply=%jit_relu6_42.1816
+  %constant.308 = f32[1,1,1392,232]{3,2,1,0} constant({...})
+  %convolution.1825 = f32[250,10,10,232]{3,2,1,0} convolution(f32[250,10,10,1392]{3,2,1,0} %call.1824, f32[1,1,1392,232]{3,2,1,0} %constant.308), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.39 = f32[1,1,1,232]{3,2,1,0} constant({...})
+  %broadcast.1826 = f32[1,1,1,232]{3,2,1,0} broadcast(f32[1,1,1,232]{3,2,1,0} %constant.39), dimensions={0,1,2,3}
+  %reshape.1827 = f32[232]{0} reshape(f32[1,1,1,232]{3,2,1,0} %broadcast.1826)
+  %broadcast.1828 = f32[250,10,10,232]{3,2,1,0} broadcast(f32[232]{0} %reshape.1827), dimensions={3}
+  %subtract.1829 = f32[250,10,10,232]{3,2,1,0} subtract(f32[250,10,10,232]{3,2,1,0} %convolution.1825, f32[250,10,10,232]{3,2,1,0} %broadcast.1828)
+  %constant.38 = f32[232]{0} constant({...})
+  %rsqrt.1830 = f32[232]{0} rsqrt(f32[232]{0} %constant.38)
+  %reshape.1831 = f32[1,1,1,232]{3,2,1,0} reshape(f32[232]{0} %rsqrt.1830)
+  %constant.37 = f32[1,1,1,232]{3,2,1,0} constant({...})
+  %multiply.1832 = f32[1,1,1,232]{3,2,1,0} multiply(f32[1,1,1,232]{3,2,1,0} %reshape.1831, f32[1,1,1,232]{3,2,1,0} %constant.37)
+  %broadcast.1833 = f32[1,1,1,232]{3,2,1,0} broadcast(f32[1,1,1,232]{3,2,1,0} %multiply.1832), dimensions={0,1,2,3}
+  %reshape.1834 = f32[232]{0} reshape(f32[1,1,1,232]{3,2,1,0} %broadcast.1833)
+  %broadcast.1835 = f32[250,10,10,232]{3,2,1,0} broadcast(f32[232]{0} %reshape.1834), dimensions={3}
+  %multiply.1836 = f32[250,10,10,232]{3,2,1,0} multiply(f32[250,10,10,232]{3,2,1,0} %subtract.1829, f32[250,10,10,232]{3,2,1,0} %broadcast.1835)
+  %constant.36 = f32[1,1,1,232]{3,2,1,0} constant({...})
+  %broadcast.1837 = f32[1,1,1,232]{3,2,1,0} broadcast(f32[1,1,1,232]{3,2,1,0} %constant.36), dimensions={0,1,2,3}
+  %reshape.1838 = f32[232]{0} reshape(f32[1,1,1,232]{3,2,1,0} %broadcast.1837)
+  %broadcast.1839 = f32[250,10,10,232]{3,2,1,0} broadcast(f32[232]{0} %reshape.1838), dimensions={3}
+  %add.1840 = f32[250,10,10,232]{3,2,1,0} add(f32[250,10,10,232]{3,2,1,0} %multiply.1836, f32[250,10,10,232]{3,2,1,0} %broadcast.1839)
+  %add.1841 = f32[250,10,10,232]{3,2,1,0} add(f32[250,10,10,232]{3,2,1,0} %add.1840, f32[250,10,10,232]{3,2,1,0} %add.1774)
+  %constant.307 = f32[1,1,232,1392]{3,2,1,0} constant({...})
+  %convolution.1842 = f32[250,10,10,1392]{3,2,1,0} convolution(f32[250,10,10,232]{3,2,1,0} %add.1841, f32[1,1,232,1392]{3,2,1,0} %constant.307), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.35 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1843 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.35), dimensions={0,1,2,3}
+  %reshape.1844 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1843)
+  %broadcast.1845 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1844), dimensions={3}
+  %subtract.1846 = f32[250,10,10,1392]{3,2,1,0} subtract(f32[250,10,10,1392]{3,2,1,0} %convolution.1842, f32[250,10,10,1392]{3,2,1,0} %broadcast.1845)
+  %constant.34 = f32[1392]{0} constant({...})
+  %rsqrt.1847 = f32[1392]{0} rsqrt(f32[1392]{0} %constant.34)
+  %reshape.1848 = f32[1,1,1,1392]{3,2,1,0} reshape(f32[1392]{0} %rsqrt.1847)
+  %constant.33 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %multiply.1849 = f32[1,1,1,1392]{3,2,1,0} multiply(f32[1,1,1,1392]{3,2,1,0} %reshape.1848, f32[1,1,1,1392]{3,2,1,0} %constant.33)
+  %broadcast.1850 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %multiply.1849), dimensions={0,1,2,3}
+  %reshape.1851 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1850)
+  %broadcast.1852 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1851), dimensions={3}
+  %multiply.1853 = f32[250,10,10,1392]{3,2,1,0} multiply(f32[250,10,10,1392]{3,2,1,0} %subtract.1846, f32[250,10,10,1392]{3,2,1,0} %broadcast.1852)
+  %constant.32 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1854 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.32), dimensions={0,1,2,3}
+  %reshape.1855 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1854)
+  %broadcast.1856 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1855), dimensions={3}
+  %add.1857 = f32[250,10,10,1392]{3,2,1,0} add(f32[250,10,10,1392]{3,2,1,0} %multiply.1853, f32[250,10,10,1392]{3,2,1,0} %broadcast.1856)
+  %call.1866 = f32[250,10,10,1392]{3,2,1,0} call(f32[250,10,10,1392]{3,2,1,0} %add.1857), to_apply=%jit_relu6_43.1858
+  %constant.306 = f32[5,5,1,1392]{3,2,1,0} constant({...})
+  %convolution.1867 = f32[250,10,10,1392]{3,2,1,0} convolution(f32[250,10,10,1392]{3,2,1,0} %call.1866, f32[5,5,1,1392]{3,2,1,0} %constant.306), window={size=5x5 pad=2_2x2_2}, dim_labels=b01f_01io->b01f, feature_group_count=1392
+  %constant.31 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1868 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.31), dimensions={0,1,2,3}
+  %reshape.1869 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1868)
+  %broadcast.1870 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1869), dimensions={3}
+  %subtract.1871 = f32[250,10,10,1392]{3,2,1,0} subtract(f32[250,10,10,1392]{3,2,1,0} %convolution.1867, f32[250,10,10,1392]{3,2,1,0} %broadcast.1870)
+  %constant.30 = f32[1392]{0} constant({...})
+  %rsqrt.1872 = f32[1392]{0} rsqrt(f32[1392]{0} %constant.30)
+  %reshape.1873 = f32[1,1,1,1392]{3,2,1,0} reshape(f32[1392]{0} %rsqrt.1872)
+  %constant.29 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %multiply.1874 = f32[1,1,1,1392]{3,2,1,0} multiply(f32[1,1,1,1392]{3,2,1,0} %reshape.1873, f32[1,1,1,1392]{3,2,1,0} %constant.29)
+  %broadcast.1875 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %multiply.1874), dimensions={0,1,2,3}
+  %reshape.1876 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1875)
+  %broadcast.1877 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1876), dimensions={3}
+  %multiply.1878 = f32[250,10,10,1392]{3,2,1,0} multiply(f32[250,10,10,1392]{3,2,1,0} %subtract.1871, f32[250,10,10,1392]{3,2,1,0} %broadcast.1877)
+  %constant.28 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1879 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.28), dimensions={0,1,2,3}
+  %reshape.1880 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1879)
+  %broadcast.1881 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1880), dimensions={3}
+  %add.1882 = f32[250,10,10,1392]{3,2,1,0} add(f32[250,10,10,1392]{3,2,1,0} %multiply.1878, f32[250,10,10,1392]{3,2,1,0} %broadcast.1881)
+  %call.1891 = f32[250,10,10,1392]{3,2,1,0} call(f32[250,10,10,1392]{3,2,1,0} %add.1882), to_apply=%jit_relu6_44.1883
+  %constant.305 = f32[1,1,1392,232]{3,2,1,0} constant({...})
+  %convolution.1892 = f32[250,10,10,232]{3,2,1,0} convolution(f32[250,10,10,1392]{3,2,1,0} %call.1891, f32[1,1,1392,232]{3,2,1,0} %constant.305), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.27 = f32[1,1,1,232]{3,2,1,0} constant({...})
+  %broadcast.1893 = f32[1,1,1,232]{3,2,1,0} broadcast(f32[1,1,1,232]{3,2,1,0} %constant.27), dimensions={0,1,2,3}
+  %reshape.1894 = f32[232]{0} reshape(f32[1,1,1,232]{3,2,1,0} %broadcast.1893)
+  %broadcast.1895 = f32[250,10,10,232]{3,2,1,0} broadcast(f32[232]{0} %reshape.1894), dimensions={3}
+  %subtract.1896 = f32[250,10,10,232]{3,2,1,0} subtract(f32[250,10,10,232]{3,2,1,0} %convolution.1892, f32[250,10,10,232]{3,2,1,0} %broadcast.1895)
+  %constant.26 = f32[232]{0} constant({...})
+  %rsqrt.1897 = f32[232]{0} rsqrt(f32[232]{0} %constant.26)
+  %reshape.1898 = f32[1,1,1,232]{3,2,1,0} reshape(f32[232]{0} %rsqrt.1897)
+  %constant.25 = f32[1,1,1,232]{3,2,1,0} constant({...})
+  %multiply.1899 = f32[1,1,1,232]{3,2,1,0} multiply(f32[1,1,1,232]{3,2,1,0} %reshape.1898, f32[1,1,1,232]{3,2,1,0} %constant.25)
+  %broadcast.1900 = f32[1,1,1,232]{3,2,1,0} broadcast(f32[1,1,1,232]{3,2,1,0} %multiply.1899), dimensions={0,1,2,3}
+  %reshape.1901 = f32[232]{0} reshape(f32[1,1,1,232]{3,2,1,0} %broadcast.1900)
+  %broadcast.1902 = f32[250,10,10,232]{3,2,1,0} broadcast(f32[232]{0} %reshape.1901), dimensions={3}
+  %multiply.1903 = f32[250,10,10,232]{3,2,1,0} multiply(f32[250,10,10,232]{3,2,1,0} %subtract.1896, f32[250,10,10,232]{3,2,1,0} %broadcast.1902)
+  %constant.24 = f32[1,1,1,232]{3,2,1,0} constant({...})
+  %broadcast.1904 = f32[1,1,1,232]{3,2,1,0} broadcast(f32[1,1,1,232]{3,2,1,0} %constant.24), dimensions={0,1,2,3}
+  %reshape.1905 = f32[232]{0} reshape(f32[1,1,1,232]{3,2,1,0} %broadcast.1904)
+  %broadcast.1906 = f32[250,10,10,232]{3,2,1,0} broadcast(f32[232]{0} %reshape.1905), dimensions={3}
+  %add.1907 = f32[250,10,10,232]{3,2,1,0} add(f32[250,10,10,232]{3,2,1,0} %multiply.1903, f32[250,10,10,232]{3,2,1,0} %broadcast.1906)
+  %add.1908 = f32[250,10,10,232]{3,2,1,0} add(f32[250,10,10,232]{3,2,1,0} %add.1907, f32[250,10,10,232]{3,2,1,0} %add.1841)
+  %constant.304 = f32[1,1,232,1392]{3,2,1,0} constant({...})
+  %convolution.1909 = f32[250,10,10,1392]{3,2,1,0} convolution(f32[250,10,10,232]{3,2,1,0} %add.1908, f32[1,1,232,1392]{3,2,1,0} %constant.304), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.23 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1910 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.23), dimensions={0,1,2,3}
+  %reshape.1911 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1910)
+  %broadcast.1912 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1911), dimensions={3}
+  %subtract.1913 = f32[250,10,10,1392]{3,2,1,0} subtract(f32[250,10,10,1392]{3,2,1,0} %convolution.1909, f32[250,10,10,1392]{3,2,1,0} %broadcast.1912)
+  %constant.22 = f32[1392]{0} constant({...})
+  %rsqrt.1914 = f32[1392]{0} rsqrt(f32[1392]{0} %constant.22)
+  %reshape.1915 = f32[1,1,1,1392]{3,2,1,0} reshape(f32[1392]{0} %rsqrt.1914)
+  %constant.21 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %multiply.1916 = f32[1,1,1,1392]{3,2,1,0} multiply(f32[1,1,1,1392]{3,2,1,0} %reshape.1915, f32[1,1,1,1392]{3,2,1,0} %constant.21)
+  %broadcast.1917 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %multiply.1916), dimensions={0,1,2,3}
+  %reshape.1918 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1917)
+  %broadcast.1919 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1918), dimensions={3}
+  %multiply.1920 = f32[250,10,10,1392]{3,2,1,0} multiply(f32[250,10,10,1392]{3,2,1,0} %subtract.1913, f32[250,10,10,1392]{3,2,1,0} %broadcast.1919)
+  %constant.20 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1921 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.20), dimensions={0,1,2,3}
+  %reshape.1922 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1921)
+  %broadcast.1923 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1922), dimensions={3}
+  %add.1924 = f32[250,10,10,1392]{3,2,1,0} add(f32[250,10,10,1392]{3,2,1,0} %multiply.1920, f32[250,10,10,1392]{3,2,1,0} %broadcast.1923)
+  %call.1933 = f32[250,10,10,1392]{3,2,1,0} call(f32[250,10,10,1392]{3,2,1,0} %add.1924), to_apply=%jit_relu6_45.1925
+  %constant.303 = f32[3,3,1,1392]{3,2,1,0} constant({...})
+  %convolution.1934 = f32[250,10,10,1392]{3,2,1,0} convolution(f32[250,10,10,1392]{3,2,1,0} %call.1933, f32[3,3,1,1392]{3,2,1,0} %constant.303), window={size=3x3 pad=1_1x1_1}, dim_labels=b01f_01io->b01f, feature_group_count=1392
+  %constant.19 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1935 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.19), dimensions={0,1,2,3}
+  %reshape.1936 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1935)
+  %broadcast.1937 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1936), dimensions={3}
+  %subtract.1938 = f32[250,10,10,1392]{3,2,1,0} subtract(f32[250,10,10,1392]{3,2,1,0} %convolution.1934, f32[250,10,10,1392]{3,2,1,0} %broadcast.1937)
+  %constant.18 = f32[1392]{0} constant({...})
+  %rsqrt.1939 = f32[1392]{0} rsqrt(f32[1392]{0} %constant.18)
+  %reshape.1940 = f32[1,1,1,1392]{3,2,1,0} reshape(f32[1392]{0} %rsqrt.1939)
+  %constant.17 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %multiply.1941 = f32[1,1,1,1392]{3,2,1,0} multiply(f32[1,1,1,1392]{3,2,1,0} %reshape.1940, f32[1,1,1,1392]{3,2,1,0} %constant.17)
+  %broadcast.1942 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %multiply.1941), dimensions={0,1,2,3}
+  %reshape.1943 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1942)
+  %broadcast.1944 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1943), dimensions={3}
+  %multiply.1945 = f32[250,10,10,1392]{3,2,1,0} multiply(f32[250,10,10,1392]{3,2,1,0} %subtract.1938, f32[250,10,10,1392]{3,2,1,0} %broadcast.1944)
+  %constant.16 = f32[1,1,1,1392]{3,2,1,0} constant({...})
+  %broadcast.1946 = f32[1,1,1,1392]{3,2,1,0} broadcast(f32[1,1,1,1392]{3,2,1,0} %constant.16), dimensions={0,1,2,3}
+  %reshape.1947 = f32[1392]{0} reshape(f32[1,1,1,1392]{3,2,1,0} %broadcast.1946)
+  %broadcast.1948 = f32[250,10,10,1392]{3,2,1,0} broadcast(f32[1392]{0} %reshape.1947), dimensions={3}
+  %add.1949 = f32[250,10,10,1392]{3,2,1,0} add(f32[250,10,10,1392]{3,2,1,0} %multiply.1945, f32[250,10,10,1392]{3,2,1,0} %broadcast.1948)
+  %call.1958 = f32[250,10,10,1392]{3,2,1,0} call(f32[250,10,10,1392]{3,2,1,0} %add.1949), to_apply=%jit_relu6_46.1950
+  %constant.302 = f32[1,1,1392,384]{3,2,1,0} constant({...})
+  %convolution.1959 = f32[250,10,10,384]{3,2,1,0} convolution(f32[250,10,10,1392]{3,2,1,0} %call.1958, f32[1,1,1392,384]{3,2,1,0} %constant.302), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.15 = f32[1,1,1,384]{3,2,1,0} constant({...})
+  %broadcast.1960 = f32[1,1,1,384]{3,2,1,0} broadcast(f32[1,1,1,384]{3,2,1,0} %constant.15), dimensions={0,1,2,3}
+  %reshape.1961 = f32[384]{0} reshape(f32[1,1,1,384]{3,2,1,0} %broadcast.1960)
+  %broadcast.1962 = f32[250,10,10,384]{3,2,1,0} broadcast(f32[384]{0} %reshape.1961), dimensions={3}
+  %subtract.1963 = f32[250,10,10,384]{3,2,1,0} subtract(f32[250,10,10,384]{3,2,1,0} %convolution.1959, f32[250,10,10,384]{3,2,1,0} %broadcast.1962)
+  %constant.14 = f32[384]{0} constant({...})
+  %rsqrt.1964 = f32[384]{0} rsqrt(f32[384]{0} %constant.14)
+  %reshape.1965 = f32[1,1,1,384]{3,2,1,0} reshape(f32[384]{0} %rsqrt.1964)
+  %constant.13 = f32[1,1,1,384]{3,2,1,0} constant({...})
+  %multiply.1966 = f32[1,1,1,384]{3,2,1,0} multiply(f32[1,1,1,384]{3,2,1,0} %reshape.1965, f32[1,1,1,384]{3,2,1,0} %constant.13)
+  %broadcast.1967 = f32[1,1,1,384]{3,2,1,0} broadcast(f32[1,1,1,384]{3,2,1,0} %multiply.1966), dimensions={0,1,2,3}
+  %reshape.1968 = f32[384]{0} reshape(f32[1,1,1,384]{3,2,1,0} %broadcast.1967)
+  %broadcast.1969 = f32[250,10,10,384]{3,2,1,0} broadcast(f32[384]{0} %reshape.1968), dimensions={3}
+  %multiply.1970 = f32[250,10,10,384]{3,2,1,0} multiply(f32[250,10,10,384]{3,2,1,0} %subtract.1963, f32[250,10,10,384]{3,2,1,0} %broadcast.1969)
+  %constant.12 = f32[1,1,1,384]{3,2,1,0} constant({...})
+  %broadcast.1971 = f32[1,1,1,384]{3,2,1,0} broadcast(f32[1,1,1,384]{3,2,1,0} %constant.12), dimensions={0,1,2,3}
+  %reshape.1972 = f32[384]{0} reshape(f32[1,1,1,384]{3,2,1,0} %broadcast.1971)
+  %broadcast.1973 = f32[250,10,10,384]{3,2,1,0} broadcast(f32[384]{0} %reshape.1972), dimensions={3}
+  %add.1974 = f32[250,10,10,384]{3,2,1,0} add(f32[250,10,10,384]{3,2,1,0} %multiply.1970, f32[250,10,10,384]{3,2,1,0} %broadcast.1973)
+  %constant.301 = f32[1,1,384,1280]{3,2,1,0} constant({...})
+  %convolution.1975 = f32[250,10,10,1280]{3,2,1,0} convolution(f32[250,10,10,384]{3,2,1,0} %add.1974, f32[1,1,384,1280]{3,2,1,0} %constant.301), window={size=1x1}, dim_labels=b01f_01io->b01f
+  %constant.11 = f32[1,1,1,1280]{3,2,1,0} constant({...})
+  %broadcast.1976 = f32[1,1,1,1280]{3,2,1,0} broadcast(f32[1,1,1,1280]{3,2,1,0} %constant.11), dimensions={0,1,2,3}
+  %reshape.1977 = f32[1280]{0} reshape(f32[1,1,1,1280]{3,2,1,0} %broadcast.1976)
+  %broadcast.1978 = f32[250,10,10,1280]{3,2,1,0} broadcast(f32[1280]{0} %reshape.1977), dimensions={3}
+  %subtract.1979 = f32[250,10,10,1280]{3,2,1,0} subtract(f32[250,10,10,1280]{3,2,1,0} %convolution.1975, f32[250,10,10,1280]{3,2,1,0} %broadcast.1978)
+  %constant.10 = f32[1280]{0} constant({...})
+  %rsqrt.1980 = f32[1280]{0} rsqrt(f32[1280]{0} %constant.10)
+  %reshape.1981 = f32[1,1,1,1280]{3,2,1,0} reshape(f32[1280]{0} %rsqrt.1980)
+  %constant.9 = f32[1,1,1,1280]{3,2,1,0} constant({...})
+  %multiply.1982 = f32[1,1,1,1280]{3,2,1,0} multiply(f32[1,1,1,1280]{3,2,1,0} %reshape.1981, f32[1,1,1,1280]{3,2,1,0} %constant.9)
+  %broadcast.1983 = f32[1,1,1,1280]{3,2,1,0} broadcast(f32[1,1,1,1280]{3,2,1,0} %multiply.1982), dimensions={0,1,2,3}
+  %reshape.1984 = f32[1280]{0} reshape(f32[1,1,1,1280]{3,2,1,0} %broadcast.1983)
+  %broadcast.1985 = f32[250,10,10,1280]{3,2,1,0} broadcast(f32[1280]{0} %reshape.1984), dimensions={3}
+  %multiply.1986 = f32[250,10,10,1280]{3,2,1,0} multiply(f32[250,10,10,1280]{3,2,1,0} %subtract.1979, f32[250,10,10,1280]{3,2,1,0} %broadcast.1985)
+  %constant.8 = f32[1,1,1,1280]{3,2,1,0} constant({...})
+  %broadcast.1987 = f32[1,1,1,1280]{3,2,1,0} broadcast(f32[1,1,1,1280]{3,2,1,0} %constant.8), dimensions={0,1,2,3}
+  %reshape.1988 = f32[1280]{0} reshape(f32[1,1,1,1280]{3,2,1,0} %broadcast.1987)
+  %broadcast.1989 = f32[250,10,10,1280]{3,2,1,0} broadcast(f32[1280]{0} %reshape.1988), dimensions={3}
+  %add.1990 = f32[250,10,10,1280]{3,2,1,0} add(f32[250,10,10,1280]{3,2,1,0} %multiply.1986, f32[250,10,10,1280]{3,2,1,0} %broadcast.1989)
+  %call.1999 = f32[250,10,10,1280]{3,2,1,0} call(f32[250,10,10,1280]{3,2,1,0} %add.1990), to_apply=%jit_relu6_47.1991
+  %constant.7 = f32[] constant(0)
+  %reduce.2004 = f32[250,1280]{1,0} reduce(f32[250,10,10,1280]{3,2,1,0} %call.1999, f32[] %constant.7), dimensions={1,2}, to_apply=%region_0.2000
+  %constant.5 = f32[] constant(100)
+  %broadcast.6 = f32[250,1280]{1,0} broadcast(f32[] %constant.5), dimensions={}
+  %divide.2005 = f32[250,1280]{1,0} divide(f32[250,1280]{1,0} %reduce.2004, f32[250,1280]{1,0} %broadcast.6)
+  %constant.300 = f32[1280,1000]{1,0} constant({...})
+  %dot.2006 = f32[250,1000]{1,0} dot(f32[250,1280]{1,0} %divide.2005, f32[1280,1000]{1,0} %constant.300), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  %constant.4 = f32[1,1000]{1,0} constant({...})
+  %broadcast.2007 = f32[1,1000]{1,0} broadcast(f32[1,1000]{1,0} %constant.4), dimensions={0,1}
+  %reshape.2008 = f32[1000]{0} reshape(f32[1,1000]{1,0} %broadcast.2007)
+  %broadcast.2009 = f32[250,1000]{1,0} broadcast(f32[1000]{0} %reshape.2008), dimensions={1}
+  %add.2010 = f32[250,1000]{1,0} add(f32[250,1000]{1,0} %dot.2006, f32[250,1000]{1,0} %broadcast.2009)
+  %call.2033 = (f32[250,5]{1,0}, s32[250,5]{1,0}) call(f32[250,1000]{1,0} %add.2010), to_apply=%top_k.2027
+  %get-tuple-element.2034 = f32[250,5]{1,0} get-tuple-element((f32[250,5]{1,0}, s32[250,5]{1,0}) %call.2033), index=0
+  %get-tuple-element.2035 = s32[250,5]{1,0} get-tuple-element((f32[250,5]{1,0}, s32[250,5]{1,0}) %call.2033), index=1
+  %transpose.2036 = s32[5,250]{0,1} transpose(s32[250,5]{1,0} %get-tuple-element.2035), dimensions={1,0}
+  %Arg_1.2 = s32[250]{0} parameter(1)
+  %reshape.2037 = s32[1,250]{1,0} reshape(s32[250]{0} %Arg_1.2)
+  %broadcast.2038 = s32[1,250]{1,0} broadcast(s32[1,250]{1,0} %reshape.2037), dimensions={0,1}
+  %reshape.2039 = s32[250]{0} reshape(s32[1,250]{1,0} %broadcast.2038)
+  %broadcast.2040 = s32[5,250]{1,0} broadcast(s32[250]{0} %reshape.2039), dimensions={1}
+  %compare.2041 = pred[5,250]{0,1} compare(s32[5,250]{0,1} %transpose.2036, s32[5,250]{1,0} %broadcast.2040), direction=EQ
+  %slice.2042 = pred[1,250]{1,0} slice(pred[5,250]{0,1} %compare.2041), slice={[0:1], [0:250]}
+  %reshape.2043 = pred[250]{0} reshape(pred[1,250]{1,0} %slice.2042)
+  %convert.2044 = s32[250]{0} convert(pred[250]{0} %reshape.2043)
+  %constant.3 = s32[] constant(0)
+  %reduce.2049 = s32[] reduce(s32[250]{0} %convert.2044, s32[] %constant.3), dimensions={0}, to_apply=%region_2.2045
+  %reshape.2050 = pred[1250]{0} reshape(pred[5,250]{0,1} %compare.2041)
+  %convert.2051 = s32[1250]{0} convert(pred[1250]{0} %reshape.2050)
+  %reduce.2056 = s32[] reduce(s32[1250]{0} %convert.2051, s32[] %constant.3), dimensions={0}, to_apply=%region_3.2052
+  ROOT %tuple.2057 = (s32[], s32[]) tuple(s32[] %reduce.2049, s32[] %reduce.2056)
+}
+

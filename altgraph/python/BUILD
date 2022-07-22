@@ -15,8 +15,8 @@ pybind_library(
     hdrs = ["py_hlo_passes.h"],
     deps = [
         "//altgraph:gpu_backend",
-        "//altgraph:hlo_pass_defs",
         "//altgraph:hlo_module",
+        "//altgraph:hlo_pass_defs",
     ],
 )
 
@@ -31,10 +31,10 @@ pybind_extension(
     linkopts = [
     ],
     module_name = "py_hlo_env",
-    deps = [
-        "//altgraph:hlo_env",
-        ":py_hlo_pass",
-        ":py_hlo_graph",
-    ],
     visibility = ["//visibility:public"],
+    deps = [
+        ":py_hlo_graph",
+        ":py_hlo_pass",
+        "//altgraph:hlo_env",
+    ],
 )

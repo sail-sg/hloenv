@@ -1,0 +1,136 @@
+HloModule jit_searchsorted.120
+
+%jit_vmap__where___50.12 (parameter.13: pred[20], parameter.14: s64[20], parameter.15: s64[20]) -> (s64[20]) {
+  %constant.16 = pred[] constant(false)
+  %parameter.13 = pred[20]{0} parameter(0)
+  %parameter.14 = s64[20]{0} parameter(1)
+  %parameter.15 = s64[20]{0} parameter(2)
+  %convert.17 = s64[20]{0} convert(s64[20]{0} %parameter.15)
+  %select.18 = s64[20]{0} select(pred[20]{0} %parameter.13, s64[20]{0} %parameter.14, s64[20]{0} %convert.17)
+  ROOT %tuple.19 = (s64[20]{0}) tuple(s64[20]{0} %select.18)
+}
+
+%jit_vmap_floor_divide_.20 (parameter.21: s64[20], parameter.22: s64[]) -> (s64[20]) {
+  %constant.23 = pred[] constant(false)
+  %parameter.21 = s64[20]{0} parameter(0)
+  %sign.26 = s64[20]{0} sign(s64[20]{0} %parameter.21)
+  %parameter.22 = s64[] parameter(1)
+  %sign.27 = s64[] sign(s64[] %parameter.22)
+  %broadcast.28 = s64[20]{0} broadcast(s64[] %sign.27), dimensions={}
+  %compare.29 = pred[20]{0} compare(s64[20]{0} %sign.26, s64[20]{0} %broadcast.28), direction=NE
+  %broadcast.30 = s64[20]{0} broadcast(s64[] %parameter.22), dimensions={}
+  %remainder.31 = s64[20]{0} remainder(s64[20]{0} %parameter.21, s64[20]{0} %broadcast.30)
+  %constant.32 = s64[] constant(0)
+  %broadcast.33 = s64[20]{0} broadcast(s64[] %constant.32), dimensions={}
+  %compare.34 = pred[20]{0} compare(s64[20]{0} %remainder.31, s64[20]{0} %broadcast.33), direction=NE
+  %and.35 = pred[20]{0} and(pred[20]{0} %compare.29, pred[20]{0} %compare.34)
+  %broadcast.24 = s64[20]{0} broadcast(s64[] %parameter.22), dimensions={}
+  %divide.25 = s64[20]{0} divide(s64[20]{0} %parameter.21, s64[20]{0} %broadcast.24)
+  %convert.36 = s64[20]{0} convert(s64[20]{0} %divide.25)
+  %constant.37 = s64[] constant(1)
+  %broadcast.38 = s64[20]{0} broadcast(s64[] %constant.37), dimensions={}
+  %subtract.39 = s64[20]{0} subtract(s64[20]{0} %convert.36, s64[20]{0} %broadcast.38)
+  %call.40 = (s64[20]{0}) call(pred[20]{0} %and.35, s64[20]{0} %subtract.39, s64[20]{0} %divide.25), to_apply=%jit_vmap__where___50.12
+  %get-tuple-element.41 = s64[20]{0} get-tuple-element((s64[20]{0}) %call.40), index=0
+  ROOT %tuple.42 = (s64[20]{0}) tuple(s64[20]{0} %get-tuple-element.41)
+}
+
+%jit_vmap__where___51.43 (parameter.44: pred[20], parameter.45: s64[20], parameter.46: s64[20]) -> (s64[20]) {
+  %constant.47 = pred[] constant(false)
+  %parameter.44 = pred[20]{0} parameter(0)
+  %parameter.45 = s64[20]{0} parameter(1)
+  %convert.48 = s64[20]{0} convert(s64[20]{0} %parameter.45)
+  %parameter.46 = s64[20]{0} parameter(2)
+  %select.49 = s64[20]{0} select(pred[20]{0} %parameter.44, s64[20]{0} %convert.48, s64[20]{0} %parameter.46)
+  ROOT %tuple.50 = (s64[20]{0}) tuple(s64[20]{0} %select.49)
+}
+
+%jit_vmap__where___52.51 (parameter.52: pred[20], parameter.53: s64[20], parameter.54: s64[20]) -> (s64[20]) {
+  %constant.55 = pred[] constant(false)
+  %parameter.52 = pred[20]{0} parameter(0)
+  %parameter.53 = s64[20]{0} parameter(1)
+  %parameter.54 = s64[20]{0} parameter(2)
+  %convert.56 = s64[20]{0} convert(s64[20]{0} %parameter.54)
+  %select.57 = s64[20]{0} select(pred[20]{0} %parameter.52, s64[20]{0} %parameter.53, s64[20]{0} %convert.56)
+  ROOT %tuple.58 = (s64[20]{0}) tuple(s64[20]{0} %select.57)
+}
+
+%body_computation.59 (parameter.60: (f64[22], f64[20], s64[], s64[], s64[20], /*index=5*/s64[20])) -> (f64[22], f64[20], s64[], s64[], s64[20], /*index=5*/s64[20]) {
+  %constant.67 = pred[] constant(false)
+  %parameter.60 = (f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) parameter(0)
+  %get-tuple-element.61 = f64[22]{0} get-tuple-element((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %parameter.60), index=0
+  %get-tuple-element.62 = f64[20]{0} get-tuple-element((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %parameter.60), index=1
+  %get-tuple-element.63 = s64[] get-tuple-element((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %parameter.60), index=2
+  %constant.89 = s64[] constant(1)
+  %add.90 = s64[] add(s64[] %get-tuple-element.63, s64[] %constant.89)
+  %get-tuple-element.64 = s64[] get-tuple-element((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %parameter.60), index=3
+  %constant.68 = s64[] constant(1)
+  %add.69 = s64[] add(s64[] %get-tuple-element.64, s64[] %constant.68)
+  %get-tuple-element.65 = s64[20]{0} get-tuple-element((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %parameter.60), index=4
+  %get-tuple-element.66 = s64[20]{0} get-tuple-element((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %parameter.60), index=5
+  %add.70 = s64[20]{0} add(s64[20]{0} %get-tuple-element.65, s64[20]{0} %get-tuple-element.66)
+  %constant.71 = s64[] constant(2)
+  %call.72 = (s64[20]{0}) call(s64[20]{0} %add.70, s64[] %constant.71), to_apply=%jit_vmap_floor_divide_.20
+  %get-tuple-element.73 = s64[20]{0} get-tuple-element((s64[20]{0}) %call.72), index=0
+  %constant.74 = s64[] constant(0)
+  %broadcast.75 = s64[20]{0} broadcast(s64[] %constant.74), dimensions={}
+  %compare.76 = pred[20]{0} compare(s64[20]{0} %get-tuple-element.73, s64[20]{0} %broadcast.75), direction=LT
+  %constant.77 = s64[] constant(22)
+  %broadcast.78 = s64[20]{0} broadcast(s64[] %constant.77), dimensions={}
+  %add.79 = s64[20]{0} add(s64[20]{0} %get-tuple-element.73, s64[20]{0} %broadcast.78)
+  %select.80 = s64[20]{0} select(pred[20]{0} %compare.76, s64[20]{0} %add.79, s64[20]{0} %get-tuple-element.73)
+  %convert.81 = s32[20]{0} convert(s64[20]{0} %select.80)
+  %broadcast.82 = s32[20,1]{1,0} broadcast(s32[20]{0} %convert.81), dimensions={0}
+  %gather.83 = f64[20]{0} gather(f64[22]{0} %get-tuple-element.61, s32[20,1]{1,0} %broadcast.82), offset_dims={}, collapsed_slice_dims={0}, start_index_map={0}, index_vector_dim=1, slice_sizes={1}
+  %compare.84 = pred[20]{0} compare(f64[20]{0} %get-tuple-element.62, f64[20]{0} %gather.83), direction=LE
+  %call.85 = (s64[20]{0}) call(pred[20]{0} %compare.84, s64[20]{0} %get-tuple-element.65, s64[20]{0} %get-tuple-element.73), to_apply=%jit_vmap__where___51.43
+  %get-tuple-element.86 = s64[20]{0} get-tuple-element((s64[20]{0}) %call.85), index=0
+  %call.87 = (s64[20]{0}) call(pred[20]{0} %compare.84, s64[20]{0} %get-tuple-element.73, s64[20]{0} %get-tuple-element.66), to_apply=%jit_vmap__where___52.51
+  %get-tuple-element.88 = s64[20]{0} get-tuple-element((s64[20]{0}) %call.87), index=0
+  ROOT %tuple.91 = (f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) tuple(f64[22]{0} %get-tuple-element.61, f64[20]{0} %get-tuple-element.62, s64[] %add.90, s64[] %add.69, s64[20]{0} %get-tuple-element.86, /*index=5*/s64[20]{0} %get-tuple-element.88)
+}
+
+%cond_computation.92 (parameter.93: (f64[22], f64[20], s64[], s64[], s64[20], /*index=5*/s64[20])) -> pred[] {
+  %parameter.93 = (f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) parameter(0)
+  %get-tuple-element.94 = f64[22]{0} get-tuple-element((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %parameter.93), index=0
+  %get-tuple-element.95 = f64[20]{0} get-tuple-element((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %parameter.93), index=1
+  %get-tuple-element.97 = s64[] get-tuple-element((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %parameter.93), index=3
+  %get-tuple-element.98 = s64[20]{0} get-tuple-element((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %parameter.93), index=4
+  %get-tuple-element.99 = s64[20]{0} get-tuple-element((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %parameter.93), index=5
+  %constant.100 = pred[] constant(false)
+  %get-tuple-element.96 = s64[] get-tuple-element((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %parameter.93), index=2
+  %constant.101 = s64[] constant(5)
+  ROOT %compare.102 = pred[] compare(s64[] %get-tuple-element.96, s64[] %constant.101), direction=LT
+}
+
+ENTRY %jit_searchsorted.120 (parameter.1: f64[22], parameter.2: f64[20]) -> (s64[20]) {
+  %constant.3 = pred[] constant(false)
+  %constant.9 = pred[] constant(false)
+  %parameter.1 = f64[22]{0} parameter(0)
+  %parameter.2 = f64[20]{0} parameter(1)
+  %constant.10 = s64[] constant(0)
+  %constant.8 = s64[] constant(0)
+  %constant.4 = s64[] constant(0)
+  %broadcast.5 = s64[20]{0} broadcast(s64[] %constant.4), dimensions={}
+  %constant.6 = s64[] constant(22)
+  %broadcast.7 = s64[20]{0} broadcast(s64[] %constant.6), dimensions={}
+  %tuple.11 = (f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) tuple(f64[22]{0} %parameter.1, f64[20]{0} %parameter.2, s64[] %constant.10, s64[] %constant.8, s64[20]{0} %broadcast.5, /*index=5*/s64[20]{0} %broadcast.7)
+  %while.103 = (f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) while((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %tuple.11), condition=%cond_computation.92, body=%body_computation.59
+  %get-tuple-element.104 = f64[22]{0} get-tuple-element((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %while.103), index=0
+  %get-tuple-element.105 = f64[20]{0} get-tuple-element((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %while.103), index=1
+  %get-tuple-element.106 = s64[] get-tuple-element((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %while.103), index=2
+  %get-tuple-element.107 = s64[] get-tuple-element((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %while.103), index=3
+  %get-tuple-element.108 = s64[20]{0} get-tuple-element((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %while.103), index=4
+  %get-tuple-element.109 = s64[20]{0} get-tuple-element((f64[22]{0}, f64[20]{0}, s64[], s64[], s64[20]{0}, /*index=5*/s64[20]{0}) %while.103), index=5
+  %tuple.110 = (s64[], s64[], s64[20]{0}, s64[20]{0}) tuple(s64[] %get-tuple-element.106, s64[] %get-tuple-element.107, s64[20]{0} %get-tuple-element.108, s64[20]{0} %get-tuple-element.109)
+  %get-tuple-element.111 = s64[] get-tuple-element((s64[], s64[], s64[20]{0}, s64[20]{0}) %tuple.110), index=0
+  %get-tuple-element.112 = s64[] get-tuple-element((s64[], s64[], s64[20]{0}, s64[20]{0}) %tuple.110), index=1
+  %get-tuple-element.113 = s64[20]{0} get-tuple-element((s64[], s64[], s64[20]{0}, s64[20]{0}) %tuple.110), index=2
+  %get-tuple-element.114 = s64[20]{0} get-tuple-element((s64[], s64[], s64[20]{0}, s64[20]{0}) %tuple.110), index=3
+  %tuple.115 = (s64[], s64[20]{0}, s64[20]{0}) tuple(s64[] %get-tuple-element.112, s64[20]{0} %get-tuple-element.113, s64[20]{0} %get-tuple-element.114)
+  %get-tuple-element.116 = s64[] get-tuple-element((s64[], s64[20]{0}, s64[20]{0}) %tuple.115), index=0
+  %get-tuple-element.117 = s64[20]{0} get-tuple-element((s64[], s64[20]{0}, s64[20]{0}) %tuple.115), index=1
+  %get-tuple-element.118 = s64[20]{0} get-tuple-element((s64[], s64[20]{0}, s64[20]{0}) %tuple.115), index=2
+  ROOT %tuple.119 = (s64[20]{0}) tuple(s64[20]{0} %get-tuple-element.118)
+}
+

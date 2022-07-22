@@ -1,0 +1,39 @@
+HloModule jit__var__1.31
+
+%primitive_computation_add.5 (parameter.6: f32[], parameter.7: f32[]) -> f32[] {
+  %parameter.6 = f32[] parameter(0)
+  %parameter.7 = f32[] parameter(1)
+  ROOT %add.8 = f32[] add(f32[] %parameter.6, f32[] %parameter.7)
+}
+
+%primitive_computation_add.21 (parameter.22: f32[], parameter.23: f32[]) -> f32[] {
+  %parameter.22 = f32[] parameter(0)
+  %parameter.23 = f32[] parameter(1)
+  ROOT %add.24 = f32[] add(f32[] %parameter.22, f32[] %parameter.23)
+}
+
+ENTRY %jit__var__1.31 (parameter.1: f32[24,24,64], parameter.2: s32[]) -> (f32[1,1,1]) {
+  %constant.3 = pred[] constant(false)
+  %parameter.1 = f32[24,24,64]{2,1,0} parameter(0)
+  %constant.4 = f32[] constant(0)
+  %reduce.9 = f32[] reduce(f32[24,24,64]{2,1,0} %parameter.1, f32[] %constant.4), dimensions={0,1,2}, to_apply=%primitive_computation_add.5
+  %broadcast.10 = f32[1,1,1]{2,1,0} broadcast(f32[] %reduce.9), dimensions={}
+  %constant.11 = f32[] constant(36864)
+  %broadcast.12 = f32[1,1,1]{2,1,0} broadcast(f32[] %constant.11), dimensions={}
+  %divide.13 = f32[1,1,1]{2,1,0} divide(f32[1,1,1]{2,1,0} %broadcast.10, f32[1,1,1]{2,1,0} %broadcast.12)
+  %reshape.14 = f32[] reshape(f32[1,1,1]{2,1,0} %divide.13)
+  %broadcast.15 = f32[24,24,64]{2,1,0} broadcast(f32[] %reshape.14), dimensions={}
+  %subtract.16 = f32[24,24,64]{2,1,0} subtract(f32[24,24,64]{2,1,0} %parameter.1, f32[24,24,64]{2,1,0} %broadcast.15)
+  %multiply.17 = f32[24,24,64]{2,1,0} multiply(f32[24,24,64]{2,1,0} %subtract.16, f32[24,24,64]{2,1,0} %subtract.16)
+  %constant.20 = f32[] constant(0)
+  %reduce.25 = f32[] reduce(f32[24,24,64]{2,1,0} %multiply.17, f32[] %constant.20), dimensions={0,1,2}, to_apply=%primitive_computation_add.21
+  %broadcast.26 = f32[1,1,1]{2,1,0} broadcast(f32[] %reduce.25), dimensions={}
+  %constant.18 = s32[] constant(36864)
+  %parameter.2 = s32[] parameter(1)
+  %subtract.19 = s32[] subtract(s32[] %constant.18, s32[] %parameter.2)
+  %convert.27 = f32[] convert(s32[] %subtract.19)
+  %broadcast.28 = f32[1,1,1]{2,1,0} broadcast(f32[] %convert.27), dimensions={}
+  %divide.29 = f32[1,1,1]{2,1,0} divide(f32[1,1,1]{2,1,0} %broadcast.26, f32[1,1,1]{2,1,0} %broadcast.28)
+  ROOT %tuple.30 = (f32[1,1,1]{2,1,0}) tuple(f32[1,1,1]{2,1,0} %divide.29)
+}
+

@@ -114,6 +114,8 @@ class AltHloModule {
 
   const xla::HloModuleConfig& config() const { return hlo_module_->config(); }
 
+  int64_t InstructionCount() { return hlo_module_->instruction_count(); }
+
  private:
   std::unique_ptr<xla::HloModule> hlo_module_;
 };

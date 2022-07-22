@@ -47,10 +47,10 @@ void HloGraph::Clear() {
 
   inst_list_.clear();
   uid_to_node_idx_.clear();
-  uid_set_.clear();
   uid_to_inst_.clear();
   in_edge_lists_.clear();
   out_edge_lists_.clear();
+  called_comp_lists_.clear();
 }
 
 void HloGraph::BuildGraphTopology(const xla::HloComputation* c, int gid) {
@@ -95,7 +95,6 @@ void HloGraph::BuildGraphTopology(const xla::HloComputation* c, int gid) {
 void HloGraph::SetFusedCompId(
     const absl::flat_hash_map<xla::HloComputation*, int>& comp_id_map) {
   int num_nodes = node_feats_.uids->size();
-  node_feats_.fused_comp_ids->resize(num_nodes);
   for (int ii = 0; ii < num_nodes; ++ii) {
     int uid = node_feats_.uids->at(ii);
     uid_to_node_idx_[uid] = ii;
@@ -103,12 +102,12 @@ void HloGraph::SetFusedCompId(
     // For fusion instruction, record the computation id of its fused
     // computation; For all non-fusion instructions, set their fused_comp_ids to
     // zero.
-    if (instruction->opcode() == xla::HloOpcode::kFusion) {
-      auto comp_p = instruction->fused_instructions_computation();
-      int comp_id = comp_id_map.at(comp_p);
-      node_feats_.fused_comp_ids->at(ii) = comp_id;
-    } else {
-      node_feats_.fused_comp_ids->at(ii) = 0;
+    auto called_comps = instruction->called_computations();
+    if (!called_comps.empty()) {
+      for (auto comp : called_comps) {
+        int comp_id = comp_id_map.at(comp);
+        called_comp_lists_[ii].push_back(comp_id);
+      }
     }
   }
 }
@@ -131,35 +130,82 @@ void HloGraph::FusedComputationInlining() {
   for (int ii = 0; ii < num_nodes; ++ii) {
     // get fusion instruction's uid and fused computation id it points to.
     int uid = node_feats_.uids->at(ii);
-    int fused_comp_id = node_feats_.fused_comp_ids->at(ii);
-    if (fused_comp_id > 0) {
-      // If instruction is fusion, we inline the fused computation.
-      auto instr_indices = FindInstIndicesOfFusedComp(fused_comp_id);
-      for (int idx_instr_indices = 0; idx_instr_indices < instr_indices.size();
-           ++idx_instr_indices) {
-        // Iterate over all instructions in the fused computation.
-        int fused_comp_uid =
-            node_feats_.uids->at(instr_indices[idx_instr_indices]);
-
-        auto instruction = uid_to_inst_[fused_comp_uid];
-        if (instruction->opcode() == xla::HloOpcode::kParameter) {
-          // param of fused comp instructions, we rewire fusion instruction's
-          // operand to params inside fused computation
-          int operand_fusion = in_edge_lists_[uid].front();
-          in_edge_lists_[uid].erase(in_edge_lists_[uid].begin());
-          in_edge_lists_[fused_comp_uid].push_back(operand_fusion);
-          // remove fusion instruction from user list of its operand.
-          auto& operand_oel = out_edge_lists_[operand_fusion];
-          operand_oel.erase(
-              std::remove(operand_oel.begin(), operand_oel.end(), uid),
-              operand_oel.end());
-          operand_oel.push_back(fused_comp_uid);
+    auto current_instruction = uid_to_inst_[uid];
+    LOG(ERROR) << "considering: " << current_instruction->name();
+    int operand_fusion;
+    if (current_instruction->opcode() == xla::HloOpcode::kReduce ||
+        current_instruction->opcode() == xla::HloOpcode::kScatter ||
+        current_instruction->opcode() == xla::HloOpcode::kSort) {
+      operand_fusion = in_edge_lists_[uid].front();
+      // remove fusion instruction from user list of its operand.
+      auto& operand_oel = out_edge_lists_[operand_fusion];
+      operand_oel.erase(
+          std::remove(operand_oel.begin(), operand_oel.end(), uid),
+          operand_oel.end());
+    }
+    if (!called_comp_lists_[ii].empty()) {
+      if (!(current_instruction->opcode() == xla::HloOpcode::kReduce ||
+            current_instruction->opcode() == xla::HloOpcode::kScatter ||
+            current_instruction->opcode() == xla::HloOpcode::kSort)) {
+        for (int fused_comp_id : called_comp_lists_[ii]) {
+          // If instruction is fusion, we inline the fused computation.
+          auto instr_indices = FindInstIndicesOfFusedComp(fused_comp_id);
+          for (int idx_instr_indices = 0;
+               idx_instr_indices < instr_indices.size(); ++idx_instr_indices) {
+            // Iterate over all instructions in the fused computation.
+            int fused_comp_uid =
+                node_feats_.uids->at(instr_indices[idx_instr_indices]);
+            auto instruction = uid_to_inst_[fused_comp_uid];
+            if (instruction->opcode() == xla::HloOpcode::kParameter) {
+              // param of fused comp instructions, we rewire fusion
+              // instruction's operand to params inside fused computation
+              operand_fusion = in_edge_lists_[uid].front();
+              in_edge_lists_[uid].erase(in_edge_lists_[uid].begin());
+              if (fused_comp_id != called_comp_lists_[ii].back()) {
+                // if not the last comp, add operand_fusion back as it will be
+                // needed for the next comp too.
+                in_edge_lists_[uid].push_back(operand_fusion);
+              }
+              in_edge_lists_[fused_comp_uid].push_back(operand_fusion);
+              // remove fusion instruction from user list of its operand.
+              auto& operand_oel = out_edge_lists_[operand_fusion];
+              if (fused_comp_id == called_comp_lists_[ii].back()) {
+                operand_oel.erase(
+                    std::remove(operand_oel.begin(), operand_oel.end(), uid),
+                    operand_oel.end());
+              }
+              operand_oel.push_back(fused_comp_uid);
+            }
+            if (instruction->IsRoot()) {
+              // root instruction of fused comp, we set user of fused
+              // computation root to fusion instruction.
+              out_edge_lists_[fused_comp_uid].push_back(uid);
+              in_edge_lists_[uid].push_back(fused_comp_uid);
+            }
+          }
         }
-        if (instruction->IsRoot()) {
-          // root instruction of fused comp, we set user of fused computation
-          // root to fusion instruction.
-          out_edge_lists_[fused_comp_uid].push_back(uid);
-          in_edge_lists_[uid].push_back(fused_comp_uid);
+      } else {
+        int fused_comp_id = called_comp_lists_[ii].front();
+        // If instruction is fusion, we inline the fused computation.
+        auto instr_indices = FindInstIndicesOfFusedComp(fused_comp_id);
+        for (int idx_instr_indices = 0;
+             idx_instr_indices < instr_indices.size(); ++idx_instr_indices) {
+          // Iterate over all instructions in the fused computation.
+          int fused_comp_uid =
+              node_feats_.uids->at(instr_indices[idx_instr_indices]);
+          auto instruction = uid_to_inst_[fused_comp_uid];
+          if (instruction->opcode() == xla::HloOpcode::kParameter) {
+            // param of fused comp instructions, we rewire fusion instruction's
+            // operand to params inside fused computation
+            in_edge_lists_[fused_comp_uid].push_back(operand_fusion);
+            out_edge_lists_[operand_fusion].push_back(fused_comp_uid);
+          }
+          if (instruction->IsRoot()) {
+            // root instruction of fused comp, we set user of fused computation
+            // root to fusion instruction.
+            out_edge_lists_[fused_comp_uid].push_back(uid);
+            in_edge_lists_[uid].push_back(fused_comp_uid);
+          }
         }
       }
     }
@@ -334,11 +380,6 @@ bool HloGraph::Build(const xla::HloModule* m, bool inline_fused_comp,
     // vector.
     xla::HloComputation* comp = post_order_comps.back();
     post_order_comps.pop_back();
-    if (!comp->IsFusionComputation() && !comp->IsEntryComputation()) {
-      // only consider entry computation and fused computation,
-      // ignore all other computations.
-      continue;
-    }
     fused_comp_id_map[comp] = gid;
     BuildGraphTopology(comp, gid++);
   }
@@ -472,7 +513,6 @@ void HloGraph::ShowStats() {
 
   auto names = get_node_names();
   auto gids = get_gids();
-  auto fused_comp_ids = get_fused_comp_ids();
   auto ucounts = get_user_counts();
   auto opcounts = get_operand_counts();
   auto opcodes = get_opcodes();
@@ -497,7 +537,6 @@ void HloGraph::ShowStats() {
     LOG(ERROR) << "node index: " << i;
     LOG(ERROR) << "node name: " << names[i];
     LOG(ERROR) << "gid: " << gids[i];
-    LOG(ERROR) << "fused computation id: " << fused_comp_ids[i];
     LOG(ERROR) << "user_count: " << ucounts[i];
     LOG(ERROR) << "operand_count: " << opcounts[i];
     LOG(ERROR) << "opcode: " << opcodes[i];

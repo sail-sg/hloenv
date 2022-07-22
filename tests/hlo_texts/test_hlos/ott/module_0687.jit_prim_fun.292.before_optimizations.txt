@@ -1,0 +1,476 @@
+HloModule jit_prim_fun.292
+
+_where_0.12 {
+  Arg_0.13 = pred[] parameter(0)
+  Arg_1.14 = f32[] parameter(1)
+  Arg_2.15 = s32[] parameter(2)
+  convert.16 = f32[] convert(Arg_2.15)
+  ROOT select.17 = f32[] select(Arg_0.13, Arg_1.14, convert.16)
+}
+
+_where_1.18 {
+  Arg_0.19 = pred[] parameter(0)
+  Arg_1.20 = f32[] parameter(1)
+  Arg_2.21 = f32[] parameter(2)
+  ROOT select.22 = f32[] select(Arg_0.19, Arg_1.20, Arg_2.21)
+}
+
+_where_2.23 {
+  Arg_0.24 = pred[] parameter(0)
+  Arg_1.25 = f32[] parameter(1)
+  Arg_2.26 = f32[] parameter(2)
+  ROOT select.27 = f32[] select(Arg_0.24, Arg_1.25, Arg_2.26)
+}
+
+region_2.28 {
+  Arg_0.29 = f32[] parameter(0)
+  Arg_1.30 = f32[] parameter(1)
+  ROOT add.31 = f32[] add(Arg_0.29, Arg_1.30)
+}
+
+region_3.32 {
+  Arg_0.33 = f32[] parameter(0)
+  Arg_1.34 = f32[] parameter(1)
+  ROOT add.35 = f32[] add(Arg_0.33, Arg_1.34)
+}
+
+_where_3.36 {
+  Arg_0.37 = pred[230]{0} parameter(0)
+  Arg_1.38 = f32[230]{0} parameter(1)
+  Arg_2.39 = f32[] parameter(2)
+  broadcast.40 = f32[230]{0} broadcast(Arg_2.39), dimensions={}
+  ROOT select.41 = f32[230]{0} select(Arg_0.37, Arg_1.38, broadcast.40)
+}
+
+_where_4.42 {
+  Arg_0.43 = pred[230]{0} parameter(0)
+  Arg_1.44 = f32[230]{0} parameter(1)
+  Arg_2.45 = f32[] parameter(2)
+  broadcast.46 = f32[230]{0} broadcast(Arg_2.45), dimensions={}
+  ROOT select.47 = f32[230]{0} select(Arg_0.43, Arg_1.44, broadcast.46)
+}
+
+_where_5.48 {
+  Arg_0.49 = pred[] parameter(0)
+  Arg_1.50 = f32[] parameter(1)
+  Arg_2.51 = f32[] parameter(2)
+  ROOT select.52 = f32[] select(Arg_0.49, Arg_1.50, Arg_2.51)
+}
+
+region_4.53 {
+  Arg_0.54 = f32[] parameter(0)
+  Arg_1.55 = f32[] parameter(1)
+  ROOT add.56 = f32[] add(Arg_0.54, Arg_1.55)
+}
+
+region_5.57 {
+  Arg_0.58 = f32[] parameter(0)
+  Arg_1.59 = f32[] parameter(1)
+  ROOT add.60 = f32[] add(Arg_0.58, Arg_1.59)
+}
+
+_where_6.61 {
+  Arg_0.62 = pred[160]{0} parameter(0)
+  Arg_1.63 = f32[160]{0} parameter(1)
+  Arg_2.64 = f32[] parameter(2)
+  broadcast.65 = f32[160]{0} broadcast(Arg_2.64), dimensions={}
+  ROOT select.66 = f32[160]{0} select(Arg_0.62, Arg_1.63, broadcast.65)
+}
+
+_where_7.67 {
+  Arg_0.68 = pred[160]{0} parameter(0)
+  Arg_1.69 = f32[160]{0} parameter(1)
+  Arg_2.70 = f32[] parameter(2)
+  broadcast.71 = f32[160]{0} broadcast(Arg_2.70), dimensions={}
+  ROOT select.72 = f32[160]{0} select(Arg_0.68, Arg_1.69, broadcast.71)
+}
+
+region_6.73 {
+  Arg_0.74 = f32[] parameter(0)
+  Arg_1.75 = f32[] parameter(1)
+  ROOT add.76 = f32[] add(Arg_0.74, Arg_1.75)
+}
+
+region_7.77 {
+  Arg_0.78 = f32[] parameter(0)
+  Arg_1.79 = f32[] parameter(1)
+  ROOT add.80 = f32[] add(Arg_0.78, Arg_1.79)
+}
+
+region_8.81 {
+  Arg_0.82 = f32[] parameter(0)
+  Arg_1.83 = f32[] parameter(1)
+  ROOT add.84 = f32[] add(Arg_0.82, Arg_1.83)
+}
+
+_where_8.85 {
+  Arg_0.86 = pred[] parameter(0)
+  reshape.89 = pred[1]{0} reshape(Arg_0.86)
+  Arg_1.87 = f32[1]{0} parameter(1)
+  Arg_2.88 = f32[] parameter(2)
+  reshape.90 = f32[1]{0} reshape(Arg_2.88)
+  ROOT select.91 = f32[1]{0} select(reshape.89, Arg_1.87, reshape.90)
+}
+
+_where_10.92 {
+  Arg_0.93 = pred[] parameter(0)
+  Arg_1.94 = s32[] parameter(1)
+  Arg_2.95 = s32[] parameter(2)
+  ROOT select.96 = s32[] select(Arg_0.93, Arg_1.94, Arg_2.95)
+}
+
+floor_divide_9.97 {
+  Arg_0.98 = s32[] parameter(0)
+  sign.103 = s32[] sign(Arg_0.98)
+  Arg_1.99 = s32[] parameter(1)
+  sign.104 = s32[] sign(Arg_1.99)
+  compare.105 = pred[] compare(sign.103, sign.104), direction=NE
+  remainder.106 = s32[] remainder(Arg_0.98, Arg_1.99)
+  constant.101 = s32[] constant(0)
+  compare.107 = pred[] compare(remainder.106, constant.101), direction=NE
+  and.108 = pred[] and(compare.105, compare.107)
+  divide.102 = s32[] divide(Arg_0.98, Arg_1.99)
+  constant.100 = s32[] constant(1)
+  subtract.109 = s32[] subtract(divide.102, constant.100)
+  ROOT call.110 = s32[] call(and.108, subtract.109, divide.102), to_apply=_where_10.92
+}
+
+region_9.111 {
+  Arg_0.112 = f32[] parameter(0)
+  ROOT Arg_1.113 = f32[] parameter(1)
+}
+
+region_1.114 {
+  arg_tuple.115 = (s32[], s32[], f32[200,1]{1,0}, f32[160]{0}, f32[230]{0}, /*index=5*/pred[10]{0}, f32[160,6]{1,0}, f32[230,6]{1,0}, f32[230]{0}, f32[160]{0}, /*index=10*/s32[1]{0}) parameter(0)
+  get-tuple-element.116 = s32[] get-tuple-element(arg_tuple.115), index=0
+  constant.127 = s32[] constant(1)
+  add.305 = s32[] add(get-tuple-element.116, constant.127)
+  get-tuple-element.117 = s32[] get-tuple-element(arg_tuple.115), index=1
+  add.304 = s32[] add(get-tuple-element.117, constant.127)
+  get-tuple-element.118 = f32[200,1]{1,0} get-tuple-element(arg_tuple.115), index=2
+  constant.153 = s32[] constant(10)
+  call.298 = s32[] call(get-tuple-element.117, constant.153), to_apply=floor_divide_9.97
+  constant.154 = s32[] constant(0)
+  compare.299 = pred[] compare(call.298, constant.154), direction=LT
+  constant.128 = s32[] constant(200)
+  add.300 = s32[] add(call.298, constant.128)
+  select.301 = s32[] select(compare.299, add.300, call.298)
+  reshape.302 = s32[1]{0} reshape(select.301)
+  get-tuple-element.121 = pred[10]{0} get-tuple-element(arg_tuple.115), index=5
+  compare.155 = pred[] compare(get-tuple-element.116, constant.154), direction=LT
+  add.156 = s32[] add(get-tuple-element.116, constant.153)
+  select.157 = s32[] select(compare.155, add.156, get-tuple-element.116)
+  dynamic-slice.158 = pred[1]{0} dynamic-slice(get-tuple-element.121, select.157), dynamic_slice_sizes={1}
+  reshape.159 = pred[] reshape(dynamic-slice.158)
+  compare.258 = pred[] compare(get-tuple-element.117, constant.154), direction=GE
+  and.259 = pred[] and(reshape.159, compare.258)
+  get-tuple-element.120 = f32[230]{0} get-tuple-element(arg_tuple.115), index=4
+  constant.136 = f32[] constant(0)
+  broadcast.137 = f32[230]{0} broadcast(constant.136), dimensions={}
+  compare.209 = pred[230]{0} compare(get-tuple-element.120, broadcast.137), direction=GT
+  constant.148 = f32[] constant(1)
+  call.210 = f32[230]{0} call(compare.209, get-tuple-element.120, constant.148), to_apply=_where_4.42
+  convert.161 = f32[] convert(get-tuple-element.117)
+  constant.152 = pred[] constant(true)
+  constant.151 = f32[] constant(inf)
+  call.160 = f32[] call(constant.152, constant.151, constant.154), to_apply=_where_0.12
+  compare.162 = pred[] compare(convert.161, call.160), direction=GE
+  constant.147 = f32[] constant(2)
+  slice.163 = f32[1,1]{1,0} slice(get-tuple-element.118), slice={[199:200], [0:1]}
+  reshape.164 = f32[] reshape(slice.163)
+  slice.165 = f32[1,1]{1,0} slice(get-tuple-element.118), slice={[198:199], [0:1]}
+  reshape.166 = f32[] reshape(slice.165)
+  divide.167 = f32[] divide(reshape.164, reshape.166)
+  constant.150 = f32[] constant(0.99)
+  minimum.168 = f32[] minimum(divide.167, constant.150)
+  constant.149 = f32[] constant(0.1)
+  power.169 = f32[] power(minimum.168, constant.149)
+  subtract.170 = f32[] subtract(constant.148, power.169)
+  sqrt.171 = f32[] sqrt(subtract.170)
+  add.172 = f32[] add(sqrt.171, constant.148)
+  divide.173 = f32[] divide(constant.147, add.172)
+  call.174 = f32[] call(compare.162, divide.173, constant.148), to_apply=_where_1.18
+  subtract.211 = f32[] subtract(constant.148, call.174)
+  broadcast.212 = f32[230]{0} broadcast(subtract.211), dimensions={}
+  power.213 = f32[230]{0} power(call.210, broadcast.212)
+  get-tuple-element.124 = f32[230]{0} get-tuple-element(arg_tuple.115), index=8
+  get-tuple-element.122 = f32[160,6]{1,0} get-tuple-element(arg_tuple.115), index=6
+  get-tuple-element.123 = f32[230,6]{1,0} get-tuple-element(arg_tuple.115), index=7
+  dot.180 = f32[160,230]{1,0} dot(get-tuple-element.122, get-tuple-element.123), lhs_contracting_dims={1}, rhs_contracting_dims={1}
+  constant.143 = f32[] constant(-2)
+  broadcast.144 = f32[160,230]{1,0} broadcast(constant.143), dimensions={}
+  multiply.181 = f32[160,230]{1,0} multiply(dot.180, broadcast.144)
+  multiply.182 = f32[160,6]{1,0} multiply(get-tuple-element.122, get-tuple-element.122)
+  constant.142 = f32[] constant(0)
+  reduce.183 = f32[160]{0} reduce(multiply.182, constant.142), dimensions={1}, to_apply=region_2.28
+  reshape.184 = f32[160,1]{1,0} reshape(reduce.183)
+  broadcast.188 = f32[160,1]{1,0} broadcast(reshape.184), dimensions={0,1}
+  reshape.189 = f32[160]{0} reshape(broadcast.188)
+  broadcast.190 = f32[160,230]{1,0} broadcast(reshape.189), dimensions={0}
+  multiply.185 = f32[230,6]{1,0} multiply(get-tuple-element.123, get-tuple-element.123)
+  reduce.186 = f32[230]{0} reduce(multiply.185, constant.142), dimensions={1}, to_apply=region_3.32
+  reshape.187 = f32[1,230]{1,0} reshape(reduce.186)
+  broadcast.191 = f32[1,230]{1,0} broadcast(reshape.187), dimensions={0,1}
+  reshape.192 = f32[230]{0} reshape(broadcast.191)
+  broadcast.193 = f32[160,230]{1,0} broadcast(reshape.192), dimensions={1}
+  add.194 = f32[160,230]{1,0} add(broadcast.190, broadcast.193)
+  add.195 = f32[160,230]{1,0} add(multiply.181, add.194)
+  constant.140 = f32[] constant(1)
+  broadcast.141 = f32[160,230]{1,0} broadcast(constant.140), dimensions={}
+  power.196 = f32[160,230]{1,0} power(add.195, broadcast.141)
+  negate.197 = f32[160,230]{1,0} negate(power.196)
+  constant.138 = f32[] constant(0.2)
+  broadcast.139 = f32[160,230]{1,0} broadcast(constant.138), dimensions={}
+  divide.198 = f32[160,230]{1,0} divide(negate.197, broadcast.139)
+  exponential.199 = f32[160,230]{1,0} exponential(divide.198)
+  constant.145 = f32[] constant(0.2)
+  constant.146 = pred[] constant(false)
+  call.175 = f32[] call(constant.146, constant.148, constant.148), to_apply=_where_2.23
+  convert.176 = f32[] convert(get-tuple-element.117)
+  power.177 = f32[] power(call.175, convert.176)
+  maximum.178 = f32[] maximum(power.177, constant.148)
+  multiply.179 = f32[] multiply(maximum.178, constant.145)
+  divide.200 = f32[] divide(constant.145, multiply.179)
+  broadcast.201 = f32[160,230]{1,0} broadcast(divide.200), dimensions={}
+  power.202 = f32[160,230]{1,0} power(exponential.199, broadcast.201)
+  transpose.203 = f32[230,160]{0,1} transpose(power.202), dimensions={1,0}
+  get-tuple-element.119 = f32[160]{0} get-tuple-element(arg_tuple.115), index=3
+  dot.204 = f32[230]{0} dot(transpose.203, get-tuple-element.119), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  compare.205 = pred[230]{0} compare(dot.204, broadcast.137), direction=GT
+  call.206 = f32[230]{0} call(compare.205, dot.204, constant.148), to_apply=_where_3.36
+  divide.207 = f32[230]{0} divide(get-tuple-element.124, call.206)
+  constant.134 = f32[] constant(1)
+  broadcast.135 = f32[230]{0} broadcast(constant.134), dimensions={}
+  power.208 = f32[230]{0} power(divide.207, broadcast.135)
+  broadcast.214 = f32[230]{0} broadcast(call.174), dimensions={}
+  power.215 = f32[230]{0} power(power.208, broadcast.214)
+  multiply.216 = f32[230]{0} multiply(power.213, power.215)
+  dot.260 = f32[160,230]{1,0} dot(get-tuple-element.122, get-tuple-element.123), lhs_contracting_dims={1}, rhs_contracting_dims={1}
+  multiply.261 = f32[160,230]{1,0} multiply(dot.260, broadcast.144)
+  multiply.262 = f32[160,6]{1,0} multiply(get-tuple-element.122, get-tuple-element.122)
+  reduce.263 = f32[160]{0} reduce(multiply.262, constant.142), dimensions={1}, to_apply=region_6.73
+  reshape.264 = f32[160,1]{1,0} reshape(reduce.263)
+  broadcast.268 = f32[160,1]{1,0} broadcast(reshape.264), dimensions={0,1}
+  reshape.269 = f32[160]{0} reshape(broadcast.268)
+  broadcast.270 = f32[160,230]{1,0} broadcast(reshape.269), dimensions={0}
+  multiply.265 = f32[230,6]{1,0} multiply(get-tuple-element.123, get-tuple-element.123)
+  reduce.266 = f32[230]{0} reduce(multiply.265, constant.142), dimensions={1}, to_apply=region_7.77
+  reshape.267 = f32[1,230]{1,0} reshape(reduce.266)
+  broadcast.271 = f32[1,230]{1,0} broadcast(reshape.267), dimensions={0,1}
+  reshape.272 = f32[230]{0} reshape(broadcast.271)
+  broadcast.273 = f32[160,230]{1,0} broadcast(reshape.272), dimensions={1}
+  add.274 = f32[160,230]{1,0} add(broadcast.270, broadcast.273)
+  add.275 = f32[160,230]{1,0} add(multiply.261, add.274)
+  power.276 = f32[160,230]{1,0} power(add.275, broadcast.141)
+  negate.277 = f32[160,230]{1,0} negate(power.276)
+  divide.278 = f32[160,230]{1,0} divide(negate.277, broadcast.139)
+  exponential.279 = f32[160,230]{1,0} exponential(divide.278)
+  power.280 = f32[160,230]{1,0} power(exponential.279, broadcast.141)
+  transpose.281 = f32[230,160]{0,1} transpose(power.280), dimensions={1,0}
+  constant.132 = f32[] constant(0)
+  broadcast.133 = f32[160]{0} broadcast(constant.132), dimensions={}
+  compare.250 = pred[160]{0} compare(get-tuple-element.119, broadcast.133), direction=GT
+  call.251 = f32[160]{0} call(compare.250, get-tuple-element.119, constant.148), to_apply=_where_7.67
+  subtract.252 = f32[] subtract(constant.148, call.174)
+  broadcast.253 = f32[160]{0} broadcast(subtract.252), dimensions={}
+  power.254 = f32[160]{0} power(call.251, broadcast.253)
+  get-tuple-element.125 = f32[160]{0} get-tuple-element(arg_tuple.115), index=9
+  dot.222 = f32[160,230]{1,0} dot(get-tuple-element.122, get-tuple-element.123), lhs_contracting_dims={1}, rhs_contracting_dims={1}
+  multiply.223 = f32[160,230]{1,0} multiply(dot.222, broadcast.144)
+  multiply.224 = f32[160,6]{1,0} multiply(get-tuple-element.122, get-tuple-element.122)
+  reduce.225 = f32[160]{0} reduce(multiply.224, constant.142), dimensions={1}, to_apply=region_4.53
+  reshape.226 = f32[160,1]{1,0} reshape(reduce.225)
+  broadcast.230 = f32[160,1]{1,0} broadcast(reshape.226), dimensions={0,1}
+  reshape.231 = f32[160]{0} reshape(broadcast.230)
+  broadcast.232 = f32[160,230]{1,0} broadcast(reshape.231), dimensions={0}
+  multiply.227 = f32[230,6]{1,0} multiply(get-tuple-element.123, get-tuple-element.123)
+  reduce.228 = f32[230]{0} reduce(multiply.227, constant.142), dimensions={1}, to_apply=region_5.57
+  reshape.229 = f32[1,230]{1,0} reshape(reduce.228)
+  broadcast.233 = f32[1,230]{1,0} broadcast(reshape.229), dimensions={0,1}
+  reshape.234 = f32[230]{0} reshape(broadcast.233)
+  broadcast.235 = f32[160,230]{1,0} broadcast(reshape.234), dimensions={1}
+  add.236 = f32[160,230]{1,0} add(broadcast.232, broadcast.235)
+  add.237 = f32[160,230]{1,0} add(multiply.223, add.236)
+  power.238 = f32[160,230]{1,0} power(add.237, broadcast.141)
+  negate.239 = f32[160,230]{1,0} negate(power.238)
+  divide.240 = f32[160,230]{1,0} divide(negate.239, broadcast.139)
+  exponential.241 = f32[160,230]{1,0} exponential(divide.240)
+  call.217 = f32[] call(constant.146, constant.148, constant.148), to_apply=_where_5.48
+  convert.218 = f32[] convert(get-tuple-element.117)
+  power.219 = f32[] power(call.217, convert.218)
+  maximum.220 = f32[] maximum(power.219, constant.148)
+  multiply.221 = f32[] multiply(maximum.220, constant.145)
+  divide.242 = f32[] divide(constant.145, multiply.221)
+  broadcast.243 = f32[160,230]{1,0} broadcast(divide.242), dimensions={}
+  power.244 = f32[160,230]{1,0} power(exponential.241, broadcast.243)
+  dot.245 = f32[160]{0} dot(power.244, multiply.216), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  compare.246 = pred[160]{0} compare(dot.245, broadcast.133), direction=GT
+  call.247 = f32[160]{0} call(compare.246, dot.245, constant.148), to_apply=_where_6.61
+  divide.248 = f32[160]{0} divide(get-tuple-element.125, call.247)
+  constant.130 = f32[] constant(1)
+  broadcast.131 = f32[160]{0} broadcast(constant.130), dimensions={}
+  power.249 = f32[160]{0} power(divide.248, broadcast.131)
+  broadcast.255 = f32[160]{0} broadcast(call.174), dimensions={}
+  power.256 = f32[160]{0} power(power.249, broadcast.255)
+  multiply.257 = f32[160]{0} multiply(power.254, power.256)
+  dot.282 = f32[230]{0} dot(transpose.281, multiply.257), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  multiply.283 = f32[230]{0} multiply(multiply.216, dot.282)
+  subtract.284 = f32[230]{0} subtract(multiply.283, get-tuple-element.124)
+  abs.285 = f32[230]{0} abs(subtract.284)
+  reshape.288 = f32[1,230]{1,0} reshape(abs.285)
+  get-tuple-element.126 = s32[1]{0} get-tuple-element(arg_tuple.115), index=10
+  reshape.286 = s32[1,1]{1,0} reshape(get-tuple-element.126)
+  convert.287 = f32[1,1]{1,0} convert(reshape.286)
+  broadcast.289 = f32[1,1]{1,0} broadcast(convert.287), dimensions={0,1}
+  reshape.290 = f32[1]{0} reshape(broadcast.289)
+  broadcast.291 = f32[1,230]{1,0} broadcast(reshape.290), dimensions={0}
+  power.292 = f32[1,230]{1,0} power(reshape.288, broadcast.291)
+  reduce.293 = f32[1]{0} reduce(power.292, constant.142), dimensions={1}, to_apply=region_8.81
+  constant.129 = f32[1]{0} constant({1})
+  convert.294 = f32[1]{0} convert(get-tuple-element.126)
+  divide.295 = f32[1]{0} divide(constant.129, convert.294)
+  power.296 = f32[1]{0} power(reduce.293, divide.295)
+  call.297 = f32[1]{0} call(and.259, power.296, constant.151), to_apply=_where_8.85
+  scatter.303 = f32[200,1]{1,0} scatter(get-tuple-element.118, reshape.302, call.297), update_window_dims={0}, inserted_window_dims={0}, scatter_dims_to_operand_dims={0}, index_vector_dim=0, indices_are_sorted=true, unique_indices=true, to_apply=region_9.111
+  ROOT tuple.306 = (s32[], s32[], f32[200,1]{1,0}, f32[160]{0}, f32[230]{0}, /*index=5*/pred[10]{0}, f32[160,6]{1,0}, f32[230,6]{1,0}, f32[230]{0}, f32[160]{0}, /*index=10*/s32[1]{0}) tuple(add.305, add.304, scatter.303, multiply.257, multiply.216, /*index=5*/get-tuple-element.121, get-tuple-element.122, get-tuple-element.123, get-tuple-element.124, get-tuple-element.125, /*index=10*/get-tuple-element.126)
+}
+
+region_10.307 {
+  arg_tuple.308 = (s32[], s32[], f32[200,1]{1,0}, f32[160]{0}, f32[230]{0}, /*index=5*/pred[10]{0}, f32[160,6]{1,0}, f32[230,6]{1,0}, f32[230]{0}, f32[160]{0}, /*index=10*/s32[1]{0}) parameter(0)
+  get-tuple-element.310 = s32[] get-tuple-element(arg_tuple.308), index=1
+  get-tuple-element.311 = f32[200,1]{1,0} get-tuple-element(arg_tuple.308), index=2
+  get-tuple-element.312 = f32[160]{0} get-tuple-element(arg_tuple.308), index=3
+  get-tuple-element.313 = f32[230]{0} get-tuple-element(arg_tuple.308), index=4
+  get-tuple-element.314 = pred[10]{0} get-tuple-element(arg_tuple.308), index=5
+  get-tuple-element.315 = f32[160,6]{1,0} get-tuple-element(arg_tuple.308), index=6
+  get-tuple-element.316 = f32[230,6]{1,0} get-tuple-element(arg_tuple.308), index=7
+  get-tuple-element.317 = f32[230]{0} get-tuple-element(arg_tuple.308), index=8
+  get-tuple-element.318 = f32[160]{0} get-tuple-element(arg_tuple.308), index=9
+  get-tuple-element.319 = s32[1]{0} get-tuple-element(arg_tuple.308), index=10
+  get-tuple-element.309 = s32[] get-tuple-element(arg_tuple.308), index=0
+  constant.320 = s32[] constant(10)
+  ROOT compare.321 = pred[] compare(get-tuple-element.309, constant.320), direction=LT
+}
+
+region_0.322 {
+  constant.334 = s32[] constant(0)
+  arg_tuple.323 = (s32[], f32[200,1]{1,0}, f32[160]{0}, f32[230]{0}, pred[10]{0}, /*index=5*/f32[160,6]{1,0}, f32[230,6]{1,0}, f32[230]{0}, f32[160]{0}, s32[1]{0}) parameter(0)
+  get-tuple-element.324 = s32[] get-tuple-element(arg_tuple.323), index=0
+  get-tuple-element.325 = f32[200,1]{1,0} get-tuple-element(arg_tuple.323), index=1
+  get-tuple-element.326 = f32[160]{0} get-tuple-element(arg_tuple.323), index=2
+  get-tuple-element.327 = f32[230]{0} get-tuple-element(arg_tuple.323), index=3
+  get-tuple-element.328 = pred[10]{0} get-tuple-element(arg_tuple.323), index=4
+  get-tuple-element.329 = f32[160,6]{1,0} get-tuple-element(arg_tuple.323), index=5
+  get-tuple-element.330 = f32[230,6]{1,0} get-tuple-element(arg_tuple.323), index=6
+  get-tuple-element.331 = f32[230]{0} get-tuple-element(arg_tuple.323), index=7
+  get-tuple-element.332 = f32[160]{0} get-tuple-element(arg_tuple.323), index=8
+  get-tuple-element.333 = s32[1]{0} get-tuple-element(arg_tuple.323), index=9
+  tuple.335 = (s32[], s32[], f32[200,1]{1,0}, f32[160]{0}, f32[230]{0}, /*index=5*/pred[10]{0}, f32[160,6]{1,0}, f32[230,6]{1,0}, f32[230]{0}, f32[160]{0}, /*index=10*/s32[1]{0}) tuple(constant.334, get-tuple-element.324, get-tuple-element.325, get-tuple-element.326, get-tuple-element.327, /*index=5*/get-tuple-element.328, get-tuple-element.329, get-tuple-element.330, get-tuple-element.331, get-tuple-element.332, /*index=10*/get-tuple-element.333)
+  while.336 = (s32[], s32[], f32[200,1]{1,0}, f32[160]{0}, f32[230]{0}, /*index=5*/pred[10]{0}, f32[160,6]{1,0}, f32[230,6]{1,0}, f32[230]{0}, f32[160]{0}, /*index=10*/s32[1]{0}) while(tuple.335), condition=region_10.307, body=region_1.114
+  get-tuple-element.337 = s32[] get-tuple-element(while.336), index=0
+  get-tuple-element.342 = pred[10]{0} get-tuple-element(while.336), index=5
+  get-tuple-element.343 = f32[160,6]{1,0} get-tuple-element(while.336), index=6
+  get-tuple-element.344 = f32[230,6]{1,0} get-tuple-element(while.336), index=7
+  get-tuple-element.345 = f32[230]{0} get-tuple-element(while.336), index=8
+  get-tuple-element.346 = f32[160]{0} get-tuple-element(while.336), index=9
+  get-tuple-element.347 = s32[1]{0} get-tuple-element(while.336), index=10
+  get-tuple-element.338 = s32[] get-tuple-element(while.336), index=1
+  get-tuple-element.339 = f32[200,1]{1,0} get-tuple-element(while.336), index=2
+  get-tuple-element.340 = f32[160]{0} get-tuple-element(while.336), index=3
+  get-tuple-element.341 = f32[230]{0} get-tuple-element(while.336), index=4
+  ROOT tuple.348 = (s32[], f32[200,1]{1,0}, f32[160]{0}, f32[230]{0}, pred[10]{0}, /*index=5*/f32[160,6]{1,0}, f32[230,6]{1,0}, f32[230]{0}, f32[160]{0}, s32[1]{0}) tuple(get-tuple-element.338, get-tuple-element.339, get-tuple-element.340, get-tuple-element.341, get-tuple-element.328, /*index=5*/get-tuple-element.329, get-tuple-element.330, get-tuple-element.331, get-tuple-element.332, get-tuple-element.333)
+}
+
+_where.349 {
+  Arg_0.350 = pred[] parameter(0)
+  Arg_1.351 = s32[] parameter(1)
+  Arg_2.352 = s32[] parameter(2)
+  ROOT select.353 = s32[] select(Arg_0.350, Arg_1.351, Arg_2.352)
+}
+
+floor_divide.354 {
+  Arg_0.355 = s32[] parameter(0)
+  sign.360 = s32[] sign(Arg_0.355)
+  Arg_1.356 = s32[] parameter(1)
+  sign.361 = s32[] sign(Arg_1.356)
+  compare.362 = pred[] compare(sign.360, sign.361), direction=NE
+  remainder.363 = s32[] remainder(Arg_0.355, Arg_1.356)
+  constant.358 = s32[] constant(0)
+  compare.364 = pred[] compare(remainder.363, constant.358), direction=NE
+  and.365 = pred[] and(compare.362, compare.364)
+  divide.359 = s32[] divide(Arg_0.355, Arg_1.356)
+  constant.357 = s32[] constant(1)
+  subtract.366 = s32[] subtract(divide.359, constant.357)
+  ROOT call.367 = s32[] call(and.365, subtract.366, divide.359), to_apply=_where.349
+}
+
+isfinite.368 {
+  Arg_0.369 = f32[] parameter(0)
+  ROOT is-finite.370 = pred[] is-finite(Arg_0.369)
+}
+
+region_11.371 {
+  arg_tuple.372 = (s32[], f32[200,1]{1,0}, f32[160]{0}, f32[230]{0}, pred[10]{0}, /*index=5*/f32[160,6]{1,0}, f32[230,6]{1,0}, f32[230]{0}, f32[160]{0}, s32[1]{0}) parameter(0)
+  get-tuple-element.375 = f32[160]{0} get-tuple-element(arg_tuple.372), index=2
+  get-tuple-element.376 = f32[230]{0} get-tuple-element(arg_tuple.372), index=3
+  get-tuple-element.377 = pred[10]{0} get-tuple-element(arg_tuple.372), index=4
+  get-tuple-element.378 = f32[160,6]{1,0} get-tuple-element(arg_tuple.372), index=5
+  get-tuple-element.379 = f32[230,6]{1,0} get-tuple-element(arg_tuple.372), index=6
+  get-tuple-element.380 = f32[230]{0} get-tuple-element(arg_tuple.372), index=7
+  get-tuple-element.381 = f32[160]{0} get-tuple-element(arg_tuple.372), index=8
+  get-tuple-element.382 = s32[1]{0} get-tuple-element(arg_tuple.372), index=9
+  get-tuple-element.373 = s32[] get-tuple-element(arg_tuple.372), index=0
+  constant.389 = s32[] constant(2000)
+  compare.390 = pred[] compare(get-tuple-element.373, constant.389), direction=LT
+  constant.388 = s32[] constant(0)
+  compare.391 = pred[] compare(get-tuple-element.373, constant.388), direction=LT
+  compare.400 = pred[] compare(get-tuple-element.373, constant.388), direction=EQ
+  get-tuple-element.374 = f32[200,1]{1,0} get-tuple-element(arg_tuple.372), index=1
+  constant.387 = s32[] constant(10)
+  call.392 = s32[] call(get-tuple-element.373, constant.387), to_apply=floor_divide.354
+  constant.386 = s32[] constant(1)
+  subtract.393 = s32[] subtract(call.392, constant.386)
+  compare.394 = pred[] compare(subtract.393, constant.388), direction=LT
+  constant.385 = s32[] constant(200)
+  add.395 = s32[] add(subtract.393, constant.385)
+  select.396 = s32[] select(compare.394, add.395, subtract.393)
+  reshape.397 = s32[1]{0} reshape(select.396)
+  constant.384 = s32[1]{0} constant({0})
+  concatenate.398 = s32[2]{0} concatenate(reshape.397, constant.384), dimensions={0}
+  gather.399 = f32[] gather(get-tuple-element.374, concatenate.398), offset_dims={}, collapsed_slice_dims={0,1}, start_index_map={0,1}, index_vector_dim=0, slice_sizes={1,1}, indices_are_sorted=true
+  call.401 = pred[] call(gather.399), to_apply=isfinite.368
+  not.402 = pred[] not(call.401)
+  constant.383 = f32[] constant(0.001)
+  compare.403 = pred[] compare(gather.399, constant.383), direction=GT
+  or.404 = pred[] or(not.402, compare.403)
+  or.405 = pred[] or(compare.400, or.404)
+  or.406 = pred[] or(compare.391, or.405)
+  ROOT and.407 = pred[] and(compare.390, or.406)
+}
+
+ENTRY main.420 {
+  Arg_6.7 = s32[] parameter(6)
+  Arg_7.8 = f32[200,1]{1,0} parameter(7)
+  Arg_8.9 = f32[160]{0} parameter(8)
+  Arg_9.10 = f32[230]{0} parameter(9)
+  Arg_5.6 = pred[10]{0} parameter(5)
+  Arg_0.1 = f32[160,6]{1,0} parameter(0)
+  Arg_1.2 = f32[230,6]{1,0} parameter(1)
+  Arg_2.3 = f32[230]{0} parameter(2)
+  Arg_3.4 = f32[160]{0} parameter(3)
+  Arg_4.5 = s32[1]{0} parameter(4)
+  tuple.11 = (s32[], f32[200,1]{1,0}, f32[160]{0}, f32[230]{0}, pred[10]{0}, /*index=5*/f32[160,6]{1,0}, f32[230,6]{1,0}, f32[230]{0}, f32[160]{0}, s32[1]{0}) tuple(Arg_6.7, Arg_7.8, Arg_8.9, Arg_9.10, Arg_5.6, /*index=5*/Arg_0.1, Arg_1.2, Arg_2.3, Arg_3.4, Arg_4.5)
+  while.408 = (s32[], f32[200,1]{1,0}, f32[160]{0}, f32[230]{0}, pred[10]{0}, /*index=5*/f32[160,6]{1,0}, f32[230,6]{1,0}, f32[230]{0}, f32[160]{0}, s32[1]{0}) while(tuple.11), condition=region_11.371, body=region_0.322
+  get-tuple-element.413 = pred[10]{0} get-tuple-element(while.408), index=4
+  get-tuple-element.414 = f32[160,6]{1,0} get-tuple-element(while.408), index=5
+  get-tuple-element.415 = f32[230,6]{1,0} get-tuple-element(while.408), index=6
+  get-tuple-element.416 = f32[230]{0} get-tuple-element(while.408), index=7
+  get-tuple-element.417 = f32[160]{0} get-tuple-element(while.408), index=8
+  get-tuple-element.418 = s32[1]{0} get-tuple-element(while.408), index=9
+  get-tuple-element.409 = s32[] get-tuple-element(while.408), index=0
+  get-tuple-element.410 = f32[200,1]{1,0} get-tuple-element(while.408), index=1
+  get-tuple-element.411 = f32[160]{0} get-tuple-element(while.408), index=2
+  get-tuple-element.412 = f32[230]{0} get-tuple-element(while.408), index=3
+  ROOT tuple.419 = (s32[], f32[200,1]{1,0}, f32[160]{0}, f32[230]{0}) tuple(get-tuple-element.409, get-tuple-element.410, get-tuple-element.411, get-tuple-element.412)
+}
+
