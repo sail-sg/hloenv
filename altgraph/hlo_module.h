@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "altgraph/utils/hlo_utils.h"
+#include "tensorflow/compiler/xla/service/hlo_cost_analysis.h"
 #include "tensorflow/compiler/xla/service/hlo_module.h"
 #include "tensorflow/compiler/xla/service/hlo_module_config.h"
 #include "tensorflow/compiler/xla/tools/hlo_module_loader.h"
@@ -113,6 +114,20 @@ class AltHloModule {
   bool IsBefEnabled() { return xla::gpu::IsBefEnabled(hlo_module_->config()); }
 
   const xla::HloModuleConfig& config() const { return hlo_module_->config(); }
+
+  void SetHloProfiling(bool enabled) {
+    xla::HloModuleConfig& hlo_module_config = hlo_module_->config();
+    xla::DebugOptions options = xla::GetDebugOptionsFromFlags();
+    options.set_xla_hlo_profile(enabled);
+    hlo_module_config.set_debug_options(options);
+  }
+
+  xla::HloCostAnalysis::Properties CostAnalysis() {
+    auto analysis =
+        HloEnvGpuBackend::PjRtClient()->GetHloCostAnalysis().ValueOrDie();
+    hlo_module_->entry_computation()->Accept(analysis.get());
+    return analysis->properties();
+  }
 
   int64_t InstructionCount() { return hlo_module_->instruction_count(); }
 

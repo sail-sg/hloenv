@@ -49,6 +49,10 @@ PYBIND11_MODULE(py_hlo_env, m) {
       .DEF_PYBIND_READONLY(PyEdgeFeats, dtypes);
 
   py::class_<PyHloEnv::EvaluationResult>(m, "EvaluationResult")
+      .def_readonly("compute_durations",
+                    &PyHloEnv::EvaluationResult::compute_durations)
+      .def_readonly("async_durations",
+                    &PyHloEnv::EvaluationResult::async_durations)
       .def_readonly("durations", &PyHloEnv::EvaluationResult::durations)
       .def_readonly("output", &PyHloEnv::EvaluationResult::output);
 
@@ -196,6 +200,8 @@ PYBIND11_MODULE(py_hlo_env, m) {
           "allow_spmd_sharding_propagation_to_output",
           &xla::HloModuleConfig::allow_spmd_sharding_propagation_to_output);
 
+  py::class_<xla::HloCostAnalysis::Properties>(m, "CostAnalysisProperties");
+
   py::class_<AltHloModule, std::shared_ptr<AltHloModule>>(m, "AltHloModule")
       .def(py::init<const std::string&>())
       .def(py::init<const std::string&, const std::string&>())
@@ -209,6 +215,7 @@ PYBIND11_MODULE(py_hlo_env, m) {
       .def("is_bef_enabled", &AltHloModule::IsBefEnabled)
       .def_property_readonly("instruction_count",
                              &AltHloModule::InstructionCount)
+      .def("cost_analysis", &AltHloModule::CostAnalysis)
       .def("clone", &AltHloModule::Clone);
 
   py::class_<PyHloEnv>(m, "PyHloEnv")

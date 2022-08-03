@@ -39,6 +39,8 @@ class HloEnv {
  public:
   struct EvaluationResult {
     std::vector<uint64_t> durations;
+    std::vector<uint64_t> async_durations;
+    std::vector<uint64_t> compute_durations;
     std::vector<std::vector<py::object>> output;
   };
 

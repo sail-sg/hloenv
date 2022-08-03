@@ -7,6 +7,8 @@
 
 #include "tensorflow/compiler/xla/literal_util.h"
 
+#define NUM_RUNS_IGNORED 3
+
 namespace altgraph {
 namespace {
 xla::Literal CreateRandomLiteral(
@@ -118,20 +120,23 @@ Evaluator::EvaluationResult Evaluator::Evaluate(int times) {
 
   absl::Time start;
   BufferPack result;
-  for (int i = 0; i < times + 1; i++) {
+  for (int i = 0; i < times + NUM_RUNS_IGNORED; i++) {
     start = absl::Now();
     // TODO(wanxy): Not sure whether this is async yet
     // Might need to make sure the execution is complete after function returns
     result = std::move(
         executable_->Execute(parameters, execute_options).ValueOrDie());
+
     for (auto& p : result) {
       for (auto& pp : p) {
         pp->BlockHostUntilReady();
       }
     }
-    if (i >= 1) {
-      // Timer starts on 2nd run.
+
+    if (i >= NUM_RUNS_IGNORED) {
       ret.durations.push_back(absl::Now() - start);
+      ret.async_durations.push_back(executable_->async_exec_time_ns);
+      ret.compute_durations.push_back(executable_->compute_time_ns);
     }
   }
 

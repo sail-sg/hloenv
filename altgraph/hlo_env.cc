@@ -96,6 +96,8 @@ bool HloEnv::HasEqualOutput(std::shared_ptr<AltHloModule> first_module,
 HloEnv::EvaluationResult HloEnv::Evaluate(int times) {
   HloEnv::EvaluationResult result;
   result.durations.reserve(times);
+  result.async_durations.reserve(times);
+  result.compute_durations.reserve(times);
 
   if (platform_ == "gpu") {
     evaluator_.Compile(alt_hlo_module_->hlo_module_ptr()->ToProto(),
@@ -118,6 +120,9 @@ HloEnv::EvaluationResult HloEnv::Evaluate(int times) {
                    [](absl::Duration duration) -> uint64_t {
                      return duration / absl::Nanoseconds(1);
                    });
+    result.async_durations = ret.async_durations;
+    result.compute_durations = ret.compute_durations;
+
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
