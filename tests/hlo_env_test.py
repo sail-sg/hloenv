@@ -451,7 +451,13 @@ class HloEnvTest(absltest.TestCase):
         hlo_env_loaded_from_str.get_hlo_module_hash()
       )
 
-    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+    base_dir = os.path.dirname(os.path.realpath(__file__))
+    hlo_base_dir = base_dir + "/hlo_texts/test_hlos"
+
+    hlo_env = HloEnv(
+      hlo_base_dir +
+      "/brax/module_0215.jit__uniform.30.before_optimizations.txt", "gpu"
+    )
     logging.info(
       "Checking load_from_string after: hlo_env = HloEnv(%s, %s)" %
       (self.hlo_main_test_file, "gpu")
