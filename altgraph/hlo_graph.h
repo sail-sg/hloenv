@@ -289,6 +289,15 @@ class HloGraph {
   // Internal function that generate attribute count for each opcode.
   void GenOpcodeAttrCounts();
 
+  bool HasCycleForward_(int idx, std::vector<bool>* visited,
+                        std::vector<bool>* stack);
+  bool HasCycleBackward_(int idx, std::vector<bool>* visited,
+                         std::vector<bool>* stack);
+
+  bool HasCycle();
+
+  bool ShouldInline(int inst_idx, xla::HloInstruction* inst);
+
   const int kNumOpcodes;
   xla::HloModule* parent_hlo_module_;
   int uid_;

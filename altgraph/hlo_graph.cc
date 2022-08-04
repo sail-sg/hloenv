@@ -125,6 +125,15 @@ std::vector<int> HloGraph::FindInstIndicesOfFusedComp(int fused_comp_id) {
   return indices;
 }
 
+bool HloGraph::ShouldInline(int inst_idx, xla::HloInstruction* inst) {
+  return (!called_comp_lists_[inst_idx].empty() &&
+          !(inst->opcode() == xla::HloOpcode::kReduce ||
+            inst->opcode() == xla::HloOpcode::kReduceWindow ||
+            inst->opcode() == xla::HloOpcode::kScatter ||
+            inst->opcode() == xla::HloOpcode::kSelectAndScatter ||
+            inst->opcode() == xla::HloOpcode::kSort));
+}
+
 void HloGraph::FusedComputationInlining() {
   int num_nodes = node_feats_.uids->size();
   for (int ii = 0; ii < num_nodes; ++ii) {
@@ -133,59 +142,8 @@ void HloGraph::FusedComputationInlining() {
     auto current_instruction = uid_to_inst_[uid];
     LOG(ERROR) << "considering: " << current_instruction->name();
     int operand_fusion;
-    if (current_instruction->opcode() == xla::HloOpcode::kReduce ||
-        current_instruction->opcode() == xla::HloOpcode::kScatter ||
-        current_instruction->opcode() == xla::HloOpcode::kSort) {
-      operand_fusion = in_edge_lists_[uid].front();
-      // remove fusion instruction from user list of its operand.
-      auto& operand_oel = out_edge_lists_[operand_fusion];
-      operand_oel.erase(
-          std::remove(operand_oel.begin(), operand_oel.end(), uid),
-          operand_oel.end());
-    }
-    if (!called_comp_lists_[ii].empty()) {
-      if (!(current_instruction->opcode() == xla::HloOpcode::kReduce ||
-            current_instruction->opcode() == xla::HloOpcode::kScatter ||
-            current_instruction->opcode() == xla::HloOpcode::kSort)) {
-        for (int fused_comp_id : called_comp_lists_[ii]) {
-          // If instruction is fusion, we inline the fused computation.
-          auto instr_indices = FindInstIndicesOfFusedComp(fused_comp_id);
-          for (int idx_instr_indices = 0;
-               idx_instr_indices < instr_indices.size(); ++idx_instr_indices) {
-            // Iterate over all instructions in the fused computation.
-            int fused_comp_uid =
-                node_feats_.uids->at(instr_indices[idx_instr_indices]);
-            auto instruction = uid_to_inst_[fused_comp_uid];
-            if (instruction->opcode() == xla::HloOpcode::kParameter) {
-              // param of fused comp instructions, we rewire fusion
-              // instruction's operand to params inside fused computation
-              operand_fusion = in_edge_lists_[uid].front();
-              in_edge_lists_[uid].erase(in_edge_lists_[uid].begin());
-              if (fused_comp_id != called_comp_lists_[ii].back()) {
-                // if not the last comp, add operand_fusion back as it will be
-                // needed for the next comp too.
-                in_edge_lists_[uid].push_back(operand_fusion);
-              }
-              in_edge_lists_[fused_comp_uid].push_back(operand_fusion);
-              // remove fusion instruction from user list of its operand.
-              auto& operand_oel = out_edge_lists_[operand_fusion];
-              if (fused_comp_id == called_comp_lists_[ii].back()) {
-                operand_oel.erase(
-                    std::remove(operand_oel.begin(), operand_oel.end(), uid),
-                    operand_oel.end());
-              }
-              operand_oel.push_back(fused_comp_uid);
-            }
-            if (instruction->IsRoot()) {
-              // root instruction of fused comp, we set user of fused
-              // computation root to fusion instruction.
-              out_edge_lists_[fused_comp_uid].push_back(uid);
-              in_edge_lists_[uid].push_back(fused_comp_uid);
-            }
-          }
-        }
-      } else {
-        int fused_comp_id = called_comp_lists_[ii].front();
+    if (ShouldInline(ii, current_instruction)) {
+      for (int fused_comp_id : called_comp_lists_[ii]) {
         // If instruction is fusion, we inline the fused computation.
         auto instr_indices = FindInstIndicesOfFusedComp(fused_comp_id);
         for (int idx_instr_indices = 0;
@@ -195,14 +153,28 @@ void HloGraph::FusedComputationInlining() {
               node_feats_.uids->at(instr_indices[idx_instr_indices]);
           auto instruction = uid_to_inst_[fused_comp_uid];
           if (instruction->opcode() == xla::HloOpcode::kParameter) {
-            // param of fused comp instructions, we rewire fusion instruction's
-            // operand to params inside fused computation
+            // param of fused comp instructions, we rewire fusion
+            // instruction's operand to params inside fused computation
+            operand_fusion = in_edge_lists_[uid].front();
+            in_edge_lists_[uid].erase(in_edge_lists_[uid].begin());
+            if (fused_comp_id != called_comp_lists_[ii].back()) {
+              // if not the last comp, add operand_fusion back as it will be
+              // needed for the next comp too.
+              in_edge_lists_[uid].push_back(operand_fusion);
+            }
             in_edge_lists_[fused_comp_uid].push_back(operand_fusion);
-            out_edge_lists_[operand_fusion].push_back(fused_comp_uid);
+            // remove fusion instruction from user list of its operand.
+            auto& operand_oel = out_edge_lists_[operand_fusion];
+            if (fused_comp_id == called_comp_lists_[ii].back()) {
+              operand_oel.erase(
+                  std::remove(operand_oel.begin(), operand_oel.end(), uid),
+                  operand_oel.end());
+            }
+            operand_oel.push_back(fused_comp_uid);
           }
           if (instruction->IsRoot()) {
-            // root instruction of fused comp, we set user of fused computation
-            // root to fusion instruction.
+            // root instruction of fused comp, we set user of fused
+            // computation root to fusion instruction.
             out_edge_lists_[fused_comp_uid].push_back(uid);
             in_edge_lists_[uid].push_back(fused_comp_uid);
           }
@@ -210,6 +182,73 @@ void HloGraph::FusedComputationInlining() {
       }
     }
   }
+}
+
+bool HloGraph::HasCycleForward_(int idx, std::vector<bool>* visited,
+                                std::vector<bool>* stack) {
+  if (!visited->at(idx)) {
+    visited->at(idx) = true;
+    stack->at(idx) = true;
+
+    int uid = node_feats_.uids->at(idx);
+    for (int neighbor_uid : out_edge_lists_[uid]) {
+      int new_idx = uid_to_node_idx_[neighbor_uid];
+      if (!visited->at(new_idx) && HasCycleForward_(new_idx, visited, stack)) {
+        auto current_instruction = uid_to_inst_[uid];
+        auto neighbor_instruction = uid_to_inst_[neighbor_uid];
+        LOG(INFO) << "passing cycle between: " << current_instruction->name();
+        LOG(INFO) << "and: " << neighbor_instruction->name();
+        return true;
+      } else if (stack->at(new_idx)) {
+        auto current_instruction = uid_to_inst_[uid];
+        auto neighbor_instruction = uid_to_inst_[neighbor_uid];
+        LOG(INFO) << "source cycle between: " << current_instruction->name();
+        LOG(INFO) << "and: " << neighbor_instruction->name();
+        return true;
+      }
+    }
+  }
+  stack->at(idx) = false;
+  return false;
+}
+
+bool HloGraph::HasCycleBackward_(int idx, std::vector<bool>* visited,
+                                 std::vector<bool>* stack) {
+  if (!visited->at(idx)) {
+    visited->at(idx) = true;
+    stack->at(idx) = true;
+
+    int uid = node_feats_.uids->at(idx);
+    for (int neighbor_uid : in_edge_lists_[uid]) {
+      int new_idx = uid_to_node_idx_[neighbor_uid];
+      if (!visited->at(new_idx) && HasCycleBackward_(new_idx, visited, stack)) {
+        return true;
+      } else if (stack->at(new_idx)) {
+        return true;
+      }
+    }
+  }
+  stack->at(idx) = false;
+  return false;
+}
+
+bool HloGraph::HasCycle() {
+  int num_nodes = node_feats_.uids->size();
+  std::vector<bool> visited(num_nodes, false);
+  std::vector<bool> stack(num_nodes, false);
+  for (int idx = 0; idx < num_nodes; ++idx) {
+    if (!visited[idx] && HasCycleForward_(idx, &visited, &stack)) {
+      return true;
+    }
+  }
+  std::fill(visited.begin(), visited.end(), false);
+  std::fill(stack.begin(), stack.end(), false);
+  for (int idx = 0; idx < num_nodes; ++idx) {
+    if (!visited[idx] && HasCycleBackward_(idx, &visited, &stack)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 void HloGraph::BuildRaggedTensors(
@@ -388,6 +427,11 @@ bool HloGraph::Build(const xla::HloModule* m, bool inline_fused_comp,
   SetFusedCompId(fused_comp_id_map);
   if (inline_fused_comp) {
     FusedComputationInlining();
+  }
+
+  if (HasCycle()) {
+    LOG(FATAL) << "ERROR: Detected cycles in graph!";
+    return false;
   }
 
   // Fill in content of node/edge features.
