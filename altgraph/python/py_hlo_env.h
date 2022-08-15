@@ -29,9 +29,10 @@ class PyHloEnv : public HloEnv {
   PyHloEnv(const std::string& hlo_filepath, const std::string& platform)
       : HloEnv(hlo_filepath, "path", platform) {}
 
-  PyHloGraph GetHloGraph(bool inline_fused_comp, bool do_hash_verification) {
-    return PyHloGraph(GetHloModule()->hlo_module_ptr(), inline_fused_comp,
-                      do_hash_verification);
+  PyHloGraph GetHloGraph(bool debug, bool inline_fused_comp,
+                         bool do_hash_verification) {
+    return PyHloGraph(GetHloModule()->hlo_module_ptr(), debug,
+                      inline_fused_comp, do_hash_verification);
   }
 };
 

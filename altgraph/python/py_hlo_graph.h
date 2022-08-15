@@ -87,9 +87,10 @@ class PyHloGraph : public HloGraph {
   PyEdgeFeats out_edge_features_;
 
   PyHloGraph() {}
-  explicit PyHloGraph(const xla::HloModule* m, bool inline_fused_comp = false,
+  explicit PyHloGraph(const xla::HloModule* m, bool debug = false,
+                      bool inline_fused_comp = false,
                       bool do_hash_verification = false)
-      : HloGraph(m, inline_fused_comp, do_hash_verification) {
+      : HloGraph(m, debug, inline_fused_comp, do_hash_verification) {
     node_features_ = PyNodeFeats(get_node_feats());
     in_edge_features_ = PyEdgeFeats(get_in_edge_feats());
     out_edge_features_ = PyEdgeFeats(get_out_edge_feats());

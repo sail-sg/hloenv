@@ -16,7 +16,7 @@
 
 namespace altgraph {
 
-HloGraph::HloGraph(const xla::HloModule* m, bool inline_fused_comp,
+HloGraph::HloGraph(const xla::HloModule* m, bool debug, bool inline_fused_comp,
                    bool do_hash_verification)
     : graph_load_errors_(0),
       kNumOpcodes(xla::HloOpcodeCount()),
@@ -30,7 +30,7 @@ HloGraph::HloGraph(const xla::HloModule* m, bool inline_fused_comp,
   opcode_attr_counts_ = std::make_shared<std::vector<int>>();
   alternative_indices_ = std::make_shared<std::vector<int>>();
 
-  Build(m, inline_fused_comp, do_hash_verification);
+  Build(m, debug, inline_fused_comp, do_hash_verification);
 }
 
 void HloGraph::Clear() {
@@ -55,7 +55,7 @@ void HloGraph::Clear() {
 
 void HloGraph::BuildGraphTopology(const xla::HloComputation* c, int gid) {
   // build in/out edge lists with toposort order.
-  for (auto inst : c->MakeInstructionPostOrder()) {
+  for (auto inst : c->instructions()) {
     int uid = inst->unique_id();
 
     // add into in edge lists
@@ -400,8 +400,8 @@ void HloGraph::PrepareFeatures() {
   }
 }
 
-bool HloGraph::Build(const xla::HloModule* m, bool inline_fused_comp,
-                     bool do_hash_verification) {
+bool HloGraph::Build(const xla::HloModule* m, bool debug,
+                     bool inline_fused_comp, bool do_hash_verification) {
   parent_hlo_module_ = const_cast<xla::HloModule*>(m);
   uid_ = m->unique_id();
   name_ = m->name();
@@ -429,7 +429,7 @@ bool HloGraph::Build(const xla::HloModule* m, bool inline_fused_comp,
     FusedComputationInlining();
   }
 
-  if (HasCycle()) {
+  if (debug && HasCycle()) {
     LOG(FATAL) << "ERROR: Detected cycles in graph!";
     return false;
   }
@@ -442,7 +442,7 @@ bool HloGraph::Build(const xla::HloModule* m, bool inline_fused_comp,
   int entry_root_uid = m->entry_computation()->root_instruction()->unique_id();
   root_index_ = uid_to_node_idx_[entry_root_uid];
 
-  LOG(ERROR) << "HloGraph build finished";
+  LOG(INFO) << "HloGraph build finished";
 
   // Optionally do hash verification.
   if (do_hash_verification) {
@@ -451,10 +451,10 @@ bool HloGraph::Build(const xla::HloModule* m, bool inline_fused_comp,
     // TODO(wangyzh/ohcy) Rewrite the HloGraph::Hash according to the new
     // mechanism.
     if (hlograph_hash == hlomodule_hash) {
-      LOG(ERROR) << "HloGraph build verified.";
+      LOG(INFO) << "HloGraph build verified.";
       return true;
     } else {
-      LOG(ERROR) << "HloGraph hash NOT verified.";
+      LOG(INFO) << "HloGraph hash NOT verified.";
       return false;
     }
   }

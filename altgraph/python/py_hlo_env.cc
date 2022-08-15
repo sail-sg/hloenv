@@ -243,7 +243,7 @@ PYBIND11_MODULE(py_hlo_env, m) {
            py::arg("hlo_data"), py::arg("format") = "path")
       .def("export_hlo_to_str", &PyHloEnv::ExportHloModuleToStr)
       .def("get_hlo_module", &PyHloEnv::GetHloModule)
-      .def("get_hlo_graph", &PyHloEnv::GetHloGraph,
+      .def("get_hlo_graph", &PyHloEnv::GetHloGraph, py::arg("debug") = false,
            py::arg("inline_fused_comp") = false,
            py::arg("do_hash_verification") = false)
       .def("pre_fusion_optimizations", &PyHloEnv::PreFusionOptimizations)

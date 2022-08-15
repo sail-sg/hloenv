@@ -166,11 +166,12 @@ struct EdgeFeats {
 class HloGraph {
  public:
   HloGraph() : kNumOpcodes(xla::HloOpcodeCount()) {}
-  explicit HloGraph(const xla::HloModule* m, bool inline_fused_comp = false,
+  explicit HloGraph(const xla::HloModule* m, bool debug = false,
+                    bool inline_fused_comp = false,
                     bool do_hash_verification = false);
 
-  bool Build(const xla::HloModule* m, bool inline_fused_comp = false,
-             bool do_hash_verification = false);
+  bool Build(const xla::HloModule* m, bool debug = false,
+             bool inline_fused_comp = false, bool do_hash_verification = false);
 
   void Clear();
 
