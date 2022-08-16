@@ -55,7 +55,7 @@ void HloGraph::Clear() {
 
 void HloGraph::BuildGraphTopology(const xla::HloComputation* c, int gid) {
   // build in/out edge lists with toposort order.
-  for (auto inst : c->instructions()) {
+  for (auto inst : c->MakeInstructionPostOrder()) {
     int uid = inst->unique_id();
 
     // add into in edge lists
