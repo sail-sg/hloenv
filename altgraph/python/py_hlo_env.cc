@@ -218,6 +218,8 @@ PYBIND11_MODULE(py_hlo_env, m) {
       .def("is_bef_enabled", &AltHloModule::IsBefEnabled)
       .def_property_readonly("instruction_count",
                              &AltHloModule::InstructionCount)
+      .def_property_readonly("computation_count",
+                             &AltHloModule::ComputationCount)      
       .def("cost_analysis", &AltHloModule::CostAnalysis)
       .def("clone", &AltHloModule::Clone);
 

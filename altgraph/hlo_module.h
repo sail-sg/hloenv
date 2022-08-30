@@ -131,6 +131,8 @@ class AltHloModule {
 
   int64_t InstructionCount() { return hlo_module_->instruction_count(); }
 
+  int64_t ComputationCount() { return hlo_module_->computation_count(); }
+
  private:
   std::unique_ptr<xla::HloModule> hlo_module_;
 };
