@@ -170,6 +170,7 @@ class HloEnvTest(absltest.TestCase):
 
     logging.info("Running post_fusion_optimizations...")
     hlo_env.post_fusion_optimizations()
+    hlo_env.prepare_hlo_module_for_ir_emitting()
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_create_from_module_handle(self) -> None:
@@ -226,6 +227,7 @@ class HloEnvTest(absltest.TestCase):
     assert (count > 1)
     logging.info("Running post_fusion_optimizations...")
     hlo_env.post_fusion_optimizations()
+    hlo_env.prepare_hlo_module_for_ir_emitting()
     eval_result = hlo_env.evaluate(1)
     for eval_time_ns in eval_result.durations:
       assert eval_time_ns > 0
@@ -276,6 +278,7 @@ class HloEnvTest(absltest.TestCase):
 
     logging.info("Running post_fusion_optimizations...")
     hlo_env.post_fusion_optimizations()
+    hlo_env.prepare_hlo_module_for_ir_emitting()
     hlo_env.evaluate(1)
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
@@ -329,6 +332,7 @@ class HloEnvTest(absltest.TestCase):
     saved_hlo_module = hlo_env.save_hlo()
     # Restore back to original, where we only did pre_fusion_optimizations
     hlo_env.post_fusion_optimizations()
+    hlo_env.prepare_hlo_module_for_ir_emitting()
 
     orig_res = hlo_env.evaluate(1)
     orig_post_opt_module = hlo_env.save_hlo()
@@ -355,6 +359,7 @@ class HloEnvTest(absltest.TestCase):
         hlo_env.post_fusion_dry_passes()
 
     hlo_env.post_fusion_optimizations()
+    hlo_env.prepare_hlo_module_for_ir_emitting()
     mod_res = hlo_env.evaluate(1)
     assert (hlo_env.has_equal_output_as(orig_post_opt_module))
 
@@ -432,6 +437,7 @@ class HloEnvTest(absltest.TestCase):
             hlo_env.post_fusion_dry_passes()
 
         hlo_env.post_fusion_optimizations()
+        hlo_env.prepare_hlo_module_for_ir_emitting()
         post_fusion_module = hlo_env.save_hlo()
 
         assert (
@@ -518,6 +524,7 @@ class HloEnvTest(absltest.TestCase):
 
     logging.info("Running post_fusion_optimizations...")
     hlo_env.post_fusion_optimizations()
+    hlo_env.prepare_hlo_module_for_ir_emitting()
     logging.info(
       "Checking load_from_string after: hlo_env.post_fusion_optimizations"
     )
@@ -589,6 +596,7 @@ class HloEnvTest(absltest.TestCase):
             assert (prev_hash != new_hash)
 
         hlo_env.post_fusion_optimizations()
+        hlo_env.prepare_hlo_module_for_ir_emitting()
 
   # Test that if we choose the original nodes, graph and graph hash
   # stays constant
@@ -1598,6 +1606,7 @@ class HloEnvTest(absltest.TestCase):
             hlo_env.run(post_general_fusion_dry_passes)
 
         hlo_env.post_fusion_optimizations()
+        hlo_env.prepare_hlo_module_for_ir_emitting()
         post_fusion_module = hlo_env.save_hlo()
 
         end = timer()
@@ -1676,6 +1685,7 @@ class HloEnvTest(absltest.TestCase):
           hashes.append(hlo_env.get_hlo_module_hash())
 
       hlo_env.post_fusion_optimizations()
+      hlo_env.prepare_hlo_module_for_ir_emitting()
       hashes.append(hlo_env.get_hlo_module_hash())
       all_dag_hashes.append(hashes)
       all_alt_indices.append(run_alt_indices)

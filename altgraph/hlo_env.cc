@@ -193,9 +193,6 @@ void HloEnv::PostFusionOptimizations() {
     HloEnvGpuBackend::GpuCompiler()->OptimizeHloModulePostFusion(
         alt_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
         HloEnvGpuBackend::DeviceMemoryAllocator());
-    // TODO(ohcy) To be refactored out of PostFusionOptimizations when we
-    // can do multiple passes and have a pre/post passes phase
-    this->PrepareHloModuleForIrEmitting();
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
@@ -215,9 +212,6 @@ void HloEnv::OriginalOptimizeHloModule() {
     HloEnvGpuBackend::GpuCompiler()->OptimizeHloModule(
         alt_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
         HloEnvGpuBackend::DeviceMemoryAllocator());
-
-    HloEnvGpuBackend::GpuCompiler()->PrepareHloModuleForIrEmitting(
-        alt_hlo_module_->hlo_module_ptr());
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
