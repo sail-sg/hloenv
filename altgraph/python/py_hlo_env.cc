@@ -219,7 +219,7 @@ PYBIND11_MODULE(py_hlo_env, m) {
       .def_property_readonly("instruction_count",
                              &AltHloModule::InstructionCount)
       .def_property_readonly("computation_count",
-                             &AltHloModule::ComputationCount)      
+                             &AltHloModule::ComputationCount)
       .def("cost_analysis", &AltHloModule::CostAnalysis)
       .def("clone", &AltHloModule::Clone);
 
