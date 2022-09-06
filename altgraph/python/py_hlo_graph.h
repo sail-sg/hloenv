@@ -46,10 +46,13 @@ struct PyNodeFeats : public NodeFeats {
   SHARED_VEC_TO_PYARRAY(opcode_attrs, int, opcode_attrs)
   SHARED_VEC_TO_PYARRAY(num_opcode_attrs, int, num_opcode_attrs)
   SHARED_VEC_TO_PYARRAY(is_alternative, uint8_t, is_alternative)
+  SHARED_VEC_TO_PYARRAY(is_in_fusion, uint8_t, is_in_fusion)
   SHARED_VEC_TO_PYARRAY(in_tensor_sizes, int64_t, in_tensor_sizes)
   SHARED_VEC_TO_PYARRAY(out_tensor_sizes, int64_t, out_tensor_sizes)
   SHARED_VEC_TO_PYARRAY(has_max_in_tensor, uint8_t, has_max_in_tensor)
   SHARED_VEC_TO_PYARRAY(has_max_out_tensor, uint8_t, has_max_out_tensor)
+  SHARED_VEC_TO_PYARRAY(normalized_num_group_inst, float,
+                        normalized_num_group_inst)
   std::vector<std::string>& py_get_names() { return *names; }
 
   PyNodeFeats() {}
@@ -64,6 +67,7 @@ struct PyEdgeFeats : public EdgeFeats {
   SHARED_VEC_TO_PYARRAY(dims, int64_t, dims);
   SHARED_VEC_TO_PYARRAY(layouts, int64_t, layouts);
   SHARED_VEC_TO_PYARRAY(lehmercodes, int64_t, lehmercodes);
+  SHARED_VEC_TO_PYARRAY(types, uint8_t, types);
   SHARED_VEC_TO_PYARRAY(dtypes, int, dtypes);
 
   PyEdgeFeats() {}

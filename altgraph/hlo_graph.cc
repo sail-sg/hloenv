@@ -53,8 +53,14 @@ void HloGraph::Clear() {
   called_comp_lists_.clear();
 }
 
-void HloGraph::BuildGraphTopology(const xla::HloComputation* c, int gid) {
+void HloGraph::BuildGraphTopology(const xla::HloComputation* c, int gid,
+                                  bool is_fusion_comp) {
   // build in/out edge lists with toposort order.
+  int num_group_inst = c->instruction_count();
+  float normalized_num_group_inst = 0;
+  if (gid > 0 && num_group_inst > 0) {
+    normalized_num_group_inst = 1.0 / num_group_inst;
+  }
   for (auto inst : c->MakeInstructionPostOrder()) {
     int uid = inst->unique_id();
 
@@ -77,7 +83,9 @@ void HloGraph::BuildGraphTopology(const xla::HloComputation* c, int gid) {
     node_feats_.uids->push_back(uid);
     node_feats_.names->push_back(name);
     node_feats_.gids->push_back(gid);
+    node_feats_.is_in_fusion->push_back(is_fusion_comp);
     node_feats_.opcodes->push_back(opcode);
+    node_feats_.normalized_num_group_inst->push_back(normalized_num_group_inst);
     std::vector<int> opcode_attrs;
     std::vector<int> opcode_attr_counts;
     GetInstructionAttributesAndCounts(inst, &opcode_attrs, &opcode_attr_counts);
@@ -104,6 +112,11 @@ void HloGraph::SetFusedCompId(
     // zero.
     auto called_comps = instruction->called_computations();
     if (!called_comps.empty()) {
+      // For fusion instruction, set their gids to the computation id it points
+      // to.
+      if (instruction->opcode() == xla::HloOpcode::kFusion) {
+        node_feats_.gids->at(ii) = comp_id_map.at(called_comps[0]);
+      }
       for (auto comp : called_comps) {
         int comp_id = comp_id_map.at(comp);
         called_comp_lists_[ii].push_back(comp_id);
@@ -146,6 +159,12 @@ void HloGraph::FusedComputationInlining() {
       for (int fused_comp_id : called_comp_lists_[ii]) {
         // If instruction is fusion, we inline the fused computation.
         auto instr_indices = FindInstIndicesOfFusedComp(fused_comp_id);
+        if (node_feats_.normalized_num_group_inst->at(ii) == 0) {
+          // update fusion node's normalized_num_group_inst to be the same as
+          // instruction's normalized_num_group_inst in the sub computation.
+          node_feats_.normalized_num_group_inst->at(ii) =
+              node_feats_.normalized_num_group_inst->at(instr_indices[1]);
+        }
         for (int idx_instr_indices = 0;
              idx_instr_indices < instr_indices.size(); ++idx_instr_indices) {
           // Iterate over all instructions in the fused computation.
@@ -325,6 +344,14 @@ void HloGraph::PrepareFeatures() {
       uid_to_out_edge_idx_.insert({euid, s});
       out_edge_feats_.srcs->push_back(i);
       out_edge_feats_.dsts->push_back(user_node_idx);
+      int src_gid = node_feats_.gids->at(i);
+      int dst_gid = node_feats_.gids->at(user_node_idx);
+      // edge_type:
+      // outside any fusion, 0
+      // inside fusion, 1
+      // cross fusion, 2
+      uint8_t edge_type = (src_gid == dst_gid) ? ((src_gid == 0) ? 0 : 1) : 2;
+      out_edge_feats_.types->push_back(edge_type);
       // put in shapes, layouts, lehmer codes, and dtypes for cur_inst
       xla::Shape shape = cur_inst->shape();
       auto minor_to_major = shape.layout().minor_to_major();
@@ -361,6 +388,14 @@ void HloGraph::PrepareFeatures() {
       uid_to_in_edge_idx_.insert({euid, s});
       in_edge_feats_.srcs->push_back(operand_node_idx);
       in_edge_feats_.dsts->push_back(i);
+      int src_gid = node_feats_.gids->at(operand_node_idx);
+      int dst_gid = node_feats_.gids->at(i);
+      // edge_type:
+      // outside any fusion, 0
+      // inside fusion, 1
+      // cross fusion, 2
+      uint8_t edge_type = (src_gid == dst_gid) ? ((src_gid == 0) ? 0 : 1) : 2;
+      in_edge_feats_.types->push_back(edge_type);
       // put in shapes, layouts, and dtypes for operand_inst
       xla::Shape shape = operand_inst->shape();
       auto minor_to_major = shape.layout().minor_to_major();
@@ -420,7 +455,8 @@ bool HloGraph::Build(const xla::HloModule* m, bool debug,
     xla::HloComputation* comp = post_order_comps.back();
     post_order_comps.pop_back();
     fused_comp_id_map[comp] = gid;
-    BuildGraphTopology(comp, gid++);
+    bool is_fusion = comp->IsFusionComputation();
+    BuildGraphTopology(comp, gid++, is_fusion);
   }
 
   // Inline fused computation.

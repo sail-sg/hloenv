@@ -35,10 +35,12 @@ namespace altgraph {
 // num_opcode_attrs: two consecutive integers represent count
 // of integer attrs and count of enumerator attrs.
 // is_alternative: whether the node is kAlternative
+// is_in_fusion: whether the node is in a fused computation
 // in_tensor_sizes: sum of input tensor sizes
 // out_tensor_sizes: sum of output tensor sizes
 // has_max_in_tensor: if has the largest input tensor size
 // has_max_out_tensor: if has the largest output tensor size
+// normalized_num_group_inst: computed as 1/#instruction in the group.
 struct NodeFeats {
   // basic node feats
   std::shared_ptr<std::vector<int>> uids;
@@ -55,10 +57,12 @@ struct NodeFeats {
   std::shared_ptr<std::vector<int>> opcode_attrs;
   std::shared_ptr<std::vector<int>> num_opcode_attrs;
   std::shared_ptr<std::vector<uint8_t>> is_alternative;
+  std::shared_ptr<std::vector<uint8_t>> is_in_fusion;
   std::shared_ptr<std::vector<int64_t>> in_tensor_sizes;
   std::shared_ptr<std::vector<int64_t>> out_tensor_sizes;
   std::shared_ptr<std::vector<uint8_t>> has_max_in_tensor;
   std::shared_ptr<std::vector<uint8_t>> has_max_out_tensor;
+  std::shared_ptr<std::vector<float>> normalized_num_group_inst;
 
   NodeFeats() {
     uids = std::make_shared<std::vector<int>>();
@@ -70,10 +74,12 @@ struct NodeFeats {
     opcode_attrs = std::make_shared<std::vector<int>>();
     num_opcode_attrs = std::make_shared<std::vector<int>>();
     is_alternative = std::make_shared<std::vector<uint8_t>>();
+    is_in_fusion = std::make_shared<std::vector<uint8_t>>();
     in_tensor_sizes = std::make_shared<std::vector<int64_t>>();
     out_tensor_sizes = std::make_shared<std::vector<int64_t>>();
     has_max_in_tensor = std::make_shared<std::vector<uint8_t>>();
     has_max_out_tensor = std::make_shared<std::vector<uint8_t>>();
+    normalized_num_group_inst = std::make_shared<std::vector<float>>();
   }
 
   void Clear() {
@@ -86,10 +92,12 @@ struct NodeFeats {
     opcode_attrs->clear();
     num_opcode_attrs->clear();
     is_alternative->clear();
+    is_in_fusion->clear();
     in_tensor_sizes->clear();
     out_tensor_sizes->clear();
     has_max_in_tensor->clear();
     has_max_out_tensor->clear();
+    normalized_num_group_inst->clear();
   }
 };
 
@@ -129,6 +137,7 @@ struct EdgeFeats {
   std::shared_ptr<std::vector<int64_t>> dims;
   std::shared_ptr<std::vector<int64_t>> layouts;
   std::shared_ptr<std::vector<int64_t>> lehmercodes;
+  std::shared_ptr<std::vector<uint8_t>> types;
   // PrimitiveType as is defined in xla_data.proto.
   std::shared_ptr<std::vector<int>> dtypes;
 
@@ -139,6 +148,7 @@ struct EdgeFeats {
     dims = std::make_shared<std::vector<int64_t>>();
     layouts = std::make_shared<std::vector<int64_t>>();
     lehmercodes = std::make_shared<std::vector<int64_t>>();
+    types = std::make_shared<std::vector<uint8_t>>();
     dtypes = std::make_shared<std::vector<int>>();
   }
 
@@ -149,6 +159,7 @@ struct EdgeFeats {
     dims->clear();
     layouts->clear();
     lehmercodes->clear();
+    types->clear();
     dtypes->clear();
   }
 
@@ -264,7 +275,8 @@ class HloGraph {
 
  protected:
   // For each computation, build in/out edge lists for all instructions.
-  void BuildGraphTopology(const xla::HloComputation* c, int gid);
+  void BuildGraphTopology(const xla::HloComputation* c, int gid,
+                          bool is_fusion_comp);
 
   // Inlining all fused computations into entry computation.
   void FusedComputationInlining();

@@ -27,7 +27,6 @@ void GetInstructionAttributesAndCounts(HloInstruction* inst,
   switch (inst->opcode()) {
     // dimension indices
     case HloOpcode::kBroadcast:
-    case HloOpcode::kSetDimensionSize:
     case HloOpcode::kConcatenate:
     case HloOpcode::kReduce:
     case HloOpcode::kReverse:

@@ -17,41 +17,43 @@
 namespace xla {
 
 std::vector<std::unique_ptr<HloModule>> ExtractSubgraphs(
-    const std::unique_ptr<HloModule>& module, int target_inst_count) {
+    const std::unique_ptr<HloModule>& module, int inst_count_lower_bound,
+    int inst_count_upper_bound) {
   std::vector<std::unique_ptr<HloModule>> ret;
-  if (module->instruction_count() < target_inst_count) {
+  if (module->instruction_count() < inst_count_lower_bound) {
     return ret;
   }
   // Select a random instruction in a random computation.
   auto comps = module->MakeComputationPostOrder();
   // Pick computation only when its instruction count is large enough.
   auto filtered_comps = FilterComputations(comps, [&](HloComputation* c) {
-    return c->instruction_count() > target_inst_count;
+    return c->instruction_count() > inst_count_lower_bound;
   });
   for (auto comp : filtered_comps) {
     LOG(INFO) << "[Computation]: " << comp->name();
-    auto instructions = comp->MakeInstructionPostOrder();
-    for (auto inst : instructions) {
+    for (auto inst : comp->instructions()) {
       int hmin = 1;
-      int hmax = target_inst_count;
+      int hmax = inst_count_lower_bound;
       int h = 1;
       while (true) {
         auto submodule = ExtractModule(inst, h);
         int new_inst_count = submodule->instruction_count();
         // update max & min
-        if (new_inst_count >= target_inst_count) {
+        if (new_inst_count >= inst_count_lower_bound) {
           hmax = h;
-        } else if (new_inst_count < target_inst_count) {
+        } else if (new_inst_count < inst_count_lower_bound) {
           hmin = h;
         }
         // iterate to next
         h = (hmin + hmax) / 2;
         if (hmax - hmin <= 1) {
           auto submodule = ExtractModule(inst, hmax);
-          if (submodule->instruction_count() > target_inst_count &&
+          int submodule_inst_count = submodule->instruction_count();
+          if (submodule_inst_count >= inst_count_lower_bound &&
+              submodule_inst_count < inst_count_upper_bound &&
               FindInstruction(submodule.get(), HloOpcode::kCall) == nullptr) {
             LOG(INFO) << " [Root]: " << inst->name()
-                      << " [Inst Count]: " << submodule->instruction_count();
+                      << " [Inst Count]: " << submodule_inst_count;
             ret.push_back(std::move(submodule));
           }
           break;
@@ -72,7 +74,8 @@ std::string IntToHex(T i) {
 }
 
 DEFINE_string(hlo, "-", "hlo text file");  // by default read from stdin
-DEFINE_int32(num_inst, 20, "instruction number");
+DEFINE_int32(num_inst_lower_bound, 10, "lower bound of the instruction number");
+DEFINE_int32(num_inst_upper_bound, 20, "upper bound of the instruction number");
 
 int main(int argc, char** argv) {
   tensorflow::port::InitMain("", &argc, &argv);
@@ -99,7 +102,8 @@ int main(int argc, char** argv) {
                            "txt", config_modifier_hook)
             .ValueOrDie();
   }
-  auto vec = xla::ExtractSubgraphs(hlo_module, FLAGS_num_inst);
+  auto vec = xla::ExtractSubgraphs(hlo_module, FLAGS_num_inst_lower_bound,
+                                   FLAGS_num_inst_upper_bound);
   for (auto& m : vec) {
     auto name = IntToHex(absl::HashOf(*m)) + ".txt";
     std::ofstream file;

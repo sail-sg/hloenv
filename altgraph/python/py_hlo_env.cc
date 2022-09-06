@@ -32,10 +32,12 @@ PYBIND11_MODULE(py_hlo_env, m) {
       .DEF_PYBIND_READONLY(PyNodeFeats, opcode_attrs)
       .DEF_PYBIND_READONLY(PyNodeFeats, num_opcode_attrs)
       .DEF_PYBIND_READONLY(PyNodeFeats, is_alternative)
+      .DEF_PYBIND_READONLY(PyNodeFeats, is_in_fusion)
       .DEF_PYBIND_READONLY(PyNodeFeats, in_tensor_sizes)
       .DEF_PYBIND_READONLY(PyNodeFeats, out_tensor_sizes)
       .DEF_PYBIND_READONLY(PyNodeFeats, has_max_in_tensor)
-      .DEF_PYBIND_READONLY(PyNodeFeats, has_max_out_tensor);
+      .DEF_PYBIND_READONLY(PyNodeFeats, has_max_out_tensor)
+      .DEF_PYBIND_READONLY(PyNodeFeats, normalized_num_group_inst);
 
   // TODO(ohcy): write this without copy as nparray
   py::class_<PyEdgeFeats>(m, "EdgeFeats")
@@ -46,6 +48,7 @@ PYBIND11_MODULE(py_hlo_env, m) {
       .DEF_PYBIND_READONLY(PyEdgeFeats, dims)
       .DEF_PYBIND_READONLY(PyEdgeFeats, layouts)
       .DEF_PYBIND_READONLY(PyEdgeFeats, lehmercodes)
+      .DEF_PYBIND_READONLY(PyEdgeFeats, types)
       .DEF_PYBIND_READONLY(PyEdgeFeats, dtypes);
 
   py::class_<PyHloEnv::EvaluationResult>(m, "EvaluationResult")

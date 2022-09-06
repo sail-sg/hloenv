@@ -65,6 +65,8 @@ class HloEnvTest(absltest.TestCase):
     assert (len(node_features.num_operands) == num_nodes)
     assert (len(node_features.opcodes) == num_nodes)
     assert (len(node_features.is_alternative) == num_nodes)
+    assert (len(node_features.is_in_fusion) == num_nodes)
+    assert (len(node_features.normalized_num_group_inst) == num_nodes)
     assert (len(node_features.in_tensor_sizes) == num_nodes)
     assert (len(node_features.out_tensor_sizes) == num_nodes)
     _ = node_features.has_max_in_tensor
@@ -78,6 +80,7 @@ class HloEnvTest(absltest.TestCase):
     assert (len(in_edge_features.layouts) == num_in_edges * 8)
     assert (len(in_edge_features.lehmercodes) == num_in_edges * 8)
     assert (len(in_edge_features.dtypes) == num_in_edges)
+    assert (len(in_edge_features.types) == num_in_edges)
     _ = in_edge_features.get_tensor_size(0)
 
     num_out_edges = len(out_edge_features.uids)
@@ -87,6 +90,7 @@ class HloEnvTest(absltest.TestCase):
     assert (len(out_edge_features.layouts) == num_out_edges * 8)
     assert (len(out_edge_features.lehmercodes) == num_out_edges * 8)
     assert (len(out_edge_features.dtypes) == num_out_edges)
+    assert (len(in_edge_features.types) == num_out_edges)
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_alt_hlo_module(self) -> None:
@@ -1527,11 +1531,10 @@ class HloEnvTest(absltest.TestCase):
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_general_fusion(self) -> None:
     from random import randrange
+    from timeit import default_timer as timer
 
     import numpy as np
-    from altgraph import HloEnv, AltPipeline, HloPass, Pass, Pipeline
-
-    from timeit import default_timer as timer
+    from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     # Note you have to make an Pass, cannot just run the HloPass directly.
     general_fusion_dry_pass = AltPipeline(Pass(HloPass.GeneralFusion(),))
@@ -1611,8 +1614,9 @@ class HloEnvTest(absltest.TestCase):
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_deterministic_node_ids(self) -> None:
     from random import randrange
+
     import numpy as np
-    from altgraph import HloEnv, AltPipeline, HloPass, Pass, Pipeline
+    from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     general_fusion_dry_pass = AltPipeline(Pass(HloPass.GeneralFusion(),))
     post_general_fusion_dry_passes = Pipeline("post-general-fusion")
