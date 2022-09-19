@@ -37,7 +37,6 @@ struct HloEnvGpuBackend {
   // TODO(ohcy): Consider pybinding StreamExec, StreamExec::Platform
   // and StreamExec::CudaComputeCapability if more of these hooks are needed.
   static const std::string& GetStreamExecPlatform() {
-    std::cout << StreamExecutor()->platform()->Name() << std::endl;
     return StreamExecutor()->platform()->Name();
   }
   static bool CudaComputeIsAtLeast(int other_major, int other_minor = 0) {
