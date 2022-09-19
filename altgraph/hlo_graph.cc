@@ -112,11 +112,6 @@ void HloGraph::SetFusedCompId(
     // zero.
     auto called_comps = instruction->called_computations();
     if (!called_comps.empty()) {
-      // For fusion instruction, set their gids to the computation id it points
-      // to.
-      if (instruction->opcode() == xla::HloOpcode::kFusion) {
-        node_feats_.gids->at(ii) = comp_id_map.at(called_comps[0]);
-      }
       for (auto comp : called_comps) {
         int comp_id = comp_id_map.at(comp);
         called_comp_lists_[ii].push_back(comp_id);
@@ -196,6 +191,10 @@ void HloGraph::FusedComputationInlining() {
             // computation root to fusion instruction.
             out_edge_lists_[fused_comp_uid].push_back(uid);
             in_edge_lists_[uid].push_back(fused_comp_uid);
+            // For fusion instruction, set their gids to the computation id it
+            // points to.
+            node_feats_.gids->at(ii) =
+                node_feats_.gids->at(instr_indices[idx_instr_indices]);
           }
         }
       }
