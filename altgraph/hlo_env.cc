@@ -188,8 +188,6 @@ void HloEnv::ApplyAlternatives(py::array_t<size_t> decisions) {
     size_t* decisions_ptr = static_cast<size_t*>(decisions_buf.ptr);
     int num_decisions = decisions_buf.shape[0];
 
-    // TODO(ohcy): Remove this
-    // OCYTEMP -> sanity checks while debugging
     if (decisions_buf.shape[0] !=
         hlo_graph.get_alternative_indices_ptr()->size()) {
       LOG(FATAL) << "Decisions length != num alternatives length!";
@@ -202,12 +200,11 @@ void HloEnv::ApplyAlternatives(py::array_t<size_t> decisions) {
         hlo_graph.get_uid_to_inst();
     for (size_t decisions_idx = 0; decisions_idx < num_decisions;
          decisions_idx++) {
-      size_t node_uid = node_feats.uids->at(decisions_ptr[decisions_idx * 2]);
+      size_t node_uid = decisions_ptr[decisions_idx * 2];
       size_t decision = decisions_ptr[decisions_idx * 2 + 1];
 
       xla::HloInstruction* instruction = uid_to_inst.at(node_uid);
 
-      // OCYTEMP -> sanity checks while debugging
       if (instruction->opcode() != xla::HloOpcode::kAlternatives) {
         LOG(FATAL) << "Applying alternatives to non-kAlternatives node -> "
                    << decisions_ptr[decisions_idx * 2] << " -> "
