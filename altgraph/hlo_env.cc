@@ -135,7 +135,7 @@ HloEnv::EvaluationResult HloEnv::Evaluate(int times) {
   return result;
 }
 
-std::shared_ptr<AltHloModule> HloEnv::SaveHloModule() {
+std::shared_ptr<AltHloModule> HloEnv::CloneHloModule() {
   return alt_hlo_module_->Clone();
 }
 

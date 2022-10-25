@@ -69,7 +69,7 @@ class HloEnv {
 
   void Init(bool preallocate, double memory_fraction);
 
-  std::shared_ptr<AltHloModule> SaveHloModule();
+  std::shared_ptr<AltHloModule> CloneHloModule();
 
   void LoadHloModule(std::shared_ptr<AltHloModule> saved_hlo_module);
 

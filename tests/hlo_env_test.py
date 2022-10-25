@@ -199,7 +199,7 @@ class HloEnvTest(absltest.TestCase):
       hlo_env.run(fusion_pipeline.pre_dry_pass_passes)
       hlo_env.run(fusion_pipeline.pass_dry_run)
 
-      saved_hlo_module = hlo_env.save_hlo()
+      saved_hlo_module = hlo_env.clone_hlo()
       hlo_env = HloEnv(saved_hlo_module, "gpu")
       fusion_pipeline = SingleFusionPipeline(hlo_env)
 
@@ -302,7 +302,7 @@ class HloEnvTest(absltest.TestCase):
 
     init_hlo_str = hlo_env.export_hlo_to_str()
     init_hlo_hash = hlo_env.get_hlo_module_hash()
-    saved_hlo_module = hlo_env.save_hlo()
+    saved_hlo_module = hlo_env.clone_hlo()
     hlo_env.run(fusion_pipeline.pre_pass_optimizations)
     post_fusion_hlo_str = hlo_env.export_hlo_to_str()
     post_fusion_hlo_hash = hlo_env.get_hlo_module_hash()
@@ -320,7 +320,7 @@ class HloEnvTest(absltest.TestCase):
 
     init_hlo_str = hlo_env.export_hlo_to_str()
     init_hlo_hash = hlo_env.get_hlo_module_hash()
-    saved_hlo_module = hlo_env.save_hlo()
+    saved_hlo_module = hlo_env.clone_hlo()
     hlo_env.run(fusion_pipeline.pre_pass_optimizations)
     post_fusion_hlo_str = hlo_env.export_hlo_to_str()
     post_fusion_hlo_hash = hlo_env.get_hlo_module_hash()
@@ -343,13 +343,13 @@ class HloEnvTest(absltest.TestCase):
     fusion_pipeline = SingleFusionPipeline(hlo_env)
 
     hlo_env.run(fusion_pipeline.pre_pass_optimizations)
-    saved_hlo_module = hlo_env.save_hlo()
+    saved_hlo_module = hlo_env.clone_hlo()
     # Restore back to original, where we only did pre_fusion_optimizations
     hlo_env.run(fusion_pipeline.post_pass_optimizations)
     hlo_env.prepare_hlo_module_for_ir_emitting()
 
     orig_res = hlo_env.evaluate(1)
-    orig_post_opt_module = hlo_env.save_hlo()
+    orig_post_opt_module = hlo_env.clone_hlo()
 
     hlo_env.load_hlo(saved_hlo_module)
 
@@ -419,13 +419,13 @@ class HloEnvTest(absltest.TestCase):
         if (is_large):
           continue
 
-        saved_hlo_module = hlo_env.save_hlo()
+        saved_hlo_module = hlo_env.clone_hlo()
         # Original TF pipelines
         hlo_env.optimize_hlo_module()
         hlo_env.prepare_hlo_module_for_ir_emitting()
 
         # Save reference copy of the module after a non dry-run RunHloPasses call
-        reference_hlo_module = hlo_env.save_hlo()
+        reference_hlo_module = hlo_env.clone_hlo()
         hlo_env.load_hlo(saved_hlo_module)
 
         hlo_env.run(fusion_pipeline.pre_pass_optimizations)
@@ -453,7 +453,7 @@ class HloEnvTest(absltest.TestCase):
 
         hlo_env.run(fusion_pipeline.post_pass_optimizations)
         hlo_env.prepare_hlo_module_for_ir_emitting()
-        post_fusion_module = hlo_env.save_hlo()
+        post_fusion_module = hlo_env.clone_hlo()
 
         assert (
           hlo_env.has_equal_output(post_fusion_module, reference_hlo_module)
@@ -567,14 +567,14 @@ class HloEnvTest(absltest.TestCase):
         hlo_env = HloEnv(filepath, "gpu")
         fusion_pipeline = SingleFusionPipeline(hlo_env)
 
-        saved_hlo_module = hlo_env.save_hlo()
+        saved_hlo_module = hlo_env.clone_hlo()
         cloned_hash = saved_hlo_module.hash()
         original_hash = hlo_env.get_hlo_module_hash()
         assert (cloned_hash == original_hash)
         hlo_env.load_hlo(saved_hlo_module)
 
         hlo_env.run(fusion_pipeline.pre_pass_optimizations)
-        saved_hlo_module = hlo_env.save_hlo()
+        saved_hlo_module = hlo_env.clone_hlo()
         cloned_hash = saved_hlo_module.hash()
         original_hash = hlo_env.get_hlo_module_hash()
         assert (cloned_hash == original_hash)
@@ -594,7 +594,7 @@ class HloEnvTest(absltest.TestCase):
           if num_alts > 0:
             # Test that hash changes after run(fusion_pipeline.fusion_dry_run
             new_hash = hlo_env.get_hlo_module_hash()
-            saved_hlo_module = hlo_env.save_hlo()
+            saved_hlo_module = hlo_env.clone_hlo()
             cloned_hash = saved_hlo_module.hash()
             assert (cloned_hash == new_hash)
             assert (prev_hash != new_hash)
@@ -728,7 +728,7 @@ class HloEnvTest(absltest.TestCase):
     # Note, a pipeline can be added as a pass to a pipeline (can nest this)
     fusion_post_pipeline.add_pass(fusion_example_pipeline)
 
-    init_hlo = hlo_env.save_hlo()
+    init_hlo = hlo_env.clone_hlo()
     while num_alts > 0:
       hlo_env.run(fusion_pre_pipeline)
 
@@ -754,7 +754,7 @@ class HloEnvTest(absltest.TestCase):
         count += 1
 
     general_count = count
-    general_pipeline_hlo = hlo_env.save_hlo()
+    general_pipeline_hlo = hlo_env.clone_hlo()
 
     hlo_env.load_hlo(init_hlo)
 
@@ -781,7 +781,7 @@ class HloEnvTest(absltest.TestCase):
         count += 1
 
     original_count = count
-    original_pipeline_hlo = hlo_env.save_hlo()
+    original_pipeline_hlo = hlo_env.clone_hlo()
 
     assert (original_count == general_count)
     assert (
@@ -820,7 +820,7 @@ class HloEnvTest(absltest.TestCase):
     )
     custom_fusion_pipeline.add_pass(HloPass.HloDCE())
 
-    init_hlo = hlo_env.save_hlo()
+    init_hlo = hlo_env.clone_hlo()
     has_alt = True
     while has_alt:
       has_alt = hlo_env.run(custom_fusion_pipeline)
@@ -849,7 +849,7 @@ class HloEnvTest(absltest.TestCase):
       assert (not rest_has_alt)
 
     general_count = count
-    general_pipeline_hlo = hlo_env.save_hlo()
+    general_pipeline_hlo = hlo_env.clone_hlo()
     hlo_env.load_hlo(init_hlo)
 
     num_alts = 1
@@ -874,7 +874,7 @@ class HloEnvTest(absltest.TestCase):
         count += 1
 
     original_count = count
-    original_pipeline_hlo = hlo_env.save_hlo()
+    original_pipeline_hlo = hlo_env.clone_hlo()
 
     assert (original_count == general_count)
     assert (
@@ -906,7 +906,7 @@ class HloEnvTest(absltest.TestCase):
     custom_fusion_pipeline.add_pass(HloPass.HloCSE(True, True))
     custom_fusion_pipeline.add_pass(HloPass.HloDCE())
 
-    init_hlo = hlo_env.save_hlo()
+    init_hlo = hlo_env.clone_hlo()
     has_alt = True
     # Since the pipeline is fixed, it will run till there are no changes
     while has_alt:
@@ -929,7 +929,7 @@ class HloEnvTest(absltest.TestCase):
           count += 1
 
     general_count = count
-    general_pipeline_hlo = hlo_env.save_hlo()
+    general_pipeline_hlo = hlo_env.clone_hlo()
 
     hlo_env.load_hlo(init_hlo)
 
@@ -955,7 +955,7 @@ class HloEnvTest(absltest.TestCase):
         count += 1
 
     original_count = count
-    original_pipeline_hlo = hlo_env.save_hlo()
+    original_pipeline_hlo = hlo_env.clone_hlo()
 
     assert (original_count == general_count)
     assert (
@@ -981,7 +981,7 @@ class HloEnvTest(absltest.TestCase):
       loop_count=loop_count
     )
 
-    init_hlo = hlo_env.save_hlo()
+    init_hlo = hlo_env.clone_hlo()
     has_alt = True
     while (has_alt):
       hlo_env.run(fusion_pipeline.pre_dry_pass_passes)
@@ -1028,7 +1028,7 @@ class HloEnvTest(absltest.TestCase):
       Pass(HloPass.GpuInstructionFusion(may_duplicate=True), loop_count=-1)
     )
 
-    init_hlo = hlo_env.save_hlo()
+    init_hlo = hlo_env.clone_hlo()
     has_alt = True
     while (has_alt):
       logging.info(count)
@@ -1092,7 +1092,7 @@ class HloEnvTest(absltest.TestCase):
     fusion_post_pipeline.add_pass(HloPass.HloCSE(True, True))
     fusion_post_pipeline.add_pass(HloPass.HloDCE())
 
-    init_hlo = hlo_env.save_hlo()
+    init_hlo = hlo_env.clone_hlo()
     while num_alts > 0:
       hlo_env.run(fusion_pre_pipeline)
 
@@ -1589,13 +1589,13 @@ class HloEnvTest(absltest.TestCase):
         logging.info("    num instructions = %d" % instruction_count)
         logging.info("    num is_large = %s" % is_large)
 
-        saved_hlo_module = hlo_env.save_hlo()
+        saved_hlo_module = hlo_env.clone_hlo()
         # Original TF pipelines
         hlo_env.optimize_hlo_module()
         hlo_env.prepare_hlo_module_for_ir_emitting()
 
         # Save reference copy of the module after a non dry-run RunHloPasses call
-        reference_hlo_module = hlo_env.save_hlo()
+        reference_hlo_module = hlo_env.clone_hlo()
         hlo_env.load_hlo(saved_hlo_module)
 
         start = timer()
@@ -1629,7 +1629,7 @@ class HloEnvTest(absltest.TestCase):
 
         hlo_env.run(general_fusion_pipeline.post_pass_optimizations)
         hlo_env.prepare_hlo_module_for_ir_emitting()
-        post_fusion_module = hlo_env.save_hlo()
+        post_fusion_module = hlo_env.clone_hlo()
 
         end = timer()
         logging.info("    Time taken for fusion: %f" % (end - start))

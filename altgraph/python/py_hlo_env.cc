@@ -237,7 +237,7 @@ PYBIND11_MODULE(py_hlo_env, m) {
            py::arg("times") = 1)
       .def("has_equal_output_as", &PyHloEnv::HasEqualOutputAs,
            py::arg("other_module"), py::arg("times") = 1)
-      .def("save_hlo", &PyHloEnv::SaveHloModule)
+      .def("clone_hlo", &PyHloEnv::CloneHloModule)
       .def("load_hlo",
            static_cast<void (PyHloEnv::*)(std::shared_ptr<AltHloModule>)>(
                &PyHloEnv::LoadHloModule))

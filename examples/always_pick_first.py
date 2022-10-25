@@ -28,7 +28,7 @@ if __name__ == '__main__':
       print("Testing general fusion for file: " + filepath)
       print("    num instructions = %d" % instruction_count)
 
-      saved_hlo_module = hlo_env.save_hlo()
+      orig_hlo_module = hlo_env.clone_hlo()
       # Original TF pipelines
       hlo_env.optimize_hlo_module()
       hlo_env.prepare_hlo_module_for_ir_emitting()
@@ -37,8 +37,8 @@ if __name__ == '__main__':
       ref_timing = min(ref_results.durations)
 
       # Save reference copy of the module after a non dry-run RunHloPasses call
-      reference_hlo_module = hlo_env.save_hlo()
-      hlo_env.load_hlo(saved_hlo_module)
+      reference_hlo_module = hlo_env.clone_hlo()
+      hlo_env.load_hlo(orig_hlo_module)
 
       hlo_env.run(general_fusion_pipeline.pre_pass_optimizations)
       num_alts = 1
