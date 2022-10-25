@@ -4,6 +4,8 @@ import random
 from absl import logging
 from absl.testing import absltest
 
+from pass_pipelines import SingleFusionPipeline, GeneralFusionPipeline
+
 # We consider hlos with more instructions than this number to be "large"
 # For these hlos, we should no allow selecting original
 LARGE_HLO_INSTRUCTION_MIN = 100
@@ -127,8 +129,9 @@ class HloEnvTest(absltest.TestCase):
     import tensorflow
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+    fusion_pipeline = SingleFusionPipeline(hlo_env)
 
-    hlo_env.pre_fusion_optimizations()
+    hlo_env.run(fusion_pipeline.pre_pass_optimizations)
 
     num_alts = 1
     count = 1
@@ -136,8 +139,8 @@ class HloEnvTest(absltest.TestCase):
       logging.info("\n*****************************************")
       logging.info("Pass: %d" % count)
       logging.info("Running fusion dry run")
-      hlo_env.pre_fusion_dry_passes()
-      hlo_env.fusion_dry_run()
+      hlo_env.run(fusion_pipeline.pre_dry_pass_passes)
+      hlo_env.run(fusion_pipeline.pass_dry_run)
       hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
       num_operands = node_features.num_operands
@@ -154,7 +157,7 @@ class HloEnvTest(absltest.TestCase):
         # pass the decision back to compilerp
         logging.info("Applying alternatives...")
         hlo_env.apply_alternatives(decisions)
-        hlo_env.post_fusion_dry_passes()
+        hlo_env.run(fusion_pipeline.post_dry_pass_passes)
       else:
         logging.info("No more alternatives, ending run...")
       eval_result = hlo_env.evaluate(1)
@@ -168,8 +171,8 @@ class HloEnvTest(absltest.TestCase):
 
     assert (count > 1)
 
-    logging.info("Running post_fusion_optimizations...")
-    hlo_env.post_fusion_optimizations()
+    logging.info("Running fusion_pipeline.post_pass_optimizations...")
+    hlo_env.run(fusion_pipeline.post_pass_optimizations)
     hlo_env.prepare_hlo_module_for_ir_emitting()
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
@@ -184,7 +187,8 @@ class HloEnvTest(absltest.TestCase):
     hlo_module = HloModule(self.hlo_main_test_file)
 
     hlo_env = HloEnv(hlo_module, "gpu")
-    hlo_env.pre_fusion_optimizations()
+    fusion_pipeline = SingleFusionPipeline(hlo_env)
+    hlo_env.run(fusion_pipeline.pre_pass_optimizations)
 
     num_alts = 1
     count = 1
@@ -192,11 +196,12 @@ class HloEnvTest(absltest.TestCase):
       logging.info("\n*****************************************")
       logging.info("Pass: %d" % count)
       logging.info("Running fusion dry run")
-      hlo_env.pre_fusion_dry_passes()
-      hlo_env.fusion_dry_run()
+      hlo_env.run(fusion_pipeline.pre_dry_pass_passes)
+      hlo_env.run(fusion_pipeline.pass_dry_run)
 
       saved_hlo_module = hlo_env.save_hlo()
       hlo_env = HloEnv(saved_hlo_module, "gpu")
+      fusion_pipeline = SingleFusionPipeline(hlo_env)
 
       hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
@@ -214,7 +219,7 @@ class HloEnvTest(absltest.TestCase):
         # pass the decision back to compilerp
         logging.info("Applying alternatives...")
         hlo_env.apply_alternatives(decisions)
-        hlo_env.post_fusion_dry_passes()
+        hlo_env.run(fusion_pipeline.post_dry_pass_passes)
       else:
         logging.info("No more alternatives, ending run...")
         eval_result = hlo_env.evaluate(1)
@@ -225,8 +230,8 @@ class HloEnvTest(absltest.TestCase):
       count += 1
 
     assert (count > 1)
-    logging.info("Running post_fusion_optimizations...")
-    hlo_env.post_fusion_optimizations()
+    logging.info("Running fusion_pipeline.post_pass_optimizations...")
+    hlo_env.run(fusion_pipeline.post_pass_optimizations)
     hlo_env.prepare_hlo_module_for_ir_emitting()
     eval_result = hlo_env.evaluate(1)
     for eval_time_ns in eval_result.durations:
@@ -238,13 +243,14 @@ class HloEnvTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import HloEnv
+    from altgraph import HloEnv, AltPipeline, Pass, HloPass
 
     import tensorflow
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+    fusion_pipeline = SingleFusionPipeline(hlo_env)
 
-    hlo_env.pre_fusion_optimizations()
+    hlo_env.run(fusion_pipeline.pre_pass_optimizations)
 
     num_alts = 1
     count = 1
@@ -254,7 +260,12 @@ class HloEnvTest(absltest.TestCase):
       logging.info(
         "Running fusion dry run, may_duplicate = %s" % (count % 2 == 0)
       )
-      hlo_env.fusion_dry_run(may_duplicate=(count % 2 == 0))
+
+      custom_fusion_dry_pass = AltPipeline(
+        Pass(HloPass.GpuInstructionFusion(may_duplicate=(count % 2 == 0)),)
+      )
+      hlo_env.run(custom_fusion_dry_pass)
+
       hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
       num_operands = node_features.num_operands
@@ -271,13 +282,13 @@ class HloEnvTest(absltest.TestCase):
         # pass the decision back to compilerp
         logging.info("Applying alternatives...")
         hlo_env.apply_alternatives(decisions)
-        hlo_env.post_fusion_dry_passes()
+        hlo_env.run(fusion_pipeline.post_dry_pass_passes)
       else:
         logging.info("No more alternatives, ending run...")
       count += 1
 
-    logging.info("Running post_fusion_optimizations...")
-    hlo_env.post_fusion_optimizations()
+    logging.info("Running fusion_pipeline.post_pass_optimizations...")
+    hlo_env.run(fusion_pipeline.post_pass_optimizations)
     hlo_env.prepare_hlo_module_for_ir_emitting()
     hlo_env.evaluate(1)
 
@@ -287,11 +298,12 @@ class HloEnvTest(absltest.TestCase):
 
     # Test normal save/loading
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+    fusion_pipeline = SingleFusionPipeline(hlo_env)
 
     init_hlo_str = hlo_env.export_hlo_to_str()
     init_hlo_hash = hlo_env.get_hlo_module_hash()
     saved_hlo_module = hlo_env.save_hlo()
-    hlo_env.pre_fusion_optimizations()
+    hlo_env.run(fusion_pipeline.pre_pass_optimizations)
     post_fusion_hlo_str = hlo_env.export_hlo_to_str()
     post_fusion_hlo_hash = hlo_env.get_hlo_module_hash()
     hlo_env.load_hlo(saved_hlo_module)
@@ -304,11 +316,12 @@ class HloEnvTest(absltest.TestCase):
 
     # Test loading from string
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+    fusion_pipeline = SingleFusionPipeline(hlo_env)
 
     init_hlo_str = hlo_env.export_hlo_to_str()
     init_hlo_hash = hlo_env.get_hlo_module_hash()
     saved_hlo_module = hlo_env.save_hlo()
-    hlo_env.pre_fusion_optimizations()
+    hlo_env.run(fusion_pipeline.pre_pass_optimizations)
     post_fusion_hlo_str = hlo_env.export_hlo_to_str()
     post_fusion_hlo_hash = hlo_env.get_hlo_module_hash()
     hlo_env.load_hlo(init_hlo_str, "txt")
@@ -327,11 +340,12 @@ class HloEnvTest(absltest.TestCase):
     from altgraph import HloEnv
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+    fusion_pipeline = SingleFusionPipeline(hlo_env)
 
-    hlo_env.pre_fusion_optimizations()
+    hlo_env.run(fusion_pipeline.pre_pass_optimizations)
     saved_hlo_module = hlo_env.save_hlo()
     # Restore back to original, where we only did pre_fusion_optimizations
-    hlo_env.post_fusion_optimizations()
+    hlo_env.run(fusion_pipeline.post_pass_optimizations)
     hlo_env.prepare_hlo_module_for_ir_emitting()
 
     orig_res = hlo_env.evaluate(1)
@@ -341,8 +355,8 @@ class HloEnvTest(absltest.TestCase):
 
     num_alts = 1
     while num_alts > 0:
-      hlo_env.pre_fusion_dry_passes()
-      hlo_env.fusion_dry_run()
+      hlo_env.run(fusion_pipeline.pre_dry_pass_passes)
+      hlo_env.run(fusion_pipeline.pass_dry_run)
       hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
       num_operands = node_features.num_operands
@@ -356,9 +370,9 @@ class HloEnvTest(absltest.TestCase):
 
         decisions = np.asarray(decisions)
         hlo_env.apply_alternatives(decisions)
-        hlo_env.post_fusion_dry_passes()
+        hlo_env.run(fusion_pipeline.post_dry_pass_passes)
 
-    hlo_env.post_fusion_optimizations()
+    hlo_env.run(fusion_pipeline.post_pass_optimizations)
     hlo_env.prepare_hlo_module_for_ir_emitting()
     mod_res = hlo_env.evaluate(1)
     assert (hlo_env.has_equal_output_as(orig_post_opt_module))
@@ -397,6 +411,7 @@ class HloEnvTest(absltest.TestCase):
         logging.info("Testing validation for file: " + filepath)
 
         hlo_env = HloEnv(filepath, "gpu")
+        fusion_pipeline = SingleFusionPipeline(hlo_env)
         instruction_count = hlo_env.get_hlo_module().instruction_count
         is_large = instruction_count > LARGE_HLO_INSTRUCTION_MIN
         # We can skip this test for large files, since it does not involve
@@ -413,11 +428,11 @@ class HloEnvTest(absltest.TestCase):
         reference_hlo_module = hlo_env.save_hlo()
         hlo_env.load_hlo(saved_hlo_module)
 
-        hlo_env.pre_fusion_optimizations()
+        hlo_env.run(fusion_pipeline.pre_pass_optimizations)
         num_alts = 1
         while num_alts > 0:
-          hlo_env.pre_fusion_dry_passes()
-          hlo_env.fusion_dry_run()
+          hlo_env.run(fusion_pipeline.pre_dry_pass_passes)
+          hlo_env.run(fusion_pipeline.pass_dry_run)
           hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
           node_features = hlo_graph.node_features
           num_operands = node_features.num_operands
@@ -434,9 +449,9 @@ class HloEnvTest(absltest.TestCase):
 
             decisions = np.asarray(decisions)
             hlo_env.apply_alternatives(decisions)
-            hlo_env.post_fusion_dry_passes()
+            hlo_env.run(fusion_pipeline.post_dry_pass_passes)
 
-        hlo_env.post_fusion_optimizations()
+        hlo_env.run(fusion_pipeline.post_pass_optimizations)
         hlo_env.prepare_hlo_module_for_ir_emitting()
         post_fusion_module = hlo_env.save_hlo()
 
@@ -468,6 +483,7 @@ class HloEnvTest(absltest.TestCase):
       hlo_base_dir +
       "/brax/module_0215.jit__uniform.30.before_optimizations.txt", "gpu"
     )
+    fusion_pipeline = SingleFusionPipeline(hlo_env)
     logging.info(
       "Checking load_from_string after: hlo_env = HloEnv(%s, %s)" %
       (self.hlo_main_test_file, "gpu")
@@ -476,10 +492,11 @@ class HloEnvTest(absltest.TestCase):
 
     hlo_string = hlo_env.export_hlo_to_str()
     hlo_env = HloEnv(hlo_string, "txt", "gpu")
+    fusion_pipeline = SingleFusionPipeline(hlo_env)
 
-    hlo_env.pre_fusion_optimizations()
+    hlo_env.run(fusion_pipeline.pre_pass_optimizations)
     logging.info(
-      "Checking load_from_string after: hlo_env.pre_fusion_optimizations"
+      "Checking load_from_string after: hlo_env.run(fusion_pipeline.pre_pass_optimizations)"
     )
     check_load_from_string(hlo_env)
 
@@ -489,9 +506,11 @@ class HloEnvTest(absltest.TestCase):
       logging.info("\n*****************************************")
       logging.info("Pass: %d" % count)
       logging.info("Running fusion dry run")
-      hlo_env.pre_fusion_dry_passes()
-      hlo_env.fusion_dry_run()
-      logging.info("Checking load_from_string after: hlo_env.fusion_dry_run")
+      hlo_env.run(fusion_pipeline.pre_dry_pass_passes)
+      hlo_env.run(fusion_pipeline.pass_dry_run)
+      logging.info(
+        "Checking load_from_string after: hlo_env.run(fusion_pipeline.fusion_dry_run)"
+      )
       check_load_from_string(hlo_env)
 
       hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
@@ -510,7 +529,7 @@ class HloEnvTest(absltest.TestCase):
         # pass the decision back to compilerp
         logging.info("Applying alternatives...")
         hlo_env.apply_alternatives(decisions)
-        hlo_env.post_fusion_dry_passes()
+        hlo_env.run(fusion_pipeline.post_dry_pass_passes)
         logging.info(
           "Checking load_from_string after: hlo_env.apply_alternatives"
         )
@@ -522,11 +541,11 @@ class HloEnvTest(absltest.TestCase):
 
     assert (count > 1)
 
-    logging.info("Running post_fusion_optimizations...")
-    hlo_env.post_fusion_optimizations()
+    logging.info("Running fusion_pipeline.post_pass_optimizations...")
+    hlo_env.run(fusion_pipeline.post_pass_optimizations)
     hlo_env.prepare_hlo_module_for_ir_emitting()
     logging.info(
-      "Checking load_from_string after: hlo_env.post_fusion_optimizations"
+      "Checking load_from_string after: hlo_env.run(fusion_pipeline.post_pass_optimizations)"
     )
     check_load_from_string(hlo_env)
 
@@ -546,6 +565,7 @@ class HloEnvTest(absltest.TestCase):
         logging.info("Testing hash for file: " + filepath)
 
         hlo_env = HloEnv(filepath, "gpu")
+        fusion_pipeline = SingleFusionPipeline(hlo_env)
 
         saved_hlo_module = hlo_env.save_hlo()
         cloned_hash = saved_hlo_module.hash()
@@ -553,7 +573,7 @@ class HloEnvTest(absltest.TestCase):
         assert (cloned_hash == original_hash)
         hlo_env.load_hlo(saved_hlo_module)
 
-        hlo_env.pre_fusion_optimizations()
+        hlo_env.run(fusion_pipeline.pre_pass_optimizations)
         saved_hlo_module = hlo_env.save_hlo()
         cloned_hash = saved_hlo_module.hash()
         original_hash = hlo_env.get_hlo_module_hash()
@@ -563,8 +583,8 @@ class HloEnvTest(absltest.TestCase):
         num_alts = 1
         while num_alts > 0:
           prev_hash = hlo_env.get_hlo_module_hash()
-          hlo_env.pre_fusion_dry_passes()
-          hlo_env.fusion_dry_run()
+          hlo_env.run(fusion_pipeline.pre_dry_pass_passes)
+          hlo_env.run(fusion_pipeline.pass_dry_run)
 
           hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
           node_features = hlo_graph.node_features
@@ -572,7 +592,7 @@ class HloEnvTest(absltest.TestCase):
           num_alts = len(hlo_graph.alternative_indices)
 
           if num_alts > 0:
-            # Test that hash changes after fusion_dry_run
+            # Test that hash changes after run(fusion_pipeline.fusion_dry_run
             new_hash = hlo_env.get_hlo_module_hash()
             saved_hlo_module = hlo_env.save_hlo()
             cloned_hash = saved_hlo_module.hash()
@@ -592,10 +612,10 @@ class HloEnvTest(absltest.TestCase):
             decisions = np.asarray(decisions)
             hlo_env.apply_alternatives(decisions)
             new_hash = hlo_env.get_hlo_module_hash()
-            hlo_env.post_fusion_dry_passes()
+            hlo_env.run(fusion_pipeline.post_dry_pass_passes)
             assert (prev_hash != new_hash)
 
-        hlo_env.post_fusion_optimizations()
+        hlo_env.run(fusion_pipeline.post_pass_optimizations)
         hlo_env.prepare_hlo_module_for_ir_emitting()
 
   # Test that if we choose the original nodes, graph and graph hash
@@ -616,14 +636,15 @@ class HloEnvTest(absltest.TestCase):
         logging.info("Testing hash for file: " + filepath)
 
         hlo_env = HloEnv(filepath, "gpu")
-        hlo_env.pre_fusion_optimizations()
+        fusion_pipeline = SingleFusionPipeline(hlo_env)
+        hlo_env.run(fusion_pipeline.pre_pass_optimizations)
 
         num_alts = 1
         while num_alts > 0:
           prev_hash = hlo_env.get_hlo_module_hash()
-          hlo_env.pre_fusion_dry_passes()
+          hlo_env.run(fusion_pipeline.pre_dry_pass_passes)
           original_hash = hlo_env.get_hlo_module_hash()
-          hlo_env.fusion_dry_run()
+          hlo_env.run(fusion_pipeline.pass_dry_run)
 
           hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
           node_features = hlo_graph.node_features
@@ -648,9 +669,9 @@ class HloEnvTest(absltest.TestCase):
   def test_extract_instruction(self) -> None:
     from altgraph import HloEnv, HloModule
 
-    hlo_ir = HloEnv(self.hlo_main_test_file, "gpu")
+    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     for (instruction, hlo_graph
-        ) in hlo_ir.get_hlo_module().extract_instructions_as_module(10):
+        ) in hlo_env.get_hlo_module().extract_instructions_as_module(10):
       assert (len(instruction) > 0)
       assert (len(hlo_graph.to_string()) > 0)
       logging.info(instruction)
@@ -660,11 +681,12 @@ class HloEnvTest(absltest.TestCase):
   def test_extract_fusions(self) -> None:
     from altgraph import HloEnv, HloModule
 
-    hlo_ir = HloEnv(self.hlo_main_test_file, "gpu")
-    hlo_ir.pre_fusion_optimizations()
-    hlo_ir.pre_fusion_dry_passes()
-    hlo_ir.fusion_dry_run()
-    m = hlo_ir.get_hlo_module()
+    hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+    fusion_pipeline = SingleFusionPipeline(hlo_env)
+    hlo_env.run(fusion_pipeline.pre_pass_optimizations)
+    hlo_env.run(fusion_pipeline.pre_dry_pass_passes)
+    hlo_env.run(fusion_pipeline.pass_dry_run)
+    m = hlo_env.get_hlo_module()
     fusions = m.extract_fusions_as_module(10)
     assert (len(fusions) > 0)
     assert (len(fusions[0].to_string()) > 0)
@@ -679,7 +701,8 @@ class HloEnvTest(absltest.TestCase):
     from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
-    hlo_env.pre_fusion_optimizations()
+    fusion_pipeline = SingleFusionPipeline(hlo_env)
+    hlo_env.run(fusion_pipeline.pre_pass_optimizations)
 
     num_alts = 1
     count = 0
@@ -739,8 +762,8 @@ class HloEnvTest(absltest.TestCase):
     count = 0
     while num_alts > 0:
       logging.info(count)
-      hlo_env.pre_fusion_dry_passes()
-      hlo_env.fusion_dry_run()
+      hlo_env.run(fusion_pipeline.pre_dry_pass_passes)
+      hlo_env.run(fusion_pipeline.pass_dry_run)
 
       hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
@@ -754,7 +777,7 @@ class HloEnvTest(absltest.TestCase):
           decisions.append([alt_idx, min(1, num_operands[alt_idx])])
 
         hlo_env.apply_alternatives(decisions)
-        hlo_env.post_fusion_dry_passes()
+        hlo_env.run(fusion_pipeline.post_dry_pass_passes)
         count += 1
 
     original_count = count
@@ -774,32 +797,33 @@ class HloEnvTest(absltest.TestCase):
     from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
-    hlo_env.pre_fusion_optimizations()
+    fusion_pipeline = SingleFusionPipeline(hlo_env)
+    hlo_env.run(fusion_pipeline.pre_pass_optimizations)
 
     num_alts = 1
     count = 0
 
-    fusion_pipeline = Pipeline("fusion")
+    custom_fusion_pipeline = Pipeline("fusion")
 
-    fusion_pipeline.add_pass(HloPass.VariadicOpSplitter())
+    custom_fusion_pipeline.add_pass(HloPass.VariadicOpSplitter())
     fusion_dry_pass = AltPipeline(
       Pass(
         HloPass.GpuInstructionFusion(may_duplicate=True
                                     ),  # Test named arguments
       )
     )
-    fusion_pipeline.add_pass(fusion_dry_pass)
-    fusion_pipeline.add_pass(HloPass.FusionMerger())
-    fusion_pipeline.add_pass(HloPass.GpuMultiOutputFusion())
-    fusion_pipeline.add_pass(
+    custom_fusion_pipeline.add_pass(fusion_dry_pass)
+    custom_fusion_pipeline.add_pass(HloPass.FusionMerger())
+    custom_fusion_pipeline.add_pass(HloPass.GpuMultiOutputFusion())
+    custom_fusion_pipeline.add_pass(
       HloPass.HloCSE(True, only_fusion_computations=True)
     )
-    fusion_pipeline.add_pass(HloPass.HloDCE())
+    custom_fusion_pipeline.add_pass(HloPass.HloDCE())
 
     init_hlo = hlo_env.save_hlo()
     has_alt = True
     while has_alt:
-      has_alt = hlo_env.run(fusion_pipeline)
+      has_alt = hlo_env.run(custom_fusion_pipeline)
       logging.info("COUNT: %d, HAS_ALT:%s" % (count, has_alt))
       # We hit a dry run pass
       if has_alt:
@@ -820,7 +844,7 @@ class HloEnvTest(absltest.TestCase):
           count += 1
 
       # Continue running the rest of the fusion_pipeline
-      rest_has_alt = hlo_env.run(fusion_pipeline)
+      rest_has_alt = hlo_env.run(custom_fusion_pipeline)
       # We should have no alts now, since the rest of the passes are not dry
       assert (not rest_has_alt)
 
@@ -831,8 +855,8 @@ class HloEnvTest(absltest.TestCase):
     num_alts = 1
     count = 0
     while num_alts > 0:
-      hlo_env.pre_fusion_dry_passes()
-      hlo_env.fusion_dry_run()
+      hlo_env.run(fusion_pipeline.pre_dry_pass_passes)
+      hlo_env.run(fusion_pipeline.pass_dry_run)
 
       hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
@@ -846,7 +870,7 @@ class HloEnvTest(absltest.TestCase):
           decisions.append([alt_idx, min(1, num_operands[alt_idx])])
 
         hlo_env.apply_alternatives(decisions)
-        hlo_env.post_fusion_dry_passes()
+        hlo_env.run(fusion_pipeline.post_dry_pass_passes)
         count += 1
 
     original_count = count
@@ -866,26 +890,27 @@ class HloEnvTest(absltest.TestCase):
     from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
-    hlo_env.pre_fusion_optimizations()
+    fusion_pipeline = SingleFusionPipeline(hlo_env)
+    hlo_env.run(fusion_pipeline.pre_pass_optimizations)
 
     num_alts = 1
     count = 0
 
-    fusion_pipeline = Pipeline("fusion-pipeline", loop_count=-1)
+    custom_fusion_pipeline = Pipeline("fusion-pipeline", loop_count=-1)
 
-    fusion_pipeline.add_pass(HloPass.VariadicOpSplitter())
+    custom_fusion_pipeline.add_pass(HloPass.VariadicOpSplitter())
     fusion_dry_pass = AltPipeline(Pass(HloPass.GpuInstructionFusion(True)))
-    fusion_pipeline.add_pass(fusion_dry_pass)
-    fusion_pipeline.add_pass(HloPass.FusionMerger())
-    fusion_pipeline.add_pass(HloPass.GpuMultiOutputFusion())
-    fusion_pipeline.add_pass(HloPass.HloCSE(True, True))
-    fusion_pipeline.add_pass(HloPass.HloDCE())
+    custom_fusion_pipeline.add_pass(fusion_dry_pass)
+    custom_fusion_pipeline.add_pass(HloPass.FusionMerger())
+    custom_fusion_pipeline.add_pass(HloPass.GpuMultiOutputFusion())
+    custom_fusion_pipeline.add_pass(HloPass.HloCSE(True, True))
+    custom_fusion_pipeline.add_pass(HloPass.HloDCE())
 
     init_hlo = hlo_env.save_hlo()
     has_alt = True
     # Since the pipeline is fixed, it will run till there are no changes
     while has_alt:
-      has_alt = hlo_env.run(fusion_pipeline)
+      has_alt = hlo_env.run(custom_fusion_pipeline)
       # We hit a dry run pass
       if has_alt:
         hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
@@ -911,8 +936,8 @@ class HloEnvTest(absltest.TestCase):
     num_alts = 1
     count = 0
     while num_alts > 0:
-      hlo_env.pre_fusion_dry_passes()
-      hlo_env.fusion_dry_run()
+      hlo_env.run(fusion_pipeline.pre_dry_pass_passes)
+      hlo_env.run(fusion_pipeline.pass_dry_run)
 
       hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
@@ -926,7 +951,7 @@ class HloEnvTest(absltest.TestCase):
           decisions.append([alt_idx, min(1, num_operands[alt_idx])])
 
         hlo_env.apply_alternatives(decisions)
-        hlo_env.post_fusion_dry_passes()
+        hlo_env.run(fusion_pipeline.post_dry_pass_passes)
         count += 1
 
     original_count = count
@@ -944,7 +969,8 @@ class HloEnvTest(absltest.TestCase):
     from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
-    hlo_env.pre_fusion_optimizations()
+    fusion_pipeline = SingleFusionPipeline(hlo_env)
+    hlo_env.run(fusion_pipeline.pre_pass_optimizations)
 
     num_alts = 1
     count = 0
@@ -958,7 +984,7 @@ class HloEnvTest(absltest.TestCase):
     init_hlo = hlo_env.save_hlo()
     has_alt = True
     while (has_alt):
-      hlo_env.pre_fusion_dry_passes()
+      hlo_env.run(fusion_pipeline.pre_dry_pass_passes)
       has_alt = hlo_env.run(fusion_dry_pass)
       # We hit a dry run pass
       if has_alt:
@@ -978,7 +1004,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
         hlo_env.apply_alternatives(decisions)
-        hlo_env.post_fusion_dry_passes()
+        hlo_env.run(fusion_pipeline.post_dry_pass_passes)
 
         count += 1
 
@@ -992,7 +1018,8 @@ class HloEnvTest(absltest.TestCase):
     from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
-    hlo_env.pre_fusion_optimizations()
+    fusion_pipeline = SingleFusionPipeline(hlo_env)
+    hlo_env.run(fusion_pipeline.pre_pass_optimizations)
 
     num_alts = 1
     count = 0
@@ -1005,7 +1032,7 @@ class HloEnvTest(absltest.TestCase):
     has_alt = True
     while (has_alt):
       logging.info(count)
-      hlo_env.pre_fusion_dry_passes()
+      hlo_env.run(fusion_pipeline.pre_dry_pass_passes)
       has_alt = hlo_env.run(fusion_dry_pass)
       # We hit a dry run pass
       if has_alt:
@@ -1025,7 +1052,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
         hlo_env.apply_alternatives(decisions)
-        hlo_env.post_fusion_dry_passes()
+        hlo_env.run(fusion_pipeline.post_dry_pass_passes)
 
         count += 1
 
@@ -1041,7 +1068,8 @@ class HloEnvTest(absltest.TestCase):
     from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
-    hlo_env.pre_fusion_optimizations()
+    fusion_pipeline = SingleFusionPipeline(hlo_env)
+    hlo_env.run(fusion_pipeline.pre_pass_optimizations)
 
     num_alts = 1
     count = 0
@@ -1098,8 +1126,8 @@ class HloEnvTest(absltest.TestCase):
     count = 0
     while num_alts > 0:
       logging.info(count)
-      hlo_env.pre_fusion_dry_passes()
-      hlo_env.fusion_dry_run()
+      hlo_env.run(fusion_pipeline.pre_dry_pass_passes)
+      hlo_env.run(fusion_pipeline.pass_dry_run)
 
       hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
@@ -1544,13 +1572,6 @@ class HloEnvTest(absltest.TestCase):
     import numpy as np
     from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
-    # Note you have to make an Pass, cannot just run the HloPass directly.
-    general_fusion_dry_pass = AltPipeline(Pass(HloPass.GeneralFusion(),))
-
-    post_general_fusion_dry_passes = Pipeline("post-general-fusion")
-    post_general_fusion_dry_passes.add_pass(HloPass.HloCSE(True, True))
-    post_general_fusion_dry_passes.add_pass(HloPass.HloDCE())
-
     base_dir = os.path.dirname(os.path.realpath(__file__))
     hlo_base_dir = base_dir + "/hlo_texts/test_hlos"
     for root, dirs, files in os.walk(hlo_base_dir):
@@ -1559,6 +1580,7 @@ class HloEnvTest(absltest.TestCase):
         filepath = os.path.join(root, file)
 
         hlo_env = HloEnv(filepath, "gpu")
+        general_fusion_pipeline = GeneralFusionPipeline(hlo_env)
         instruction_count = hlo_env.get_hlo_module().instruction_count
         is_large = instruction_count > LARGE_HLO_INSTRUCTION_MIN
 
@@ -1578,11 +1600,11 @@ class HloEnvTest(absltest.TestCase):
 
         start = timer()
 
-        hlo_env.pre_fusion_optimizations()
+        hlo_env.run(general_fusion_pipeline.pre_pass_optimizations)
         num_alts = 1
         while num_alts > 0:
-          hlo_env.pre_fusion_dry_passes()
-          hlo_env.run(general_fusion_dry_pass)
+          hlo_env.run(general_fusion_pipeline.pre_dry_pass_passes)
+          hlo_env.run(general_fusion_pipeline.pass_dry_run)
 
           hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
           node_features = hlo_graph.node_features
@@ -1603,9 +1625,9 @@ class HloEnvTest(absltest.TestCase):
             decisions = np.asarray(decisions)
             hlo_env.apply_alternatives(decisions)
 
-            hlo_env.run(post_general_fusion_dry_passes)
+            hlo_env.run(general_fusion_pipeline.post_dry_pass_passes)
 
-        hlo_env.post_fusion_optimizations()
+        hlo_env.run(general_fusion_pipeline.post_pass_optimizations)
         hlo_env.prepare_hlo_module_for_ir_emitting()
         post_fusion_module = hlo_env.save_hlo()
 
@@ -1627,11 +1649,6 @@ class HloEnvTest(absltest.TestCase):
     import numpy as np
     from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
-    general_fusion_dry_pass = AltPipeline(Pass(HloPass.GeneralFusion(),))
-    post_general_fusion_dry_passes = Pipeline("post-general-fusion")
-    post_general_fusion_dry_passes.add_pass(HloPass.HloCSE(True, True))
-    post_general_fusion_dry_passes.add_pass(HloPass.HloDCE())
-
     # filepath = "./hlo_texts/large_hlo.txt"
     filepath = "hlo_texts/test_hlos/maml_flax/module_0082.jit_divmod.28.before_optimizations.txt"
     logging.info("Testing general fusion for file: " + filepath)
@@ -1642,6 +1659,7 @@ class HloEnvTest(absltest.TestCase):
 
     for i in range(10):
       hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
+      general_fusion_pipeline = GeneralFusionPipeline(hlo_env)
 
       run_alt_indices = []
       run_alt_ids = []
@@ -1649,15 +1667,15 @@ class HloEnvTest(absltest.TestCase):
       hashes = []
       hashes.append(hlo_env.get_hlo_module_hash())
 
-      hlo_env.pre_fusion_optimizations()
+      hlo_env.run(general_fusion_pipeline.pre_pass_optimizations)
       hashes.append(hlo_env.get_hlo_module_hash())
 
       num_alts = 1
       while num_alts > 0:
-        hlo_env.pre_fusion_dry_passes()
+        hlo_env.run(general_fusion_pipeline.pre_dry_pass_passes)
         hashes.append(hlo_env.get_hlo_module_hash())
 
-        hlo_env.run(general_fusion_dry_pass)
+        hlo_env.run(general_fusion_pipeline.pass_dry_run)
         hashes.append(hlo_env.get_hlo_module_hash())
 
         hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
@@ -1681,10 +1699,10 @@ class HloEnvTest(absltest.TestCase):
           hlo_env.apply_alternatives(decisions)
           hashes.append(hlo_env.get_hlo_module_hash())
 
-          hlo_env.run(post_general_fusion_dry_passes)
+          hlo_env.run(general_fusion_pipeline.post_dry_pass_passes)
           hashes.append(hlo_env.get_hlo_module_hash())
 
-      hlo_env.post_fusion_optimizations()
+      hlo_env.run(general_fusion_pipeline.post_pass_optimizations)
       hlo_env.prepare_hlo_module_for_ir_emitting()
       hashes.append(hlo_env.get_hlo_module_hash())
       all_dag_hashes.append(hashes)

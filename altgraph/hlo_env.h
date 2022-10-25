@@ -86,16 +86,6 @@ class HloEnv {
                       std::shared_ptr<AltHloModule> second_module,
                       int times = 1);
 
-  void PreFusionOptimizations();
-
-  void PreFusionDryPasses();
-
-  void FusionDryRun(bool may_duplicate = true);
-
-  void PostFusionDryPasses();
-
-  void PostFusionOptimizations();
-
   bool Run(std::shared_ptr<PassInterface> pass);
 
   // TODO(ohcy): Move to utility/AltHloModule

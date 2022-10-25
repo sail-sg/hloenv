@@ -146,58 +146,6 @@ std::string HloEnv::ExportHloModuleToStr() {
   return alt_hlo_module_->ToString();
 }
 
-void HloEnv::PreFusionOptimizations() {
-  if (platform_ == "gpu") {
-    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModulePreFusion(
-        alt_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
-        HloEnvGpuBackend::DeviceMemoryAllocator());
-  } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
-  }
-}
-
-void HloEnv::PreFusionDryPasses() {
-  if (platform_ == "gpu") {
-    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModuleFusionRunPre(
-        alt_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
-        HloEnvGpuBackend::DeviceMemoryAllocator());
-  } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
-  }
-}
-
-void HloEnv::FusionDryRun(bool may_duplicate) {
-  if (platform_ == "gpu") {
-    alt_hlo_module_->hlo_module_ptr()->SetDry(true);
-    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModuleFusionRun(
-        alt_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
-        HloEnvGpuBackend::DeviceMemoryAllocator(), may_duplicate);
-    alt_hlo_module_->hlo_module_ptr()->SetDry(false);
-  } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
-  }
-}
-
-void HloEnv::PostFusionDryPasses() {
-  if (platform_ == "gpu") {
-    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModuleFusionRunPost(
-        alt_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
-        HloEnvGpuBackend::DeviceMemoryAllocator());
-  } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
-  }
-}
-
-void HloEnv::PostFusionOptimizations() {
-  if (platform_ == "gpu") {
-    HloEnvGpuBackend::GpuCompiler()->OptimizeHloModulePostFusion(
-        alt_hlo_module_->hlo_module_ptr(), HloEnvGpuBackend::StreamExecutor(),
-        HloEnvGpuBackend::DeviceMemoryAllocator());
-  } else if (platform_ == "cpu") {
-    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
-  }
-}
-
 void HloEnv::PrepareHloModuleForIrEmitting() {
   if (platform_ == "gpu") {
     HloEnvGpuBackend::GpuCompiler()->PrepareHloModuleForIrEmitting(

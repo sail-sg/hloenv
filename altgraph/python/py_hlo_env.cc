@@ -251,12 +251,6 @@ PYBIND11_MODULE(py_hlo_env, m) {
       .def("get_hlo_graph", &PyHloEnv::GetHloGraph, py::arg("debug") = false,
            py::arg("inline_fused_comp") = false,
            py::arg("do_hash_verification") = false)
-      .def("pre_fusion_optimizations", &PyHloEnv::PreFusionOptimizations)
-      .def("fusion_dry_run", &PyHloEnv::FusionDryRun,
-           py::arg("may_duplicate") = true)
-      .def("post_fusion_dry_passes", &PyHloEnv::PostFusionDryPasses)
-      .def("pre_fusion_dry_passes", &PyHloEnv::PreFusionDryPasses)
-      .def("post_fusion_optimizations", &PyHloEnv::PostFusionOptimizations)
       .def("optimize_hlo_module", &PyHloEnv::OriginalOptimizeHloModule)
       .def("prepare_hlo_module_for_ir_emitting",
            &PyHloEnv::PrepareHloModuleForIrEmitting)
