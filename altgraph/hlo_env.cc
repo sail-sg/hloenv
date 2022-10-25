@@ -7,12 +7,18 @@ namespace altgraph {
 HloEnv::HloEnv(std::shared_ptr<AltHloModule> py_hlo_module,
                const std::string& platform)
     : platform_(platform) {
+  if (platform_ != "gpu") {
+    LOG(FATAL) << "HloEnv currently only supported for platform == 'cpu'";
+  }
   alt_hlo_module_ = py_hlo_module;
 }
 
 HloEnv::HloEnv(const std::string& hlo_input, const std::string& format,
                const std::string& platform)
     : platform_(platform) {
+  if (platform_ != "gpu") {
+    LOG(FATAL) << "HloEnv currently only supported for platform == 'cpu'";
+  }
   alt_hlo_module_ = std::make_shared<AltHloModule>(hlo_input, format);
 }
 
