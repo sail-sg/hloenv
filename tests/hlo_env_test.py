@@ -173,7 +173,6 @@ class HloEnvTest(absltest.TestCase):
 
     logging.info("Running fusion_pipeline.post_pass_optimizations...")
     hlo_env.run(fusion_pipeline.post_pass_optimizations)
-    hlo_env.prepare_hlo_module_for_ir_emitting()
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_create_from_module_handle(self) -> None:
@@ -232,7 +231,6 @@ class HloEnvTest(absltest.TestCase):
     assert (count > 1)
     logging.info("Running fusion_pipeline.post_pass_optimizations...")
     hlo_env.run(fusion_pipeline.post_pass_optimizations)
-    hlo_env.prepare_hlo_module_for_ir_emitting()
     eval_result = hlo_env.evaluate(1)
     for eval_time_ns in eval_result.durations:
       assert eval_time_ns > 0
@@ -251,20 +249,27 @@ class HloEnvTest(absltest.TestCase):
     fusion_pipeline = SingleFusionPipeline(hlo_env)
 
     hlo_env.run(fusion_pipeline.pre_pass_optimizations)
+    fusion_dry_pass_duplicate = AltPipeline(
+      Pass(HloPass.GpuInstructionFusion(may_duplicate=True),)
+    )      
+    fusion_dry_pass_no_duplicate = AltPipeline(
+      Pass(HloPass.GpuInstructionFusion(may_duplicate=False),)
+    )      
 
     num_alts = 1
     count = 1
     while num_alts > 0:
+      may_duplicate = count % 2 == 0
       logging.info("\n*****************************************")
       logging.info("Pass: %d" % count)
       logging.info(
-        "Running fusion dry run, may_duplicate = %s" % (count % 2 == 0)
+        "Running fusion dry run, may_duplicate = %s" % (may_duplicate)
       )
 
-      custom_fusion_dry_pass = AltPipeline(
-        Pass(HloPass.GpuInstructionFusion(may_duplicate=(count % 2 == 0)),)
-      )
-      hlo_env.run(custom_fusion_dry_pass)
+      if may_duplicate:
+        hlo_env.run(fusion_dry_pass_duplicate)
+      else:
+        hlo_env.run(fusion_dry_pass_no_duplicate)
 
       hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
       node_features = hlo_graph.node_features
@@ -289,7 +294,6 @@ class HloEnvTest(absltest.TestCase):
 
     logging.info("Running fusion_pipeline.post_pass_optimizations...")
     hlo_env.run(fusion_pipeline.post_pass_optimizations)
-    hlo_env.prepare_hlo_module_for_ir_emitting()
     hlo_env.evaluate(1)
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
@@ -346,7 +350,6 @@ class HloEnvTest(absltest.TestCase):
     saved_hlo_module = hlo_env.clone_hlo()
     # Restore back to original, where we only did pre_fusion_optimizations
     hlo_env.run(fusion_pipeline.post_pass_optimizations)
-    hlo_env.prepare_hlo_module_for_ir_emitting()
 
     orig_res = hlo_env.evaluate(1)
     orig_post_opt_module = hlo_env.clone_hlo()
@@ -373,7 +376,6 @@ class HloEnvTest(absltest.TestCase):
         hlo_env.run(fusion_pipeline.post_dry_pass_passes)
 
     hlo_env.run(fusion_pipeline.post_pass_optimizations)
-    hlo_env.prepare_hlo_module_for_ir_emitting()
     mod_res = hlo_env.evaluate(1)
     assert (hlo_env.has_equal_output_as(orig_post_opt_module))
 
@@ -422,7 +424,6 @@ class HloEnvTest(absltest.TestCase):
         saved_hlo_module = hlo_env.clone_hlo()
         # Original TF pipelines
         hlo_env.optimize_hlo_module()
-        hlo_env.prepare_hlo_module_for_ir_emitting()
 
         # Save reference copy of the module after a non dry-run RunHloPasses call
         reference_hlo_module = hlo_env.clone_hlo()
@@ -452,7 +453,6 @@ class HloEnvTest(absltest.TestCase):
             hlo_env.run(fusion_pipeline.post_dry_pass_passes)
 
         hlo_env.run(fusion_pipeline.post_pass_optimizations)
-        hlo_env.prepare_hlo_module_for_ir_emitting()
         post_fusion_module = hlo_env.clone_hlo()
 
         assert (
@@ -543,7 +543,6 @@ class HloEnvTest(absltest.TestCase):
 
     logging.info("Running fusion_pipeline.post_pass_optimizations...")
     hlo_env.run(fusion_pipeline.post_pass_optimizations)
-    hlo_env.prepare_hlo_module_for_ir_emitting()
     logging.info(
       "Checking load_from_string after: hlo_env.run(fusion_pipeline.post_pass_optimizations)"
     )
@@ -616,7 +615,6 @@ class HloEnvTest(absltest.TestCase):
             assert (prev_hash != new_hash)
 
         hlo_env.run(fusion_pipeline.post_pass_optimizations)
-        hlo_env.prepare_hlo_module_for_ir_emitting()
 
   # Test that if we choose the original nodes, graph and graph hash
   # stays constant
@@ -1592,7 +1590,6 @@ class HloEnvTest(absltest.TestCase):
         saved_hlo_module = hlo_env.clone_hlo()
         # Original TF pipelines
         hlo_env.optimize_hlo_module()
-        hlo_env.prepare_hlo_module_for_ir_emitting()
 
         # Save reference copy of the module after a non dry-run RunHloPasses call
         reference_hlo_module = hlo_env.clone_hlo()
@@ -1628,7 +1625,6 @@ class HloEnvTest(absltest.TestCase):
             hlo_env.run(general_fusion_pipeline.post_dry_pass_passes)
 
         hlo_env.run(general_fusion_pipeline.post_pass_optimizations)
-        hlo_env.prepare_hlo_module_for_ir_emitting()
         post_fusion_module = hlo_env.clone_hlo()
 
         end = timer()
@@ -1703,7 +1699,6 @@ class HloEnvTest(absltest.TestCase):
           hashes.append(hlo_env.get_hlo_module_hash())
 
       hlo_env.run(general_fusion_pipeline.post_pass_optimizations)
-      hlo_env.prepare_hlo_module_for_ir_emitting()
       hashes.append(hlo_env.get_hlo_module_hash())
       all_dag_hashes.append(hashes)
       all_alt_indices.append(run_alt_indices)

@@ -231,7 +231,8 @@ PYBIND11_MODULE(py_hlo_env, m) {
            py::arg("hlo_data"), py::arg("format"), py::arg("platform"))
       .def(py::init<std::shared_ptr<AltHloModule>, const std::string&>(),
            py::arg("alt_hlo_module"), py::arg("platform"))
-      .def("evaluate", &PyHloEnv::Evaluate)
+      .def("evaluate", &PyHloEnv::Evaluate,
+           py::arg("times") = 20, py::arg("do_not_prep_for_eval") = false)
       .def("has_equal_output", &PyHloEnv::HasEqualOutput,
            py::arg("first_module"), py::arg("second_module"),
            py::arg("times") = 1)
@@ -252,8 +253,8 @@ PYBIND11_MODULE(py_hlo_env, m) {
            py::arg("inline_fused_comp") = false,
            py::arg("do_hash_verification") = false)
       .def("optimize_hlo_module", &PyHloEnv::OriginalOptimizeHloModule)
-      .def("prepare_hlo_module_for_ir_emitting",
-           &PyHloEnv::PrepareHloModuleForIrEmitting)
+      .def("prepare_for_eval",
+           &PyHloEnv::PrepareForEvaluation)
       .def("run", &PyHloEnv::Run)
       .def("get_hlo_module_hash", &PyHloEnv::GetHloModuleHash)
       .def("apply_alternatives", &PyHloEnv::ApplyAlternatives);

@@ -43,6 +43,12 @@ bool HloEnv::HasEqualOutput(std::shared_ptr<AltHloModule> first_module,
                             std::shared_ptr<AltHloModule> second_module,
                             int times) {
   if (platform_ == "gpu") {
+
+    HloEnvGpuBackend::GpuCompiler()->PrepareHloModuleForIrEmitting(
+      first_module->hlo_module_ptr());    
+    HloEnvGpuBackend::GpuCompiler()->PrepareHloModuleForIrEmitting(
+      second_module->hlo_module_ptr());
+
     for (int run = 0; run < times; run++) {
       evaluator_.Compile(first_module->hlo_module_ptr()->ToProto(),
                          /* rerun_hlo = */ false,
@@ -99,13 +105,20 @@ bool HloEnv::HasEqualOutput(std::shared_ptr<AltHloModule> first_module,
   }
 }
 
-HloEnv::EvaluationResult HloEnv::Evaluate(int times) {
+HloEnv::EvaluationResult HloEnv::Evaluate(int times, 
+                                          bool do_not_prep_for_eval) {
   HloEnv::EvaluationResult result;
   result.durations.reserve(times);
   result.async_durations.reserve(times);
   result.compute_durations.reserve(times);
 
   if (platform_ == "gpu") {
+
+    if (!do_not_prep_for_eval) {
+      HloEnvGpuBackend::GpuCompiler()->PrepareHloModuleForIrEmitting(
+          alt_hlo_module_->hlo_module_ptr());    
+    }
+
     evaluator_.Compile(alt_hlo_module_->hlo_module_ptr()->ToProto(),
                        /* rerun_hlo = */ false, HloEnvGpuBackend::PjRtClient());
     auto ret = evaluator_.Evaluate(times);
@@ -152,10 +165,10 @@ std::string HloEnv::ExportHloModuleToStr() {
   return alt_hlo_module_->ToString();
 }
 
-void HloEnv::PrepareHloModuleForIrEmitting() {
+void HloEnv::PrepareForEvaluation() {
   if (platform_ == "gpu") {
     HloEnvGpuBackend::GpuCompiler()->PrepareHloModuleForIrEmitting(
-        alt_hlo_module_->hlo_module_ptr());
+        alt_hlo_module_->hlo_module_ptr());    
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }

@@ -77,7 +77,9 @@ class HloEnv {
 
   std::string ExportHloModuleToStr();
 
-  EvaluationResult Evaluate(int times);
+  void PrepareForEvaluation();
+
+  EvaluationResult Evaluate(int times, bool do_not_prep_for_eval=false);
 
   bool HasEqualOutputAs(std::shared_ptr<AltHloModule> other_module,
                         int times = 1);
@@ -96,8 +98,6 @@ class HloEnv {
   void ApplyAlternatives(py::array_t<size_t> decisions);
 
   void OriginalOptimizeHloModule();
-
-  void PrepareHloModuleForIrEmitting();
 };
 
 }  // namespace altgraph
