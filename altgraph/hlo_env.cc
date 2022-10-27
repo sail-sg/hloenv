@@ -109,7 +109,7 @@ HloEnv::EvaluationResult HloEnv::Evaluate(int times,
                                           bool do_not_prep_for_eval) {
   HloEnv::EvaluationResult result;
   result.durations.reserve(times);
-  result.async_durations.reserve(times);
+  result.full_durations.reserve(times);
   result.compute_durations.reserve(times);
 
   if (platform_ == "gpu") {
@@ -134,12 +134,12 @@ HloEnv::EvaluationResult HloEnv::Evaluate(int times,
             std::move(xla::LiteralToPython(literal).ValueOrDie()));
       }
     }
-    std::transform(ret.durations.begin(), ret.durations.end(),
-                   std::back_inserter(result.durations),
+    std::transform(ret.full_durations.begin(), ret.full_durations.end(),
+                   std::back_inserter(result.full_durations),
                    [](absl::Duration duration) -> uint64_t {
                      return duration / absl::Nanoseconds(1);
                    });
-    result.async_durations = ret.async_durations;
+    result.durations = ret.durations;
     result.compute_durations = ret.compute_durations;
 
   } else if (platform_ == "cpu") {

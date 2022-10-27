@@ -25,8 +25,8 @@ class Evaluator {
 
   typedef std::vector<std::vector<std::unique_ptr<xla::PjRtBuffer>>> BufferPack;
   struct EvaluationResult {
-    std::vector<absl::Duration> durations;
-    std::vector<uint64_t> async_durations;
+    std::vector<uint64_t> durations;
+    std::vector<absl::Duration> full_durations;
     std::vector<uint64_t> compute_durations;
 
     BufferPack output;

@@ -134,8 +134,8 @@ Evaluator::EvaluationResult Evaluator::Evaluate(int times) {
     }
 
     if (i >= NUM_RUNS_IGNORED) {
-      ret.durations.push_back(absl::Now() - start);
-      ret.async_durations.push_back(executable_->async_exec_time_ns);
+      ret.durations.push_back(executable_->async_exec_time_ns);
+      ret.full_durations.push_back(absl::Now() - start);
       ret.compute_durations.push_back(executable_->compute_time_ns);
     }
   }

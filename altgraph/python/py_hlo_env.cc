@@ -52,11 +52,11 @@ PYBIND11_MODULE(py_hlo_env, m) {
       .DEF_PYBIND_READONLY(PyEdgeFeats, dtypes);
 
   py::class_<PyHloEnv::EvaluationResult>(m, "EvaluationResult")
+      .def_readonly("durations", &PyHloEnv::EvaluationResult::durations)
       .def_readonly("compute_durations",
                     &PyHloEnv::EvaluationResult::compute_durations)
-      .def_readonly("async_durations",
-                    &PyHloEnv::EvaluationResult::async_durations)
-      .def_readonly("durations", &PyHloEnv::EvaluationResult::durations)
+      .def_readonly("full_durations",
+                    &PyHloEnv::EvaluationResult::full_durations)
       .def_readonly("output", &PyHloEnv::EvaluationResult::output);
 
   py::class_<xla::DebugOptions>(m, "DebugOptions")
