@@ -9,6 +9,7 @@ node_modules
 /tensorflow/tools/git/gen
 /pip_test
 /_python_build
+/_build
 *.pyc
 __pycache__
 *.swp
