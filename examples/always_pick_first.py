@@ -1,7 +1,7 @@
 # Copyright 2021 Garena Online Private Limited
 
 # A demo to where we always pick the first alternative and compare the
-# evaluation timing of the resulting hlo module to the one optimized by the 
+# evaluation timing of the resulting hlo module to the one optimized by the
 # original xla pipeline.
 
 import numpy as np
@@ -70,5 +70,7 @@ if __name__ == '__main__':
       pick_one_results = hlo_env.evaluate(100)
       pick_one_timing = min(pick_one_results.durations)
 
-      print("Ref timing: %.2f, Pick one timing: %.2f" % 
-        (ref_timing, pick_one_timing))
+      print(
+        "Ref timing: %.2f, Pick one timing: %.2f" %
+        (ref_timing, pick_one_timing)
+      )

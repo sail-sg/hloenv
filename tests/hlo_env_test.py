@@ -251,10 +251,10 @@ class HloEnvTest(absltest.TestCase):
     hlo_env.run(fusion_pipeline.pre_pass_optimizations)
     fusion_dry_pass_duplicate = AltPipeline(
       Pass(HloPass.GpuInstructionFusion(may_duplicate=True),)
-    )      
+    )
     fusion_dry_pass_no_duplicate = AltPipeline(
       Pass(HloPass.GpuInstructionFusion(may_duplicate=False),)
-    )      
+    )
 
     num_alts = 1
     count = 1

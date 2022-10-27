@@ -43,11 +43,10 @@ bool HloEnv::HasEqualOutput(std::shared_ptr<AltHloModule> first_module,
                             std::shared_ptr<AltHloModule> second_module,
                             int times) {
   if (platform_ == "gpu") {
-
     HloEnvGpuBackend::GpuCompiler()->PrepareHloModuleForIrEmitting(
-      first_module->hlo_module_ptr());    
+        first_module->hlo_module_ptr());
     HloEnvGpuBackend::GpuCompiler()->PrepareHloModuleForIrEmitting(
-      second_module->hlo_module_ptr());
+        second_module->hlo_module_ptr());
 
     for (int run = 0; run < times; run++) {
       evaluator_.Compile(first_module->hlo_module_ptr()->ToProto(),
@@ -105,7 +104,7 @@ bool HloEnv::HasEqualOutput(std::shared_ptr<AltHloModule> first_module,
   }
 }
 
-HloEnv::EvaluationResult HloEnv::Evaluate(int times, 
+HloEnv::EvaluationResult HloEnv::Evaluate(int times,
                                           bool do_not_prep_for_eval) {
   HloEnv::EvaluationResult result;
   result.durations.reserve(times);
@@ -113,10 +112,9 @@ HloEnv::EvaluationResult HloEnv::Evaluate(int times,
   result.compute_durations.reserve(times);
 
   if (platform_ == "gpu") {
-
     if (!do_not_prep_for_eval) {
       HloEnvGpuBackend::GpuCompiler()->PrepareHloModuleForIrEmitting(
-          alt_hlo_module_->hlo_module_ptr());    
+          alt_hlo_module_->hlo_module_ptr());
     }
 
     evaluator_.Compile(alt_hlo_module_->hlo_module_ptr()->ToProto(),
@@ -168,7 +166,7 @@ std::string HloEnv::ExportHloModuleToStr() {
 void HloEnv::PrepareForEvaluation() {
   if (platform_ == "gpu") {
     HloEnvGpuBackend::GpuCompiler()->PrepareHloModuleForIrEmitting(
-        alt_hlo_module_->hlo_module_ptr());    
+        alt_hlo_module_->hlo_module_ptr());
   } else if (platform_ == "cpu") {
     LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
   }
@@ -196,8 +194,6 @@ bool HloEnv::Run(std::shared_ptr<PassInterface> pass) {
 
 std::shared_ptr<AltHloModule> HloEnv::GetHloModule() { return alt_hlo_module_; }
 
-// TODO(ohcy): Make it take a (uid_ptr, decision) arg instead, save time on
-// rebuilding the HloGraph
 void HloEnv::ApplyAlternatives(py::array_t<size_t> decisions) {
   if (platform_ == "gpu") {
     HloGraph hlo_graph = HloGraph(alt_hlo_module_->hlo_module_ptr(), false);

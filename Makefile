@@ -40,7 +40,7 @@ clean:
 
 yapf:
 	$(call check_install, yapf)
-	yapf -r -i altgraph/ tests/
+	yapf -r -i altgraph/ tests/ examples/
 
 clang-format:
 	clang-format-11 --style=Google -i ${CPP_FILES}

@@ -79,7 +79,7 @@ class HloEnv {
 
   void PrepareForEvaluation();
 
-  EvaluationResult Evaluate(int times, bool do_not_prep_for_eval=false);
+  EvaluationResult Evaluate(int times, bool do_not_prep_for_eval = false);
 
   bool HasEqualOutputAs(std::shared_ptr<AltHloModule> other_module,
                         int times = 1);

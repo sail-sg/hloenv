@@ -3,6 +3,7 @@
 from abc import ABC, abstractmethod, abstractproperty
 from altgraph import HloEnv, HloModule, Pass, HloPass, AltPipeline, Pipeline, GpuBackend
 
+
 class PassPipelines(ABC):
 
   @abstractproperty
