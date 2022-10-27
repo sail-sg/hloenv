@@ -29,16 +29,24 @@ load("@third_party//py:workspace1.bzl", workspace1 = "workspace")
 
 workspace1()
 
-git_repository(
-    name = "org_tensorflow",
-    branch = "main",
-    remote = "https://AltGraph:p2WoxJyV93twzkTEyXvL@git.insea.io/sail/aisys/tensorflow.git",
-)
+# git_repository(
+#     name = "org_tensorflow",
+#     remote = "https://AltGraph:p2WoxJyV93twzkTEyXvL@git.insea.io/sail/aisys/tensorflow.git",
+#     branch = "main",
+# )
 
 # local_repository(
 #     name = "org_tensorflow",
 #     path = "/home/aiops/ohcy/tf_graph/tensorflow",
 # )
+
+git_repository(
+    name = "org_tensorflow",
+    remote = "https://github.com/tensorflow/tensorflow.git",
+    commit = "8727d035e7aa593720d16a5f57f70f3b5a93bd00",
+    patches = ["//third_party/tensorflow:org_tensorflow_altgraph.patch"],
+    patch_args = ["-p1"],
+)
 
 git_repository(
     name = "jax",
