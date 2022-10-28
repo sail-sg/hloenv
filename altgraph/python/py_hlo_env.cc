@@ -5,7 +5,7 @@ namespace altgraph {
 
 PYBIND11_MODULE(py_hlo_env, m) {
   // TODO(ohcy) Change PyHloGraph and PyHloEnv names to remove the Py prefix
-  py::class_<PyHloGraph> py_hlo_graph(m, "PyHloGraph");
+  py::class_<PyHloGraph> py_hlo_graph(m, "HloGraph");
 
   py_hlo_graph.def(py::init<const xla::HloModule*>())
       .def("hash", &PyHloGraph::py_hash)
@@ -51,13 +51,21 @@ PYBIND11_MODULE(py_hlo_env, m) {
       .DEF_PYBIND_READONLY(PyEdgeFeats, types)
       .DEF_PYBIND_READONLY(PyEdgeFeats, dtypes);
 
-  py::class_<PyHloEnv::EvaluationResult>(m, "EvaluationResult")
-      .def_readonly("durations", &PyHloEnv::EvaluationResult::durations)
+  py::class_<PyHloEnv::EvaluationResult>(m, "EvaluationResult", 
+                    "A structure containing the duration and output of the HloModule evaluation.")
+      .def_readonly("durations", &PyHloEnv::EvaluationResult::durations,
+                    "The default duration in nanoseconds. This returns the evaluation durations as measured within the Tensorflow evaluation code, starting from the point of the asynchronous dispatch of the computation kernels to the receipt of the results."
+                    )
       .def_readonly("compute_durations",
-                    &PyHloEnv::EvaluationResult::compute_durations)
+                    &PyHloEnv::EvaluationResult::compute_durations,
+                    "The duration in nanoseconds of the computation, without data transfer."
+                    )
       .def_readonly("full_durations",
-                    &PyHloEnv::EvaluationResult::full_durations)
-      .def_readonly("output", &PyHloEnv::EvaluationResult::output);
+                    &PyHloEnv::EvaluationResult::full_durations,
+                    "The full duration of the computation as measured within HloEnv.evaluate.")
+      .def_readonly("output", &PyHloEnv::EvaluationResult::output,
+                    "The output of the HloModule."
+                    );
 
   py::class_<xla::DebugOptions>(m, "DebugOptions")
       .def_property_readonly(
@@ -205,33 +213,72 @@ PYBIND11_MODULE(py_hlo_env, m) {
 
   py::class_<xla::HloCostAnalysis::Properties>(m, "CostAnalysisProperties");
 
-  py::class_<AltHloModule, std::shared_ptr<AltHloModule>>(m, "AltHloModule")
+  py::class_<AltHloModule, std::shared_ptr<AltHloModule>>(m, "HloModule")
       .def(py::init<const std::string&>())
       .def(py::init<const std::string&, const std::string&>())
-      .def("to_string", &AltHloModule::ToString)
-      .def_property_readonly("config", &AltHloModule::config)
-      .def("hash", &AltHloModule::Hash)
+      .def("to_string", &AltHloModule::ToString, 
+        "Converts the HloModule to a string representation. This string representation can also used to initialize a new HloEnv or loaded into an existing one.")
+      .def_property_readonly("config", &AltHloModule::config,
+        "The config options of the HloModule")
+      .def("hash", &AltHloModule::Hash,
+        "The DAGHash of the HloModule. This DAGHash is a custom hash implementation that differs from Tensorflow's existing HloModule hash implementation to better account for the structure and parameters of the Hlo Instructions.")
       .def("extract_random_submodule", &AltHloModule::ExtractRandomSubmodule)
       .def("extract_instructions_as_module",
            &AltHloModule::ExtractInstructionsAsModule)
       .def("extract_fusions_as_module", &AltHloModule::ExtractFusionsAsModule)
       .def("is_bef_enabled", &AltHloModule::IsBefEnabled)
       .def_property_readonly("instruction_count",
-                             &AltHloModule::InstructionCount)
+                             &AltHloModule::InstructionCount,
+                             "The number of instructions in the HloModule.")
       .def_property_readonly("computation_count",
-                             &AltHloModule::ComputationCount)
-      .def("cost_analysis", &AltHloModule::CostAnalysis)
-      .def("clone", &AltHloModule::Clone);
+                             &AltHloModule::ComputationCount,
+                             "The number of computations in the HloModule.")
+      .def("cost_analysis", &AltHloModule::CostAnalysis, 
+        "Returns a structure containing the cost analysis of the Hlo Module.")
+      .def("clone", &AltHloModule::Clone, "Clones the HloModule.");
 
-  py::class_<PyHloEnv>(m, "PyHloEnv")
-      .def(py::init<const std::string&, const std::string&>(),
+  py::class_<PyHloEnv>(m, "HloEnv", 
+                       "The class representing the HloEnv. Each HloEnv instance can be loaded with a single HloModule, and used to run Passes/Pipelines on that module, as well as extract features, evaluate and obtain the graph features for that HloModule.")
+      .def(py::init<const std::string&, const std::string&>(), 
+           R"altgraphdoc(
+Creates a :class:`HloEnv` and loads in a HloModule from a specified filepath.
+
+Args:
+    hlo_filepath (str): The path of the HloModule text file
+    platform (str): The platform we wish to run the HloModule on. Currently only 'gpu' is supported
+           )altgraphdoc",           
            py::arg("hlo_filepath"), py::arg("platform"))
       .def(py::init<const std::string&, const std::string&,
-                    const std::string&>(),
+                    const std::string&>(), 
+           R"altgraphdoc(
+Creates a :class:`HloEnv` and loads in a HloModule from its string representation.
+
+Args:
+    hlo_data (str): The HloModule string
+    platform (str): The platform we wish to run the HloModule on. Currently only 'gpu' is supported
+           )altgraphdoc",                       
            py::arg("hlo_data"), py::arg("format"), py::arg("platform"))
       .def(py::init<std::shared_ptr<AltHloModule>, const std::string&>(),
+           R"altgraphdoc(
+Creates a :class:`HloEnv` and loads in a HloModule from an existing HloModule object.
+
+Args:
+    alt_hlo_module (HloModule): The HloModule object
+    platform (str): The platform we wish to run the HloModule on. Currently only 'gpu' is supported
+           )altgraphdoc",   
            py::arg("alt_hlo_module"), py::arg("platform"))
-      .def("evaluate", &PyHloEnv::Evaluate, py::arg("times") = 20,
+      .def("evaluate", &PyHloEnv::Evaluate, 
+           R"altgraphdoc(
+              Evaluates the :class:`HloModule` loaded into the environment N times and returns both the output and the duration of each evaluation.
+
+              Args:
+                  times (int): The number of evaluations to perform
+                  do_not_prep_for_eval (bool, optional): Whether to prepare the HloModule for evaluation. This can result in changes to the HloModule (e.g. insertion of Copy instructions), so set this to True if the HloModule has already gone through this process. Defaults to false.
+
+              Returns:
+                  :class:`EvaluationResult`: The structure containing the durations and output of the evaluation
+           )altgraphdoc",   
+           py::arg("times") = 20,
            py::arg("do_not_prep_for_eval") = false)
       .def("has_equal_output", &PyHloEnv::HasEqualOutput,
            py::arg("first_module"), py::arg("second_module"),

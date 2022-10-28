@@ -6,11 +6,9 @@
 Welcome to AltGraph's documentation!
 ====================================
 
-.. automodule:: altgraph
+.. automodule:: altgraph.python.py_hlo_env
    :members:
-   :imported-members:
    :undoc-members:
-   :show-inheritance:
 
 .. toctree::
    :maxdepth: 5
