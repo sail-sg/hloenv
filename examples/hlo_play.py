@@ -31,10 +31,10 @@ if __name__ == '__main__':
     "hlo_texts/jax-md/module_0013.jit__lambda_.7.before_optimizations.txt"
   )
 
-  hlo_ir = HloEnv(hlo_path, "gpu")
+  hlo_env = HloEnv(hlo_path, "gpu")
 
-  # hlo_graph is the entry point of the features of hlo_ir
-  hlo_graph = hlo_ir.get_hlo_graph()
+  # hlo_graph is the entry point of the features of hlo_env
+  hlo_graph = hlo_env.get_hlo_graph()
 
   print("=========graph_features==========")
   print(hlo_graph.out_edge_offsets)
