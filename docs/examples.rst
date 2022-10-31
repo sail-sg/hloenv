@@ -70,6 +70,39 @@ To make the features more array programming friendly, all the graph features in 
       
     * - opcode_attr_counts
       - Number of attributes in HLO opcode
+      
+All edge features are vectors of the length of number of edges in the HLO graph. In/Out edge features share the same feature set as follows.
+
+.. list-table:: **In and Out Edge Features**
+    :widths: 42 42
+    :header-rows: 1
+    
+    * - Feature Name
+      - Description
+      
+    * - uids
+      - Unique ID of the edge, a concatination of source and destination nodes uids
+       
+    * - srcs
+      - Node index of source node
+    
+    * - dsts
+      - Node index of destination node
+      
+    * - dims
+      - Dimension of the tensor flows by this edge
+    
+    * - layout
+      - Layout of the tensor flows by this edge
+      
+    * - lehmercodes
+      - The `Lehmer code <https://en.wikipedia.org/wiki/Lehmer_code>`_ (a better embedding) of the tensor layout
+      
+    * - types
+      - Edge type is one of the following: outside any fusion, inside fusion, and cross fusion
+      
+    * - dtypes
+      - Data type of the tensor flows by this edge
 
 All node features are vectors of the length of number of HloInstructions (nodes) in the HloModule (HloGraph).
 
@@ -85,6 +118,9 @@ All node features are vectors of the length of number of HloInstructions (nodes)
       
     * - gids
       - Sub computation ID the HloInstruction belongs to, 0 means in main computation.
+      
+    * - normalized_num_group_inst
+      - If an HloInstruction is inside a sub-computation, normalized_num_group_inst is the reciprocal of the total number of instructions in a sub-computation. This can serve as a weighting parameter for an instruction's impact
         
     * - num_users
       - Number of HloInstructions that uses the result of this HloInstruction
@@ -104,6 +140,9 @@ All node features are vectors of the length of number of HloInstructions (nodes)
     * - is_alternative
       - List of boolean that shows if the HloInstruction is *kAlternative*
       
+    * - is_in_fusion
+      - List of boolean that shows if the HloInstruction is inside a fused computation
+      
     * - in_tensor_sizes
       - The total input tensor size from all operands of this HloInstruction
         
@@ -119,32 +158,7 @@ All node features are vectors of the length of number of HloInstructions (nodes)
     * - names
       - List of strings that shows the names of the HloInstruction
       
-.. list-table:: **In/Out Edge Features**
-    :widths: 42 42
-    :header-rows: 1
-    
-    * - Feature Name
-      - Description
-      
-    * - uids
-      - Unique ID of the edge, a concatination of source and destination nodes' uids
-      
-    * - srcs
-      - Node index of source node
-    
-    * - dsts
-      - Node index of destination node
-      
-    * - dims
-      - Dimension of the tensor flows by this edge
-    
-    * - layout
-      - Layout of the tensor flows by this edge
-      
-    * - dtypes
-      - Data type of the tensor flows by this edge
-      
- The full-size code can be found `here <https://github.com/sail-sg/altgraph/blob/altgraph-refactor-open/examples/hlo_play.py>`_. In our second example, we will show you how to use these features to create a simple decision-making agent and run XLA optimizations using it.
+The full-size code can be found `here <https://github.com/sail-sg/altgraph/blob/altgraph-refactor-open/examples/hlo_play.py>`_. In our second example, we will show you how to use these features to create a simple decision-making agent and run XLA optimizations using it.
       
 A simple decision-making agent
 ------------------------------
