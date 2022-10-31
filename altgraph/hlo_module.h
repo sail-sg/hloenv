@@ -26,7 +26,7 @@ class AltHloModule {
     hlo_module_ = std::move(hlo_module);
   }
 
-  explicit AltHloModule(const std::string& input, const std::string& format) {
+  explicit AltHloModule(const std::string& input, const std::string& format="path") {
     std::function<void(xla::HloModuleConfig*)> config_modifier_hook =
         [](xla::HloModuleConfig* config) { config->set_seed(42); };
 
@@ -35,25 +35,17 @@ class AltHloModule {
           LoadModuleFromFile(input, xla::hlo_module_loader_details::Config(),
                              "txt", config_modifier_hook)
               .ValueOrDie());
-    } else {
+    } else  if (format == "text") {
       hlo_module_ =
           std::move(LoadModuleFromData(input, format,
                                        xla::hlo_module_loader_details::Config(),
                                        config_modifier_hook)
                         .ValueOrDie());
+    } else {
+      LOG(FATAL) << "Unrecognized HloModule format, use 'path' or 'text'.";
     }
   }
 
-  explicit AltHloModule(const std::string& hlo_filepath) {
-    std::function<void(xla::HloModuleConfig*)> config_modifier_hook =
-        [](xla::HloModuleConfig* config) { config->set_seed(42); };
-
-    hlo_module_ =
-        std::move(LoadModuleFromFile(hlo_filepath,
-                                     xla::hlo_module_loader_details::Config(),
-                                     "txt", config_modifier_hook)
-                      .ValueOrDie());
-  }
   explicit AltHloModule(AltHloModule&& other) {
     hlo_module_ = std::move(other.hlo_module_);
   }

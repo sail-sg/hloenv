@@ -9,6 +9,7 @@ HloEnv - A Graph Rewrite Environment for Deep Learning Compiler Optimization Res
    intro
    examples
    reference
+   xla_passes
    release_notes
 
 Indices and tables
