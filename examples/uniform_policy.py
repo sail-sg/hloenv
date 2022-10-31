@@ -28,16 +28,20 @@ from typing import Tuple
 def get_ragged_tensor_from_hlo(
   hlo_graph
 ) -> Tuple[tf.RaggedTensor, tf.RaggedTensor]:
+  """Get the operands and users of each node from the hlo graph.
+
+  Args:
+    hlo_graph: a hlo graph
+
+  Returns:
+    a tuple of tf.RaggedTensor indicating the graph structure:
+    (operands, users)
+    operands: a dict in the form of raggedtensor, where the key is the node id,
+      and the value is a list of operand indices.
+    users: a dict in the form of raggedtensor, where the key is the node id,
+      and the value is a list of user indices.
   """
-  get the operands and users of each node from the hlo graph.
-  operands: a dict in the form of raggedtensor, where the key is the node id,
-  and the value is a list of operand indices.
-  users: a dict in the form of raggedtensor, where the key is the node id,
-  and the value is a list of user indices.
-  input: hlo graph:
-  output: a tuple of ragged tensor indicating the graph structure:
-  (operands, users)
-  """
+
   in_edge_features = hlo_graph.in_edge_features
   out_edge_features = hlo_graph.out_edge_features
 
@@ -57,12 +61,16 @@ def get_ragged_tensor_from_hlo(
 
 
 def uniform_policy(hlo_graph) -> tf.RaggedTensor:
-  """
-  generate a uniform random score for each operand of each alternative.
-  input: hlo_graph
-  output: a tf.RaggedTensor with shape [num_alt_idx, num_operands].
-  Each row is a list of probability to operand indices for the 
-  corresponding alternative.
+  """Produce a uniform policy for the given hlo graph.
+
+  Args:
+    hlo_graph: the hlo graph
+  
+  Returns:
+    a tf.RaggedTensor with shape [num_alt_idx, None]. The outer dimension
+    is the alternative index, and the inner dimension is the operand index.
+    Each row is a list of probability to operand indices for the 
+    corresponding alternative.
   """
   operands, users = get_ragged_tensor_from_hlo(hlo_graph)
 
@@ -81,15 +89,18 @@ def uniform_policy(hlo_graph) -> tf.RaggedTensor:
 
 
 def argmax_sample(probability: tf.RaggedTensor, hlo_graph) -> tf.Tensor:
-  """
-  selecting the operand with the highest score for each alternative.
-  input: 
-    probability: a tf.RaggedTensor with shape [num_alt_idx, num_operands].
-      Each row is a list of probability to operand indices for the 
-      corresponding alternative.
+  """Select the operand with the highest score for each alternative.
+
+  Args:
+    probability: a tf.RaggedTensor with shape [num_alt_idx, None].
+      The outer dimension is the alternative index, and the inner 
+      dimension is the operand index.
+    
     hlo_graph: the hlo graph
-  output: a tf.Tensor with shape [num_alt_idx, 2], the 1st column is
-  the alt_idx, the 2nd column is the operand_idx to be selected.
+  
+  Returns:
+    a tf.Tensor with shape [num_alt_idx, 2], the 1st column is
+    the alt_idx, the 2nd column is the operand_idx to be selected.
   """
   alternative_idx = tf.convert_to_tensor(
     hlo_graph.alternative_indices, dtype=tf.int64

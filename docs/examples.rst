@@ -225,12 +225,16 @@ The probability distribution is a tf.RaggedTensor, where the outer dimension is 
 .. code-block:: python
 
   def uniform_policy(hlo_graph) -> tf.RaggedTensor:
-    """
-    generate a uniform random score for each operand of each alternative.
-    input: hlo_graph
-    output: a tf.RaggedTensor with shape [num_alt_idx, num_operands].
-    Each row is a list of probability to operand indices for the 
-    corresponding alternative.
+    """Produce a uniform policy for the given hlo graph.
+
+    Args:
+      hlo_graph: the hlo graph
+  
+    Returns:
+      a tf.RaggedTensor with shape [num_alt_idx, None]. The outer dimension
+      is the alternative index, and the inner dimension is the operand index.
+      Each row is a list of probability to operand indices for the 
+      corresponding alternative.
     """
     # get graph structures
     operands, users = get_ragged_tensor_from_hlo(hlo_graph)
@@ -255,15 +259,18 @@ To output an action, we implement the `argmax_sample` to choose the operand with
 .. code-block:: python
 
   def argmax_sample(probability: tf.RaggedTensor, hlo_graph) -> tf.Tensor:
-    """
-    selecting the operand with the highest score for each alternative.
-    input: 
-      probability: a tf.RaggedTensor with shape [num_alt_idx, num_operands].
-        Each row is a list of probability to operand indices for the 
-        corresponding alternative.
+    """Select the operand with the highest score for each alternative.
+
+    Args:
+      probability: a tf.RaggedTensor with shape [num_alt_idx, None].
+        The outer dimension is the alternative index, and the inner 
+        dimension is the operand index.
+      
       hlo_graph: the hlo graph
-    output: a tf.Tensor with shape [num_alt_idx, 2], the 1st column is
-    the alt_idx, the 2nd column is the operand_idx to be selected.
+    
+    Returns:
+      a tf.Tensor with shape [num_alt_idx, 2], the 1st column is
+      the alt_idx, the 2nd column is the operand_idx to be selected.
     """
     alternative_idx = tf.convert_to_tensor(
       hlo_graph.alternative_indices, dtype=tf.int64
