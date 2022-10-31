@@ -1,5 +1,5 @@
 API Reference
 =============
 
-.. automodule:: altgraph.python.py_hlo_env
+.. automodule:: altgraph
    :members:

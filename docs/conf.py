@@ -193,3 +193,18 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+
+def setup(app):
+    import altgraph
+
+    # need to assign the names here, otherwise autodoc won't document these classes,
+    # and will instead just say 'alias of ...'
+
+    altgraph.HloEnv.__name__ = 'HloEnv'
+    altgraph.HloModule.__name__ = 'HloModule'
+    altgraph.AltPipeline.__name__ = 'AltPipeline'
+    altgraph.Pipeline.__name__ = 'Pipeline'
+    altgraph.Pass.__name__ = 'Pass'
+    altgraph.HloPass.__name__ = 'HloPass'
+    altgraph.GpuBackend.__name__ = 'GpuBackend'
+    altgraph.EvaluationResult.__name__ = 'EvaluationResult'
