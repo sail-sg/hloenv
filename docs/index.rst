@@ -1,18 +1,15 @@
-.. AltGraph documentation master file, created by
-   sphinx-quickstart on Wed Oct 26 17:43:48 2022.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+HloEnv - A Graph Rewrite Environment for Deep Learning Compiler Optimization Research
+=====================================================================================
 
-Welcome to AltGraph's documentation!
-====================================
-
-.. automodule:: altgraph.python.py_hlo_env
-   :members:
-   :undoc-members:
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 1
    :caption: Contents:
+
+   intro
+   examples
+   reference
+   release_notes
 
 Indices and tables
 ==================
