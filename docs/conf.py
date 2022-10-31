@@ -50,6 +50,18 @@ autoclass_content = 'both'
 
 napoleon_include_init_with_doc = True
 
+def process_docstring(app, what, name, obj, options, lines):
+  for i in range(len(lines)):
+    lines[i] = lines[i].replace('altgraph.python.py_hlo_env', 'altgraph')
+
+def process_signature(app, what, name, obj, options, signature, return_annotation):
+  if signature:
+    signature = signature.replace('altgraph.python.py_hlo_env', 'altgraph')
+  if return_annotation:
+    return_annotation = return_annotation.replace('altgraph.python.py_hlo_env', 'altgraph')
+
+  return signature, return_annotation
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -208,3 +220,6 @@ def setup(app):
     altgraph.HloPass.__name__ = 'HloPass'
     altgraph.GpuBackend.__name__ = 'GpuBackend'
     altgraph.EvaluationResult.__name__ = 'EvaluationResult'
+
+    app.connect('autodoc-process-docstring', process_docstring)
+    app.connect('autodoc-process-signature', process_signature)
