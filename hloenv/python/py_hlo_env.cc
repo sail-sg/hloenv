@@ -236,7 +236,7 @@ Creates a :class:`HloEnv` and loads in a HloModule from a specified filepath.
 
 Args:
     input (str): The Hlo text input in the form of a string or filepath.
-    format (str, optional): The format of the input. Can be either "path" for a filepath to a Hlo text file, or "text" for the raw Hlo text string. Defaults to "path".
+    format (str, optional): The format of the input. Can be either "path" for a filepath to a Hlo text file, or "txt" for the raw Hlo text string. Defaults to "path".
            )hloenvdoc",
            py::arg("input"), py::arg("format")="path"
        )

@@ -47,14 +47,14 @@ class AltHloModule {
           LoadModuleFromFile(input, xla::hlo_module_loader_details::Config(),
                              "txt", config_modifier_hook)
               .ValueOrDie());
-    } else  if (format == "text") {
+    } else  if (format == "txt") {
       hlo_module_ =
           std::move(LoadModuleFromData(input, format,
                                        xla::hlo_module_loader_details::Config(),
                                        config_modifier_hook)
                         .ValueOrDie());
     } else {
-      LOG(FATAL) << "Unrecognized HloModule format, use 'path' or 'text'.";
+      LOG(FATAL) << "Unrecognized HloModule format, use 'path' or 'txt'.";
     }
   }
 
