@@ -188,8 +188,6 @@ class HloGraph {
 
   uint64_t Hash();
 
-  void ShowStats();
-
   // return CSR/CSC
   std::shared_ptr<std::vector<size_t>> get_out_edge_offsets_ptr() {
     return user_list_offsets_;
