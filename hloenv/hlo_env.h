@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ALTGRAPH_HLO_ENV_H_
-#define ALTGRAPH_HLO_ENV_H_
+#ifndef HLOENV_HLO_ENV_H_
+#define HLOENV_HLO_ENV_H_
 
 #include <algorithm>
 #include <iostream>
@@ -24,11 +24,11 @@
 #include <vector>
 
 #include "absl/hash/hash.h"
-#include "altgraph/evaluation/evaluator.h"
-#include "altgraph/gpu_backend.h"
-#include "altgraph/hlo_graph.h"
-#include "altgraph/hlo_module.h"
-#include "altgraph/schedule.h"
+#include "hloenv/evaluation/evaluator.h"
+#include "hloenv/gpu_backend.h"
+#include "hloenv/hlo_graph.h"
+#include "hloenv/hlo_module.h"
+#include "hloenv/schedule.h"
 #include "tensorflow/compiler/xla/literal.h"
 #include "tensorflow/compiler/xla/literal_comparison.h"
 #include "tensorflow/compiler/xla/literal_util.h"
@@ -45,7 +45,7 @@
 #include "tensorflow/core/platform/init_main.h"
 #include "tensorflow/core/platform/logging.h"
 
-namespace altgraph {
+namespace hloenv {
 
 class HloEnv {
  public:
@@ -112,6 +112,6 @@ class HloEnv {
   void OriginalOptimizeHloModule();
 };
 
-}  // namespace altgraph
+}  // namespace hloenv
 
-#endif  // ALTGRAPH_HLO_ENV_H_
+#endif  // HLOENV_HLO_ENV_H_

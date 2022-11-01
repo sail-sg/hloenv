@@ -32,9 +32,9 @@
 
 import os
 import pathlib
-import altgraph
+import hloenv
 import numpy as np
-from altgraph import HloEnv
+from hloenv import HloEnv
 
 if __name__ == '__main__':
   os.environ['CUDA_VISIBLE_DEVICES'] = '0'

@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "altgraph/python/py_hlo_env.h"
+#include "hloenv/python/py_hlo_env.h"
 
-namespace altgraph {
+namespace hloenv {
 
 PYBIND11_MODULE(py_hlo_env, m) {
   // TODO(ohcy) Change PyHloGraph and PyHloEnv names to remove the Py prefix
@@ -231,13 +231,13 @@ PYBIND11_MODULE(py_hlo_env, m) {
   py::class_<AltHloModule, std::shared_ptr<AltHloModule>>(m, "HloModule",
     "The class representing an XLA HloModule. Each HloModule can be loaded into the :class:`HloEnv`, where we can evaluate it, obtain its hash, or run specific :class:`Pass` and :class:`Pipeline` on it ")
       .def(py::init<const std::string&, const std::string&>(),
-           R"altgraphdoc(
+           R"hloenvdoc(
 Creates a :class:`HloEnv` and loads in a HloModule from a specified filepath.
 
 Args:
     input (str): The Hlo text input in the form of a string or filepath.
     format (str, optional): The format of the input. Can be either "path" for a filepath to a Hlo text file, or "text" for the raw Hlo text string. Defaults to "path".
-           )altgraphdoc",
+           )hloenvdoc",
            py::arg("input"), py::arg("format")="path"
        )
       .def("to_string", &AltHloModule::ToString, 
@@ -265,35 +265,35 @@ Args:
   py::class_<PyHloEnv>(m, "HloEnv", 
                        "The class representing the HloEnv. Each HloEnv instance can be loaded with a single HloModule, and used to run Passes/Pipelines on that module, as well as extract features, evaluate and obtain the graph features for that HloModule.")
       .def(py::init<const std::string&, const std::string&>(), 
-           R"altgraphdoc(
+           R"hloenvdoc(
 Creates a :class:`HloEnv` and loads in a HloModule from a specified filepath.
 
 Args:
     hlo_filepath (str): The path of the HloModule text file
     platform (str): The platform we wish to run the HloModule on. Currently only 'gpu' is supported
-           )altgraphdoc",           
+           )hloenvdoc",           
            py::arg("hlo_filepath"), py::arg("platform"))
       .def(py::init<const std::string&, const std::string&,
                     const std::string&>(), 
-           R"altgraphdoc(
+           R"hloenvdoc(
 Creates a :class:`HloEnv` and loads in a HloModule from its string representation.
 
 Args:
     hlo_data (str): The HloModule string
     platform (str): The platform we wish to run the HloModule on. Currently only 'gpu' is supported
-           )altgraphdoc",                       
+           )hloenvdoc",                       
            py::arg("hlo_data"), py::arg("format"), py::arg("platform"))
       .def(py::init<std::shared_ptr<AltHloModule>, const std::string&>(),
-           R"altgraphdoc(
+           R"hloenvdoc(
 Creates a :class:`HloEnv` and loads in a HloModule from an existing HloModule object.
 
 Args:
     alt_hlo_module (:class:`HloModule`): The HloModule object
     platform (str): The platform we wish to run the HloModule on. Currently only 'gpu' is supported
-           )altgraphdoc",   
+           )hloenvdoc",   
            py::arg("alt_hlo_module"), py::arg("platform"))
       .def("evaluate", &PyHloEnv::Evaluate, 
-           R"altgraphdoc(
+           R"hloenvdoc(
               Evaluates the :class:`HloModule` loaded into the environment N times and returns both the output and the duration of each evaluation.
 
               Args:
@@ -302,11 +302,11 @@ Args:
 
               Returns:
                   :class:`EvaluationResult`: The structure containing the durations and output of the evaluation
-           )altgraphdoc",   
+           )hloenvdoc",   
            py::arg("times") = 20,
            py::arg("do_not_prep_for_eval") = false)
       .def("has_equal_output", &PyHloEnv::HasEqualOutput,
-           // R"altgraphdoc(
+           // R"hloenvdoc(
            //    Checks whether two HloModules return the same output given identical random input.
 
            //    Args:
@@ -316,11 +316,11 @@ Args:
 
            //    Returns:
            //        bool: True if the output is identical, False otherwise.
-           // )altgraphdoc", 
+           // )hloenvdoc", 
            py::arg("first_module"), py::arg("second_module"),
            py::arg("times") = 1)
       .def("has_equal_output_as", &PyHloEnv::HasEqualOutputAs,
-           // R"altgraphdoc(
+           // R"hloenvdoc(
            //    Checks whether a HloModule returns the same output as the HloModule loaded in the HloEnv given identical random input.
 
            //    Args:
@@ -329,32 +329,32 @@ Args:
 
            //    Returns:
            //        bool: True if the output is identical, False otherwise.
-           // )altgraphdoc",         
+           // )hloenvdoc",         
            py::arg("other_module"), py::arg("times") = 1)
       .def("clone_hlo", &PyHloEnv::CloneHloModule, 
            "Clones the currently loaded :class:`HloModule` and returns it.")
       .def("load_hlo",
            static_cast<void (PyHloEnv::*)(std::shared_ptr<AltHloModule>)>(
                &PyHloEnv::LoadHloModule),
-           R"altgraphdoc(
+           R"hloenvdoc(
               Loads in a new :class:`HloModule` from an existing :class:`HloModule` object.
 
               Args:
                   hlo_module (:class:`HloModule`): The HloModule to be loaded in.
-           )altgraphdoc",   
+           )hloenvdoc",   
            py::arg("hlo_module")
          )
       .def("load_hlo",
            static_cast<void (PyHloEnv::*)(const std::string&,
                                           const std::string&)>(
                &PyHloEnv::LoadHloModule),
-           R"altgraphdoc(
+           R"hloenvdoc(
               Loads in a new :class:`HloModule` from text data.
 
               Args:
                   hlo_data (str): The HloModule data to be loaded in in the form of a filepath or raw Hlo text string.
                   format (str, optional): The format of the Hlo data. Defaults to "path".
-           )altgraphdoc",   
+           )hloenvdoc",   
            py::arg("hlo_data"), py::arg("format") = "path")
       .def("export_hlo_to_str", &PyHloEnv::ExportHloModuleToStr,
         "Exports the currently loaded :class:`HloModule` into its text representation. This text can be loaded by the HloEnv."
@@ -371,7 +371,7 @@ Args:
       .def("prepare_for_eval", &PyHloEnv::PrepareForEvaluation,
            "Prepare the HloModule for IR emitting and evaluation. This step is automatically run during HloEnv.evaluate, unless the do_not_prep_for_eval parameter is set to True, hence in most cases you will not have to run this function.")
       .def("run", &PyHloEnv::Run,
-           R"altgraphdoc(
+           R"hloenvdoc(
               Runs the specified :class:`Pass` or :class:`Pipeline` on the :class:`HloModule` loaded in the environment.
 
               Args:
@@ -379,19 +379,19 @@ Args:
 
               Returns:
                   bool: True if alternatives were generated (i.e. the pass or one of the passes in the pipeline is an AltPipeline), False otherwise. Note that if this returns True, it indicates that an apply_alternatives call must be run to pick the decisions at each alternative before the HloModule can be evaluated.
-           )altgraphdoc",     
+           )hloenvdoc",     
            py::arg("pass_pipeline")
         )
       .def("get_hlo_module_hash", &PyHloEnv::GetHloModuleHash,
           "Returns the HloDagHash of the class:`HloModule` loaded in the environment."
         )
       .def("apply_alternatives", &PyHloEnv::ApplyAlternatives,
-           R"altgraphdoc(
+           R"hloenvdoc(
               Applies the specified decisions to the alternative nodes in the HloModule graph, and prunes the resulting graph.
 
               Args:
                   decisions (ndarray): 2D array of (node_uid, decision) pairs where decision = i indicates that we wish to select the ith alternative at the alternative node corresponding to node_uid.
-           )altgraphdoc",  
+           )hloenvdoc",  
            py::arg("decisions")
         );
 
@@ -437,7 +437,7 @@ Args:
 
   py::class_<Pass, PassInterface, std::shared_ptr<Pass>>(m, "Pass")
       .def(py::init<std::shared_ptr<xla::HloPassInterface>, int>(),
-           R"altgraphdoc(
+           R"hloenvdoc(
               Creates a new Pipeline.
 
               Args:
@@ -445,21 +445,21 @@ Args:
                   name (loop_count): The number of times to run this Pipeline. Set this to -1 to run it until no further changes to the HloModule occur, up to a maximum of 25 times. Defaults to 1.
 
               Examples:
-                  fusion_pass = altgraph.HloPass.GpuInstructionFusion(may_duplicate=True)
-           )altgraphdoc",            
+                  fusion_pass = hloenv.HloPass.GpuInstructionFusion(may_duplicate=True)
+           )hloenvdoc",            
            py::arg("hlo_pass"), py::arg("loop_count") = 1)
       .def_property_readonly("changed", &Pass::changed)
       .def_property_readonly("name", &Pass::name);
 
   py::class_<Pipeline, PassInterface, std::shared_ptr<Pipeline>>(m, "Pipeline")
       .def(py::init<const std::string&, int>(), 
-           R"altgraphdoc(
+           R"hloenvdoc(
               Creates a new Pipeline.
 
               Args:
                   name (str): The name of this Pipeline.
                   loop_count (int, optional): The number of times to run this Pipeline. Set this to -1 to run it until no further changes to the HloModule occur, up to a maximum of 25 times. Defaults to 1.
-           )altgraphdoc",           
+           )hloenvdoc",           
            py::arg("name"), py::arg("loop_count") = 1)
       .def("add_pass",
           static_cast<void (Pipeline::*)(std::shared_ptr<xla::HloPassInterface>,
@@ -488,4 +488,4 @@ Args:
       .def_property_readonly("changed", &AltPipeline::changed);
 }
 
-}  // namespace altgraph
+}  // namespace hloenv

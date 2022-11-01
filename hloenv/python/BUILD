@@ -19,7 +19,7 @@ pybind_library(
     name = "py_hlo_graph",
     srcs = ["py_hlo_graph.h"],
     deps = [
-        "//altgraph:hlo_graph",
+        "//hloenv:hlo_graph",
     ],
 )
 
@@ -28,9 +28,9 @@ pybind_library(
     srcs = ["py_hlo_passes.cc"],
     hdrs = ["py_hlo_passes.h"],
     deps = [
-        "//altgraph:gpu_backend",
-        "//altgraph:hlo_module",
-        "//altgraph:hlo_pass_defs",
+        "//hloenv:gpu_backend",
+        "//hloenv:hlo_module",
+        "//hloenv:hlo_pass_defs",
     ],
 )
 
@@ -49,6 +49,6 @@ pybind_extension(
     deps = [
         ":py_hlo_graph",
         ":py_hlo_pass",
-        "//altgraph:hlo_env",
+        "//hloenv:hlo_env",
     ],
 )

@@ -18,7 +18,7 @@
 
 import numpy as np
 import os
-from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
+from hloenv import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 from general_fusion_pipeline import GeneralFusionPipeline
 
 if __name__ == '__main__':

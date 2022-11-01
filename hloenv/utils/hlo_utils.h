@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#ifndef ALTGRAPH_UTILS_HLO_UTILS_H_
-#define ALTGRAPH_UTILS_HLO_UTILS_H_
+#ifndef HLOENV_UTILS_HLO_UTILS_H_
+#define HLOENV_UTILS_HLO_UTILS_H_
 
 #include <algorithm>
 #include <cstdio>
@@ -315,4 +315,4 @@ std::vector<std::unique_ptr<HloModule>> ExtractFusionsAsModule(
 
 }  // namespace xla
 
-#endif  // ALTGRAPH_UTILS_HLO_UTILS_H_
+#endif  // HLOENV_UTILS_HLO_UTILS_H_

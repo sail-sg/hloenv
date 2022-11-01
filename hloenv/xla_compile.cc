@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-#include "altgraph/hlo_graph.h"
+#include "hloenv/hlo_graph.h"
 #include "tensorflow/compiler/xla/literal.h"
 #include "tensorflow/compiler/xla/literal_util.h"
 #include "tensorflow/compiler/xla/pjrt/cpu_device.h"
@@ -101,7 +101,7 @@ int main(int argc, char** argv) {
     cpu_intercept = std::move(e);
   } catch (xla::Intercept<xla::gpu::GpuCompiler>& e) {
     gpu_intercept = std::move(e);
-    altgraph::HloGraph graph(gpu_intercept.module.get());
+    hloenv::HloGraph graph(gpu_intercept.module.get());
     graph.ShowStats();
     gpu_intercept.compiler->RunHloPasses(gpu_intercept.module.get(),
                                          gpu_intercept.stream_exec,

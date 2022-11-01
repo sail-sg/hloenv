@@ -12,22 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ALTGRAPH_SCHEDULE_H_
-#define ALTGRAPH_SCHEDULE_H_
+#ifndef HLOENV_SCHEDULE_H_
+#define HLOENV_SCHEDULE_H_
 
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include "altgraph/hlo_module.h"
+#include "hloenv/hlo_module.h"
 #include "tensorflow/compiler/xla/service/gpu/gpu_compiler.h"
 #include "tensorflow/compiler/xla/service/hlo_computation.h"
 #include "tensorflow/compiler/xla/service/hlo_instruction.h"
 #include "tensorflow/compiler/xla/service/hlo_module.h"
 #include "tensorflow/compiler/xla/service/hlo_pass_interface.h"
 
-namespace altgraph {
+namespace hloenv {
 
 #define CASE_NO_ARG_PASS(PASS_NAME, NAMESPACE)        \
   case PassType::PASS_NAME:                           \
@@ -253,6 +253,6 @@ class AltPipeline : public Pipeline {
   }
 };
 
-}  // namespace altgraph
+}  // namespace hloenv
 
-#endif  // ALTGRAPH_SCHEDULE_H_
+#endif  // HLOENV_SCHEDULE_H_

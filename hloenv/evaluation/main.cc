@@ -38,7 +38,7 @@
 #include <string>
 #include <vector>
 
-#include "altgraph/evaluation/evaluator.h"
+#include "hloenv/evaluation/evaluator.h"
 #include "tensorflow/compiler/xla/literal.h"
 #include "tensorflow/compiler/xla/literal_util.h"
 #include "tensorflow/compiler/xla/pjrt/cpu_device.h"
@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
       LoadModuleFromFile(hlo_fn, xla::hlo_module_loader_details::Config(),
                          "txt", config_modifier_hook)
           .ValueOrDie();
-  altgraph::Evaluator evaluator;
+  hloenv::Evaluator evaluator;
   xla::GpuAllocatorConfig gpu_config;
   auto client =
       gpu ? xla::GetGpuClient(true, gpu_config, nullptr, 0).ValueOrDie()

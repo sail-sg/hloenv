@@ -45,7 +45,7 @@ cc_library(
     srcs = ["hlo_graph.cc"],
     hdrs = ["hlo_graph.h"],
     deps = [
-        "//altgraph/utils:hlo_utils",
+        "//hloenv/utils:hlo_utils",
         "@org_tensorflow//tensorflow/compiler/xla/service:hlo",
         "@org_tensorflow//tensorflow/compiler/xla:types",
         "@org_tensorflow//tensorflow/compiler/xla:util",
@@ -61,7 +61,7 @@ cc_library(
     name = "hlo_module",
     srcs = ["hlo_module.h"],
     deps = [
-        "//altgraph/utils:hlo_utils",
+        "//hloenv/utils:hlo_utils",
         "@org_tensorflow//tensorflow/compiler/xla/service:hlo",
         "@org_tensorflow//tensorflow/compiler/xla/tools:hlo_module_loader",
     ],
@@ -109,7 +109,7 @@ cc_library(
         ":hlo_graph",
         ":hlo_module",
         ":schedule",
-        "//altgraph/evaluation:evaluator",
+        "//hloenv/evaluation:evaluator",
         "@com_google_absl//absl/hash",
         "@org_tensorflow//tensorflow/compiler/jit:xla_cpu_jit",
         "@org_tensorflow//tensorflow/compiler/jit:xla_gpu_jit",
@@ -132,16 +132,16 @@ cc_library(
 
 genrule(
     name = "gen_extract_subgraphs",
-    srcs = ["//altgraph/bin:extract_subgraphs"],
+    srcs = ["//hloenv/bin:extract_subgraphs"],
     outs = ["extract_subgraphs"],
     cmd = "cp $< $@ && chmod 755 $@",
 )
 
 py_library(
-    name = "altgraph",
+    name = "hloenv",
     srcs = ["__init__.py"],
     data = [
-        "//altgraph/python:py_hlo_env.so",
+        "//hloenv/python:py_hlo_env.so",
         ":gen_extract_subgraphs",
     ],
 )

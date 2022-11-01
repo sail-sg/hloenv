@@ -242,5 +242,5 @@ common:tensorflow_testing_rbe_linux --remote_instance_name=projects/tensorflow-t
 build:tensorflow_testing_rbe_linux --config=tensorflow_testing_rbe
 #############################################################################
 
-try-import %workspace%/.altgraph_configure.bazelrc
+try-import %workspace%/.hloenv_configure.bazelrc
 

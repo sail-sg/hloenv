@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "altgraph/python/py_hlo_passes.h"
+#include "hloenv/python/py_hlo_passes.h"
 
-namespace altgraph {
+namespace hloenv {
 
 void py_init_hlo_passes(const py::module& m) {
   py::class_<xla::HloPassInterface, std::shared_ptr<xla::HloPassInterface>>(
@@ -989,4 +989,4 @@ void py_init_hlo_passes(const py::module& m) {
   //     .def(py::init<const Options&>(), py::arg("options"));
 }  // NOLINT(readability/fn_size)
 
-}  // namespace altgraph
+}  // namespace hloenv

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-workspace(name = "org_altgraph")
+workspace(name = "org_hloenv")
 
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
@@ -45,7 +45,7 @@ workspace1()
 
 # git_repository(
 #     name = "org_tensorflow",
-#     remote = "https://AltGraph:p2WoxJyV93twzkTEyXvL@git.insea.io/sail/aisys/tensorflow.git",
+#     remote = "https://HloEnv:p2WoxJyV93twzkTEyXvL@git.insea.io/sail/aisys/tensorflow.git",
 #     branch = "main",
 # )
 
@@ -58,7 +58,7 @@ git_repository(
     name = "org_tensorflow",
     remote = "https://github.com/tensorflow/tensorflow.git",
     commit = "8727d035e7aa593720d16a5f57f70f3b5a93bd00",
-    patches = ["//third_party/tensorflow:org_tensorflow_altgraph.patch"],
+    patches = ["//third_party/tensorflow:org_tensorflow_hloenv.patch"],
     patch_args = ["-p1"],
 )
 

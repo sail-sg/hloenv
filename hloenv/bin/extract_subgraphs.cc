@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-#include "altgraph/utils/hlo_utils.h"
+#include "hloenv/utils/hlo_utils.h"
 #include "tensorflow/compiler/xla/tools/hlo_module_loader.h"
 #include "tensorflow/core/platform/init_main.h"
 #include "tensorflow/core/platform/logging.h"

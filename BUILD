@@ -22,20 +22,20 @@ py_binary(
     ],
     args = [
         "--main-pkg",
-        "altgraph",
+        "hloenv",
         "--name",
-        "altgraph",
+        "hloenv",
         "--bdist",
         "--release",
     ],
     data = [
         "setup.cfg",
-        "//altgraph",
+        "//hloenv",
     ],
     main = "@third_party//setup:setup.py",
     python_version = "PY3",
     deps = [
-        "//altgraph",
+        "//hloenv",
         requirement("setuptools"),
     ],
 )

@@ -12,21 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ALTGRAPH_PYTHON_PY_HLO_ENV_H_
-#define ALTGRAPH_PYTHON_PY_HLO_ENV_H_
+#ifndef HLOENV_PYTHON_PY_HLO_ENV_H_
+#define HLOENV_PYTHON_PY_HLO_ENV_H_
 
 #include <pybind11/pybind11.h>
 
 #include <memory>
 #include <string>
 
-#include "altgraph/hlo_env.h"
-#include "altgraph/python/py_hlo_graph.h"
-#include "altgraph/python/py_hlo_passes.h"
+#include "hloenv/hlo_env.h"
+#include "hloenv/python/py_hlo_graph.h"
+#include "hloenv/python/py_hlo_passes.h"
 
 namespace py = pybind11;
 
-namespace altgraph {
+namespace hloenv {
 
 class PyHloEnv : public HloEnv {
  public:
@@ -48,6 +48,6 @@ class PyHloEnv : public HloEnv {
   }
 };
 
-}  // namespace altgraph
+}  // namespace hloenv
 
-#endif  // ALTGRAPH_PYTHON_PY_HLO_ENV_H_
+#endif  // HLOENV_PYTHON_PY_HLO_ENV_H_

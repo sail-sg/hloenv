@@ -1,7 +1,7 @@
 // Copyright 2021 Garena Online Private Limited
 
-#ifndef ALTGRAPH_HLO_GRAPH_H_
-#define ALTGRAPH_HLO_GRAPH_H_
+#ifndef HLOENV_HLO_GRAPH_H_
+#define HLOENV_HLO_GRAPH_H_
 
 #include <algorithm>
 #include <cstdio>
@@ -19,7 +19,7 @@
 #include "tensorflow/compiler/xla/service/hlo_module.h"
 #include "tensorflow/compiler/xla/service/hlo_opcode.h"
 
-namespace altgraph {
+namespace hloenv {
 
 // NodeFeatures holds all tensors with #node length
 // uids: unique_id of HloInstruction
@@ -347,6 +347,6 @@ class HloGraph {
   EdgeFeats out_edge_feats_;
 };
 
-}  // namespace altgraph
+}  // namespace hloenv
 
-#endif  // ALTGRAPH_HLO_GRAPH_H_
+#endif  // HLOENV_HLO_GRAPH_H_

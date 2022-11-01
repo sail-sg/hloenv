@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "altgraph/evaluation/evaluator.h"
+#include "hloenv/evaluation/evaluator.h"
 
 #include <memory>
 #include <string>
@@ -39,7 +39,7 @@ std::unique_ptr<HloModule> GetHloModule(const std::string& fn) {
 
 TEST(EvaluatorTestBase, Basic) {
   std::unique_ptr<HloModule> hlo = GetHloModule("hlo_texts/fn_hlo.txt");
-  altgraph::Evaluator evaluator;
+  hloenv::Evaluator evaluator;
   auto client = xla::GetCpuClient(true).ValueOrDie();
   evaluator.Compile(hlo->ToProto(), /* rerun_hlo = */ false, client.get());
 

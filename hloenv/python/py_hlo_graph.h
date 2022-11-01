@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ALTGRAPH_PYTHON_PY_HLO_GRAPH_H_
-#define ALTGRAPH_PYTHON_PY_HLO_GRAPH_H_
+#ifndef HLOENV_PYTHON_PY_HLO_GRAPH_H_
+#define HLOENV_PYTHON_PY_HLO_GRAPH_H_
 
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
@@ -24,11 +24,11 @@
 #include <utility>
 #include <vector>
 
-#include "altgraph/hlo_graph.h"
+#include "hloenv/hlo_graph.h"
 
 namespace py = pybind11;
 
-namespace altgraph {
+namespace hloenv {
 
 // Capsule stores a copy of the shared_ptr to the data
 // will delete the shared_ptr when it goes out of scope in python
@@ -119,6 +119,6 @@ class PyHloGraph : public HloGraph {
   uint64_t py_hash() { return Hash(); }
 };
 
-}  // namespace altgraph
+}  // namespace hloenv
 
-#endif  // ALTGRAPH_PYTHON_PY_HLO_GRAPH_H_
+#endif  // HLOENV_PYTHON_PY_HLO_GRAPH_H_

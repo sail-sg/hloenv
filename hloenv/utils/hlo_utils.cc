@@ -1,6 +1,6 @@
 // Copyright 2021 Garena Online Private Limited
 
-#include "altgraph/utils/hlo_utils.h"
+#include "hloenv/utils/hlo_utils.h"
 
 #include <unordered_set>
 

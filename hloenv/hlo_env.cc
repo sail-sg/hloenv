@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "altgraph/hlo_env.h"
+#include "hloenv/hlo_env.h"
 
-namespace altgraph {
+namespace hloenv {
 
 HloEnv::HloEnv(std::shared_ptr<AltHloModule> py_hlo_module,
                const std::string& platform)
@@ -252,4 +252,4 @@ void HloEnv::ApplyAlternatives(py::array_t<size_t> decisions) {
 
 uint64_t HloEnv::GetHloModuleHash() { return alt_hlo_module_->Hash(); }
 
-}  // namespace altgraph
+}  // namespace hloenv

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ALTGRAPH_HLO_MODULE_H_
-#define ALTGRAPH_HLO_MODULE_H_
+#ifndef HLOENV_HLO_MODULE_H_
+#define HLOENV_HLO_MODULE_H_
 
 #include <pybind11/pybind11.h>
 
@@ -22,7 +22,7 @@
 #include <utility>
 #include <vector>
 
-#include "altgraph/utils/hlo_utils.h"
+#include "hloenv/utils/hlo_utils.h"
 #include "tensorflow/compiler/xla/service/hlo_cost_analysis.h"
 #include "tensorflow/compiler/xla/service/hlo_module.h"
 #include "tensorflow/compiler/xla/service/hlo_module_config.h"
@@ -30,7 +30,7 @@
 
 namespace py = pybind11;
 
-namespace altgraph {
+namespace hloenv {
 
 class AltHloModule {
  public:
@@ -141,6 +141,6 @@ class AltHloModule {
   std::unique_ptr<xla::HloModule> hlo_module_;
 };
 
-}  // namespace altgraph
+}  // namespace hloenv
 
-#endif  // ALTGRAPH_HLO_MODULE_H_
+#endif  // HLOENV_HLO_MODULE_H_

@@ -22,13 +22,13 @@ from .python.py_hlo_env import GpuBackend  # noqa F401,F403
 from .python.py_hlo_env import EvaluationResult  # noqa F401,F403
 from .python.py_hlo_env import hlo_pass as HloPass
 
-# HloEnv.__module__ = "altgraph"
-# HloModule.__module__ = "altgraph"
-# AltPipeline.__module__ = "altgraph"
-# Pipeline.__module__ = "altgraph"
-# Pass.__module__ = "altgraph"
-# GpuBackend.__module__ = "altgraph"
-# EvaluationResult.__module__ = "altgraph"
+# HloEnv.__module__ = "hloenv"
+# HloModule.__module__ = "hloenv"
+# AltPipeline.__module__ = "hloenv"
+# Pipeline.__module__ = "hloenv"
+# Pass.__module__ = "hloenv"
+# GpuBackend.__module__ = "hloenv"
+# EvaluationResult.__module__ = "hloenv"
 
 __all__ = [
   "HloEnv",

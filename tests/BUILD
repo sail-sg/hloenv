@@ -6,7 +6,7 @@ py_test(
     srcs = ["hlo_env_test.py"],
     data = [":test_data"],
     deps = [
-        "//altgraph",
+        "//hloenv",
         requirement("absl-py"),
     ],
 )
@@ -16,7 +16,7 @@ tf_cc_test(
     srcs = ["hlo_graph_test.cc"],
     linkstatic = 1,
     deps = [
-        "//altgraph:hlo_graph",
+        "//hloenv:hlo_graph",
         "@com_google_googletest//:gtest_main",
         "@org_tensorflow//tensorflow/compiler/xla:literal",
         "@org_tensorflow//tensorflow/compiler/xla:literal_util",
@@ -32,7 +32,7 @@ tf_cc_test(
     ],
     linkstatic = 1,
     deps = [
-        "//altgraph/evaluation:evaluator",
+        "//hloenv/evaluation:evaluator",
         "@com_google_googletest//:gtest_main",
         "@org_tensorflow//tensorflow/compiler/xla/pjrt:cpu_device",
         "@org_tensorflow//tensorflow/compiler/xla/service:hlo",
@@ -64,10 +64,10 @@ sh_test(
     name = "extract_test",
     srcs = ["extract_test.sh"],
     args = [
-        "$(rootpath //altgraph/bin:extract_subgraphs)",
+        "$(rootpath //hloenv/bin:extract_subgraphs)",
     ],
     data = [
         ":test_data",
-        "//altgraph/bin:extract_subgraphs",
+        "//hloenv/bin:extract_subgraphs",
     ],
 )

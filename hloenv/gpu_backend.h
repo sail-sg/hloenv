@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ALTGRAPH_GPU_BACKEND_H_
-#define ALTGRAPH_GPU_BACKEND_H_
+#ifndef HLOENV_GPU_BACKEND_H_
+#define HLOENV_GPU_BACKEND_H_
 
 #include <memory>
 #include <string>
@@ -26,7 +26,7 @@
 #include "tensorflow/compiler/xla/service/hlo_module_config.h"
 #include "tensorflow/compiler/xla/tools/hlo_module_loader.h"
 
-namespace altgraph {
+namespace hloenv {
 
 struct HloEnvGpuBackend {
   static HloEnvGpuBackend& Instance() {
@@ -103,6 +103,6 @@ struct HloEnvGpuBackend {
   ~HloEnvGpuBackend() {}
 };  // struct HloEnvGpuBackend
 
-}  // namespace altgraph
+}  // namespace hloenv
 
-#endif  // ALTGRAPH_GPU_BACKEND_H_
+#endif  // HLOENV_GPU_BACKEND_H_

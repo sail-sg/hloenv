@@ -47,14 +47,14 @@ class HloEnvTest(absltest.TestCase):
     self.hlo_main_test_file = dir_path + "/hlo_test.txt"
 
   def test_import(self) -> None:
-    import altgraph
+    import hloenv
 
     import tensorflow
-    logging.info("altgraph module imported at %s", altgraph)
+    logging.info("hloenv module imported at %s", hloenv)
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_graph_interfaces(self) -> None:
-    from altgraph import HloEnv
+    from hloenv import HloEnv
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     hlo_graph = hlo_env.get_hlo_graph()
 
@@ -113,7 +113,7 @@ class HloEnvTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import HloEnv, HloModule
+    from hloenv import HloEnv, HloModule
 
     import tensorflow
 
@@ -138,7 +138,7 @@ class HloEnvTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import HloEnv
+    from hloenv import HloEnv
 
     import tensorflow
 
@@ -193,7 +193,7 @@ class HloEnvTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import HloEnv, HloModule
+    from hloenv import HloEnv, HloModule
 
     import tensorflow
 
@@ -255,7 +255,7 @@ class HloEnvTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import HloEnv, AltPipeline, Pass, HloPass
+    from hloenv import HloEnv, AltPipeline, Pass, HloPass
 
     import tensorflow
 
@@ -312,7 +312,7 @@ class HloEnvTest(absltest.TestCase):
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_save_load(self) -> None:
-    from altgraph import HloEnv
+    from hloenv import HloEnv
 
     # Test normal save/loading
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
@@ -355,7 +355,7 @@ class HloEnvTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import HloEnv
+    from hloenv import HloEnv
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     fusion_pipeline = SingleFusionPipeline(hlo_env)
@@ -397,7 +397,7 @@ class HloEnvTest(absltest.TestCase):
     est_time_mod = sum(mod_res.durations) / len(mod_res.durations)
 
     logging.info(
-      "Running time estimation: orig: %d ns, altgraph: %d ns", est_time_orig,
+      "Running time estimation: orig: %d ns, hloenv: %d ns", est_time_orig,
       est_time_mod
     )
 
@@ -416,7 +416,7 @@ class HloEnvTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import HloEnv
+    from hloenv import HloEnv
 
     base_dir = os.path.dirname(os.path.realpath(__file__))
     hlo_base_dir = base_dir + "/hlo_texts/test_hlos"
@@ -478,7 +478,7 @@ class HloEnvTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import HloEnv
+    from hloenv import HloEnv
 
     import tensorflow
 
@@ -567,7 +567,7 @@ class HloEnvTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import HloEnv
+    from hloenv import HloEnv
 
     base_dir = os.path.dirname(os.path.realpath(__file__))
     hlo_base_dir = base_dir + "/hlo_texts/test_hlos"
@@ -637,7 +637,7 @@ class HloEnvTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import HloEnv
+    from hloenv import HloEnv
 
     base_dir = os.path.dirname(os.path.realpath(__file__))
     hlo_base_dir = base_dir + "/hlo_texts/test_hlos"
@@ -679,7 +679,7 @@ class HloEnvTest(absltest.TestCase):
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_extract_instruction(self) -> None:
-    from altgraph import HloEnv, HloModule
+    from hloenv import HloEnv, HloModule
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     for (instruction, hlo_graph
@@ -691,7 +691,7 @@ class HloEnvTest(absltest.TestCase):
 
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_extract_fusions(self) -> None:
-    from altgraph import HloEnv, HloModule
+    from hloenv import HloEnv, HloModule
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     fusion_pipeline = SingleFusionPipeline(hlo_env)
@@ -710,7 +710,7 @@ class HloEnvTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
+    from hloenv import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     fusion_pipeline = SingleFusionPipeline(hlo_env)
@@ -806,7 +806,7 @@ class HloEnvTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
+    from hloenv import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     fusion_pipeline = SingleFusionPipeline(hlo_env)
@@ -899,7 +899,7 @@ class HloEnvTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
+    from hloenv import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     fusion_pipeline = SingleFusionPipeline(hlo_env)
@@ -978,7 +978,7 @@ class HloEnvTest(absltest.TestCase):
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_general_pipeline_loop_count(self) -> None:
     import numpy as np
-    from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
+    from hloenv import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     fusion_pipeline = SingleFusionPipeline(hlo_env)
@@ -1027,7 +1027,7 @@ class HloEnvTest(absltest.TestCase):
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_general_pipeline_fixed_pass(self) -> None:
     import numpy as np
-    from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
+    from hloenv import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     fusion_pipeline = SingleFusionPipeline(hlo_env)
@@ -1077,7 +1077,7 @@ class HloEnvTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
+    from hloenv import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     fusion_pipeline = SingleFusionPipeline(hlo_env)
@@ -1166,7 +1166,7 @@ class HloEnvTest(absltest.TestCase):
   # Test general pipeline reproducing the full OptimizeHloModule pipeline
   @absltest.skipIf(("GITLAB_CI" in os.environ), "Running in gitlab ci")
   def test_general_pipeline_full_optimize_hlo(self) -> None:
-    from altgraph import AltPipeline, GpuBackend, HloEnv, HloPass, Pass, Pipeline
+    from hloenv import AltPipeline, GpuBackend, HloEnv, HloPass, Pass, Pipeline
 
     hlo_env = HloEnv(self.hlo_main_test_file, "gpu")
     hlo_module = hlo_env.get_hlo_module()
@@ -1582,7 +1582,7 @@ class HloEnvTest(absltest.TestCase):
     from timeit import default_timer as timer
 
     import numpy as np
-    from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
+    from hloenv import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     base_dir = os.path.dirname(os.path.realpath(__file__))
     hlo_base_dir = base_dir + "/hlo_texts/test_hlos"
@@ -1657,7 +1657,7 @@ class HloEnvTest(absltest.TestCase):
     from random import randrange
 
     import numpy as np
-    from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
+    from hloenv import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
     # filepath = "./hlo_texts/large_hlo.txt"
     filepath = "hlo_texts/test_hlos/maml_flax/module_0082.jit_divmod.28.before_optimizations.txt"

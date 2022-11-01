@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-#include "altgraph/hlo_graph.h"
+#include "hloenv/hlo_graph.h"
 
 #include "gtest/gtest.h"
 #include "tensorflow/compiler/xla/literal.h"
@@ -56,7 +56,7 @@ TEST(HloGraphTest, OneComputationPostOrder) {
   // Create a module with a single computation.
   auto module = CreateNewVerifiedModule();
   auto computation = module->AddEntryComputation(CreateConstantComputation());
-  altgraph::HloGraph graph(module.get());
+  hloenv::HloGraph graph(module.get());
 
   // TODO(ohcy, wangyzh) Restore tests once hash is updated
   // EXPECT_EQ(graph.Hash(), module->CalledComputationHash());
@@ -68,7 +68,7 @@ TEST(HloGraphTest, TwoComputationsPostOrder) {
   auto computation1 = module->AddEntryComputation(CreateConstantComputation());
   auto computation2 =
       module->AddEmbeddedComputation(CreateConstantComputation());
-  altgraph::HloGraph graph(module.get());
+  hloenv::HloGraph graph(module.get());
 
   // TODO(ohcy, wangyzh) Restore tests once hash is updated
   // EXPECT_EQ(graph.Hash(), module->CalledComputationHash());

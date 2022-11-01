@@ -12,7 +12,7 @@ First make sure your current working directory is correct.
 
 .. code-block:: bash
 
-    $ cd /path/to/altgraph/examples
+    $ cd /path/to/hloenv/examples
     
 The HloEnv module holds most functionality, so we usually import it first.
 
@@ -21,7 +21,7 @@ The HloEnv module holds most functionality, so we usually import it first.
     import os
     import pathlib
     import numpy as np
-    from altgraph import HloEnv
+    from hloenv import HloEnv
 
 Pick one hlo text file that we want to take a closer look.
 
@@ -158,7 +158,7 @@ All node features are vectors of the length of number of HloInstructions (nodes)
     * - names
       - List of strings that shows the names of the HloInstruction
       
-The full-size code can be found `here <https://github.com/sail-sg/altgraph/blob/altgraph-refactor-open/examples/hlo_play.py>`_. In our second example, we will show you how to use these features to create a simple decision-making agent and run XLA optimizations using it.
+The full-size code can be found `here <https://github.com/sail-sg/hloenv/blob/altgraph-refactor-open/examples/hlo_play.py>`_. In our second example, we will show you how to use these features to create a simple decision-making agent and run XLA optimizations using it.
       
 A simple decision-making agent
 ------------------------------
@@ -187,7 +187,7 @@ Here we are interested in `GeneralFusion` pipeline. All the above described step
 .. code-block:: python
 
   from general_fusion_pipeline import GeneralFusionPipeline
-  from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
+  from hloenv import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 
   hlo_env = HloEnv(hlo_path, "gpu")
   general_fusion_pipeline = GeneralFusionPipeline(hlo_env)
@@ -284,7 +284,7 @@ To output an action, we implement the `argmax_sample` to choose the operand with
 
     return tf.stack([alternative_idx, alt_choice], axis=1)
 
-The full-size code can be found `here <https://github.com/sail-sg/altgraph/blob/altgraph-refactor-open/examples/uniform_policy.py>`_.
+The full-size code can be found `here <https://github.com/sail-sg/hloenv/blob/hloenv-refactor-open/examples/uniform_policy.py>`_.
 
 Other Features
 --------------

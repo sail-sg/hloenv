@@ -14,22 +14,22 @@ stages:
 flake8:
   stage: lint
   script:
-    - flake8 altgraph/ --count --show-source --statistics
+    - flake8 hloenv/ --count --show-source --statistics
 
 cpplint:
   stage: lint
   script:
-    - cpplint --root=. --recursive altgraph/
+    - cpplint --root=. --recursive hloenv/
 
 clang-format:
   stage: lint
   script:
-    - clang-format-11 --style=Google -i $(find altgraph/ -regex ".*\.\(proto\|cpp\|c\|cc\|cxx\|hpp\|h\|hxx\)$") -n -Werror
+    - clang-format-11 --style=Google -i $(find hloenv/ -regex ".*\.\(proto\|cpp\|c\|cc\|cxx\|hpp\|h\|hxx\)$") -n -Werror
 
 buildifier:
   stage: lint
   script:
-    - buildifier -r -lint warn altgraph/
+    - buildifier -r -lint warn hloenv/
 
 
 build_and_test:
@@ -39,8 +39,8 @@ build_and_test:
     - bazel build --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //:setup
     - bazel run --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //:setup
     - bazel test --test_env=GITLAB_CI="True" --test_output=all --remote_cache=http://bazel-cache-http.ai.seacloud.garenanow.com //tests/...
-    - ls bazel-bin/setup.runfiles/org_altgraph/dist/*.whl
-    - cp "$(ls bazel-bin/setup.runfiles/org_altgraph/dist/*.whl)" "./dist/"
+    - ls bazel-bin/setup.runfiles/org_hloenv/dist/*.whl
+    - cp "$(ls bazel-bin/setup.runfiles/org_hloenv/dist/*.whl)" "./dist/"
     - touch "./dist/$CI_COMMIT_SHA"
     - tar cf dist.tar dist
   artifacts:

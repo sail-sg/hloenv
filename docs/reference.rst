@@ -1,5 +1,5 @@
 API Reference
 =============
 
-.. automodule:: altgraph
+.. automodule:: hloenv
    :members:

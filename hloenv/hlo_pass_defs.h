@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ALTGRAPH_HLO_PASS_DEFS_H_
-#define ALTGRAPH_HLO_PASS_DEFS_H_
+#ifndef HLOENV_HLO_PASS_DEFS_H_
+#define HLOENV_HLO_PASS_DEFS_H_
 
 // -------------------------------------
 //   GPU PASSES
@@ -179,4 +179,4 @@
 // #include
 // "tensorflow/compiler/xla/service/spmd/canonicalize_all_gather_for_cse.h"
 
-#endif  // ALTGRAPH_HLO_PASS_DEFS_H_
+#endif  // HLOENV_HLO_PASS_DEFS_H_

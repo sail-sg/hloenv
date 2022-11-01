@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef ALTGRAPH_EVALUATION_EVALUATOR_H_
-#define ALTGRAPH_EVALUATION_EVALUATOR_H_
+#ifndef HLOENV_EVALUATION_EVALUATOR_H_
+#define HLOENV_EVALUATION_EVALUATOR_H_
 
 #include <memory>
 #include <vector>
@@ -22,7 +22,7 @@
 #include "tensorflow/compiler/xla/pjrt/pjrt_client.h"
 #include "tensorflow/compiler/xla/service/hlo_module.h"
 
-namespace altgraph {
+namespace hloenv {
 
 class Evaluator {
  public:
@@ -54,6 +54,6 @@ class Evaluator {
   std::unique_ptr<xla::PjRtExecutable> executable_;
 };
 
-}  // namespace altgraph
+}  // namespace hloenv
 
-#endif  // ALTGRAPH_EVALUATION_EVALUATOR_H_
+#endif  // HLOENV_EVALUATION_EVALUATOR_H_

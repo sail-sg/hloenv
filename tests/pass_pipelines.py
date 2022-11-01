@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from abc import ABC, abstractmethod, abstractproperty
-from altgraph import HloEnv, HloModule, Pass, HloPass, AltPipeline, Pipeline, GpuBackend
+from hloenv import HloEnv, HloModule, Pass, HloPass, AltPipeline, Pipeline, GpuBackend
 
 
 class PassPipelines(ABC):

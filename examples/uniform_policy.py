@@ -31,10 +31,10 @@
 
 import os
 import pathlib
-import altgraph
+import hloenv
 import numpy as np
 import tensorflow as tf
-from altgraph import AltPipeline, HloEnv, HloPass, Pass, Pipeline
+from hloenv import AltPipeline, HloEnv, HloPass, Pass, Pipeline
 from general_fusion_pipeline import GeneralFusionPipeline
 from typing import Tuple
 

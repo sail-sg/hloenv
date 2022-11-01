@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "altgraph/evaluation/evaluator.h"
+#include "hloenv/evaluation/evaluator.h"
 
 #include <utility>
 #include <vector>
@@ -21,7 +21,7 @@
 
 #define NUM_RUNS_IGNORED 3
 
-namespace altgraph {
+namespace hloenv {
 namespace {
 xla::Literal CreateRandomLiteral(
     const xla::Shape& shape,
@@ -162,4 +162,4 @@ Evaluator::EvaluationResult Evaluator::Evaluate(int times) {
   return ret;
 }
 
-}  // namespace altgraph
+}  // namespace hloenv

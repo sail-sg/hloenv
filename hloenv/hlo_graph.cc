@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "altgraph/hlo_graph.h"
+#include "hloenv/hlo_graph.h"
 
 #include <string>
 #include <utility>
 
 #include "absl/base/casts.h"
-#include "altgraph/utils/hlo_utils.h"
+#include "hloenv/utils/hlo_utils.h"
 #include "tensorflow/compiler/xla/map_util.h"
 #include "tensorflow/compiler/xla/service/hlo_opcode.h"
 #include "tensorflow/compiler/xla/types.h"
@@ -26,7 +26,7 @@
 #include "tensorflow/core/lib/hash/hash.h"
 #include "tensorflow/core/platform/types.h"
 
-namespace altgraph {
+namespace hloenv {
 
 HloGraph::HloGraph(const xla::HloModule* m, bool debug, bool inline_fused_comp,
                    bool do_hash_verification)
@@ -580,4 +580,4 @@ void HloGraph::GenOpcodeAttrCounts() {
   return;
 }
 
-}  // namespace altgraph
+}  // namespace hloenv

@@ -28,11 +28,11 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../altgraph'))
+sys.path.insert(0, os.path.abspath('../hloenv'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'AltGraph'
+project = 'HloEnv'
 copyright = '2022, Chin Yang Oh, Kunhao Zheng, Bingyi Kang, Xinyi Wan, Zhongwen Xu, Shuicheng Yan, Min Lin, Yangzihao Wang'
 author = 'Chin Yang Oh, Kunhao Zheng, Bingyi Kang, Xinyi Wan, Zhongwen Xu, Shuicheng Yan, Min Lin, Yangzihao Wang'
 
@@ -66,13 +66,13 @@ napoleon_include_init_with_doc = True
 
 def process_docstring(app, what, name, obj, options, lines):
   for i in range(len(lines)):
-    lines[i] = lines[i].replace('altgraph.python.py_hlo_env', 'altgraph')
+    lines[i] = lines[i].replace('hloenv.python.py_hlo_env', 'hloenv')
 
 def process_signature(app, what, name, obj, options, signature, return_annotation):
   if signature:
-    signature = signature.replace('altgraph.python.py_hlo_env', 'altgraph')
+    signature = signature.replace('hloenv.python.py_hlo_env', 'hloenv')
   if return_annotation:
-    return_annotation = return_annotation.replace('altgraph.python.py_hlo_env', 'altgraph')
+    return_annotation = return_annotation.replace('hloenv.python.py_hlo_env', 'hloenv')
 
   return signature, return_annotation
 
@@ -136,7 +136,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'AltGraphdoc'
+htmlhelp_basename = 'HloEnvdoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -163,7 +163,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'AltGraph.tex', 'AltGraph Documentation',
+    (master_doc, 'HloEnv.tex', 'HloEnv Documentation',
      'Chin Yang Oh, Kunhao Zheng, Bingyi Kang, Xinyi Wan, Zhongwen Xu, Shuicheng Yan, Min Lin, Yangzihao Wang', 'manual'),
 ]
 
@@ -173,7 +173,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'altgraph', 'AltGraph Documentation',
+    (master_doc, 'hloenv', 'HloEnv Documentation',
      [author], 1)
 ]
 
@@ -184,8 +184,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'AltGraph', 'AltGraph Documentation',
-     author, 'AltGraph', 'One line description of project.',
+    (master_doc, 'HloEnv', 'HloEnv Documentation',
+     author, 'HloEnv', 'One line description of project.',
      'Miscellaneous'),
 ]
 
@@ -221,19 +221,19 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 todo_include_todos = True
 
 def setup(app):
-    import altgraph
+    import hloenv
 
     # need to assign the names here, otherwise autodoc won't document these classes,
     # and will instead just say 'alias of ...'
 
-    altgraph.HloEnv.__name__ = 'HloEnv'
-    altgraph.HloModule.__name__ = 'HloModule'
-    altgraph.AltPipeline.__name__ = 'AltPipeline'
-    altgraph.Pipeline.__name__ = 'Pipeline'
-    altgraph.Pass.__name__ = 'Pass'
-    altgraph.HloPass.__name__ = 'HloPass'
-    altgraph.GpuBackend.__name__ = 'GpuBackend'
-    altgraph.EvaluationResult.__name__ = 'EvaluationResult'
+    hloenv.HloEnv.__name__ = 'HloEnv'
+    hloenv.HloModule.__name__ = 'HloModule'
+    hloenv.AltPipeline.__name__ = 'AltPipeline'
+    hloenv.Pipeline.__name__ = 'Pipeline'
+    hloenv.Pass.__name__ = 'Pass'
+    hloenv.HloPass.__name__ = 'HloPass'
+    hloenv.GpuBackend.__name__ = 'GpuBackend'
+    hloenv.EvaluationResult.__name__ = 'EvaluationResult'
 
     app.connect('autodoc-process-docstring', process_docstring)
     app.connect('autodoc-process-signature', process_signature)
