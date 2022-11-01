@@ -337,15 +337,13 @@ The above code will run the evaluation for 100 times and generate several metric
       - Description
       
     * - durations
-      -
+      - The default duration in nanoseconds. This returns the execution duration as measured within the Tensorflow evaluation code, starting from the point when the executable has been enqueued on the compute stream till the completion of the executable.
       
     * - compute_durations
-      -
+      - The duration in nanoseconds of the computation, without data transfer, as measured on the device.
      
     * - full_durations
-      -
+      - The full duration of the computation as measured within HloEnv.evaluate(). This captures the entire execution process including processes such as enqueueing the computation on the compute stream, and is hence more subject to timing noise.
       
     * - output
-      -
-      
-  
+      - The output of the HloModule.
