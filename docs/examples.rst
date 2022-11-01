@@ -289,4 +289,61 @@ The full-size code can be found `here <https://github.com/sail-sg/altgraph/blob/
 Other Features
 --------------
 
-TODO (probably talk about DAGHash and evaluation if time permitted.)
+- Saving and Loading HLO module
+
+At any stage of the optimization pipeline, we can export the current Hlo text to a string object for inspection.
+
+.. code-block:: python
+
+    init_hlo_str = hlo_env.export_hlo_to_str()
+    
+We can also save the snapshot of an HloEnv object at any stage and restore at a later stage.
+
+.. code-block:: python
+
+    saved_hlo_module = hlo_env.save_hlo()
+    hlo_env.pre_fusion_optimizations()
+    post_fusion_hlo_str = hlo_env.export_hlo_to_str()
+    hlo_env.load_hlo(saved_hlo_module)
+    
+This can be useful when you want to explore different optimization actions from the same initial state.
+
+- DAG Hash
+
+The existing hash implementation in XLA is lacking in two ways which increase the number of hash collisions: 1) It simply hashes the instructions in the HLO graph in post-order, and does not recursively consider the structure and connections of each HLO instruction and computation in the HLO graph; 2) Instruction specific parameters (e.g. the size and stride of an HLO Convolution instruction) are not considered in the hash of each instruction as well. Our custom HloDAGHash function builds upon XLA’s hash implementation, but is designed to be a more powerful hash that additionally accounts for graph topology and the parameters unique to each instruction. This reduces the chance of a hash collision when determining if a graph has been seen before, or is identical to another graph.
+
+.. code-block:: python
+
+    hlo_hash = hlo_env.get_hlo_module_hash()
+    
+This is useful for de-duplicating the dataset or uniquely labeling the state when performing a search over the state space.
+
+- Profiling an HLO Graph
+
+To profile the runtime of an HLO graph we need to obtain both the executable and parameters. We obtain the executable by calling the standard compiler provided by XLA while setting *run_backend_only* to prevent the reinvocation of HLO passes. For parameters, we randomly generate N(0, 1) for floating-point parameters and fill const values for other types. A fixed random seed is used to keep the parameters consistent across the optimization process so that we can verify the correctness of optimizations. The only parameter for evaluate() is the repeated evaluation time.
+
+.. code-block:: python
+    
+    num_eval_iterations = 100
+    eval_result = hlo_env.evaluate(num_eval_iterations)
+    
+The above code will run the evaluation for 100 times and generate several metrics and output.
+
+.. list-table:: **Evaluation Results**
+    :widths: 42 42
+    :header-rows: 1
+    
+    * - Name
+      - Description
+      
+    * - durations
+      - The default duration in nanoseconds. This returns the execution duration as measured within the Tensorflow evaluation code, starting from the point when the executable has been enqueued on the compute stream till the completion of the executable.
+      
+    * - compute_durations
+      - The duration in nanoseconds of the computation, without data transfer, as measured on the device.
+     
+    * - full_durations
+      - The full duration of the computation as measured within HloEnv.evaluate(). This captures the entire execution process including processes such as enqueueing the computation on the compute stream, and is hence more subject to timing noise.
+      
+    * - output
+      - The output of the HloModule.

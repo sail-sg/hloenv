@@ -56,15 +56,15 @@ PYBIND11_MODULE(py_hlo_env, m) {
   py::class_<PyHloEnv::EvaluationResult>(m, "EvaluationResult", 
                     "A structure containing the duration and output of the HloModule evaluation.")
       .def_readonly("durations", &PyHloEnv::EvaluationResult::durations,
-                    "The default duration in nanoseconds. This returns the evaluation durations as measured within the Tensorflow evaluation code, starting from the point of the asynchronous dispatch of the computation kernels to the receipt of the results."
+                    "The default duration in nanoseconds. This returns the execution duration as measured within the Tensorflow evaluation code, starting from the point when the executable has been enqueued on the compute stream till the completion of the executable."
                     )
       .def_readonly("compute_durations",
                     &PyHloEnv::EvaluationResult::compute_durations,
-                    "The duration in nanoseconds of the computation, without data transfer."
+                    "The duration in nanoseconds of the computation, without data transfer, as measured on the device."
                     )
       .def_readonly("full_durations",
                     &PyHloEnv::EvaluationResult::full_durations,
-                    "The full duration of the computation as measured within HloEnv.evaluate.")
+                    "The full duration in nanoseconds as measured within HloEnv.evaluate(). This captures the entire execution process including processes such as enqueueing the computation on the compute stream, and is hence more subject to timing noise.")
       .def_readonly("output", &PyHloEnv::EvaluationResult::output,
                     "The output of the HloModule."
                     );
