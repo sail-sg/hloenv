@@ -201,15 +201,20 @@ The code of the optimization loop looks like this:
   num_alts = 1
   while num_alts > 0:
     hlo_env.run(general_fusion_pipeline.pre_dry_pass_passes)
+    # Open up the action space
     hlo_env.run(general_fusion_pipeline.pass_dry_run)
 
+    # Get features from hlo_env
     hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
     num_alts = len(hlo_graph.alternative_indices)
 
     if num_alts > 0:
+      # Obtain a probablity distribution over the action space
       probablity = uniform_policy(hlo_graph)
+      # Sample an action
       decisions = argmax_sample(probablity, hlo_graph)
       decisions = np.asarray(decisions)
+      # Apply action to the hlo_env
       hlo_env.apply_alternatives(decisions)
       hlo_env.run(general_fusion_pipeline.post_dry_pass_passes)
 
@@ -240,7 +245,7 @@ The probability distribution is a tf.RaggedTensor, where the outer dimension is 
     operands, users = get_ragged_tensor_from_hlo(hlo_graph)
     # get the indices of kAlternative nodes
     alternative_idx = tf.convert_to_tensor(hlo_graph.alternative_indices)
-    # get the number of operands for each kAlternative node
+    # get the indices of operands for each kAlternative node
     alt_oprnd_idx: tf.RaggedTensor = tf.gather(operands, alternative_idx)
 
     # assign random score to each operand
@@ -270,11 +275,11 @@ To output an action, we implement the `argmax_sample` to choose the operand with
     
     Returns:
       a tf.Tensor with shape [num_alt_idx, 2], the 1st column is
-      the alt_idx, the 2nd column is the operand_idx to be selected.
+      the uids of alt_idx, the 2nd column is the operand_idx to be selected.
     """
-    alternative_idx = tf.convert_to_tensor(
-      hlo_graph.alternative_indices, dtype=tf.int64
-    )
+    alt_uids = hlo_graph.node_features.uids[hlo_graph.alternative_indices]
+
+    alt_uids = tf.convert_to_tensor(alt_uids, dtype=tf.int64)
 
     alt_choice = tf.map_fn(
       lambda x: tf.argmax(x, axis=0),
@@ -282,7 +287,7 @@ To output an action, we implement the `argmax_sample` to choose the operand with
       fn_output_signature=tf.TensorSpec(shape=[], dtype=tf.int64)
     )
 
-    return tf.stack([alternative_idx, alt_choice], axis=1)
+    return tf.stack([alt_uids, alt_choice], axis=1)
 
 The full-size code can be found `here <https://github.com/sail-sg/hloenv/blob/hloenv-refactor-open/examples/uniform_policy.py>`_.
 
