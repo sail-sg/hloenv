@@ -45,11 +45,16 @@ The design of HloEnv is described in details in the following paper:
 }
 ```
 
+## Docs
+
+The documentation of HloEnv is available at this link.
+
 ## Cloning and Build
 
 To run examples, you need to install the following dependencies in your python package:
 
-  - [TensorFlow==2.9](https://www.tensorflow.org/install)
+  - [TensorFlow>=2.6](https://www.tensorflow.org/install)
+  - NumPy
 
 To build HloEnv and evaluate HLO graph runtime, you need to install the following dependencies:
 
@@ -63,7 +68,7 @@ git clone git@github.com:sail-sg/hloenv.git
 cd hloenv
 python -m venv hloenv-env
 source hloenv-env/bin/activate
-python3 -m pip install tensorflow==2.9.0
+python3 -m pip install tensorflow>=2.6.0
 ```
 
 When met the minimum requirement, building HloEnv Python Wheels can be very simple. 
@@ -81,10 +86,6 @@ make install
 Will install the freshly built Python Wheels and all the dependencies.
 
 The above steps are described in more details in this link.
-
-## Docss
-
-The documentation of HloEnv is available at this link.
 
 ## HLO Dataset
 
