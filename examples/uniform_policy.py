@@ -86,10 +86,11 @@ def uniform_policy(hlo_graph) -> tf.RaggedTensor:
     Each row is a list of probability to operand indices for the 
     corresponding alternative.
   """
+  # get graph structures
   operands, users = get_ragged_tensor_from_hlo(hlo_graph)
-
+  # get the indices of kAlternative nodes
   alternative_idx = tf.convert_to_tensor(hlo_graph.alternative_indices)
-
+  # get the indices of operands for each kAlternative node
   alt_oprnd_idx: tf.RaggedTensor = tf.gather(operands, alternative_idx)
 
   # assign random score to each operand
@@ -114,11 +115,11 @@ def argmax_sample(probability: tf.RaggedTensor, hlo_graph) -> tf.Tensor:
   
   Returns:
     a tf.Tensor with shape [num_alt_idx, 2], the 1st column is
-    the alt_idx, the 2nd column is the operand_idx to be selected.
+    the uids of alt_idx, the 2nd column is the operand_idx to be selected.
   """
-  alternative_idx = tf.convert_to_tensor(
-    hlo_graph.alternative_indices, dtype=tf.int64
-  )
+  alt_uids = hlo_graph.node_features.uids[hlo_graph.alternative_indices]
+
+  alt_uids = tf.convert_to_tensor(alt_uids, dtype=tf.int64)
 
   alt_choice = tf.map_fn(
     lambda x: tf.argmax(x, axis=0),
@@ -126,10 +127,12 @@ def argmax_sample(probability: tf.RaggedTensor, hlo_graph) -> tf.Tensor:
     fn_output_signature=tf.TensorSpec(shape=[], dtype=tf.int64)
   )
 
-  return tf.stack([alternative_idx, alt_choice], axis=1)
+  return tf.stack([alt_uids, alt_choice], axis=1)
 
 
 if __name__ == "__main__":
+  os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
   hlo_path = os.path.join(
     pathlib.Path(__file__).parent.absolute(),
     "hlo_texts/jax-md/module_0013.jit__lambda_.7.before_optimizations.txt"
@@ -142,20 +145,41 @@ if __name__ == "__main__":
   num_alts = 1
   while num_alts > 0:
     hlo_env.run(general_fusion_pipeline.pre_dry_pass_passes)
+    # Open up the action space
     hlo_env.run(general_fusion_pipeline.pass_dry_run)
 
+    # Get features from hlo_env
     hlo_graph = hlo_env.get_hlo_graph(do_hash_verification=False)
     num_alts = len(hlo_graph.alternative_indices)
 
     if num_alts > 0:
+      # Obtain a probablity distribution over the action space
       probablity = uniform_policy(hlo_graph)
+      # Sample an action
       decisions = argmax_sample(probablity, hlo_graph)
       decisions = np.asarray(decisions)
+      # Apply action to the hlo_env
       hlo_env.apply_alternatives(decisions)
       hlo_env.run(general_fusion_pipeline.post_dry_pass_passes)
 
   hlo_env.run(general_fusion_pipeline.post_pass_optimizations)
 
+  # Evaluate the runtime
   results = hlo_env.evaluate(100)
   timing = min(results.durations)
-  print(f"Timing: {timing}")
+  print(f"Uniform Policy Timing: {timing}")
+
+  # Reload the original hlo graph.
+  hlo_env = HloEnv(hlo_path, "gpu")
+  # Run the original hlo_env and evaluate the runtime.
+  ref_results = hlo_env.evaluate(100)
+  ref_timing = min(ref_results.durations)
+  print(f"Reference (Original) Timing: {ref_timing}")
+
+  # Run XLA against the original hlo_env.
+  hlo_env.optimize_hlo_module()
+
+  # Evaluate the runtime
+  ref_results = hlo_env.evaluate(100)
+  ref_timing = min(ref_results.durations)
+  print(f"Reference (XLA) Timing: {ref_timing}")
