@@ -155,7 +155,6 @@ if __name__ == "__main__":
       hlo_env.run(general_fusion_pipeline.post_dry_pass_passes)
 
   hlo_env.run(general_fusion_pipeline.post_pass_optimizations)
-  hlo_env.prepare_hlo_module_for_ir_emitting()
 
   results = hlo_env.evaluate(100)
   timing = min(results.durations)

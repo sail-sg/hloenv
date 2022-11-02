@@ -43,7 +43,6 @@ if __name__ == '__main__':
       orig_hlo_module = hlo_env.clone_hlo()
       # Original TF pipelines
       hlo_env.optimize_hlo_module()
-      hlo_env.prepare_hlo_module_for_ir_emitting()
 
       ref_results = hlo_env.evaluate(100)
       ref_timing = min(ref_results.durations)
@@ -77,7 +76,6 @@ if __name__ == '__main__':
           hlo_env.run(general_fusion_pipeline.post_dry_pass_passes)
 
       hlo_env.run(general_fusion_pipeline.post_pass_optimizations)
-      hlo_env.prepare_hlo_module_for_ir_emitting()
 
       pick_one_results = hlo_env.evaluate(100)
       pick_one_timing = min(pick_one_results.durations)

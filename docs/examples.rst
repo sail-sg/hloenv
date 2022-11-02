@@ -182,7 +182,7 @@ So they are not included in the optimization loop.
 Every step of `pass_dry_run` will expose the alternatives (i.e. action space) to users. 
 Note that it is also surrounded by `pre_dry_pass_passes` and `post_dry_pass_passes` for some pre/post processing. They are included in the optimization loop.
 
-Here we are interested in `GeneralFusion` pipeline. All the above described steps are implemented and scheduled in the `GeneralFusionPipeline` class.
+Here we are interested in `GeneralFusion` pipeline. All the above described steps are implemented and scheduled in the `GeneralFusionPipeline` class, which is a sample pipeline that we have provided in examples/general_fusion_pipeline.py
 
 .. code-block:: python
 
