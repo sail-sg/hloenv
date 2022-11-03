@@ -1,0 +1,13 @@
+HloModule xla_computation_ordered_wrapper.9
+
+ENTRY xla_computation_ordered_wrapper.9 {
+  constant.3 = pred[] constant(false)
+  parameter.2 = f32[2,2]{1,0} parameter(1)
+  parameter.1 = f32[2,2]{1,0} parameter(0)
+  dot.4 = f32[2,2]{1,0} dot(parameter.2, parameter.1), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  constant.5 = f32[] constant(3.14159)
+  broadcast.6 = f32[2,2]{1,0} broadcast(constant.5), dimensions={}
+  divide.7 = f32[2,2]{1,0} divide(dot.4, broadcast.6)
+  ROOT tuple.8 = (f32[2,2]{1,0}) tuple(divide.7)
+}
+

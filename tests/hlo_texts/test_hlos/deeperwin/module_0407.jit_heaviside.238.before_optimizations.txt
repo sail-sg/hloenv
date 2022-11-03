@@ -1,0 +1,32 @@
+HloModule jit_heaviside.238
+
+_where.9 {
+  Arg_0.10 = pred[2048,1,2]{2,1,0} parameter(0)
+  Arg_1.11 = f32[] parameter(1)
+  broadcast.13 = f32[2048,1,2]{2,1,0} broadcast(Arg_1.11), dimensions={}
+  Arg_2.12 = f32[] parameter(2)
+  broadcast.14 = f32[2048,1,2]{2,1,0} broadcast(Arg_2.12), dimensions={}
+  ROOT select.15 = f32[2048,1,2]{2,1,0} select(Arg_0.10, broadcast.13, broadcast.14)
+}
+
+_where_0.17 {
+  Arg_0.18 = pred[2048,1,2]{2,1,0} parameter(0)
+  Arg_1.19 = f32[] parameter(1)
+  broadcast.21 = f32[2048,1,2]{2,1,0} broadcast(Arg_1.19), dimensions={}
+  Arg_2.20 = f32[2048,1,2]{2,1,0} parameter(2)
+  ROOT select.22 = f32[2048,1,2]{2,1,0} select(Arg_0.18, broadcast.21, Arg_2.20)
+}
+
+ENTRY main.24 {
+  Arg_0.1 = f32[2048,1,2]{2,1,0} parameter(0)
+  constant.5 = f32[] constant(0)
+  broadcast.6 = f32[2048,1,2]{2,1,0} broadcast(constant.5), dimensions={}
+  compare.7 = pred[2048,1,2]{2,1,0} compare(Arg_0.1, broadcast.6), direction=LT
+  constant.3 = f32[] constant(0)
+  compare.8 = pred[2048,1,2]{2,1,0} compare(Arg_0.1, broadcast.6), direction=GT
+  constant.4 = f32[] constant(1)
+  Arg_1.2 = f32[] parameter(1)
+  call.16 = f32[2048,1,2]{2,1,0} call(compare.8, constant.4, Arg_1.2), to_apply=_where.9
+  ROOT call.23 = f32[2048,1,2]{2,1,0} call(compare.7, constant.3, call.16), to_apply=_where_0.17
+}
+

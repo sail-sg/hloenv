@@ -1,0 +1,8 @@
+HloModule jit_prim_fun.13
+
+ENTRY %main.4 (Arg_0.1: f32[64,128,128,3], Arg_1.2: f32[5,5,3,64]) -> f32[64,128,128,64] {
+  %Arg_0.1 = f32[64,128,128,3]{3,2,1,0} parameter(0)
+  %Arg_1.2 = f32[5,5,3,64]{3,2,1,0} parameter(1)
+  ROOT %convolution.3 = f32[64,128,128,64]{3,2,1,0} convolution(f32[64,128,128,3]{3,2,1,0} %Arg_0.1, f32[5,5,3,64]{3,2,1,0} %Arg_1.2), window={size=5x5 pad=2_2x2_2}, dim_labels=b01f_01io->b01f
+}
+

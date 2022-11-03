@@ -1,0 +1,66 @@
+HloModule jit__uniform.7
+
+xla_fallback_threefry2x32.19 {
+  Arg_0.20 = u32[] parameter(0)
+  broadcast.24 = u32[256]{0} broadcast(Arg_0.20), dimensions={}
+  Arg_1.21 = u32[] parameter(1)
+  broadcast.25 = u32[256]{0} broadcast(Arg_1.21), dimensions={}
+  Arg_2.22 = u32[256]{0} parameter(2)
+  Arg_3.23 = u32[256]{0} parameter(3)
+  ROOT custom-call.26 = (u32[256]{0}, u32[256]{0}) custom-call(broadcast.24, broadcast.25, Arg_2.22, Arg_3.23), custom_call_target="cuda_threefry2x32", operand_layout_constraints={u32[256]{0}, u32[256]{0}, u32[256]{0}, u32[256]{0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="\000\001\000\000\000\000\000\000"
+}
+
+threefry2x32.27 {
+  Arg_0.28 = u32[] parameter(0)
+  Arg_1.29 = u32[] parameter(1)
+  Arg_2.30 = u32[256]{0} parameter(2)
+  Arg_3.31 = u32[256]{0} parameter(3)
+  call.32 = (u32[256]{0}, u32[256]{0}) call(Arg_0.28, Arg_1.29, Arg_2.30, Arg_3.31), to_apply=xla_fallback_threefry2x32.19
+  get-tuple-element.33 = u32[256]{0} get-tuple-element(call.32), index=0
+  get-tuple-element.34 = u32[256]{0} get-tuple-element(call.32), index=1
+  ROOT tuple.35 = (u32[256]{0}, u32[256]{0}) tuple(get-tuple-element.33, get-tuple-element.34)
+}
+
+ENTRY main.58 {
+  Arg_1.2 = f32[] parameter(1)
+  reshape.10 = f32[1,1]{1,0} reshape(Arg_1.2)
+  broadcast.54 = f32[1,1]{1,0} broadcast(reshape.10), dimensions={0,1}
+  reshape.55 = f32[] reshape(broadcast.54)
+  broadcast.56 = f32[2,256]{1,0} broadcast(reshape.55), dimensions={}
+  Arg_0.1 = u32[2]{0} parameter(0)
+  slice.13 = u32[1]{0} slice(Arg_0.1), slice={[0:1]}
+  reshape.14 = u32[] reshape(slice.13)
+  slice.15 = u32[1]{0} slice(Arg_0.1), slice={[1:2]}
+  reshape.16 = u32[] reshape(slice.15)
+  iota.12 = u32[512]{0} iota(), iota_dimension=0
+  slice.17 = u32[256]{0} slice(iota.12), slice={[0:256]}
+  slice.18 = u32[256]{0} slice(iota.12), slice={[256:512]}
+  call.36 = (u32[256]{0}, u32[256]{0}) call(reshape.14, reshape.16, slice.17, slice.18), to_apply=threefry2x32.27
+  get-tuple-element.37 = u32[256]{0} get-tuple-element(call.36), index=0
+  get-tuple-element.38 = u32[256]{0} get-tuple-element(call.36), index=1
+  concatenate.39 = u32[512]{0} concatenate(get-tuple-element.37, get-tuple-element.38), dimensions={0}
+  reshape.40 = u32[2,256]{1,0} reshape(concatenate.39)
+  constant.8 = u32[] constant(9)
+  broadcast.9 = u32[2,256]{1,0} broadcast(constant.8), dimensions={}
+  shift-right-logical.41 = u32[2,256]{1,0} shift-right-logical(reshape.40, broadcast.9)
+  constant.6 = u32[] constant(1065353216)
+  broadcast.7 = u32[2,256]{1,0} broadcast(constant.6), dimensions={}
+  or.42 = u32[2,256]{1,0} or(shift-right-logical.41, broadcast.7)
+  bitcast-convert.43 = f32[2,256]{1,0} bitcast-convert(or.42)
+  constant.4 = f32[] constant(1)
+  broadcast.5 = f32[2,256]{1,0} broadcast(constant.4), dimensions={}
+  subtract.44 = f32[2,256]{1,0} subtract(bitcast-convert.43, broadcast.5)
+  Arg_2.3 = f32[] parameter(2)
+  reshape.11 = f32[1,1]{1,0} reshape(Arg_2.3)
+  subtract.45 = f32[1,1]{1,0} subtract(reshape.11, reshape.10)
+  broadcast.46 = f32[1,1]{1,0} broadcast(subtract.45), dimensions={0,1}
+  reshape.47 = f32[] reshape(broadcast.46)
+  broadcast.48 = f32[2,256]{1,0} broadcast(reshape.47), dimensions={}
+  multiply.49 = f32[2,256]{1,0} multiply(subtract.44, broadcast.48)
+  broadcast.50 = f32[1,1]{1,0} broadcast(reshape.10), dimensions={0,1}
+  reshape.51 = f32[] reshape(broadcast.50)
+  broadcast.52 = f32[2,256]{1,0} broadcast(reshape.51), dimensions={}
+  add.53 = f32[2,256]{1,0} add(multiply.49, broadcast.52)
+  ROOT maximum.57 = f32[2,256]{1,0} maximum(broadcast.56, add.53)
+}
+

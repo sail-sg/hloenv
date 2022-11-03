@@ -1,0 +1,118 @@
+HloModule jit_serial.13
+
+ENTRY %main.114 (Arg_0.1: f32[40,1]) -> f32[40,40] {
+  %Arg_0.1 = f32[40,1]{1,0} parameter(0)
+  %dot.28 = f32[40,40]{1,0} dot(f32[40,1]{1,0} %Arg_0.1, f32[40,1]{1,0} %Arg_0.1), lhs_contracting_dims={1}, rhs_contracting_dims={1}
+  %constant.2 = f32[] constant(1)
+  %broadcast.3 = f32[40,40]{1,0} broadcast(f32[] %constant.2), dimensions={}
+  %divide.29 = f32[40,40]{1,0} divide(f32[40,40]{1,0} %dot.28, f32[40,40]{1,0} %broadcast.3)
+  %constant.22 = f32[] constant(0.0025)
+  %broadcast.23 = f32[40,40]{1,0} broadcast(f32[] %constant.22), dimensions={}
+  %add.31 = f32[40,40]{1,0} add(f32[40,40]{1,0} %divide.29, f32[40,40]{1,0} %broadcast.23)
+  %constant.18 = f32[] constant(2)
+  %broadcast.19 = f32[40,40]{1,0} broadcast(f32[] %constant.18), dimensions={}
+  %multiply.50 = f32[40,40]{1,0} multiply(f32[40,40]{1,0} %add.31, f32[40,40]{1,0} %broadcast.19)
+  %dot.26 = f32[40]{0} dot(f32[40,1]{1,0} %Arg_0.1, f32[40,1]{1,0} %Arg_0.1), lhs_batch_dims={0}, lhs_contracting_dims={1}, rhs_batch_dims={0}, rhs_contracting_dims={1}
+  %constant.4 = f32[] constant(1)
+  %broadcast.5 = f32[40]{0} broadcast(f32[] %constant.4), dimensions={}
+  %divide.27 = f32[40]{0} divide(f32[40]{0} %dot.26, f32[40]{0} %broadcast.5)
+  %constant.24 = f32[] constant(0.0025)
+  %broadcast.25 = f32[40]{0} broadcast(f32[] %constant.24), dimensions={}
+  %add.30 = f32[40]{0} add(f32[40]{0} %divide.27, f32[40]{0} %broadcast.25)
+  %constant.12 = f32[] constant(2)
+  %broadcast.13 = f32[40]{0} broadcast(f32[] %constant.12), dimensions={}
+  %multiply.32 = f32[40]{0} multiply(f32[40]{0} %add.30, f32[40]{0} %broadcast.13)
+  %add.33 = f32[40]{0} add(f32[40]{0} %multiply.32, f32[40]{0} %broadcast.5)
+  %divide.34 = f32[40]{0} divide(f32[40]{0} %add.33, f32[40]{0} %broadcast.5)
+  %reshape.35 = f32[40,1]{1,0} reshape(f32[40]{0} %divide.34)
+  %broadcast.37 = f32[40,1]{1,0} broadcast(f32[40,1]{1,0} %reshape.35), dimensions={0,1}
+  %reshape.38 = f32[40]{0} reshape(f32[40,1]{1,0} %broadcast.37)
+  %broadcast.39 = f32[40,40]{1,0} broadcast(f32[40]{0} %reshape.38), dimensions={0}
+  %reshape.36 = f32[1,40]{1,0} reshape(f32[40]{0} %divide.34)
+  %broadcast.40 = f32[1,40]{1,0} broadcast(f32[1,40]{1,0} %reshape.36), dimensions={0,1}
+  %reshape.41 = f32[40]{0} reshape(f32[1,40]{1,0} %broadcast.40)
+  %broadcast.42 = f32[40,40]{1,0} broadcast(f32[40]{0} %reshape.41), dimensions={1}
+  %multiply.43 = f32[40,40]{1,0} multiply(f32[40,40]{1,0} %broadcast.39, f32[40,40]{1,0} %broadcast.42)
+  %multiply.45 = f32[40,40]{1,0} multiply(f32[40,40]{1,0} %add.31, f32[40,40]{1,0} %add.31)
+  %constant.20 = f32[] constant(4)
+  %broadcast.21 = f32[40,40]{1,0} broadcast(f32[] %constant.20), dimensions={}
+  %multiply.46 = f32[40,40]{1,0} multiply(f32[40,40]{1,0} %multiply.45, f32[40,40]{1,0} %broadcast.21)
+  %subtract.47 = f32[40,40]{1,0} subtract(f32[40,40]{1,0} %multiply.43, f32[40,40]{1,0} %multiply.46)
+  %constant.6 = f32[] constant(0)
+  %broadcast.7 = f32[40,40]{1,0} broadcast(f32[] %constant.6), dimensions={}
+  %maximum.48 = f32[40,40]{1,0} maximum(f32[40,40]{1,0} %subtract.47, f32[40,40]{1,0} %broadcast.7)
+  %sqrt.49 = f32[40,40]{1,0} sqrt(f32[40,40]{1,0} %maximum.48)
+  %atan2.51 = f32[40,40]{1,0} atan2(f32[40,40]{1,0} %multiply.50, f32[40,40]{1,0} %sqrt.49)
+  %constant.16 = f32[] constant(0.636619747)
+  %broadcast.17 = f32[40,40]{1,0} broadcast(f32[] %constant.16), dimensions={}
+  %multiply.52 = f32[40,40]{1,0} multiply(f32[40,40]{1,0} %atan2.51, f32[40,40]{1,0} %broadcast.17)
+  %add.62 = f32[40,40]{1,0} add(f32[40,40]{1,0} %multiply.52, f32[40,40]{1,0} %broadcast.23)
+  %multiply.81 = f32[40,40]{1,0} multiply(f32[40,40]{1,0} %add.62, f32[40,40]{1,0} %broadcast.19)
+  %multiply.58 = f32[40]{0} multiply(f32[40]{0} %add.30, f32[40]{0} %broadcast.13)
+  %multiply.44 = f32[40]{0} multiply(f32[40]{0} %divide.34, f32[40]{0} %divide.34)
+  %multiply.53 = f32[40]{0} multiply(f32[40]{0} %add.30, f32[40]{0} %add.30)
+  %constant.14 = f32[] constant(4)
+  %broadcast.15 = f32[40]{0} broadcast(f32[] %constant.14), dimensions={}
+  %multiply.54 = f32[40]{0} multiply(f32[40]{0} %multiply.53, f32[40]{0} %broadcast.15)
+  %subtract.55 = f32[40]{0} subtract(f32[40]{0} %multiply.44, f32[40]{0} %multiply.54)
+  %constant.8 = f32[] constant(0)
+  %broadcast.9 = f32[40]{0} broadcast(f32[] %constant.8), dimensions={}
+  %maximum.56 = f32[40]{0} maximum(f32[40]{0} %subtract.55, f32[40]{0} %broadcast.9)
+  %sqrt.57 = f32[40]{0} sqrt(f32[40]{0} %maximum.56)
+  %atan2.59 = f32[40]{0} atan2(f32[40]{0} %multiply.58, f32[40]{0} %sqrt.57)
+  %constant.10 = f32[] constant(0.636619747)
+  %broadcast.11 = f32[40]{0} broadcast(f32[] %constant.10), dimensions={}
+  %multiply.60 = f32[40]{0} multiply(f32[40]{0} %atan2.59, f32[40]{0} %broadcast.11)
+  %add.61 = f32[40]{0} add(f32[40]{0} %multiply.60, f32[40]{0} %broadcast.25)
+  %multiply.63 = f32[40]{0} multiply(f32[40]{0} %add.61, f32[40]{0} %broadcast.13)
+  %add.64 = f32[40]{0} add(f32[40]{0} %multiply.63, f32[40]{0} %broadcast.5)
+  %divide.65 = f32[40]{0} divide(f32[40]{0} %add.64, f32[40]{0} %broadcast.5)
+  %reshape.66 = f32[40,1]{1,0} reshape(f32[40]{0} %divide.65)
+  %broadcast.68 = f32[40,1]{1,0} broadcast(f32[40,1]{1,0} %reshape.66), dimensions={0,1}
+  %reshape.69 = f32[40]{0} reshape(f32[40,1]{1,0} %broadcast.68)
+  %broadcast.70 = f32[40,40]{1,0} broadcast(f32[40]{0} %reshape.69), dimensions={0}
+  %reshape.67 = f32[1,40]{1,0} reshape(f32[40]{0} %divide.65)
+  %broadcast.71 = f32[1,40]{1,0} broadcast(f32[1,40]{1,0} %reshape.67), dimensions={0,1}
+  %reshape.72 = f32[40]{0} reshape(f32[1,40]{1,0} %broadcast.71)
+  %broadcast.73 = f32[40,40]{1,0} broadcast(f32[40]{0} %reshape.72), dimensions={1}
+  %multiply.74 = f32[40,40]{1,0} multiply(f32[40,40]{1,0} %broadcast.70, f32[40,40]{1,0} %broadcast.73)
+  %multiply.76 = f32[40,40]{1,0} multiply(f32[40,40]{1,0} %add.62, f32[40,40]{1,0} %add.62)
+  %multiply.77 = f32[40,40]{1,0} multiply(f32[40,40]{1,0} %multiply.76, f32[40,40]{1,0} %broadcast.21)
+  %subtract.78 = f32[40,40]{1,0} subtract(f32[40,40]{1,0} %multiply.74, f32[40,40]{1,0} %multiply.77)
+  %maximum.79 = f32[40,40]{1,0} maximum(f32[40,40]{1,0} %subtract.78, f32[40,40]{1,0} %broadcast.7)
+  %sqrt.80 = f32[40,40]{1,0} sqrt(f32[40,40]{1,0} %maximum.79)
+  %atan2.82 = f32[40,40]{1,0} atan2(f32[40,40]{1,0} %multiply.81, f32[40,40]{1,0} %sqrt.80)
+  %multiply.83 = f32[40,40]{1,0} multiply(f32[40,40]{1,0} %atan2.82, f32[40,40]{1,0} %broadcast.17)
+  %add.93 = f32[40,40]{1,0} add(f32[40,40]{1,0} %multiply.83, f32[40,40]{1,0} %broadcast.23)
+  %multiply.111 = f32[40,40]{1,0} multiply(f32[40,40]{1,0} %add.93, f32[40,40]{1,0} %broadcast.19)
+  %multiply.89 = f32[40]{0} multiply(f32[40]{0} %add.61, f32[40]{0} %broadcast.13)
+  %multiply.75 = f32[40]{0} multiply(f32[40]{0} %divide.65, f32[40]{0} %divide.65)
+  %multiply.84 = f32[40]{0} multiply(f32[40]{0} %add.61, f32[40]{0} %add.61)
+  %multiply.85 = f32[40]{0} multiply(f32[40]{0} %multiply.84, f32[40]{0} %broadcast.15)
+  %subtract.86 = f32[40]{0} subtract(f32[40]{0} %multiply.75, f32[40]{0} %multiply.85)
+  %maximum.87 = f32[40]{0} maximum(f32[40]{0} %subtract.86, f32[40]{0} %broadcast.9)
+  %sqrt.88 = f32[40]{0} sqrt(f32[40]{0} %maximum.87)
+  %atan2.90 = f32[40]{0} atan2(f32[40]{0} %multiply.89, f32[40]{0} %sqrt.88)
+  %multiply.91 = f32[40]{0} multiply(f32[40]{0} %atan2.90, f32[40]{0} %broadcast.11)
+  %add.92 = f32[40]{0} add(f32[40]{0} %multiply.91, f32[40]{0} %broadcast.25)
+  %multiply.94 = f32[40]{0} multiply(f32[40]{0} %add.92, f32[40]{0} %broadcast.13)
+  %add.95 = f32[40]{0} add(f32[40]{0} %multiply.94, f32[40]{0} %broadcast.5)
+  %divide.96 = f32[40]{0} divide(f32[40]{0} %add.95, f32[40]{0} %broadcast.5)
+  %reshape.97 = f32[40,1]{1,0} reshape(f32[40]{0} %divide.96)
+  %broadcast.99 = f32[40,1]{1,0} broadcast(f32[40,1]{1,0} %reshape.97), dimensions={0,1}
+  %reshape.100 = f32[40]{0} reshape(f32[40,1]{1,0} %broadcast.99)
+  %broadcast.101 = f32[40,40]{1,0} broadcast(f32[40]{0} %reshape.100), dimensions={0}
+  %reshape.98 = f32[1,40]{1,0} reshape(f32[40]{0} %divide.96)
+  %broadcast.102 = f32[1,40]{1,0} broadcast(f32[1,40]{1,0} %reshape.98), dimensions={0,1}
+  %reshape.103 = f32[40]{0} reshape(f32[1,40]{1,0} %broadcast.102)
+  %broadcast.104 = f32[40,40]{1,0} broadcast(f32[40]{0} %reshape.103), dimensions={1}
+  %multiply.105 = f32[40,40]{1,0} multiply(f32[40,40]{1,0} %broadcast.101, f32[40,40]{1,0} %broadcast.104)
+  %multiply.106 = f32[40,40]{1,0} multiply(f32[40,40]{1,0} %add.93, f32[40,40]{1,0} %add.93)
+  %multiply.107 = f32[40,40]{1,0} multiply(f32[40,40]{1,0} %multiply.106, f32[40,40]{1,0} %broadcast.21)
+  %subtract.108 = f32[40,40]{1,0} subtract(f32[40,40]{1,0} %multiply.105, f32[40,40]{1,0} %multiply.107)
+  %maximum.109 = f32[40,40]{1,0} maximum(f32[40,40]{1,0} %subtract.108, f32[40,40]{1,0} %broadcast.7)
+  %sqrt.110 = f32[40,40]{1,0} sqrt(f32[40,40]{1,0} %maximum.109)
+  %atan2.112 = f32[40,40]{1,0} atan2(f32[40,40]{1,0} %multiply.111, f32[40,40]{1,0} %sqrt.110)
+  ROOT %multiply.113 = f32[40,40]{1,0} multiply(f32[40,40]{1,0} %atan2.112, f32[40,40]{1,0} %broadcast.17)
+}
+

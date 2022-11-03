@@ -1,0 +1,29 @@
+HloModule jit_safe_mask.15
+
+jit_vmap_vmap__where__.4 {
+  Arg_0.5 = pred[3,3]{1,0} parameter(0)
+  Arg_1.6 = f32[3,3]{1,0} parameter(1)
+  Arg_2.7 = s32[] parameter(2)
+  convert.8 = f32[] convert(Arg_2.7)
+  broadcast.9 = f32[3,3]{1,0} broadcast(convert.8), dimensions={}
+  ROOT select.10 = f32[3,3]{1,0} select(Arg_0.5, Arg_1.6, broadcast.9)
+}
+
+jit_vmap_vmap__where___0.13 {
+  Arg_0.14 = pred[3,3]{1,0} parameter(0)
+  Arg_1.15 = f32[3,3]{1,0} parameter(1)
+  Arg_2.16 = s32[] parameter(2)
+  convert.17 = f32[] convert(Arg_2.16)
+  broadcast.18 = f32[3,3]{1,0} broadcast(convert.17), dimensions={}
+  ROOT select.19 = f32[3,3]{1,0} select(Arg_0.14, Arg_1.15, broadcast.18)
+}
+
+ENTRY main.21 {
+  Arg_0.1 = pred[3,3]{1,0} parameter(0)
+  Arg_1.2 = f32[3,3]{1,0} parameter(1)
+  constant.3 = s32[] constant(0)
+  call.11 = f32[3,3]{1,0} call(Arg_0.1, Arg_1.2, constant.3), to_apply=jit_vmap_vmap__where__.4
+  sqrt.12 = f32[3,3]{1,0} sqrt(call.11)
+  ROOT call.20 = f32[3,3]{1,0} call(Arg_0.1, sqrt.12, constant.3), to_apply=jit_vmap_vmap__where___0.13
+}
+

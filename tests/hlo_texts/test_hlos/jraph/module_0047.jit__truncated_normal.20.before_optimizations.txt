@@ -1,0 +1,319 @@
+HloModule jit__truncated_normal.20
+
+xla_fallback_erf.24 {
+  constant.40 = f32[] constant(-4)
+  Arg_0.25 = f32[] parameter(0)
+  constant.39 = f32[] constant(4)
+  clamp.41 = f32[] clamp(constant.40, Arg_0.25, constant.39)
+  multiply.42 = f32[] multiply(clamp.41, clamp.41)
+  constant.31 = f32[] constant(0)
+  multiply.43 = f32[] multiply(multiply.42, constant.31)
+  constant.38 = f32[] constant(-2.72614237e-10)
+  add.44 = f32[] add(multiply.43, constant.38)
+  multiply.45 = f32[] multiply(add.44, multiply.42)
+  constant.37 = f32[] constant(2.77068146e-08)
+  add.46 = f32[] add(multiply.45, constant.37)
+  multiply.47 = f32[] multiply(add.46, multiply.42)
+  constant.36 = f32[] constant(-2.10102394e-06)
+  add.48 = f32[] add(multiply.47, constant.36)
+  multiply.49 = f32[] multiply(add.48, multiply.42)
+  constant.35 = f32[] constant(-5.69250624e-05)
+  add.50 = f32[] add(multiply.49, constant.35)
+  multiply.51 = f32[] multiply(add.50, multiply.42)
+  constant.34 = f32[] constant(-0.000734990637)
+  add.52 = f32[] add(multiply.51, constant.34)
+  multiply.53 = f32[] multiply(add.52, multiply.42)
+  constant.33 = f32[] constant(-0.0029546)
+  add.54 = f32[] add(multiply.53, constant.33)
+  multiply.55 = f32[] multiply(add.54, multiply.42)
+  constant.32 = f32[] constant(-0.0160960332)
+  add.56 = f32[] add(multiply.55, constant.32)
+  multiply.57 = f32[] multiply(clamp.41, add.56)
+  multiply.58 = f32[] multiply(multiply.42, constant.31)
+  constant.30 = f32[] constant(-1.45660715e-05)
+  add.59 = f32[] add(multiply.58, constant.30)
+  multiply.60 = f32[] multiply(add.59, multiply.42)
+  constant.29 = f32[] constant(-0.000213374049)
+  add.61 = f32[] add(multiply.60, constant.29)
+  multiply.62 = f32[] multiply(add.61, multiply.42)
+  constant.28 = f32[] constant(-0.00168282702)
+  add.63 = f32[] add(multiply.62, constant.28)
+  multiply.64 = f32[] multiply(add.63, multiply.42)
+  constant.27 = f32[] constant(-0.00737332925)
+  add.65 = f32[] add(multiply.64, constant.27)
+  multiply.66 = f32[] multiply(add.65, multiply.42)
+  constant.26 = f32[] constant(-0.0142647391)
+  add.67 = f32[] add(multiply.66, constant.26)
+  ROOT divide.68 = f32[] divide(multiply.57, add.67)
+}
+
+erf.69 {
+  Arg_0.70 = f32[] parameter(0)
+  ROOT call.71 = f32[] call(Arg_0.70), to_apply=xla_fallback_erf.24
+}
+
+xla_fallback_erf.74 {
+  constant.90 = f32[] constant(-4)
+  Arg_0.75 = f32[] parameter(0)
+  constant.89 = f32[] constant(4)
+  clamp.91 = f32[] clamp(constant.90, Arg_0.75, constant.89)
+  multiply.92 = f32[] multiply(clamp.91, clamp.91)
+  constant.81 = f32[] constant(0)
+  multiply.93 = f32[] multiply(multiply.92, constant.81)
+  constant.88 = f32[] constant(-2.72614237e-10)
+  add.94 = f32[] add(multiply.93, constant.88)
+  multiply.95 = f32[] multiply(add.94, multiply.92)
+  constant.87 = f32[] constant(2.77068146e-08)
+  add.96 = f32[] add(multiply.95, constant.87)
+  multiply.97 = f32[] multiply(add.96, multiply.92)
+  constant.86 = f32[] constant(-2.10102394e-06)
+  add.98 = f32[] add(multiply.97, constant.86)
+  multiply.99 = f32[] multiply(add.98, multiply.92)
+  constant.85 = f32[] constant(-5.69250624e-05)
+  add.100 = f32[] add(multiply.99, constant.85)
+  multiply.101 = f32[] multiply(add.100, multiply.92)
+  constant.84 = f32[] constant(-0.000734990637)
+  add.102 = f32[] add(multiply.101, constant.84)
+  multiply.103 = f32[] multiply(add.102, multiply.92)
+  constant.83 = f32[] constant(-0.0029546)
+  add.104 = f32[] add(multiply.103, constant.83)
+  multiply.105 = f32[] multiply(add.104, multiply.92)
+  constant.82 = f32[] constant(-0.0160960332)
+  add.106 = f32[] add(multiply.105, constant.82)
+  multiply.107 = f32[] multiply(clamp.91, add.106)
+  multiply.108 = f32[] multiply(multiply.92, constant.81)
+  constant.80 = f32[] constant(-1.45660715e-05)
+  add.109 = f32[] add(multiply.108, constant.80)
+  multiply.110 = f32[] multiply(add.109, multiply.92)
+  constant.79 = f32[] constant(-0.000213374049)
+  add.111 = f32[] add(multiply.110, constant.79)
+  multiply.112 = f32[] multiply(add.111, multiply.92)
+  constant.78 = f32[] constant(-0.00168282702)
+  add.113 = f32[] add(multiply.112, constant.78)
+  multiply.114 = f32[] multiply(add.113, multiply.92)
+  constant.77 = f32[] constant(-0.00737332925)
+  add.115 = f32[] add(multiply.114, constant.77)
+  multiply.116 = f32[] multiply(add.115, multiply.92)
+  constant.76 = f32[] constant(-0.0142647391)
+  add.117 = f32[] add(multiply.116, constant.76)
+  ROOT divide.118 = f32[] divide(multiply.107, add.117)
+}
+
+erf.119 {
+  Arg_0.120 = f32[] parameter(0)
+  ROOT call.121 = f32[] call(Arg_0.120), to_apply=xla_fallback_erf.74
+}
+
+xla_fallback_erf_inv.156 {
+  Arg_0.157 = f32[1,128]{1,0} parameter(0)
+  abs.204 = f32[1,128]{1,0} abs(Arg_0.157)
+  constant.202 = f32[] constant(1)
+  broadcast.203 = f32[1,128]{1,0} broadcast(constant.202), dimensions={}
+  compare.205 = pred[1,128]{1,0} compare(abs.204, broadcast.203), direction=EQ
+  constant.200 = f32[] constant(inf)
+  broadcast.201 = f32[1,128]{1,0} broadcast(constant.200), dimensions={}
+  multiply.206 = f32[1,128]{1,0} multiply(Arg_0.157, broadcast.201)
+  negate.207 = f32[1,128]{1,0} negate(Arg_0.157)
+  multiply.208 = f32[1,128]{1,0} multiply(negate.207, Arg_0.157)
+  log-plus-one.209 = f32[1,128]{1,0} log-plus-one(multiply.208)
+  negate.210 = f32[1,128]{1,0} negate(log-plus-one.209)
+  constant.198 = f32[] constant(5)
+  broadcast.199 = f32[1,128]{1,0} broadcast(constant.198), dimensions={}
+  compare.211 = pred[1,128]{1,0} compare(negate.210, broadcast.199), direction=LT
+  constant.196 = f32[] constant(1.50140941)
+  broadcast.197 = f32[1,128]{1,0} broadcast(constant.196), dimensions={}
+  constant.194 = f32[] constant(2.83297682)
+  broadcast.195 = f32[1,128]{1,0} broadcast(constant.194), dimensions={}
+  select.212 = f32[1,128]{1,0} select(compare.211, broadcast.197, broadcast.195)
+  constant.192 = f32[] constant(0.246640727)
+  broadcast.193 = f32[1,128]{1,0} broadcast(constant.192), dimensions={}
+  constant.190 = f32[] constant(1.00167406)
+  broadcast.191 = f32[1,128]{1,0} broadcast(constant.190), dimensions={}
+  select.213 = f32[1,128]{1,0} select(compare.211, broadcast.193, broadcast.191)
+  constant.188 = f32[] constant(-0.00417768164)
+  broadcast.189 = f32[1,128]{1,0} broadcast(constant.188), dimensions={}
+  constant.186 = f32[] constant(0.00943887047)
+  broadcast.187 = f32[1,128]{1,0} broadcast(constant.186), dimensions={}
+  select.214 = f32[1,128]{1,0} select(compare.211, broadcast.189, broadcast.187)
+  constant.184 = f32[] constant(-0.00125372503)
+  broadcast.185 = f32[1,128]{1,0} broadcast(constant.184), dimensions={}
+  constant.182 = f32[] constant(-0.0076224613)
+  broadcast.183 = f32[1,128]{1,0} broadcast(constant.182), dimensions={}
+  select.215 = f32[1,128]{1,0} select(compare.211, broadcast.185, broadcast.183)
+  constant.180 = f32[] constant(0.00021858087)
+  broadcast.181 = f32[1,128]{1,0} broadcast(constant.180), dimensions={}
+  constant.178 = f32[] constant(0.00573950773)
+  broadcast.179 = f32[1,128]{1,0} broadcast(constant.178), dimensions={}
+  select.216 = f32[1,128]{1,0} select(compare.211, broadcast.181, broadcast.179)
+  constant.176 = f32[] constant(-4.39150654e-06)
+  broadcast.177 = f32[1,128]{1,0} broadcast(constant.176), dimensions={}
+  constant.174 = f32[] constant(-0.00367342844)
+  broadcast.175 = f32[1,128]{1,0} broadcast(constant.174), dimensions={}
+  select.217 = f32[1,128]{1,0} select(compare.211, broadcast.177, broadcast.175)
+  constant.172 = f32[] constant(-3.5233877e-06)
+  broadcast.173 = f32[1,128]{1,0} broadcast(constant.172), dimensions={}
+  constant.170 = f32[] constant(0.00134934322)
+  broadcast.171 = f32[1,128]{1,0} broadcast(constant.170), dimensions={}
+  select.218 = f32[1,128]{1,0} select(compare.211, broadcast.173, broadcast.171)
+  constant.168 = f32[] constant(3.43273939e-07)
+  broadcast.169 = f32[1,128]{1,0} broadcast(constant.168), dimensions={}
+  constant.166 = f32[] constant(0.000100950558)
+  broadcast.167 = f32[1,128]{1,0} broadcast(constant.166), dimensions={}
+  select.219 = f32[1,128]{1,0} select(compare.211, broadcast.169, broadcast.167)
+  constant.164 = f32[] constant(2.81022636e-08)
+  broadcast.165 = f32[1,128]{1,0} broadcast(constant.164), dimensions={}
+  constant.162 = f32[] constant(-0.000200214257)
+  broadcast.163 = f32[1,128]{1,0} broadcast(constant.162), dimensions={}
+  select.220 = f32[1,128]{1,0} select(compare.211, broadcast.165, broadcast.163)
+  constant.160 = f32[] constant(2.5)
+  broadcast.161 = f32[1,128]{1,0} broadcast(constant.160), dimensions={}
+  subtract.221 = f32[1,128]{1,0} subtract(negate.210, broadcast.161)
+  sqrt.222 = f32[1,128]{1,0} sqrt(negate.210)
+  constant.158 = f32[] constant(3)
+  broadcast.159 = f32[1,128]{1,0} broadcast(constant.158), dimensions={}
+  subtract.223 = f32[1,128]{1,0} subtract(sqrt.222, broadcast.159)
+  select.224 = f32[1,128]{1,0} select(compare.211, subtract.221, subtract.223)
+  multiply.225 = f32[1,128]{1,0} multiply(select.220, select.224)
+  add.226 = f32[1,128]{1,0} add(select.219, multiply.225)
+  multiply.227 = f32[1,128]{1,0} multiply(add.226, select.224)
+  add.228 = f32[1,128]{1,0} add(select.218, multiply.227)
+  multiply.229 = f32[1,128]{1,0} multiply(add.228, select.224)
+  add.230 = f32[1,128]{1,0} add(select.217, multiply.229)
+  multiply.231 = f32[1,128]{1,0} multiply(add.230, select.224)
+  add.232 = f32[1,128]{1,0} add(select.216, multiply.231)
+  multiply.233 = f32[1,128]{1,0} multiply(add.232, select.224)
+  add.234 = f32[1,128]{1,0} add(select.215, multiply.233)
+  multiply.235 = f32[1,128]{1,0} multiply(add.234, select.224)
+  add.236 = f32[1,128]{1,0} add(select.214, multiply.235)
+  multiply.237 = f32[1,128]{1,0} multiply(add.236, select.224)
+  add.238 = f32[1,128]{1,0} add(select.213, multiply.237)
+  multiply.239 = f32[1,128]{1,0} multiply(add.238, select.224)
+  add.240 = f32[1,128]{1,0} add(select.212, multiply.239)
+  multiply.241 = f32[1,128]{1,0} multiply(add.240, Arg_0.157)
+  ROOT select.242 = f32[1,128]{1,0} select(compare.205, multiply.206, multiply.241)
+}
+
+erf_inv.243 {
+  Arg_0.244 = f32[1,128]{1,0} parameter(0)
+  ROOT call.245 = f32[1,128]{1,0} call(Arg_0.244), to_apply=xla_fallback_erf_inv.156
+}
+
+jit_clip.292 {
+  Arg_2.295 = f32[] parameter(2)
+  broadcast.298 = f32[1,128]{1,0} broadcast(Arg_2.295), dimensions={}
+  Arg_1.294 = f32[] parameter(1)
+  broadcast.296 = f32[1,128]{1,0} broadcast(Arg_1.294), dimensions={}
+  Arg_0.293 = f32[1,128]{1,0} parameter(0)
+  maximum.297 = f32[1,128]{1,0} maximum(broadcast.296, Arg_0.293)
+  ROOT minimum.299 = f32[1,128]{1,0} minimum(broadcast.298, maximum.297)
+}
+
+ENTRY main.301 {
+  Arg_1.2 = s32[] parameter(1)
+  convert.21 = f32[] convert(Arg_1.2)
+  constant.14 = f32[] constant(1.41421354)
+  divide.23 = f32[] divide(convert.21, constant.14)
+  call.72 = f32[] call(divide.23), to_apply=erf.69
+  reshape.123 = f32[1,1]{1,0} reshape(call.72)
+  broadcast.152 = f32[1,1]{1,0} broadcast(reshape.123), dimensions={0,1}
+  reshape.153 = f32[1]{0} reshape(broadcast.152)
+  broadcast.154 = f32[1,128]{1,0} broadcast(reshape.153), dimensions={0}
+  Arg_0.1 = u32[2]{0} parameter(0)
+  slice.126 = u32[1]{0} slice(Arg_0.1), slice={[0:1]}
+  reshape.127 = u32[] reshape(slice.126)
+  broadcast.132 = u32[64]{0} broadcast(reshape.127), dimensions={}
+  slice.128 = u32[1]{0} slice(Arg_0.1), slice={[1:2]}
+  reshape.129 = u32[] reshape(slice.128)
+  broadcast.133 = u32[64]{0} broadcast(reshape.129), dimensions={}
+  iota.125 = u32[128]{0} iota(), iota_dimension=0
+  slice.130 = u32[64]{0} slice(iota.125), slice={[0:64]}
+  slice.131 = u32[64]{0} slice(iota.125), slice={[64:128]}
+  custom-call.134 = (u32[64]{0}, u32[64]{0}) custom-call(broadcast.132, broadcast.133, slice.130, slice.131), custom_call_target="cuda_threefry2x32", operand_layout_constraints={u32[64]{0}, u32[64]{0}, u32[64]{0}, u32[64]{0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="@\000\000\000\000\000\000\000"
+  get-tuple-element.135 = u32[64]{0} get-tuple-element(custom-call.134), index=0
+  get-tuple-element.136 = u32[64]{0} get-tuple-element(custom-call.134), index=1
+  concatenate.137 = u32[128]{0} concatenate(get-tuple-element.135, get-tuple-element.136), dimensions={0}
+  reshape.138 = u32[1,128]{1,0} reshape(concatenate.137)
+  constant.19 = u32[] constant(9)
+  broadcast.20 = u32[1,128]{1,0} broadcast(constant.19), dimensions={}
+  shift-right-logical.139 = u32[1,128]{1,0} shift-right-logical(reshape.138, broadcast.20)
+  constant.17 = u32[] constant(1065353216)
+  broadcast.18 = u32[1,128]{1,0} broadcast(constant.17), dimensions={}
+  or.140 = u32[1,128]{1,0} or(shift-right-logical.139, broadcast.18)
+  bitcast-convert.141 = f32[1,128]{1,0} bitcast-convert(or.140)
+  constant.15 = f32[] constant(1)
+  broadcast.16 = f32[1,128]{1,0} broadcast(constant.15), dimensions={}
+  subtract.142 = f32[1,128]{1,0} subtract(bitcast-convert.141, broadcast.16)
+  Arg_2.3 = s32[] parameter(2)
+  convert.22 = f32[] convert(Arg_2.3)
+  divide.73 = f32[] divide(convert.22, constant.14)
+  call.122 = f32[] call(divide.73), to_apply=erf.119
+  reshape.124 = f32[1,1]{1,0} reshape(call.122)
+  subtract.143 = f32[1,1]{1,0} subtract(reshape.124, reshape.123)
+  broadcast.144 = f32[1,1]{1,0} broadcast(subtract.143), dimensions={0,1}
+  reshape.145 = f32[1]{0} reshape(broadcast.144)
+  broadcast.146 = f32[1,128]{1,0} broadcast(reshape.145), dimensions={0}
+  multiply.147 = f32[1,128]{1,0} multiply(subtract.142, broadcast.146)
+  broadcast.148 = f32[1,1]{1,0} broadcast(reshape.123), dimensions={0,1}
+  reshape.149 = f32[1]{0} reshape(broadcast.148)
+  broadcast.150 = f32[1,128]{1,0} broadcast(reshape.149), dimensions={0}
+  add.151 = f32[1,128]{1,0} add(multiply.147, broadcast.150)
+  maximum.155 = f32[1,128]{1,0} maximum(broadcast.154, add.151)
+  call.246 = f32[1,128]{1,0} call(maximum.155), to_apply=erf_inv.243
+  constant.12 = f32[] constant(1.41421354)
+  broadcast.13 = f32[1,128]{1,0} broadcast(constant.12), dimensions={}
+  multiply.247 = f32[1,128]{1,0} multiply(call.246, broadcast.13)
+  compare.250 = pred[] compare(convert.21, convert.21), direction=NE
+  constant.9 = f32[] constant(nan)
+  bitcast-convert.251 = s32[] bitcast-convert(constant.9)
+  constant.11 = f32[] constant(inf)
+  compare.254 = pred[] compare(convert.21, constant.11), direction=EQ
+  bitcast-convert.249 = s32[] bitcast-convert(constant.11)
+  bitcast-convert.248 = s32[] bitcast-convert(convert.21)
+  constant.7 = s32[] constant(2147483647)
+  and.252 = s32[] and(bitcast-convert.248, constant.7)
+  constant.6 = s32[] constant(0)
+  compare.255 = pred[] compare(and.252, constant.6), direction=EQ
+  and.253 = s32[] and(bitcast-convert.249, constant.7)
+  compare.256 = pred[] compare(and.253, constant.6), direction=EQ
+  constant.8 = s32[] constant(-2147483648)
+  and.258 = s32[] and(bitcast-convert.249, constant.8)
+  constant.5 = s32[] constant(1)
+  or.259 = s32[] or(and.258, constant.5)
+  select.265 = s32[] select(compare.256, bitcast-convert.249, or.259)
+  compare.261 = pred[] compare(and.252, and.253), direction=GT
+  and.257 = s32[] and(bitcast-convert.248, constant.8)
+  compare.260 = pred[] compare(and.257, and.258), direction=NE
+  or.262 = pred[] or(compare.261, compare.260)
+  constant.4 = s32[] constant(-1)
+  select.263 = s32[] select(or.262, constant.4, constant.5)
+  add.264 = s32[] add(bitcast-convert.248, select.263)
+  select.266 = s32[] select(compare.255, select.265, add.264)
+  select.267 = s32[] select(compare.254, bitcast-convert.249, select.266)
+  select.268 = s32[] select(compare.250, bitcast-convert.251, select.267)
+  bitcast-convert.269 = f32[] bitcast-convert(select.268)
+  compare.272 = pred[] compare(convert.22, convert.22), direction=NE
+  bitcast-convert.273 = s32[] bitcast-convert(constant.9)
+  constant.10 = f32[] constant(-inf)
+  compare.276 = pred[] compare(convert.22, constant.10), direction=EQ
+  bitcast-convert.271 = s32[] bitcast-convert(constant.10)
+  bitcast-convert.270 = s32[] bitcast-convert(convert.22)
+  and.274 = s32[] and(bitcast-convert.270, constant.7)
+  compare.277 = pred[] compare(and.274, constant.6), direction=EQ
+  and.275 = s32[] and(bitcast-convert.271, constant.7)
+  compare.278 = pred[] compare(and.275, constant.6), direction=EQ
+  and.280 = s32[] and(bitcast-convert.271, constant.8)
+  or.281 = s32[] or(and.280, constant.5)
+  select.287 = s32[] select(compare.278, bitcast-convert.271, or.281)
+  compare.283 = pred[] compare(and.274, and.275), direction=GT
+  and.279 = s32[] and(bitcast-convert.270, constant.8)
+  compare.282 = pred[] compare(and.279, and.280), direction=NE
+  or.284 = pred[] or(compare.283, compare.282)
+  select.285 = s32[] select(or.284, constant.4, constant.5)
+  add.286 = s32[] add(bitcast-convert.270, select.285)
+  select.288 = s32[] select(compare.277, select.287, add.286)
+  select.289 = s32[] select(compare.276, bitcast-convert.271, select.288)
+  select.290 = s32[] select(compare.272, bitcast-convert.273, select.289)
+  bitcast-convert.291 = f32[] bitcast-convert(select.290)
+  ROOT call.300 = f32[1,128]{1,0} call(multiply.247, bitcast-convert.269, bitcast-convert.291), to_apply=jit_clip.292
+}
+

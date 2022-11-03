@@ -1,0 +1,53 @@
+HloModule jit_safe_mask.61
+
+jit_jvp__where_.12 {
+  Arg_0.13 = pred[64,64]{1,0} parameter(0)
+  Arg_1.14 = f32[64,64]{1,0} parameter(1)
+  Arg_2.15 = s32[] parameter(2)
+  convert.18 = f32[] convert(Arg_2.15)
+  broadcast.19 = f32[64,64]{1,0} broadcast(convert.18), dimensions={}
+  select.20 = f32[64,64]{1,0} select(Arg_0.13, Arg_1.14, broadcast.19)
+  constant.16 = f32[] constant(0)
+  broadcast.17 = f32[64,64]{1,0} broadcast(constant.16), dimensions={}
+  ROOT tuple.21 = (f32[64,64]{1,0}, pred[64,64]{1,0}, f32[64,64]{1,0}) tuple(select.20, Arg_0.13, broadcast.17)
+}
+
+jit_jvp__where__0.31 {
+  Arg_0.32 = pred[64,64]{1,0} parameter(0)
+  Arg_1.33 = f32[64,64]{1,0} parameter(1)
+  Arg_2.34 = f32[] parameter(2)
+  broadcast.37 = f32[64,64]{1,0} broadcast(Arg_2.34), dimensions={}
+  select.38 = f32[64,64]{1,0} select(Arg_0.32, Arg_1.33, broadcast.37)
+  constant.35 = f32[] constant(0)
+  broadcast.36 = f32[64,64]{1,0} broadcast(constant.35), dimensions={}
+  ROOT tuple.39 = (f32[64,64]{1,0}, pred[64,64]{1,0}, f32[64,64]{1,0}) tuple(select.38, Arg_0.32, broadcast.36)
+}
+
+ENTRY main.45 {
+  Arg_0.1 = pred[64,64]{1,0} parameter(0)
+  constant.8 = f32[] constant(1)
+  broadcast.9 = f32[64,64]{1,0} broadcast(constant.8), dimensions={}
+  Arg_1.2 = f32[64,64]{1,0} parameter(1)
+  constant.11 = s32[] constant(0)
+  call.22 = (f32[64,64]{1,0}, pred[64,64]{1,0}, f32[64,64]{1,0}) call(Arg_0.1, Arg_1.2, constant.11), to_apply=jit_jvp__where_.12
+  get-tuple-element.23 = f32[64,64]{1,0} get-tuple-element(call.22), index=0
+  subtract.26 = f32[64,64]{1,0} subtract(broadcast.9, get-tuple-element.23)
+  constant.6 = f32[] constant(2)
+  broadcast.7 = f32[64,64]{1,0} broadcast(constant.6), dimensions={}
+  power.27 = f32[64,64]{1,0} power(subtract.26, broadcast.7)
+  constant.4 = f32[] constant(0.5)
+  broadcast.5 = f32[64,64]{1,0} broadcast(constant.4), dimensions={}
+  multiply.30 = f32[64,64]{1,0} multiply(power.27, broadcast.5)
+  Arg_2.3 = f32[] parameter(2)
+  call.40 = (f32[64,64]{1,0}, pred[64,64]{1,0}, f32[64,64]{1,0}) call(Arg_0.1, multiply.30, Arg_2.3), to_apply=jit_jvp__where__0.31
+  get-tuple-element.41 = f32[64,64]{1,0} get-tuple-element(call.40), index=0
+  get-tuple-element.42 = pred[64,64]{1,0} get-tuple-element(call.40), index=1
+  get-tuple-element.43 = f32[64,64]{1,0} get-tuple-element(call.40), index=2
+  constant.10 = f32[] constant(0.5)
+  power.28 = f32[64,64]{1,0} power(subtract.26, broadcast.9)
+  multiply.29 = f32[64,64]{1,0} multiply(power.28, broadcast.7)
+  get-tuple-element.24 = pred[64,64]{1,0} get-tuple-element(call.22), index=1
+  get-tuple-element.25 = f32[64,64]{1,0} get-tuple-element(call.22), index=2
+  ROOT tuple.44 = (f32[64,64]{1,0}, pred[64,64]{1,0}, f32[64,64]{1,0}, f32[], f32[64,64]{1,0}, /*index=5*/pred[64,64]{1,0}, f32[64,64]{1,0}) tuple(get-tuple-element.41, get-tuple-element.42, get-tuple-element.43, constant.10, multiply.29, get-tuple-element.24, get-tuple-element.25)
+}
+

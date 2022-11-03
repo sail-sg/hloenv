@@ -1,0 +1,67 @@
+HloModule jit__uniform.218
+
+%xla_fallback_threefry2x32.20 (Arg_0.21: u32[], Arg_1.22: u32[], Arg_2.23: u32[65536], Arg_3.24: u32[65536]) -> (u32[65536], u32[65536]) {
+  %Arg_0.21 = u32[] parameter(0)
+  %broadcast.25 = u32[65536]{0} broadcast(u32[] %Arg_0.21), dimensions={}
+  %Arg_1.22 = u32[] parameter(1)
+  %broadcast.26 = u32[65536]{0} broadcast(u32[] %Arg_1.22), dimensions={}
+  %Arg_2.23 = u32[65536]{0} parameter(2)
+  %Arg_3.24 = u32[65536]{0} parameter(3)
+  ROOT %custom-call.27 = (u32[65536]{0}, u32[65536]{0}) custom-call(u32[65536]{0} %broadcast.25, u32[65536]{0} %broadcast.26, u32[65536]{0} %Arg_2.23, u32[65536]{0} %Arg_3.24), custom_call_target="cuda_threefry2x32", operand_layout_constraints={u32[65536]{0}, u32[65536]{0}, u32[65536]{0}, u32[65536]{0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="\000\000\001\000\000\000\000\000"
+}
+
+%threefry2x32.28 (Arg_0.29: u32[], Arg_1.30: u32[], Arg_2.31: u32[65536], Arg_3.32: u32[65536]) -> (u32[65536], u32[65536]) {
+  %Arg_0.29 = u32[] parameter(0)
+  %Arg_1.30 = u32[] parameter(1)
+  %Arg_2.31 = u32[65536]{0} parameter(2)
+  %Arg_3.32 = u32[65536]{0} parameter(3)
+  %call.33 = (u32[65536]{0}, u32[65536]{0}) call(u32[] %Arg_0.29, u32[] %Arg_1.30, u32[65536]{0} %Arg_2.31, u32[65536]{0} %Arg_3.32), to_apply=%xla_fallback_threefry2x32.20
+  %get-tuple-element.34 = u32[65536]{0} get-tuple-element((u32[65536]{0}, u32[65536]{0}) %call.33), index=0
+  %get-tuple-element.35 = u32[65536]{0} get-tuple-element((u32[65536]{0}, u32[65536]{0}) %call.33), index=1
+  ROOT %tuple.36 = (u32[65536]{0}, u32[65536]{0}) tuple(u32[65536]{0} %get-tuple-element.34, u32[65536]{0} %get-tuple-element.35)
+}
+
+ENTRY %main.59 (Arg_0.1: u32[2], Arg_1.2: s32[], Arg_2.3: f32[]) -> f32[128,1024] {
+  %Arg_1.2 = s32[] parameter(1)
+  %convert.10 = f32[] convert(s32[] %Arg_1.2)
+  %reshape.11 = f32[1,1]{1,0} reshape(f32[] %convert.10)
+  %broadcast.55 = f32[1,1]{1,0} broadcast(f32[1,1]{1,0} %reshape.11), dimensions={0,1}
+  %reshape.56 = f32[] reshape(f32[1,1]{1,0} %broadcast.55)
+  %broadcast.57 = f32[128,1024]{1,0} broadcast(f32[] %reshape.56), dimensions={}
+  %Arg_0.1 = u32[2]{0} parameter(0)
+  %slice.14 = u32[1]{0} slice(u32[2]{0} %Arg_0.1), slice={[0:1]}
+  %reshape.15 = u32[] reshape(u32[1]{0} %slice.14)
+  %slice.16 = u32[1]{0} slice(u32[2]{0} %Arg_0.1), slice={[1:2]}
+  %reshape.17 = u32[] reshape(u32[1]{0} %slice.16)
+  %iota.13 = u32[131072]{0} iota(), iota_dimension=0
+  %slice.18 = u32[65536]{0} slice(u32[131072]{0} %iota.13), slice={[0:65536]}
+  %slice.19 = u32[65536]{0} slice(u32[131072]{0} %iota.13), slice={[65536:131072]}
+  %call.37 = (u32[65536]{0}, u32[65536]{0}) call(u32[] %reshape.15, u32[] %reshape.17, u32[65536]{0} %slice.18, u32[65536]{0} %slice.19), to_apply=%threefry2x32.28
+  %get-tuple-element.38 = u32[65536]{0} get-tuple-element((u32[65536]{0}, u32[65536]{0}) %call.37), index=0
+  %get-tuple-element.39 = u32[65536]{0} get-tuple-element((u32[65536]{0}, u32[65536]{0}) %call.37), index=1
+  %concatenate.40 = u32[131072]{0} concatenate(u32[65536]{0} %get-tuple-element.38, u32[65536]{0} %get-tuple-element.39), dimensions={0}
+  %reshape.41 = u32[128,1024]{1,0} reshape(u32[131072]{0} %concatenate.40)
+  %constant.8 = u32[] constant(9)
+  %broadcast.9 = u32[128,1024]{1,0} broadcast(u32[] %constant.8), dimensions={}
+  %shift-right-logical.42 = u32[128,1024]{1,0} shift-right-logical(u32[128,1024]{1,0} %reshape.41, u32[128,1024]{1,0} %broadcast.9)
+  %constant.6 = u32[] constant(1065353216)
+  %broadcast.7 = u32[128,1024]{1,0} broadcast(u32[] %constant.6), dimensions={}
+  %or.43 = u32[128,1024]{1,0} or(u32[128,1024]{1,0} %shift-right-logical.42, u32[128,1024]{1,0} %broadcast.7)
+  %bitcast-convert.44 = f32[128,1024]{1,0} bitcast-convert(u32[128,1024]{1,0} %or.43)
+  %constant.4 = f32[] constant(1)
+  %broadcast.5 = f32[128,1024]{1,0} broadcast(f32[] %constant.4), dimensions={}
+  %subtract.45 = f32[128,1024]{1,0} subtract(f32[128,1024]{1,0} %bitcast-convert.44, f32[128,1024]{1,0} %broadcast.5)
+  %Arg_2.3 = f32[] parameter(2)
+  %reshape.12 = f32[1,1]{1,0} reshape(f32[] %Arg_2.3)
+  %subtract.46 = f32[1,1]{1,0} subtract(f32[1,1]{1,0} %reshape.12, f32[1,1]{1,0} %reshape.11)
+  %broadcast.47 = f32[1,1]{1,0} broadcast(f32[1,1]{1,0} %subtract.46), dimensions={0,1}
+  %reshape.48 = f32[] reshape(f32[1,1]{1,0} %broadcast.47)
+  %broadcast.49 = f32[128,1024]{1,0} broadcast(f32[] %reshape.48), dimensions={}
+  %multiply.50 = f32[128,1024]{1,0} multiply(f32[128,1024]{1,0} %subtract.45, f32[128,1024]{1,0} %broadcast.49)
+  %broadcast.51 = f32[1,1]{1,0} broadcast(f32[1,1]{1,0} %reshape.11), dimensions={0,1}
+  %reshape.52 = f32[] reshape(f32[1,1]{1,0} %broadcast.51)
+  %broadcast.53 = f32[128,1024]{1,0} broadcast(f32[] %reshape.52), dimensions={}
+  %add.54 = f32[128,1024]{1,0} add(f32[128,1024]{1,0} %multiply.50, f32[128,1024]{1,0} %broadcast.53)
+  ROOT %maximum.58 = f32[128,1024]{1,0} maximum(f32[128,1024]{1,0} %broadcast.57, f32[128,1024]{1,0} %add.54)
+}
+

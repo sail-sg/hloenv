@@ -1,0 +1,9 @@
+HloModule primitive_computation_lt.5
+
+ENTRY %primitive_computation_lt.5 (parameter.1: s32[16], parameter.2: s32[]) -> pred[16] {
+  %parameter.1 = s32[16]{0} parameter(0)
+  %parameter.2 = s32[] parameter(1)
+  %broadcast.3 = s32[16]{0} broadcast(s32[] %parameter.2), dimensions={}
+  ROOT %compare.4 = pred[16]{0} compare(s32[16]{0} %parameter.1, s32[16]{0} %broadcast.3), direction=LT
+}
+

@@ -1,0 +1,61 @@
+HloModule jit_qr.53
+
+jit_triu__3.37.2 {
+  iota.8 = s32[23]{0} iota(), iota_dimension=0
+  broadcast.9 = s32[23,23]{1,0} broadcast(iota.8), dimensions={0}
+  constant.6 = s32[] constant(-1)
+  broadcast.7 = s32[23,23]{1,0} broadcast(constant.6), dimensions={}
+  add.10 = s32[23,23]{1,0} add(broadcast.9, broadcast.7)
+  iota.11 = s32[23]{0} iota(), iota_dimension=0
+  broadcast.12 = s32[23,23]{1,0} broadcast(iota.11), dimensions={1}
+  compare.13 = pred[23,23]{1,0} compare(add.10, broadcast.12), direction=GE
+  broadcast.14 = pred[2,23,23]{2,1,0} broadcast(compare.13), dimensions={1,2}
+  constant.4 = f32[] constant(0)
+  broadcast.5 = f32[2,23,23]{2,1,0} broadcast(constant.4), dimensions={}
+  Arg_0.3 = f32[2,23,23]{2,1,0} parameter(0)
+  ROOT select.15 = f32[2,23,23]{2,1,0} select(broadcast.14, broadcast.5, Arg_0.3)
+}
+
+xla_fallback_qr.16 {
+  Arg_0.17 = f32[2,256,23]{2,1,0} parameter(0)
+  custom-call.24 = (f32[2,256,23]{1,2,0}, f32[2,23]{1,0}, s32[2]{0}, f32[196608]{0}) custom-call(Arg_0.17), custom_call_target="cusolver_geqrf", operand_layout_constraints={f32[2,256,23]{1,2,0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="\000\000\000\000\002\000\000\000\000\001\000\000\027\000\000\000\000\000\003\000"
+  get-tuple-element.25 = s32[2]{0} get-tuple-element(custom-call.24), index=2
+  constant.22 = s32[] constant(0)
+  broadcast.23 = s32[2]{0} broadcast(constant.22), dimensions={}
+  compare.26 = pred[2]{0} compare(get-tuple-element.25, broadcast.23), direction=EQ
+  get-tuple-element.27 = f32[2,256,23]{1,2,0} get-tuple-element(custom-call.24), index=0
+  get-tuple-element.28 = f32[2,23]{1,0} get-tuple-element(custom-call.24), index=1
+  custom-call.29 = (f32[2,256,23]{1,2,0}, s32[2]{0}, f32[38912]{0}) custom-call(get-tuple-element.27, get-tuple-element.28), custom_call_target="cusolver_orgqr", operand_layout_constraints={f32[2,256,23]{1,2,0}, f32[2,23]{1,0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="\000\000\000\000\002\000\000\000\000\001\000\000\027\000\000\000\027\000\000\000\000\230\000\000"
+  get-tuple-element.30 = s32[2]{0} get-tuple-element(custom-call.29), index=1
+  compare.31 = pred[2]{0} compare(get-tuple-element.30, broadcast.23), direction=EQ
+  and.32 = pred[2]{0} and(compare.26, compare.31)
+  broadcast.33 = pred[2,256,23]{2,1,0} broadcast(and.32), dimensions={0}
+  get-tuple-element.34 = f32[2,256,23]{1,2,0} get-tuple-element(custom-call.29), index=0
+  constant.20 = f32[] constant(nan)
+  broadcast.21 = f32[2,256,23]{2,1,0} broadcast(constant.20), dimensions={}
+  select.35 = f32[2,256,23]{2,1,0} select(broadcast.33, get-tuple-element.34, broadcast.21)
+  broadcast.36 = pred[2,23,23]{2,1,0} broadcast(and.32), dimensions={0}
+  slice.37 = f32[2,23,23]{2,1,0} slice(get-tuple-element.27), slice={[0:2], [0:23], [0:23]}
+  constant.18 = f32[] constant(nan)
+  broadcast.19 = f32[2,23,23]{2,1,0} broadcast(constant.18), dimensions={}
+  select.38 = f32[2,23,23]{2,1,0} select(broadcast.36, slice.37, broadcast.19)
+  call.39 = f32[2,23,23]{2,1,0} call(select.38), to_apply=jit_triu__3.37.2
+  ROOT tuple.40 = (f32[2,256,23]{2,1,0}, f32[2,23,23]{2,1,0}) tuple(select.35, call.39)
+}
+
+qr.41 {
+  Arg_0.42 = f32[2,256,23]{2,1,0} parameter(0)
+  call.43 = (f32[2,256,23]{2,1,0}, f32[2,23,23]{2,1,0}) call(Arg_0.42), to_apply=xla_fallback_qr.16
+  get-tuple-element.44 = f32[2,256,23]{2,1,0} get-tuple-element(call.43), index=0
+  get-tuple-element.45 = f32[2,23,23]{2,1,0} get-tuple-element(call.43), index=1
+  ROOT tuple.46 = (f32[2,256,23]{2,1,0}, f32[2,23,23]{2,1,0}) tuple(get-tuple-element.44, get-tuple-element.45)
+}
+
+ENTRY main.51 {
+  Arg_0.1 = f32[2,256,23]{2,1,0} parameter(0)
+  call.47 = (f32[2,256,23]{2,1,0}, f32[2,23,23]{2,1,0}) call(Arg_0.1), to_apply=qr.41
+  get-tuple-element.48 = f32[2,256,23]{2,1,0} get-tuple-element(call.47), index=0
+  get-tuple-element.49 = f32[2,23,23]{2,1,0} get-tuple-element(call.47), index=1
+  ROOT tuple.50 = (f32[2,256,23]{2,1,0}, f32[2,23,23]{2,1,0}) tuple(get-tuple-element.48, get-tuple-element.49)
+}
+
