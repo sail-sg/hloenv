@@ -1,0 +1,13 @@
+HloModule jit__cho_solve__38.9
+
+ENTRY %jit__cho_solve__38.9 (parameter.1: f64[20,20,20], parameter.2: f64[20,20,20]) -> (f64[20,20,20]) {
+  %constant.3 = pred[] constant(false)
+  %parameter.1 = f64[20,20,20]{2,1,0} parameter(0)
+  %parameter.2 = f64[20,20,20]{2,1,0} parameter(1)
+  %custom-call.4 = (f64[20,20,20]{1,2,0}, s8[160]{0}, s8[160]{0}) custom-call(f64[20,20,20]{2,1,0} %parameter.1, f64[20,20,20]{2,1,0} %parameter.2), custom_call_target="cublas_trsm_batched", operand_layout_constraints={f64[20,20,20]{1,2,0}, f64[20,20,20]{1,2,0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="\001\000\000\000\024\000\000\000\024\000\000\000\024\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
+  %get-tuple-element.5 = f64[20,20,20]{1,2,0} get-tuple-element((f64[20,20,20]{1,2,0}, s8[160]{0}, s8[160]{0}) %custom-call.4), index=0
+  %custom-call.6 = (f64[20,20,20]{1,2,0}, s8[160]{0}, s8[160]{0}) custom-call(f64[20,20,20]{2,1,0} %parameter.1, f64[20,20,20]{1,2,0} %get-tuple-element.5), custom_call_target="cublas_trsm_batched", operand_layout_constraints={f64[20,20,20]{1,2,0}, f64[20,20,20]{1,2,0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="\001\000\000\000\024\000\000\000\024\000\000\000\024\000\000\000\000\000\000\000\000\000\000\000\001\000\000\000\000\000\000\000"
+  %get-tuple-element.7 = f64[20,20,20]{1,2,0} get-tuple-element((f64[20,20,20]{1,2,0}, s8[160]{0}, s8[160]{0}) %custom-call.6), index=0
+  ROOT %tuple.8 = (f64[20,20,20]{1,2,0}) tuple(f64[20,20,20]{1,2,0} %get-tuple-element.7)
+}
+

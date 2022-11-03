@@ -1,0 +1,108 @@
+HloModule jit_loss.44
+
+region_0.49 {
+  Arg_0.50 = f32[] parameter(0)
+  Arg_1.51 = f32[] parameter(1)
+  ROOT add.52 = f32[] add(Arg_0.50, Arg_1.51)
+}
+
+region_1.55 {
+  Arg_0.56 = f32[] parameter(0)
+  Arg_1.57 = f32[] parameter(1)
+  ROOT add.58 = f32[] add(Arg_0.56, Arg_1.57)
+}
+
+region_2.64 {
+  Arg_0.65 = f32[] parameter(0)
+  Arg_1.66 = f32[] parameter(1)
+  ROOT add.67 = f32[] add(Arg_0.65, Arg_1.66)
+}
+
+region_3.71 {
+  Arg_0.72 = f32[] parameter(0)
+  Arg_1.73 = f32[] parameter(1)
+  ROOT add.74 = f32[] add(Arg_0.72, Arg_1.73)
+}
+
+region_4.77 {
+  Arg_0.78 = f32[] parameter(0)
+  Arg_1.79 = f32[] parameter(1)
+  ROOT add.80 = f32[] add(Arg_0.78, Arg_1.79)
+}
+
+region_5.86 {
+  Arg_0.87 = f32[] parameter(0)
+  Arg_1.88 = f32[] parameter(1)
+  ROOT add.89 = f32[] add(Arg_0.87, Arg_1.88)
+}
+
+ENTRY main.92 {
+  constant.4 = f32[] constant(0)
+  broadcast.5 = f32[101,31]{1,0} broadcast(constant.4), dimensions={}
+  constant.15 = s32[1]{0} constant({30})
+  Arg_2.3 = f32[101,1]{1,0} parameter(2)
+  reshape.44 = f32[101,1,1]{2,1,0} reshape(Arg_2.3)
+  Arg_0.1 = f32[101,1]{1,0} parameter(0)
+  Arg_1.2 = f32[31]{0} parameter(1)
+  slice.19 = f32[10]{0} slice(Arg_1.2), slice={[0:10]}
+  reshape.20 = f32[1,10]{1,0} reshape(slice.19)
+  dot.25 = f32[101,10]{1,0} dot(Arg_0.1, reshape.20), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  reshape.26 = f32[101,1,10]{2,1,0} reshape(dot.25)
+  slice.21 = f32[10]{0} slice(Arg_1.2), slice={[10:20]}
+  reshape.27 = f32[1,1,10]{2,1,0} reshape(slice.21)
+  broadcast.28 = f32[1,1,10]{2,1,0} broadcast(reshape.27), dimensions={0,1,2}
+  reshape.29 = f32[1,10]{1,0} reshape(broadcast.28)
+  broadcast.30 = f32[101,1,10]{2,1,0} broadcast(reshape.29), dimensions={1,2}
+  add.31 = f32[101,1,10]{2,1,0} add(reshape.26, broadcast.30)
+  constant.13 = f32[] constant(0)
+  broadcast.14 = f32[101,1,10]{2,1,0} broadcast(constant.13), dimensions={}
+  maximum.32 = f32[101,1,10]{2,1,0} maximum(add.31, broadcast.14)
+  slice.22 = f32[10]{0} slice(Arg_1.2), slice={[20:30]}
+  reshape.23 = f32[10,1]{1,0} reshape(slice.22)
+  dot.38 = f32[101,1,1]{2,1,0} dot(maximum.32, reshape.23), lhs_contracting_dims={2}, rhs_contracting_dims={0}
+  slice.24 = f32[1]{0} slice(Arg_1.2), slice={[30:31]}
+  reshape.39 = f32[1,1,1]{2,1,0} reshape(slice.24)
+  broadcast.40 = f32[1,1,1]{2,1,0} broadcast(reshape.39), dimensions={0,1,2}
+  reshape.41 = f32[1,1]{1,0} reshape(broadcast.40)
+  broadcast.42 = f32[101,1,1]{2,1,0} broadcast(reshape.41), dimensions={1,2}
+  add.43 = f32[101,1,1]{2,1,0} add(dot.38, broadcast.42)
+  subtract.45 = f32[101,1,1]{2,1,0} subtract(reshape.44, add.43)
+  constant.7 = f32[] constant(2)
+  broadcast.8 = f32[101,1,1]{2,1,0} broadcast(constant.7), dimensions={}
+  multiply.46 = f32[101,1,1]{2,1,0} multiply(subtract.45, broadcast.8)
+  negate.47 = f32[101,1,1]{2,1,0} negate(multiply.46)
+  reshape.48 = f32[101,1]{1,0} reshape(negate.47)
+  constant.6 = f32[] constant(0)
+  reduce.53 = f32[101]{0} reduce(reshape.48, constant.6), dimensions={1}, to_apply=region_0.49
+  reshape.54 = f32[101,1]{1,0} reshape(reduce.53)
+  scatter.59 = f32[101,31]{1,0} scatter(broadcast.5, constant.15, reshape.54), update_window_dims={0,1}, inserted_window_dims={}, scatter_dims_to_operand_dims={1}, index_vector_dim=0, indices_are_sorted=true, unique_indices=true, to_apply=region_1.55
+  constant.16 = s32[1]{0} constant({20})
+  dot.60 = f32[101,1,10]{2,1,0} dot(negate.47, maximum.32), lhs_batch_dims={0}, lhs_contracting_dims={1}, rhs_batch_dims={0}, rhs_contracting_dims={1}
+  transpose.61 = f32[101,10,1]{1,2,0} transpose(dot.60), dimensions={0,2,1}
+  reshape.63 = f32[101,10]{1,0} reshape(transpose.61)
+  scatter.68 = f32[101,31]{1,0} scatter(broadcast.5, constant.16, reshape.63), update_window_dims={0,1}, inserted_window_dims={}, scatter_dims_to_operand_dims={1}, index_vector_dim=0, indices_are_sorted=true, unique_indices=true, to_apply=region_2.64
+  add.69 = f32[101,31]{1,0} add(scatter.59, scatter.68)
+  constant.17 = s32[1]{0} constant({10})
+  dot.62 = f32[101,1,10]{2,1,0} dot(negate.47, reshape.23), lhs_contracting_dims={2}, rhs_contracting_dims={1}
+  compare.33 = pred[101,1,10]{2,1,0} compare(add.31, maximum.32), direction=EQ
+  constant.11 = f32[] constant(1)
+  broadcast.12 = f32[101,1,10]{2,1,0} broadcast(constant.11), dimensions={}
+  select.34 = f32[101,1,10]{2,1,0} select(compare.33, broadcast.12, broadcast.14)
+  compare.35 = pred[101,1,10]{2,1,0} compare(broadcast.14, maximum.32), direction=EQ
+  constant.9 = f32[] constant(2)
+  broadcast.10 = f32[101,1,10]{2,1,0} broadcast(constant.9), dimensions={}
+  select.36 = f32[101,1,10]{2,1,0} select(compare.35, broadcast.10, broadcast.12)
+  divide.37 = f32[101,1,10]{2,1,0} divide(select.34, select.36)
+  multiply.70 = f32[101,1,10]{2,1,0} multiply(dot.62, divide.37)
+  reshape.76 = f32[101,10]{1,0} reshape(multiply.70)
+  scatter.81 = f32[101,31]{1,0} scatter(broadcast.5, constant.17, reshape.76), update_window_dims={0,1}, inserted_window_dims={}, scatter_dims_to_operand_dims={1}, index_vector_dim=0, indices_are_sorted=true, unique_indices=true, to_apply=region_4.77
+  add.82 = f32[101,31]{1,0} add(add.69, scatter.81)
+  constant.18 = s32[1]{0} constant({0})
+  reduce.75 = f32[101,10]{1,0} reduce(multiply.70, constant.6), dimensions={1}, to_apply=region_3.71
+  dot.83 = f32[101,10,1]{2,1,0} dot(reduce.75, Arg_0.1), lhs_batch_dims={0}, lhs_contracting_dims={}, rhs_batch_dims={0}, rhs_contracting_dims={}
+  transpose.84 = f32[101,1,10]{1,2,0} transpose(dot.83), dimensions={0,2,1}
+  reshape.85 = f32[101,10]{1,0} reshape(transpose.84)
+  scatter.90 = f32[101,31]{1,0} scatter(broadcast.5, constant.18, reshape.85), update_window_dims={0,1}, inserted_window_dims={}, scatter_dims_to_operand_dims={1}, index_vector_dim=0, indices_are_sorted=true, unique_indices=true, to_apply=region_5.86
+  ROOT add.91 = f32[101,31]{1,0} add(add.82, scatter.90)
+}
+

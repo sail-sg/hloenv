@@ -1,0 +1,160 @@
+HloModule jit_apply.7
+
+jit_rotation.4 {
+  Arg_0.5 = f32[7]{0} parameter(0)
+  ROOT slice.6 = f32[4]{0} slice(Arg_0.5), slice={[0:4]}
+}
+
+region_0.8 {
+  Arg_0.9 = f32[] parameter(0)
+  ROOT Arg_1.10 = f32[] parameter(1)
+}
+
+jit_multiply.11 {
+  Arg_0.12 = f32[4]{0} parameter(0)
+  slice.16 = f32[1]{0} slice(Arg_0.12), slice={[1:2]}
+  reshape.17 = f32[] reshape(slice.16)
+  negate.30 = f32[] negate(reshape.17)
+  Arg_1.13 = f32[4]{0} parameter(1)
+  slice.24 = f32[1]{0} slice(Arg_1.13), slice={[1:2]}
+  reshape.25 = f32[] reshape(slice.24)
+  multiply.31 = f32[] multiply(negate.30, reshape.25)
+  slice.18 = f32[1]{0} slice(Arg_0.12), slice={[2:3]}
+  reshape.19 = f32[] reshape(slice.18)
+  slice.26 = f32[1]{0} slice(Arg_1.13), slice={[2:3]}
+  reshape.27 = f32[] reshape(slice.26)
+  multiply.32 = f32[] multiply(reshape.19, reshape.27)
+  subtract.33 = f32[] subtract(multiply.31, multiply.32)
+  slice.20 = f32[1]{0} slice(Arg_0.12), slice={[3:4]}
+  reshape.21 = f32[] reshape(slice.20)
+  slice.28 = f32[1]{0} slice(Arg_1.13), slice={[3:4]}
+  reshape.29 = f32[] reshape(slice.28)
+  multiply.34 = f32[] multiply(reshape.21, reshape.29)
+  subtract.35 = f32[] subtract(subtract.33, multiply.34)
+  slice.14 = f32[1]{0} slice(Arg_0.12), slice={[0:1]}
+  reshape.15 = f32[] reshape(slice.14)
+  slice.22 = f32[1]{0} slice(Arg_1.13), slice={[0:1]}
+  reshape.23 = f32[] reshape(slice.22)
+  multiply.36 = f32[] multiply(reshape.15, reshape.23)
+  add.37 = f32[] add(subtract.35, multiply.36)
+  reshape.60 = f32[1]{0} reshape(add.37)
+  multiply.38 = f32[] multiply(reshape.17, reshape.23)
+  multiply.39 = f32[] multiply(reshape.19, reshape.29)
+  add.40 = f32[] add(multiply.38, multiply.39)
+  multiply.41 = f32[] multiply(reshape.21, reshape.27)
+  subtract.42 = f32[] subtract(add.40, multiply.41)
+  multiply.43 = f32[] multiply(reshape.15, reshape.25)
+  add.44 = f32[] add(subtract.42, multiply.43)
+  reshape.61 = f32[1]{0} reshape(add.44)
+  negate.45 = f32[] negate(reshape.17)
+  multiply.46 = f32[] multiply(negate.45, reshape.29)
+  multiply.47 = f32[] multiply(reshape.19, reshape.23)
+  add.48 = f32[] add(multiply.46, multiply.47)
+  multiply.49 = f32[] multiply(reshape.21, reshape.25)
+  add.50 = f32[] add(add.48, multiply.49)
+  multiply.51 = f32[] multiply(reshape.15, reshape.27)
+  add.52 = f32[] add(add.50, multiply.51)
+  reshape.62 = f32[1]{0} reshape(add.52)
+  multiply.53 = f32[] multiply(reshape.17, reshape.27)
+  multiply.54 = f32[] multiply(reshape.19, reshape.25)
+  subtract.55 = f32[] subtract(multiply.53, multiply.54)
+  multiply.56 = f32[] multiply(reshape.21, reshape.23)
+  add.57 = f32[] add(subtract.55, multiply.56)
+  multiply.58 = f32[] multiply(reshape.15, reshape.29)
+  add.59 = f32[] add(add.57, multiply.58)
+  reshape.63 = f32[1]{0} reshape(add.59)
+  ROOT concatenate.64 = f32[4]{0} concatenate(reshape.60, reshape.61, reshape.62, reshape.63), dimensions={0}
+}
+
+jit_inverse.65 {
+  Arg_1.67 = f32[4]{0} parameter(1)
+  Arg_0.66 = s32[4]{0} parameter(0)
+  convert.68 = f32[4]{0} convert(Arg_0.66)
+  ROOT multiply.69 = f32[4]{0} multiply(Arg_1.67, convert.68)
+}
+
+jit_multiply_0.70 {
+  Arg_0.71 = f32[4]{0} parameter(0)
+  slice.75 = f32[1]{0} slice(Arg_0.71), slice={[1:2]}
+  reshape.76 = f32[] reshape(slice.75)
+  negate.89 = f32[] negate(reshape.76)
+  Arg_1.72 = f32[4]{0} parameter(1)
+  slice.83 = f32[1]{0} slice(Arg_1.72), slice={[1:2]}
+  reshape.84 = f32[] reshape(slice.83)
+  multiply.90 = f32[] multiply(negate.89, reshape.84)
+  slice.77 = f32[1]{0} slice(Arg_0.71), slice={[2:3]}
+  reshape.78 = f32[] reshape(slice.77)
+  slice.85 = f32[1]{0} slice(Arg_1.72), slice={[2:3]}
+  reshape.86 = f32[] reshape(slice.85)
+  multiply.91 = f32[] multiply(reshape.78, reshape.86)
+  subtract.92 = f32[] subtract(multiply.90, multiply.91)
+  slice.79 = f32[1]{0} slice(Arg_0.71), slice={[3:4]}
+  reshape.80 = f32[] reshape(slice.79)
+  slice.87 = f32[1]{0} slice(Arg_1.72), slice={[3:4]}
+  reshape.88 = f32[] reshape(slice.87)
+  multiply.93 = f32[] multiply(reshape.80, reshape.88)
+  subtract.94 = f32[] subtract(subtract.92, multiply.93)
+  slice.73 = f32[1]{0} slice(Arg_0.71), slice={[0:1]}
+  reshape.74 = f32[] reshape(slice.73)
+  slice.81 = f32[1]{0} slice(Arg_1.72), slice={[0:1]}
+  reshape.82 = f32[] reshape(slice.81)
+  multiply.95 = f32[] multiply(reshape.74, reshape.82)
+  add.96 = f32[] add(subtract.94, multiply.95)
+  reshape.119 = f32[1]{0} reshape(add.96)
+  multiply.97 = f32[] multiply(reshape.76, reshape.82)
+  multiply.98 = f32[] multiply(reshape.78, reshape.88)
+  add.99 = f32[] add(multiply.97, multiply.98)
+  multiply.100 = f32[] multiply(reshape.80, reshape.86)
+  subtract.101 = f32[] subtract(add.99, multiply.100)
+  multiply.102 = f32[] multiply(reshape.74, reshape.84)
+  add.103 = f32[] add(subtract.101, multiply.102)
+  reshape.120 = f32[1]{0} reshape(add.103)
+  negate.104 = f32[] negate(reshape.76)
+  multiply.105 = f32[] multiply(negate.104, reshape.88)
+  multiply.106 = f32[] multiply(reshape.78, reshape.82)
+  add.107 = f32[] add(multiply.105, multiply.106)
+  multiply.108 = f32[] multiply(reshape.80, reshape.84)
+  add.109 = f32[] add(add.107, multiply.108)
+  multiply.110 = f32[] multiply(reshape.74, reshape.86)
+  add.111 = f32[] add(add.109, multiply.110)
+  reshape.121 = f32[1]{0} reshape(add.111)
+  multiply.112 = f32[] multiply(reshape.76, reshape.86)
+  multiply.113 = f32[] multiply(reshape.78, reshape.84)
+  subtract.114 = f32[] subtract(multiply.112, multiply.113)
+  multiply.115 = f32[] multiply(reshape.80, reshape.82)
+  add.116 = f32[] add(subtract.114, multiply.115)
+  multiply.117 = f32[] multiply(reshape.74, reshape.88)
+  add.118 = f32[] add(add.116, multiply.117)
+  reshape.122 = f32[1]{0} reshape(add.118)
+  ROOT concatenate.123 = f32[4]{0} concatenate(reshape.119, reshape.120, reshape.121, reshape.122), dimensions={0}
+}
+
+jit_apply.124 {
+  Arg_1.126 = f32[4]{0} parameter(1)
+  constant.129 = f32[] constant(0)
+  broadcast.130 = f32[4]{0} broadcast(constant.129), dimensions={}
+  constant.128 = s32[1]{0} constant({1})
+  Arg_2.127 = f32[3]{0} parameter(2)
+  scatter.131 = f32[4]{0} scatter(broadcast.130, constant.128, Arg_2.127), update_window_dims={0}, inserted_window_dims={}, scatter_dims_to_operand_dims={0}, index_vector_dim=0, indices_are_sorted=true, unique_indices=true, to_apply=region_0.8
+  call.132 = f32[4]{0} call(Arg_1.126, scatter.131), to_apply=jit_multiply.11
+  Arg_0.125 = s32[4]{0} parameter(0)
+  call.133 = f32[4]{0} call(Arg_0.125, Arg_1.126), to_apply=jit_inverse.65
+  call.134 = f32[4]{0} call(call.132, call.133), to_apply=jit_multiply_0.70
+  ROOT slice.135 = f32[3]{0} slice(call.134), slice={[1:4]}
+}
+
+jit_translation.137 {
+  Arg_0.138 = f32[7]{0} parameter(0)
+  ROOT slice.139 = f32[3]{0} slice(Arg_0.138), slice={[4:7]}
+}
+
+ENTRY main.142 {
+  constant.3 = s32[4]{0} constant({1, -1, -1, -1})
+  Arg_0.1 = f32[7]{0} parameter(0)
+  call.7 = f32[4]{0} call(Arg_0.1), to_apply=jit_rotation.4
+  Arg_1.2 = f32[3]{0} parameter(1)
+  call.136 = f32[3]{0} call(constant.3, call.7, Arg_1.2), to_apply=jit_apply.124
+  call.140 = f32[3]{0} call(Arg_0.1), to_apply=jit_translation.137
+  ROOT add.141 = f32[3]{0} add(call.136, call.140)
+}
+

@@ -1,0 +1,8 @@
+HloModule jit_prim_fun.14
+
+ENTRY main.4 {
+  Arg_0.1 = f32[7]{0} parameter(0)
+  Arg_1.2 = s32[1]{0} parameter(1)
+  ROOT gather.3 = f32[3]{0} gather(Arg_0.1, Arg_1.2), offset_dims={0}, collapsed_slice_dims={}, start_index_map={0}, index_vector_dim=0, slice_sizes={3}, indices_are_sorted=true
+}
+

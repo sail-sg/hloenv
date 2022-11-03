@@ -1,0 +1,64 @@
+HloModule jit__unique1d_sorted_mask.54
+
+%sort_lt_comparator.4 (parameter.5: f64[], parameter.6: f64[]) -> pred[] {
+  %constant.7 = pred[] constant(false)
+  %parameter.5 = f64[] parameter(0)
+  %bitcast-convert.8 = s64[] bitcast-convert(f64[] %parameter.5)
+  %constant.13 = s64[] constant(0)
+  %compare.14 = pred[] compare(s64[] %bitcast-convert.8, s64[] %constant.13), direction=LT
+  %constant.10 = u64[] constant(9223372036854775807)
+  %bitcast-convert.9 = u64[] bitcast-convert(f64[] %parameter.5)
+  %subtract.11 = u64[] subtract(u64[] %constant.10, u64[] %bitcast-convert.9)
+  %bitcast-convert.12 = s64[] bitcast-convert(u64[] %subtract.11)
+  %select.15 = s64[] select(pred[] %compare.14, s64[] %bitcast-convert.12, s64[] %bitcast-convert.8)
+  %parameter.6 = f64[] parameter(1)
+  %bitcast-convert.16 = s64[] bitcast-convert(f64[] %parameter.6)
+  %constant.21 = s64[] constant(0)
+  %compare.22 = pred[] compare(s64[] %bitcast-convert.16, s64[] %constant.21), direction=LT
+  %constant.18 = u64[] constant(9223372036854775807)
+  %bitcast-convert.17 = u64[] bitcast-convert(f64[] %parameter.6)
+  %subtract.19 = u64[] subtract(u64[] %constant.18, u64[] %bitcast-convert.17)
+  %bitcast-convert.20 = s64[] bitcast-convert(u64[] %subtract.19)
+  %select.23 = s64[] select(pred[] %compare.22, s64[] %bitcast-convert.20, s64[] %bitcast-convert.16)
+  ROOT %compare.24 = pred[] compare(s64[] %select.15, s64[] %select.23), direction=LT
+}
+
+%jit_sort.25 (parameter.26: f64[500]) -> (f64[500]) {
+  %constant.27 = pred[] constant(false)
+  %parameter.26 = f64[500]{0} parameter(0)
+  %sort.28 = f64[500]{0} sort(f64[500]{0} %parameter.26), dimensions={0}, is_stable=true, to_apply=%sort_lt_comparator.4
+  %tuple.29 = (f64[500]{0}) tuple(f64[500]{0} %sort.28)
+  %get-tuple-element.30 = f64[500]{0} get-tuple-element((f64[500]{0}) %tuple.29), index=0
+  ROOT %tuple.31 = (f64[500]{0}) tuple(f64[500]{0} %get-tuple-element.30)
+}
+
+%reduction_computation.48 (parameter.49: pred[], parameter.50: pred[]) -> pred[] {
+  %parameter.49 = pred[] parameter(0)
+  ROOT %parameter.50 = pred[] parameter(1)
+  %constant.51 = pred[] constant(false)
+}
+
+ENTRY %jit__unique1d_sorted_mask.54 (parameter.2: f64[500]) -> (f64[500], pred[500], s64[0]) {
+  %constant.3 = pred[] constant(false)
+  %constant.47 = pred[] constant(false)
+  %parameter.2 = f64[500]{0} parameter(0)
+  %call.32 = (f64[500]{0}) call(f64[500]{0} %parameter.2), to_apply=%jit_sort.25
+  %get-tuple-element.33 = f64[500]{0} get-tuple-element((f64[500]{0}) %call.32), index=0
+  %constant.34 = pred[] constant(true)
+  %broadcast.35 = pred[500]{0} broadcast(pred[] %constant.34), dimensions={}
+  %constant.45 = s32[] constant(1)
+  %broadcast.46 = s32[1]{0} broadcast(s32[] %constant.45), dimensions={}
+  %constant.36 = s32[] constant(1)
+  %broadcast.37 = s32[1]{0} broadcast(s32[] %constant.36), dimensions={}
+  %gather.38 = f64[499]{0} gather(f64[500]{0} %get-tuple-element.33, s32[1]{0} %broadcast.37), offset_dims={0}, collapsed_slice_dims={}, start_index_map={0}, index_vector_dim=0, slice_sizes={499}, indices_are_sorted=true
+  %broadcast.39 = f64[499]{0} broadcast(f64[499]{0} %gather.38), dimensions={0}
+  %constant.40 = s32[] constant(0)
+  %broadcast.41 = s32[1]{0} broadcast(s32[] %constant.40), dimensions={}
+  %gather.42 = f64[499]{0} gather(f64[500]{0} %get-tuple-element.33, s32[1]{0} %broadcast.41), offset_dims={0}, collapsed_slice_dims={}, start_index_map={0}, index_vector_dim=0, slice_sizes={499}, indices_are_sorted=true
+  %broadcast.43 = f64[499]{0} broadcast(f64[499]{0} %gather.42), dimensions={0}
+  %compare.44 = pred[499]{0} compare(f64[499]{0} %broadcast.39, f64[499]{0} %broadcast.43), direction=NE
+  %scatter.52 = pred[500]{0} scatter(pred[500]{0} %broadcast.35, s32[1]{0} %broadcast.46, pred[499]{0} %compare.44), update_window_dims={0}, inserted_window_dims={}, scatter_dims_to_operand_dims={0}, index_vector_dim=0, indices_are_sorted=true, unique_indices=true, to_apply=%reduction_computation.48
+  %constant.1 = s64[0]{0} constant({})
+  ROOT %tuple.53 = (f64[500]{0}, pred[500]{0}, s64[0]{0}) tuple(f64[500]{0} %get-tuple-element.33, pred[500]{0} %scatter.52, s64[0]{0} %constant.1)
+}
+

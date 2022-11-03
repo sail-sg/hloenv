@@ -1,0 +1,11 @@
+HloModule jit_fn__34.7
+
+ENTRY %jit_fn__34.7 (parameter.1: f32[64,16,16,384], parameter.2: f32[]) -> f32[64,16,16,384] {
+  %constant.3 = pred[] constant(false)
+  %parameter.1 = f32[64,16,16,384]{3,2,1,0} parameter(0)
+  %parameter.2 = f32[] parameter(1)
+  %convert.4 = f32[] convert(f32[] %parameter.2)
+  %broadcast.5 = f32[64,16,16,384]{3,2,1,0} broadcast(f32[] %convert.4), dimensions={}
+  ROOT %multiply.6 = f32[64,16,16,384]{3,2,1,0} multiply(f32[64,16,16,384]{3,2,1,0} %parameter.1, f32[64,16,16,384]{3,2,1,0} %broadcast.5)
+}
+

@@ -1,0 +1,21 @@
+HloModule jit__unstack.9
+
+ENTRY %main.17 (Arg_0.1: u32[7,2]) -> (u32[2], u32[2], u32[2], u32[2], u32[2], /*index=5*/u32[2], u32[2]) {
+  %Arg_0.1 = u32[7,2]{1,0} parameter(0)
+  %slice.2 = u32[1,2]{1,0} slice(u32[7,2]{1,0} %Arg_0.1), slice={[0:1], [0:2]}
+  %reshape.3 = u32[2]{0} reshape(u32[1,2]{1,0} %slice.2)
+  %slice.4 = u32[1,2]{1,0} slice(u32[7,2]{1,0} %Arg_0.1), slice={[1:2], [0:2]}
+  %reshape.5 = u32[2]{0} reshape(u32[1,2]{1,0} %slice.4)
+  %slice.6 = u32[1,2]{1,0} slice(u32[7,2]{1,0} %Arg_0.1), slice={[2:3], [0:2]}
+  %reshape.7 = u32[2]{0} reshape(u32[1,2]{1,0} %slice.6)
+  %slice.8 = u32[1,2]{1,0} slice(u32[7,2]{1,0} %Arg_0.1), slice={[3:4], [0:2]}
+  %reshape.9 = u32[2]{0} reshape(u32[1,2]{1,0} %slice.8)
+  %slice.10 = u32[1,2]{1,0} slice(u32[7,2]{1,0} %Arg_0.1), slice={[4:5], [0:2]}
+  %reshape.11 = u32[2]{0} reshape(u32[1,2]{1,0} %slice.10)
+  %slice.12 = u32[1,2]{1,0} slice(u32[7,2]{1,0} %Arg_0.1), slice={[5:6], [0:2]}
+  %reshape.13 = u32[2]{0} reshape(u32[1,2]{1,0} %slice.12)
+  %slice.14 = u32[1,2]{1,0} slice(u32[7,2]{1,0} %Arg_0.1), slice={[6:7], [0:2]}
+  %reshape.15 = u32[2]{0} reshape(u32[1,2]{1,0} %slice.14)
+  ROOT %tuple.16 = (u32[2]{0}, u32[2]{0}, u32[2]{0}, u32[2]{0}, u32[2]{0}, /*index=5*/u32[2]{0}, u32[2]{0}) tuple(u32[2]{0} %reshape.3, u32[2]{0} %reshape.5, u32[2]{0} %reshape.7, u32[2]{0} %reshape.9, u32[2]{0} %reshape.11, /*index=5*/u32[2]{0} %reshape.13, u32[2]{0} %reshape.15)
+}
+

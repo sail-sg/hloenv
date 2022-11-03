@@ -1,0 +1,49 @@
+HloModule jit__uniform.7
+
+ENTRY main.45 {
+  Arg_1.2 = f32[] parameter(1)
+  reshape.11 = f32[1]{0} reshape(Arg_1.2)
+  broadcast.41 = f32[1]{0} broadcast(reshape.11), dimensions={0}
+  reshape.42 = f32[] reshape(broadcast.41)
+  broadcast.43 = f32[31]{0} broadcast(reshape.42), dimensions={}
+  Arg_0.1 = u32[2]{0} parameter(0)
+  slice.14 = u32[1]{0} slice(Arg_0.1), slice={[0:1]}
+  reshape.15 = u32[] reshape(slice.14)
+  broadcast.21 = u32[16]{0} broadcast(reshape.15), dimensions={}
+  slice.16 = u32[1]{0} slice(Arg_0.1), slice={[1:2]}
+  reshape.17 = u32[] reshape(slice.16)
+  broadcast.22 = u32[16]{0} broadcast(reshape.17), dimensions={}
+  iota.13 = u32[31]{0} iota(), iota_dimension=0
+  slice.19 = u32[16]{0} slice(iota.13), slice={[0:16]}
+  constant.10 = u32[1]{0} constant({0})
+  concatenate.18 = u32[32]{0} concatenate(iota.13, constant.10), dimensions={0}
+  slice.20 = u32[16]{0} slice(concatenate.18), slice={[16:32]}
+  custom-call.23 = (u32[16]{0}, u32[16]{0}) custom-call(broadcast.21, broadcast.22, slice.19, slice.20), custom_call_target="cuda_threefry2x32", operand_layout_constraints={u32[16]{0}, u32[16]{0}, u32[16]{0}, u32[16]{0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="\020\000\000\000\000\000\000\000"
+  get-tuple-element.24 = u32[16]{0} get-tuple-element(custom-call.23), index=0
+  get-tuple-element.25 = u32[16]{0} get-tuple-element(custom-call.23), index=1
+  concatenate.26 = u32[32]{0} concatenate(get-tuple-element.24, get-tuple-element.25), dimensions={0}
+  slice.27 = u32[31]{0} slice(concatenate.26), slice={[0:31]}
+  constant.8 = u32[] constant(9)
+  broadcast.9 = u32[31]{0} broadcast(constant.8), dimensions={}
+  shift-right-logical.28 = u32[31]{0} shift-right-logical(slice.27, broadcast.9)
+  constant.6 = u32[] constant(1065353216)
+  broadcast.7 = u32[31]{0} broadcast(constant.6), dimensions={}
+  or.29 = u32[31]{0} or(shift-right-logical.28, broadcast.7)
+  bitcast-convert.30 = f32[31]{0} bitcast-convert(or.29)
+  constant.4 = f32[] constant(1)
+  broadcast.5 = f32[31]{0} broadcast(constant.4), dimensions={}
+  subtract.31 = f32[31]{0} subtract(bitcast-convert.30, broadcast.5)
+  Arg_2.3 = f32[] parameter(2)
+  reshape.12 = f32[1]{0} reshape(Arg_2.3)
+  subtract.32 = f32[1]{0} subtract(reshape.12, reshape.11)
+  broadcast.33 = f32[1]{0} broadcast(subtract.32), dimensions={0}
+  reshape.34 = f32[] reshape(broadcast.33)
+  broadcast.35 = f32[31]{0} broadcast(reshape.34), dimensions={}
+  multiply.36 = f32[31]{0} multiply(subtract.31, broadcast.35)
+  broadcast.37 = f32[1]{0} broadcast(reshape.11), dimensions={0}
+  reshape.38 = f32[] reshape(broadcast.37)
+  broadcast.39 = f32[31]{0} broadcast(reshape.38), dimensions={}
+  add.40 = f32[31]{0} add(multiply.36, broadcast.39)
+  ROOT maximum.44 = f32[31]{0} maximum(broadcast.43, add.40)
+}
+

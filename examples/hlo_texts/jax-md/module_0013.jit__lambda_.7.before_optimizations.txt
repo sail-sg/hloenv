@@ -1,0 +1,16 @@
+HloModule jit__lambda_.7
+
+ENTRY main.12 {
+  Arg_0.1 = f32[3,3]{1,0} parameter(0)
+  reshape.4 = f32[1,3,3]{2,1,0} reshape(Arg_0.1)
+  broadcast.5 = f32[1,3,3]{2,1,0} broadcast(reshape.4), dimensions={0,1,2}
+  reshape.6 = f32[3,3]{1,0} reshape(broadcast.5)
+  broadcast.7 = f32[3,3,3]{2,1,0} broadcast(reshape.6), dimensions={1,2}
+  Arg_1.2 = f32[3,3]{1,0} parameter(1)
+  reshape.3 = f32[3,1,3]{2,1,0} reshape(Arg_1.2)
+  broadcast.8 = f32[3,1,3]{2,1,0} broadcast(reshape.3), dimensions={0,1,2}
+  reshape.9 = f32[3,3]{1,0} reshape(broadcast.8)
+  broadcast.10 = f32[3,3,3]{2,1,0} broadcast(reshape.9), dimensions={0,2}
+  ROOT subtract.11 = f32[3,3,3]{2,1,0} subtract(broadcast.7, broadcast.10)
+}
+

@@ -1,0 +1,11 @@
+HloModule jit__unstack.6
+
+ENTRY main.7 {
+  Arg_0.1 = u32[2,2]{1,0} parameter(0)
+  slice.2 = u32[1,2]{1,0} slice(Arg_0.1), slice={[0:1], [0:2]}
+  reshape.3 = u32[2]{0} reshape(slice.2)
+  slice.4 = u32[1,2]{1,0} slice(Arg_0.1), slice={[1:2], [0:2]}
+  reshape.5 = u32[2]{0} reshape(slice.4)
+  ROOT tuple.6 = (u32[2]{0}, u32[2]{0}) tuple(reshape.3, reshape.5)
+}
+

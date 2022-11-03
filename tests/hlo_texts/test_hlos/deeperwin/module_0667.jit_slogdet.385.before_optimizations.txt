@@ -1,0 +1,149 @@
+HloModule jit_slogdet.385
+
+diagonal.29 {
+  Arg_0.30 = f32[2048,20,4,4]{3,2,1,0} parameter(0)
+  iota.35 = s32[4]{0} iota(), iota_dimension=0
+  constant.33 = s32[] constant(0)
+  broadcast.34 = s32[4]{0} broadcast(constant.33), dimensions={}
+  compare.37 = pred[4]{0} compare(iota.35, broadcast.34), direction=LT
+  constant.31 = s32[] constant(4)
+  broadcast.32 = s32[4]{0} broadcast(constant.31), dimensions={}
+  add.38 = s32[4]{0} add(iota.35, broadcast.32)
+  select.39 = s32[4]{0} select(compare.37, add.38, iota.35)
+  reshape.43 = s32[4,1]{1,0} reshape(select.39)
+  iota.36 = s32[4]{0} iota(), iota_dimension=0
+  compare.40 = pred[4]{0} compare(iota.36, broadcast.34), direction=LT
+  add.41 = s32[4]{0} add(iota.36, broadcast.32)
+  select.42 = s32[4]{0} select(compare.40, add.41, iota.36)
+  reshape.44 = s32[4,1]{1,0} reshape(select.42)
+  concatenate.45 = s32[4,2]{1,0} concatenate(reshape.43, reshape.44), dimensions={1}
+  ROOT gather.46 = f32[2048,20,4]{2,1,0} gather(Arg_0.30, concatenate.45), offset_dims={0,1}, collapsed_slice_dims={2,3}, start_index_map={2,3}, index_vector_dim=1, slice_sizes={2048,20,1,1}
+}
+
+region_0.49 {
+  Arg_0.50 = pred[] parameter(0)
+  Arg_1.51 = pred[] parameter(1)
+  ROOT or.52 = pred[] or(Arg_0.50, Arg_1.51)
+}
+
+region_1.60 {
+  Arg_0.61 = s32[] parameter(0)
+  Arg_1.62 = s32[] parameter(1)
+  ROOT add.63 = s32[] add(Arg_0.61, Arg_1.62)
+}
+
+count_nonzero.64 {
+  Arg_0.65 = pred[2048,20,4]{2,1,0} parameter(0)
+  convert.67 = s32[2048,20,4]{2,1,0} convert(Arg_0.65)
+  constant.66 = s32[] constant(0)
+  ROOT reduce.68 = s32[2048,20]{1,0} reduce(convert.67, constant.66), dimensions={2}, to_apply=region_1.60
+}
+
+region_2.71 {
+  Arg_0.72 = s32[] parameter(0)
+  Arg_1.73 = s32[] parameter(1)
+  ROOT add.74 = s32[] add(Arg_0.72, Arg_1.73)
+}
+
+count_nonzero_0.75 {
+  Arg_0.76 = pred[2048,20,4]{2,1,0} parameter(0)
+  convert.78 = s32[2048,20,4]{2,1,0} convert(Arg_0.76)
+  constant.77 = s32[] constant(0)
+  ROOT reduce.79 = s32[2048,20]{1,0} reduce(convert.78, constant.77), dimensions={2}, to_apply=region_2.71
+}
+
+remainder.82 {
+  Arg_0.83 = s32[2048,20]{1,0} parameter(0)
+  Arg_1.84 = s32[] parameter(1)
+  broadcast.88 = s32[2048,20]{1,0} broadcast(Arg_1.84), dimensions={}
+  remainder.89 = s32[2048,20]{1,0} remainder(Arg_0.83, broadcast.88)
+  constant.86 = s32[] constant(0)
+  broadcast.87 = s32[2048,20]{1,0} broadcast(constant.86), dimensions={}
+  compare.91 = pred[2048,20]{1,0} compare(remainder.89, broadcast.87), direction=LT
+  constant.85 = s32[] constant(0)
+  compare.92 = pred[] compare(Arg_1.84, constant.85), direction=LT
+  broadcast.93 = pred[2048,20]{1,0} broadcast(compare.92), dimensions={}
+  compare.94 = pred[2048,20]{1,0} compare(compare.91, broadcast.93), direction=NE
+  compare.90 = pred[2048,20]{1,0} compare(remainder.89, broadcast.87), direction=NE
+  and.95 = pred[2048,20]{1,0} and(compare.94, compare.90)
+  broadcast.96 = s32[2048,20]{1,0} broadcast(Arg_1.84), dimensions={}
+  add.97 = s32[2048,20]{1,0} add(remainder.89, broadcast.96)
+  ROOT select.98 = s32[2048,20]{1,0} select(and.95, add.97, remainder.89)
+}
+
+_where.103 {
+  Arg_0.104 = pred[2048,20]{1,0} parameter(0)
+  Arg_1.105 = f32[] parameter(1)
+  broadcast.107 = f32[2048,20]{1,0} broadcast(Arg_1.105), dimensions={}
+  Arg_2.106 = f32[2048,20]{1,0} parameter(2)
+  ROOT select.108 = f32[2048,20]{1,0} select(Arg_0.104, broadcast.107, Arg_2.106)
+}
+
+region_3.112 {
+  Arg_0.113 = f32[] parameter(0)
+  Arg_1.114 = f32[] parameter(1)
+  ROOT add.115 = f32[] add(Arg_0.113, Arg_1.114)
+}
+
+_where_1.117 {
+  Arg_0.118 = pred[2048,20]{1,0} parameter(0)
+  Arg_1.119 = f32[] parameter(1)
+  broadcast.121 = f32[2048,20]{1,0} broadcast(Arg_1.119), dimensions={}
+  Arg_2.120 = f32[2048,20]{1,0} parameter(2)
+  ROOT select.122 = f32[2048,20]{1,0} select(Arg_0.118, broadcast.121, Arg_2.120)
+}
+
+ENTRY main.125 {
+  Arg_0.1 = f32[2048,20,4,4]{3,2,1,0} parameter(0)
+  custom-call.18 = (f32[2048,20,4,4]{2,3,1,0}, s32[2048,20,4]{2,1,0}, s32[2048,20]{1,0}, s8[327680]{0}) custom-call(Arg_0.1), custom_call_target="cublas_getrf_batched", operand_layout_constraints={f32[2048,20,4,4]{2,3,1,0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="\000\000\000\000\000\240\000\000\004\000\000\000"
+  get-tuple-element.21 = s32[2048,20]{1,0} get-tuple-element(custom-call.18), index=2
+  constant.14 = s32[] constant(0)
+  broadcast.15 = s32[2048,20]{1,0} broadcast(constant.14), dimensions={}
+  compare.23 = pred[2048,20]{1,0} compare(get-tuple-element.21, broadcast.15), direction=GE
+  reshape.24 = pred[2048,20,1,1]{3,2,1,0} reshape(compare.23)
+  broadcast.25 = pred[2048,20,1,1]{3,2,1,0} broadcast(reshape.24), dimensions={0,1,2,3}
+  reshape.26 = pred[2048,20]{1,0} reshape(broadcast.25)
+  broadcast.27 = pred[2048,20,4,4]{3,2,1,0} broadcast(reshape.26), dimensions={0,1}
+  get-tuple-element.19 = f32[2048,20,4,4]{2,3,1,0} get-tuple-element(custom-call.18), index=0
+  constant.12 = f32[] constant(nan)
+  broadcast.13 = f32[2048,20,4,4]{3,2,1,0} broadcast(constant.12), dimensions={}
+  select.28 = f32[2048,20,4,4]{3,2,1,0} select(broadcast.27, get-tuple-element.19, broadcast.13)
+  call.47 = f32[2048,20,4]{2,1,0} call(select.28), to_apply=diagonal.29
+  constant.9 = f32[] constant(0)
+  broadcast.10 = f32[2048,20,4]{2,1,0} broadcast(constant.9), dimensions={}
+  compare.48 = pred[2048,20,4]{2,1,0} compare(call.47, broadcast.10), direction=EQ
+  constant.11 = pred[] constant(false)
+  reduce.53 = pred[2048,20]{1,0} reduce(compare.48, constant.11), dimensions={2}, to_apply=region_0.49
+  constant.3 = f32[] constant(0)
+  get-tuple-element.20 = s32[2048,20,4]{2,1,0} get-tuple-element(custom-call.18), index=1
+  constant.16 = s32[] constant(1)
+  broadcast.17 = s32[2048,20,4]{2,1,0} broadcast(constant.16), dimensions={}
+  subtract.22 = s32[2048,20,4]{2,1,0} subtract(get-tuple-element.20, broadcast.17)
+  iota.54 = s32[4]{0} iota(), iota_dimension=0
+  reshape.55 = s32[1,1,4]{2,1,0} reshape(iota.54)
+  broadcast.56 = s32[1,1,4]{2,1,0} broadcast(reshape.55), dimensions={0,1,2}
+  reshape.57 = s32[4]{0} reshape(broadcast.56)
+  broadcast.58 = s32[2048,20,4]{2,1,0} broadcast(reshape.57), dimensions={2}
+  compare.59 = pred[2048,20,4]{2,1,0} compare(subtract.22, broadcast.58), direction=NE
+  call.69 = s32[2048,20]{1,0} call(compare.59), to_apply=count_nonzero.64
+  compare.70 = pred[2048,20,4]{2,1,0} compare(call.47, broadcast.10), direction=LT
+  call.80 = s32[2048,20]{1,0} call(compare.70), to_apply=count_nonzero_0.75
+  add.81 = s32[2048,20]{1,0} add(call.69, call.80)
+  constant.8 = s32[] constant(2)
+  call.99 = s32[2048,20]{1,0} call(add.81, constant.8), to_apply=remainder.82
+  constant.6 = s32[] constant(-2)
+  broadcast.7 = s32[2048,20]{1,0} broadcast(constant.6), dimensions={}
+  multiply.100 = s32[2048,20]{1,0} multiply(call.99, broadcast.7)
+  constant.4 = s32[] constant(1)
+  broadcast.5 = s32[2048,20]{1,0} broadcast(constant.4), dimensions={}
+  add.101 = s32[2048,20]{1,0} add(multiply.100, broadcast.5)
+  convert.102 = f32[2048,20]{1,0} convert(add.101)
+  call.109 = f32[2048,20]{1,0} call(reduce.53, constant.3, convert.102), to_apply=_where.103
+  constant.2 = f32[] constant(-inf)
+  abs.110 = f32[2048,20,4]{2,1,0} abs(call.47)
+  log.111 = f32[2048,20,4]{2,1,0} log(abs.110)
+  reduce.116 = f32[2048,20]{1,0} reduce(log.111, constant.3), dimensions={2}, to_apply=region_3.112
+  call.123 = f32[2048,20]{1,0} call(reduce.53, constant.2, reduce.116), to_apply=_where_1.117
+  ROOT tuple.124 = (f32[2048,20]{1,0}, f32[2048,20]{1,0}) tuple(call.109, call.123)
+}
+

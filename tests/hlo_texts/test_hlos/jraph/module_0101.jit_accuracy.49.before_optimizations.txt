@@ -1,0 +1,167 @@
+HloModule jit_accuracy.49
+
+region_0.33 {
+  Arg_0.34 = s32[] parameter(0)
+  Arg_1.35 = s32[] parameter(1)
+  ROOT add.36 = s32[] add(Arg_0.34, Arg_1.35)
+}
+
+region_1.39 {
+  Arg_0.40 = s32[] parameter(0)
+  Arg_1.41 = s32[] parameter(1)
+  ROOT add.42 = s32[] add(Arg_0.40, Arg_1.41)
+}
+
+region_2.58 {
+  Arg_0.59 = f32[] parameter(0)
+  Arg_1.60 = f32[] parameter(1)
+  ROOT add.61 = f32[] add(Arg_0.59, Arg_1.60)
+}
+
+jit_relu.71 {
+  Arg_0.72 = f32[34,5]{1,0} parameter(0)
+  constant.73 = f32[] constant(0)
+  broadcast.74 = f32[34,5]{1,0} broadcast(constant.73), dimensions={}
+  ROOT maximum.75 = f32[34,5]{1,0} maximum(Arg_0.72, broadcast.74)
+}
+
+region_3.78 {
+  Arg_0.79 = s32[] parameter(0)
+  Arg_1.80 = s32[] parameter(1)
+  ROOT add.81 = s32[] add(Arg_0.79, Arg_1.80)
+}
+
+region_4.83 {
+  Arg_0.84 = s32[] parameter(0)
+  Arg_1.85 = s32[] parameter(1)
+  ROOT add.86 = s32[] add(Arg_0.84, Arg_1.85)
+}
+
+region_5.97 {
+  Arg_0.98 = f32[] parameter(0)
+  Arg_1.99 = f32[] parameter(1)
+  ROOT add.100 = f32[] add(Arg_0.98, Arg_1.99)
+}
+
+region_6.110 {
+  Arg_0.111 = f32[] parameter(0)
+  Arg_2.113 = f32[] parameter(2)
+  compare.115 = pred[] compare(Arg_0.111, Arg_2.113), direction=GT
+  compare.116 = pred[] compare(Arg_0.111, Arg_0.111), direction=NE
+  or.117 = pred[] or(compare.115, compare.116)
+  select.122 = f32[] select(or.117, Arg_0.111, Arg_2.113)
+  compare.118 = pred[] compare(Arg_0.111, Arg_2.113), direction=EQ
+  Arg_1.112 = s32[] parameter(1)
+  Arg_3.114 = s32[] parameter(3)
+  compare.119 = pred[] compare(Arg_1.112, Arg_3.114), direction=LT
+  and.120 = pred[] and(compare.118, compare.119)
+  or.121 = pred[] or(or.117, and.120)
+  select.123 = s32[] select(or.121, Arg_1.112, Arg_3.114)
+  ROOT tuple.124 = (f32[], s32[]) tuple(select.122, select.123)
+}
+
+argmax.125 {
+  Arg_0.126 = f32[34,2]{1,0} parameter(0)
+  iota.129 = s32[2]{0} iota(), iota_dimension=0
+  broadcast.130 = s32[34,2]{1,0} broadcast(iota.129), dimensions={1}
+  constant.128 = f32[] constant(-inf)
+  constant.127 = s32[] constant(0)
+  reduce.131 = (f32[34]{0}, s32[34]{0}) reduce(Arg_0.126, broadcast.130, constant.128, constant.127), dimensions={1}, to_apply=region_6.110
+  get-tuple-element.132 = f32[34]{0} get-tuple-element(reduce.131), index=0
+  ROOT get-tuple-element.133 = s32[34]{0} get-tuple-element(reduce.131), index=1
+}
+
+region_7.137 {
+  Arg_0.138 = f32[] parameter(0)
+  Arg_1.139 = f32[] parameter(1)
+  ROOT add.140 = f32[] add(Arg_0.138, Arg_1.139)
+}
+
+ENTRY main.143 {
+  constant.8 = f32[] constant(0)
+  broadcast.9 = f32[34,2]{1,0} broadcast(constant.8), dimensions={}
+  constant.7 = s32[156,1]{1,0} constant({...})
+  constant.15 = f32[] constant(0)
+  broadcast.16 = f32[34,5]{1,0} broadcast(constant.15), dimensions={}
+  constant.25 = s32[156]{0} constant({...})
+  iota.28 = s32[34]{0} iota(), iota_dimension=0
+  concatenate.29 = s32[190]{0} concatenate(constant.25, iota.28), dimensions={0}
+  reshape.57 = s32[190,1]{1,0} reshape(concatenate.29)
+  constant.26 = f32[34,34]{1,0} constant({...})
+  Arg_0.1 = f32[34,5]{1,0} parameter(0)
+  dot.27 = f32[34,5]{1,0} dot(constant.26, Arg_0.1), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  constant.11 = s32[] constant(0)
+  broadcast.12 = s32[34]{0} broadcast(constant.11), dimensions={}
+  constant.24 = s32[156]{0} constant({...})
+  iota.30 = s32[34]{0} iota(), iota_dimension=0
+  concatenate.31 = s32[190]{0} concatenate(constant.24, iota.30), dimensions={0}
+  reshape.32 = s32[190,1]{1,0} reshape(concatenate.31)
+  constant.21 = s32[] constant(1)
+  broadcast.22 = s32[190]{0} broadcast(constant.21), dimensions={}
+  scatter.37 = s32[34]{0} scatter(broadcast.12, reshape.32, broadcast.22), update_window_dims={}, inserted_window_dims={0}, scatter_dims_to_operand_dims={0}, index_vector_dim=1, to_apply=region_0.33
+  convert.44 = f32[34]{0} convert(scatter.37)
+  constant.5 = f32[] constant(1)
+  broadcast.6 = f32[34]{0} broadcast(constant.5), dimensions={}
+  maximum.45 = f32[34]{0} maximum(convert.44, broadcast.6)
+  rsqrt.46 = f32[34]{0} rsqrt(maximum.45)
+  reshape.47 = f32[34,1]{1,0} reshape(rsqrt.46)
+  broadcast.48 = f32[34,1]{1,0} broadcast(reshape.47), dimensions={0,1}
+  reshape.49 = f32[34]{0} reshape(broadcast.48)
+  broadcast.50 = f32[34,5]{1,0} broadcast(reshape.49), dimensions={0}
+  multiply.51 = f32[34,5]{1,0} multiply(dot.27, broadcast.50)
+  constant.19 = s32[] constant(0)
+  broadcast.20 = s32[190]{0} broadcast(constant.19), dimensions={}
+  compare.52 = pred[190]{0} compare(concatenate.31, broadcast.20), direction=LT
+  constant.17 = s32[] constant(34)
+  broadcast.18 = s32[190]{0} broadcast(constant.17), dimensions={}
+  add.53 = s32[190]{0} add(concatenate.31, broadcast.18)
+  select.54 = s32[190]{0} select(compare.52, add.53, concatenate.31)
+  reshape.55 = s32[190,1]{1,0} reshape(select.54)
+  gather.56 = f32[190,5]{1,0} gather(multiply.51, reshape.55), offset_dims={1}, collapsed_slice_dims={0}, start_index_map={0}, index_vector_dim=1, slice_sizes={1,5}
+  scatter.62 = f32[34,5]{1,0} scatter(broadcast.16, reshape.57, gather.56), update_window_dims={1}, inserted_window_dims={0}, scatter_dims_to_operand_dims={0}, index_vector_dim=1, to_apply=region_2.58
+  reshape.38 = s32[190,1]{1,0} reshape(concatenate.29)
+  scatter.43 = s32[34]{0} scatter(broadcast.12, reshape.38, broadcast.22), update_window_dims={}, inserted_window_dims={0}, scatter_dims_to_operand_dims={0}, index_vector_dim=1, to_apply=region_1.39
+  convert.63 = f32[34]{0} convert(scatter.43)
+  maximum.64 = f32[34]{0} maximum(convert.63, broadcast.6)
+  rsqrt.65 = f32[34]{0} rsqrt(maximum.64)
+  reshape.66 = f32[34,1]{1,0} reshape(rsqrt.65)
+  broadcast.67 = f32[34,1]{1,0} broadcast(reshape.66), dimensions={0,1}
+  reshape.68 = f32[34]{0} reshape(broadcast.67)
+  broadcast.69 = f32[34,5]{1,0} broadcast(reshape.68), dimensions={0}
+  multiply.70 = f32[34,5]{1,0} multiply(scatter.62, broadcast.69)
+  call.76 = f32[34,5]{1,0} call(multiply.70), to_apply=jit_relu.71
+  Arg_1.2 = f32[5,2]{1,0} parameter(1)
+  dot.77 = f32[34,2]{1,0} dot(call.76, Arg_1.2), lhs_contracting_dims={1}, rhs_contracting_dims={0}
+  constant.10 = s32[156,1]{1,0} constant({...})
+  constant.13 = s32[] constant(1)
+  broadcast.14 = s32[156]{0} broadcast(constant.13), dimensions={}
+  scatter.82 = s32[34]{0} scatter(broadcast.12, constant.10, broadcast.14), update_window_dims={}, inserted_window_dims={0}, scatter_dims_to_operand_dims={0}, index_vector_dim=1, to_apply=region_3.78
+  convert.88 = f32[34]{0} convert(scatter.82)
+  maximum.89 = f32[34]{0} maximum(convert.88, broadcast.6)
+  rsqrt.90 = f32[34]{0} rsqrt(maximum.89)
+  reshape.91 = f32[34,1]{1,0} reshape(rsqrt.90)
+  broadcast.92 = f32[34,1]{1,0} broadcast(reshape.91), dimensions={0,1}
+  reshape.93 = f32[34]{0} reshape(broadcast.92)
+  broadcast.94 = f32[34,2]{1,0} broadcast(reshape.93), dimensions={0}
+  multiply.95 = f32[34,2]{1,0} multiply(dot.77, broadcast.94)
+  gather.96 = f32[156,2]{1,0} gather(multiply.95, constant.10), offset_dims={1}, collapsed_slice_dims={0}, start_index_map={0}, index_vector_dim=1, slice_sizes={1,2}
+  scatter.101 = f32[34,2]{1,0} scatter(broadcast.9, constant.7, gather.96), update_window_dims={1}, inserted_window_dims={0}, scatter_dims_to_operand_dims={0}, index_vector_dim=1, to_apply=region_5.97
+  scatter.87 = s32[34]{0} scatter(broadcast.12, constant.7, broadcast.14), update_window_dims={}, inserted_window_dims={0}, scatter_dims_to_operand_dims={0}, index_vector_dim=1, to_apply=region_4.83
+  convert.102 = f32[34]{0} convert(scatter.87)
+  maximum.103 = f32[34]{0} maximum(convert.102, broadcast.6)
+  rsqrt.104 = f32[34]{0} rsqrt(maximum.103)
+  reshape.105 = f32[34,1]{1,0} reshape(rsqrt.104)
+  broadcast.106 = f32[34,1]{1,0} broadcast(reshape.105), dimensions={0,1}
+  reshape.107 = f32[34]{0} reshape(broadcast.106)
+  broadcast.108 = f32[34,2]{1,0} broadcast(reshape.107), dimensions={0}
+  multiply.109 = f32[34,2]{1,0} multiply(scatter.101, broadcast.108)
+  call.134 = s32[34]{0} call(multiply.109), to_apply=argmax.125
+  constant.23 = s32[34]{0} constant({...})
+  compare.135 = pred[34]{0} compare(call.134, constant.23), direction=EQ
+  convert.136 = f32[34]{0} convert(compare.135)
+  constant.4 = f32[] constant(0)
+  reduce.141 = f32[] reduce(convert.136, constant.4), dimensions={0}, to_apply=region_7.137
+  constant.3 = f32[] constant(34)
+  ROOT divide.142 = f32[] divide(reduce.141, constant.3)
+}
+

@@ -1,0 +1,88 @@
+HloModule jit_median.138
+
+isnan.3 {
+  Arg_0.4 = f32[63]{0} parameter(0)
+  ROOT compare.5 = pred[63]{0} compare(Arg_0.4, Arg_0.4), direction=NE
+}
+
+region_0.6 {
+  Arg_0.7 = pred[] parameter(0)
+  Arg_1.8 = pred[] parameter(1)
+  ROOT or.9 = pred[] or(Arg_0.7, Arg_1.8)
+}
+
+_where.10 {
+  Arg_0.11 = pred[1]{0} parameter(0)
+  reshape.14 = pred[] reshape(Arg_0.11)
+  broadcast.15 = pred[63]{0} broadcast(reshape.14), dimensions={}
+  Arg_1.12 = f32[] parameter(1)
+  broadcast.16 = f32[63]{0} broadcast(Arg_1.12), dimensions={}
+  Arg_2.13 = f32[63]{0} parameter(2)
+  ROOT select.17 = f32[63]{0} select(broadcast.15, broadcast.16, Arg_2.13)
+}
+
+region_1.18 {
+  Arg_0.19 = f32[] parameter(0)
+  compare.29 = pred[] compare(Arg_0.19, Arg_0.19), direction=NE
+  constant.22 = s32[] constant(2143289344)
+  constant.24 = f32[] constant(0)
+  compare.27 = pred[] compare(Arg_0.19, constant.24), direction=EQ
+  constant.23 = s32[] constant(0)
+  bitcast-convert.25 = s32[] bitcast-convert(Arg_0.19)
+  select.28 = s32[] select(compare.27, constant.23, bitcast-convert.25)
+  select.30 = s32[] select(compare.29, constant.22, select.28)
+  compare.33 = pred[] compare(select.30, constant.23), direction=LT
+  constant.21 = u32[] constant(2147483647)
+  bitcast-convert.26 = u32[] bitcast-convert(Arg_0.19)
+  subtract.31 = u32[] subtract(constant.21, bitcast-convert.26)
+  bitcast-convert.32 = s32[] bitcast-convert(subtract.31)
+  select.34 = s32[] select(compare.33, bitcast-convert.32, select.30)
+  Arg_1.20 = f32[] parameter(1)
+  compare.39 = pred[] compare(Arg_1.20, Arg_1.20), direction=NE
+  compare.37 = pred[] compare(Arg_1.20, constant.24), direction=EQ
+  bitcast-convert.35 = s32[] bitcast-convert(Arg_1.20)
+  select.38 = s32[] select(compare.37, constant.23, bitcast-convert.35)
+  select.40 = s32[] select(compare.39, constant.22, select.38)
+  compare.43 = pred[] compare(select.40, constant.23), direction=LT
+  bitcast-convert.36 = u32[] bitcast-convert(Arg_1.20)
+  subtract.41 = u32[] subtract(constant.21, bitcast-convert.36)
+  bitcast-convert.42 = s32[] bitcast-convert(subtract.41)
+  select.44 = s32[] select(compare.43, bitcast-convert.42, select.40)
+  ROOT compare.45 = pred[] compare(select.34, select.44), direction=LT
+}
+
+quantile.46 {
+  Arg_0.47 = f32[7,9]{1,0} parameter(0)
+  reshape.54 = f32[63]{0} reshape(Arg_0.47)
+  call.55 = pred[63]{0} call(reshape.54), to_apply=isnan.3
+  constant.53 = pred[] constant(false)
+  reduce.56 = pred[] reduce(call.55, constant.53), dimensions={0}, to_apply=region_0.6
+  reshape.57 = pred[1]{0} reshape(reduce.56)
+  constant.52 = f32[] constant(nan)
+  call.58 = f32[63]{0} call(reshape.57, constant.52, reshape.54), to_apply=_where.10
+  sort.59 = f32[63]{0} sort(call.58), dimensions={0}, is_stable=true, to_apply=region_1.18
+  constant.51 = f32[] constant(0)
+  Arg_1.48 = f32[] parameter(1)
+  constant.50 = f32[] constant(62)
+  multiply.60 = f32[] multiply(Arg_1.48, constant.50)
+  floor.61 = f32[] floor(multiply.60)
+  clamp.63 = f32[] clamp(constant.51, floor.61, constant.50)
+  convert.65 = s32[] convert(clamp.63)
+  reshape.67 = s32[1]{0} reshape(convert.65)
+  gather.68 = f32[] gather(sort.59, reshape.67), offset_dims={}, collapsed_slice_dims={0}, start_index_map={0}, index_vector_dim=0, slice_sizes={1}
+  ceil.62 = f32[] ceil(multiply.60)
+  clamp.64 = f32[] clamp(constant.51, ceil.62, constant.50)
+  convert.66 = s32[] convert(clamp.64)
+  reshape.69 = s32[1]{0} reshape(convert.66)
+  gather.70 = f32[] gather(sort.59, reshape.69), offset_dims={}, collapsed_slice_dims={0}, start_index_map={0}, index_vector_dim=0, slice_sizes={1}
+  add.71 = f32[] add(gather.68, gather.70)
+  constant.49 = f32[] constant(0.5)
+  ROOT multiply.72 = f32[] multiply(add.71, constant.49)
+}
+
+ENTRY main.74 {
+  Arg_0.1 = f32[7,9]{1,0} parameter(0)
+  constant.2 = f32[] constant(0.5)
+  ROOT call.73 = f32[] call(Arg_0.1, constant.2), to_apply=quantile.46
+}
+

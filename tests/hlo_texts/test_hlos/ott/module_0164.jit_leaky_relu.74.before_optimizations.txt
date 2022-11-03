@@ -1,0 +1,34 @@
+HloModule jit_leaky_relu.74
+
+vmap_jvp_jvp__where___.13 {
+  Arg_0.14 = pred[64]{0} parameter(0)
+  Arg_1.15 = f32[64]{0} parameter(1)
+  Arg_2.16 = f32[64]{0} parameter(2)
+  select.19 = f32[64]{0} select(Arg_0.14, Arg_1.15, Arg_2.16)
+  broadcast.20 = pred[10,64]{1,0} broadcast(Arg_0.14), dimensions={1}
+  Arg_3.17 = f32[10,64]{1,0} parameter(3)
+  Arg_4.18 = f32[10,64]{1,0} parameter(4)
+  select.21 = f32[10,64]{1,0} select(broadcast.20, Arg_3.17, Arg_4.18)
+  ROOT tuple.22 = (f32[64]{0}, pred[64]{0}, f32[10,64]{1,0}) tuple(select.19, Arg_0.14, select.21)
+}
+
+ENTRY main.28 {
+  Arg_0.1 = f32[64]{0} parameter(0)
+  constant.8 = f32[] constant(0)
+  broadcast.9 = f32[64]{0} broadcast(constant.8), dimensions={}
+  compare.10 = pred[64]{0} compare(Arg_0.1, broadcast.9), direction=GE
+  constant.6 = f32[] constant(0.01)
+  broadcast.7 = f32[64]{0} broadcast(constant.6), dimensions={}
+  multiply.11 = f32[64]{0} multiply(Arg_0.1, broadcast.7)
+  Arg_1.2 = f32[10,64]{1,0} parameter(1)
+  constant.4 = f32[] constant(0.01)
+  broadcast.5 = f32[10,64]{1,0} broadcast(constant.4), dimensions={}
+  multiply.12 = f32[10,64]{1,0} multiply(Arg_1.2, broadcast.5)
+  call.23 = (f32[64]{0}, pred[64]{0}, f32[10,64]{1,0}) call(compare.10, Arg_0.1, multiply.11, Arg_1.2, multiply.12), to_apply=vmap_jvp_jvp__where___.13
+  get-tuple-element.24 = f32[64]{0} get-tuple-element(call.23), index=0
+  get-tuple-element.25 = pred[64]{0} get-tuple-element(call.23), index=1
+  constant.3 = f32[] constant(0.01)
+  get-tuple-element.26 = f32[10,64]{1,0} get-tuple-element(call.23), index=2
+  ROOT tuple.27 = (f32[64]{0}, pred[64]{0}, f32[], f32[10,64]{1,0}) tuple(get-tuple-element.24, get-tuple-element.25, constant.3, get-tuple-element.26)
+}
+

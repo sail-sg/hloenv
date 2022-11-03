@@ -1,0 +1,50 @@
+HloModule jit__shuffle.43
+
+region_0.35 {
+  Arg_2.38 = s32[] parameter(2)
+  Arg_3.39 = s32[] parameter(3)
+  Arg_0.36 = u32[] parameter(0)
+  Arg_1.37 = u32[] parameter(1)
+  ROOT compare.40 = pred[] compare(Arg_0.36, Arg_1.37), direction=LT
+}
+
+ENTRY main.44 {
+  Arg_0.1 = u32[2]{0} parameter(0)
+  slice.5 = u32[1]{0} slice(Arg_0.1), slice={[0:1]}
+  reshape.6 = u32[] reshape(slice.5)
+  broadcast.11 = u32[2]{0} broadcast(reshape.6), dimensions={}
+  slice.7 = u32[1]{0} slice(Arg_0.1), slice={[1:2]}
+  reshape.8 = u32[] reshape(slice.7)
+  broadcast.12 = u32[2]{0} broadcast(reshape.8), dimensions={}
+  iota.4 = u32[4]{0} iota(), iota_dimension=0
+  slice.9 = u32[2]{0} slice(iota.4), slice={[0:2]}
+  slice.10 = u32[2]{0} slice(iota.4), slice={[2:4]}
+  custom-call.13 = (u32[2]{0}, u32[2]{0}) custom-call(broadcast.11, broadcast.12, slice.9, slice.10), custom_call_target="cuda_threefry2x32", operand_layout_constraints={u32[2]{0}, u32[2]{0}, u32[2]{0}, u32[2]{0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="\002\000\000\000\000\000\000\000"
+  get-tuple-element.14 = u32[2]{0} get-tuple-element(custom-call.13), index=0
+  get-tuple-element.15 = u32[2]{0} get-tuple-element(custom-call.13), index=1
+  concatenate.16 = u32[4]{0} concatenate(get-tuple-element.14, get-tuple-element.15), dimensions={0}
+  reshape.17 = u32[2,2]{1,0} reshape(concatenate.16)
+  slice.18 = u32[1,2]{1,0} slice(reshape.17), slice={[1:2], [0:2]}
+  reshape.19 = u32[2]{0} reshape(slice.18)
+  slice.21 = u32[1]{0} slice(reshape.19), slice={[0:1]}
+  reshape.22 = u32[] reshape(slice.21)
+  broadcast.28 = u32[51]{0} broadcast(reshape.22), dimensions={}
+  slice.23 = u32[1]{0} slice(reshape.19), slice={[1:2]}
+  reshape.24 = u32[] reshape(slice.23)
+  broadcast.29 = u32[51]{0} broadcast(reshape.24), dimensions={}
+  iota.20 = u32[101]{0} iota(), iota_dimension=0
+  slice.26 = u32[51]{0} slice(iota.20), slice={[0:51]}
+  constant.3 = u32[1]{0} constant({0})
+  concatenate.25 = u32[102]{0} concatenate(iota.20, constant.3), dimensions={0}
+  slice.27 = u32[51]{0} slice(concatenate.25), slice={[51:102]}
+  custom-call.30 = (u32[51]{0}, u32[51]{0}) custom-call(broadcast.28, broadcast.29, slice.26, slice.27), custom_call_target="cuda_threefry2x32", operand_layout_constraints={u32[51]{0}, u32[51]{0}, u32[51]{0}, u32[51]{0}}, api_version=API_VERSION_STATUS_RETURNING, backend_config="3\000\000\000\000\000\000\000"
+  get-tuple-element.31 = u32[51]{0} get-tuple-element(custom-call.30), index=0
+  get-tuple-element.32 = u32[51]{0} get-tuple-element(custom-call.30), index=1
+  concatenate.33 = u32[102]{0} concatenate(get-tuple-element.31, get-tuple-element.32), dimensions={0}
+  slice.34 = u32[101]{0} slice(concatenate.33), slice={[0:101]}
+  Arg_1.2 = s32[101]{0} parameter(1)
+  sort.41 = (u32[101]{0}, s32[101]{0}) sort(slice.34, Arg_1.2), dimensions={0}, is_stable=true, to_apply=region_0.35
+  get-tuple-element.42 = u32[101]{0} get-tuple-element(sort.41), index=0
+  ROOT get-tuple-element.43 = s32[101]{0} get-tuple-element(sort.41), index=1
+}
+

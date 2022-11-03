@@ -1,0 +1,47 @@
+HloModule jit_divmod.28
+
+%jit__where.3 (Arg_0.4: pred[], Arg_1.5: s32[], Arg_2.6: s32[]) -> s32[] {
+  %Arg_0.4 = pred[] parameter(0)
+  %Arg_1.5 = s32[] parameter(1)
+  %Arg_2.6 = s32[] parameter(2)
+  ROOT %select.7 = s32[] select(pred[] %Arg_0.4, s32[] %Arg_1.5, s32[] %Arg_2.6)
+}
+
+%jit_floor_divide.8 (Arg_0.9: s32[], Arg_1.10: s32[]) -> s32[] {
+  %Arg_0.9 = s32[] parameter(0)
+  %sign.14 = s32[] sign(s32[] %Arg_0.9)
+  %Arg_1.10 = s32[] parameter(1)
+  %sign.15 = s32[] sign(s32[] %Arg_1.10)
+  %compare.16 = pred[] compare(s32[] %sign.14, s32[] %sign.15), direction=NE
+  %remainder.17 = s32[] remainder(s32[] %Arg_0.9, s32[] %Arg_1.10)
+  %constant.12 = s32[] constant(0)
+  %compare.18 = pred[] compare(s32[] %remainder.17, s32[] %constant.12), direction=NE
+  %and.19 = pred[] and(pred[] %compare.16, pred[] %compare.18)
+  %divide.13 = s32[] divide(s32[] %Arg_0.9, s32[] %Arg_1.10)
+  %constant.11 = s32[] constant(1)
+  %subtract.20 = s32[] subtract(s32[] %divide.13, s32[] %constant.11)
+  ROOT %call.21 = s32[] call(pred[] %and.19, s32[] %subtract.20, s32[] %divide.13), to_apply=%jit__where.3
+}
+
+%jit_remainder.23 (Arg_0.24: s32[], Arg_1.25: s32[]) -> s32[] {
+  %Arg_0.24 = s32[] parameter(0)
+  %Arg_1.25 = s32[] parameter(1)
+  %remainder.27 = s32[] remainder(s32[] %Arg_0.24, s32[] %Arg_1.25)
+  %constant.26 = s32[] constant(0)
+  %compare.29 = pred[] compare(s32[] %remainder.27, s32[] %constant.26), direction=LT
+  %compare.30 = pred[] compare(s32[] %Arg_1.25, s32[] %constant.26), direction=LT
+  %compare.31 = pred[] compare(pred[] %compare.29, pred[] %compare.30), direction=NE
+  %compare.28 = pred[] compare(s32[] %remainder.27, s32[] %constant.26), direction=NE
+  %and.32 = pred[] and(pred[] %compare.31, pred[] %compare.28)
+  %add.33 = s32[] add(s32[] %remainder.27, s32[] %Arg_1.25)
+  ROOT %select.34 = s32[] select(pred[] %and.32, s32[] %add.33, s32[] %remainder.27)
+}
+
+ENTRY %main.37 (Arg_0.1: s32[], Arg_1.2: s32[]) -> (s32[], s32[]) {
+  %Arg_0.1 = s32[] parameter(0)
+  %Arg_1.2 = s32[] parameter(1)
+  %call.22 = s32[] call(s32[] %Arg_0.1, s32[] %Arg_1.2), to_apply=%jit_floor_divide.8
+  %call.35 = s32[] call(s32[] %Arg_0.1, s32[] %Arg_1.2), to_apply=%jit_remainder.23
+  ROOT %tuple.36 = (s32[], s32[]) tuple(s32[] %call.22, s32[] %call.35)
+}
+
