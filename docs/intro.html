@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About This Project &mdash; HloEnv 0.0.1 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples Using HloEnv" href="examples.html" />
+    <link rel="prev" title="HloEnv - A Graph Rewrite Environment for Deep Learning Compiler Optimization Research" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> HloEnv
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">About This Project</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hlo-dataset">HLO Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#citations">Citations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples Using HloEnv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xla_passes.html">List of Enabled XLA Hlo Passes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HloEnv</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>About This Project</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/intro.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="about-this-project">
+<h1>About This Project<a class="headerlink" href="#about-this-project" title="Permalink to this headline">¶</a></h1>
+<p><strong>HloEnv</strong> is an environment based on Accelerated Linear Algebra (<a class="reference external" href="https://www.tensorflow.org/xla/">XLA</a>) for deep learning compiler optimization research. HloEnv transforms all graph rewrites into a common representation, providing a flexible interface to control and modify existing graph optimization passes. In this representation, an XLA pass is converted into a set of sequential rewrite decisions, which control when and if the rewrites are applied.</p>
+<p><em>HloEnv</em> has the following major features:</p>
+<ul class="simple">
+<li><strong>The alternative graph representation</strong>: To generalize to any type of graph rewrite, and to enable joint consideration of multiple rewrite rules that potentially conflict with each other, HloEnv uses a general alternative graph representation. To achieve this, HloEnv introduces several changes to XLA’s original implementation, which are compiled into a <a class="reference external" href="https://github.com/sail-sg/hloenv/blob/hloenv-refactor-open/third_party/tensorflow/org_tensorflow_hloenv.patch">patch</a>. When a source graph is processed in a pass with <em>dry-mode</em> enabled, HloEnv captures each rewrite opportunity instead of applying them. It then augments the graph with the identified rewrite opportunities using a special <em>kAlternative</em> instruction, resulting in an alternative graph. This alternative graph serves as the state for the agent. After decisions are made on which input path to take for each <em>kAlternative</em> instruction in the reroute step, HloEnv applies a pruning step to remove all unused nodes and perform additional clean-up.</li>
+</ul>
+<a class="reference internal image-reference" href="_images/altgraph.png"><img alt="Alternative Graph Representation" class="align-center" src="_images/altgraph.png" style="width: 800px;" /></a>
+<ul class="simple">
+<li><strong>Python interface for full XLA optimization passes and pipelines</strong>: HloEnv’s Python interface parses an HLO text file into an HLO graph and loads it into the frontend optimization environment. A user-specified set of XLA passes/pipelines is then applied to the HLO graph. HloEnv executes the original pass/pipeline directly if dry-mode is turned off, while it captures these rewrites without actually applying to the source graph when dry-mode is turned on. An augmented graph that contains both the source graph and all the rewrite opportunities is generated for the user. Using the augmented graph as an input, the user can develop various decision-making agents to decide which rewrites to apply (see <a class="reference internal" href="examples.html#examples"><span class="std std-ref">Examples Using HloEnv</span></a> for an example of a simple decision-making agent implementation). This process can be applied multiple times until the output HLO graphs stay unchanged (converge) or until a decision is made to end the optimization for that pass/pipeline. The user can then use XLA’s backend APIs to generate the final device code.</li>
+</ul>
+<a class="reference internal image-reference" href="_images/sys.png"><img alt="System Overview" class="align-center" src="_images/sys.png" style="width: 800px;" /></a>
+<p>The design of HloEnv points to a potential future where deep learning compiler engineers only need to develop and maintain a simple set of rewrite rules and leave the complicated heuristics to machine learning-generated optimization strategies that generalize to both new deep learning models and new deep learning hardware. More details please refer to our paper.</p>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>To run examples, you need to install the following dependencies in your python package:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference external" href="https://www.tensorflow.org/install">TensorFlow&gt;=2.9</a></li>
+<li>NumPy</li>
+</ul>
+</div></blockquote>
+<p>To build HloEnv and evaluate HLO graph runtime, you need to install the following dependencies:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference external" href="https://bazel.build/install?hl=en">Bazel</a></li>
+<li>liblapack-dev</li>
+</ul>
+</div></blockquote>
+<p>To clone HloEnv and install Tensorflow, run the following command::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="n">sail</span><span class="o">-</span><span class="n">sg</span><span class="o">/</span><span class="n">hloenv</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">hloenv</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="n">hloenv</span><span class="o">-</span><span class="n">env</span>
+<span class="n">source</span> <span class="n">hloenv</span><span class="o">-</span><span class="n">env</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">tensorflow</span><span class="o">&gt;=</span><span class="mf">2.9.0</span>
+</pre></div>
+</div>
+<p>When met the minimum requirement, building HloEnv Python Wheels can be very simple.</p>
+<p>In the root directory of HloEnv, run the following command::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">build</span>
+</pre></div>
+</div>
+<p>Will build the wheels file and put it under the folder <em>dist</em>, and::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">install</span>
+</pre></div>
+</div>
+<p>Will install the freshly built Python Wheels and all the dependencies.</p>
+</div>
+<div class="section" id="hlo-dataset">
+<h2>HLO Dataset<a class="headerlink" href="#hlo-dataset" title="Permalink to this headline">¶</a></h2>
+<p>You can find the unoptimized HLO text files harvested from JAX implemented repositories on GitHub <a class="reference external" href="https://drive.google.com/file/d/1XF7fz59HvsUIfUhgF-yXF7YE3y-lOBFZ/view?usp=sharing">here</a></p>
+<p>These HLO text files are harvested by setting the XLA_DUMP_TO flag while running the model in the repository. This flag dumps all the unoptimized HLO graphs generated during JAX’s Just-In-Time (JIT) compilation process. The HLO text files in the dataset are additionally cleaned of metadata and deduplicated.</p>
+</div>
+<div class="section" id="citations">
+<h2>Citations<a class="headerlink" href="#citations" title="Permalink to this headline">¶</a></h2>
+<p>If you use <em>HloEnv</em> in your own research, please cite it using the following
+BibTeX entry:</p>
+<div class="highlight-bibtex notranslate"><div class="highlight"><pre><span></span><span class="nc">@inproceedings</span><span class="p">{</span><span class="nl">HloEnv2022</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="na">author</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Chin Yang Oh, Kunhao Zheng, Bingyi Kang, Xinyi Wan, Zhongwen Xu, Shuicheng Yan, Min Lin, Yangzihao Wang}</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="na">title</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{HloEnv: A Graph Rewrite Environment for Deep Learning Compiler Optimization Research}</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="na">booktitle</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{Workshop on ML for Systems at NeurIPS 2022}</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="na">year</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{2022}</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="na">series</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">{NeurIPS &#39;22}</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="na">month</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nv">dec</span><span class="p">,</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="HloEnv - A Graph Rewrite Environment for Deep Learning Compiler Optimization Research" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples Using HloEnv" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Chin Yang Oh, Kunhao Zheng, Bingyi Kang, Xinyi Wan, Zhongwen Xu, Shuicheng Yan, Min Lin, Yangzihao Wang.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

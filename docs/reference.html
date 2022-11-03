@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Reference &mdash; HloEnv 0.0.1 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="List of Enabled XLA Hlo Passes" href="xla_passes.html" />
+    <link rel="prev" title="Examples Using HloEnv" href="examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> HloEnv
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">About This Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples Using HloEnv</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xla_passes.html">List of Enabled XLA Hlo Passes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HloEnv</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>API Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/reference.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="module-hloenv">
+<span id="api-reference"></span><h1>API Reference<a class="headerlink" href="#module-hloenv" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="hloenv.HloEnv">
+<em class="property">class </em><code class="descclassname">hloenv.</code><code class="descname">HloEnv</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hloenv.HloEnv" title="Permalink to this definition">¶</a></dt>
+<dd><p>The class representing the HloEnv. Each HloEnv instance can be loaded with a single HloModule, and used to run Passes/Pipelines on that module, as well as extract features, evaluate and obtain the graph features for that HloModule.</p>
+<p>Overloaded function.</p>
+<ol class="arabic simple">
+<li>__init__(self: hloenv.HloEnv, hlo_filepath: str, platform: str) -&gt; None</li>
+</ol>
+<p>Creates a <a class="reference internal" href="#hloenv.HloEnv" title="hloenv.HloEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloEnv</span></code></a> and loads in a HloModule from a specified filepath.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>hlo_filepath</strong> (<em>str</em>) – The path of the HloModule text file</li>
+<li><strong>platform</strong> (<em>str</em>) – The platform we wish to run the HloModule on. Currently only ‘gpu’ is supported</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<ol class="arabic simple" start="2">
+<li>__init__(self: hloenv.HloEnv, hlo_data: str, format: str, platform: str) -&gt; None</li>
+</ol>
+<p>Creates a <a class="reference internal" href="#hloenv.HloEnv" title="hloenv.HloEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloEnv</span></code></a> and loads in a HloModule from its string representation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>hlo_data</strong> (<em>str</em>) – The HloModule string</li>
+<li><strong>platform</strong> (<em>str</em>) – The platform we wish to run the HloModule on. Currently only ‘gpu’ is supported</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<ol class="arabic simple" start="3">
+<li>__init__(self: hloenv.HloEnv, alt_hlo_module: hloenv.HloModule, platform: str) -&gt; None</li>
+</ol>
+<p>Creates a <a class="reference internal" href="#hloenv.HloEnv" title="hloenv.HloEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloEnv</span></code></a> and loads in a HloModule from an existing HloModule object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>alt_hlo_module</strong> (<a class="reference internal" href="#hloenv.HloModule" title="hloenv.HloModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloModule</span></code></a>) – The HloModule object</li>
+<li><strong>platform</strong> (<em>str</em>) – The platform we wish to run the HloModule on. Currently only ‘gpu’ is supported</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="hloenv.HloEnv.apply_alternatives">
+<code class="descname">apply_alternatives</code><span class="sig-paren">(</span><em>self: hloenv.HloEnv, decisions: numpy.ndarray[numpy.uint64]</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloEnv.apply_alternatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies the specified decisions to the alternative nodes in the HloModule graph, and prunes the resulting graph.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>decisions</strong> (<em>ndarray</em>) – 2D array of (node_uid, decision) pairs where decision = i indicates that we wish to select the ith alternative at the alternative node corresponding to node_uid.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloEnv.clone_hlo">
+<code class="descname">clone_hlo</code><span class="sig-paren">(</span><em>self: hloenv.HloEnv</em><span class="sig-paren">)</span> &#x2192; hloenv.HloModule<a class="headerlink" href="#hloenv.HloEnv.clone_hlo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clones the currently loaded <a class="reference internal" href="#hloenv.HloModule" title="hloenv.HloModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloModule</span></code></a> and returns it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloEnv.evaluate">
+<code class="descname">evaluate</code><span class="sig-paren">(</span><em>self: hloenv.HloEnv</em>, <em>times: int = 20</em>, <em>do_not_prep_for_eval: bool = False</em><span class="sig-paren">)</span> &#x2192; hloenv.EvaluationResult<a class="headerlink" href="#hloenv.HloEnv.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluates the <a class="reference internal" href="#hloenv.HloModule" title="hloenv.HloModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloModule</span></code></a> loaded into the environment N times and returns both the output and the duration of each evaluation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>times</strong> (<em>int</em>) – The number of evaluations to perform</li>
+<li><strong>do_not_prep_for_eval</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prepare the HloModule for evaluation. This can result in changes to the HloModule (e.g. insertion of Copy instructions), so set this to True if the HloModule has already gone through this process. Defaults to false.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The structure containing the durations and output of the evaluation</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#hloenv.EvaluationResult" title="hloenv.EvaluationResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">EvaluationResult</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloEnv.export_hlo_to_str">
+<code class="descname">export_hlo_to_str</code><span class="sig-paren">(</span><em>self: hloenv.HloEnv</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#hloenv.HloEnv.export_hlo_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exports the currently loaded <a class="reference internal" href="#hloenv.HloModule" title="hloenv.HloModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloModule</span></code></a> into its text representation. This text can be loaded by the HloEnv.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloEnv.get_hlo_graph">
+<code class="descname">get_hlo_graph</code><span class="sig-paren">(</span><em>self: hloenv.HloEnv</em>, <em>debug: bool = False</em>, <em>inline_fused_comp: bool = False</em>, <em>do_hash_verification: bool = False</em><span class="sig-paren">)</span> &#x2192; hloenv.HloGraph<a class="headerlink" href="#hloenv.HloEnv.get_hlo_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the <a class="reference internal" href="#hloenv.HloModule" title="hloenv.HloModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloModule</span></code></a> into a <a class="reference internal" href="#hloenv.HloGraph" title="hloenv.HloGraph"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloGraph</span></code></a> object that describes the features and structure of the HloModule.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloEnv.get_hlo_module">
+<code class="descname">get_hlo_module</code><span class="sig-paren">(</span><em>self: hloenv.HloEnv</em><span class="sig-paren">)</span> &#x2192; hloenv.HloModule<a class="headerlink" href="#hloenv.HloEnv.get_hlo_module" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the <a class="reference internal" href="#hloenv.HloModule" title="hloenv.HloModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloModule</span></code></a> object loaded in the <a class="reference internal" href="#hloenv.HloEnv" title="hloenv.HloEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloEnv</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloEnv.get_hlo_module_hash">
+<code class="descname">get_hlo_module_hash</code><span class="sig-paren">(</span><em>self: hloenv.HloEnv</em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#hloenv.HloEnv.get_hlo_module_hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the HloDagHash of the class:<cite>HloModule</cite> loaded in the environment.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloEnv.has_equal_output">
+<code class="descname">has_equal_output</code><span class="sig-paren">(</span><em>self: hloenv.HloEnv</em>, <em>first_module: hloenv.HloModule</em>, <em>second_module: hloenv.HloModule</em>, <em>times: int = 1</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#hloenv.HloEnv.has_equal_output" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloEnv.has_equal_output_as">
+<code class="descname">has_equal_output_as</code><span class="sig-paren">(</span><em>self: hloenv.HloEnv</em>, <em>other_module: hloenv.HloModule</em>, <em>times: int = 1</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#hloenv.HloEnv.has_equal_output_as" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloEnv.load_hlo">
+<code class="descname">load_hlo</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hloenv.HloEnv.load_hlo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic">
+<li><p class="first">load_hlo(self: hloenv.HloEnv, hlo_module: hloenv.HloModule) -&gt; None</p>
+<blockquote>
+<div><p>Loads in a new <a class="reference internal" href="#hloenv.HloModule" title="hloenv.HloModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloModule</span></code></a> from an existing <a class="reference internal" href="#hloenv.HloModule" title="hloenv.HloModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloModule</span></code></a> object.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first last">hlo_module (<a class="reference internal" href="#hloenv.HloModule" title="hloenv.HloModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloModule</span></code></a>): The HloModule to be loaded in.</p>
+</dd>
+</dl>
+</div></blockquote>
+</li>
+<li><p class="first">load_hlo(self: hloenv.HloEnv, hlo_data: str, format: str = ‘path’) -&gt; None</p>
+<blockquote>
+<div><p>Loads in a new <a class="reference internal" href="#hloenv.HloModule" title="hloenv.HloModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloModule</span></code></a> from text data.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first last">hlo_data (str): The HloModule data to be loaded in in the form of a filepath or raw Hlo text string.
+format (str, optional): The format of the Hlo data. Defaults to “path”.</p>
+</dd>
+</dl>
+</div></blockquote>
+</li>
+</ol>
+</dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloEnv.optimize_hlo_module">
+<code class="descname">optimize_hlo_module</code><span class="sig-paren">(</span><em>self: hloenv.HloEnv</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloEnv.optimize_hlo_module" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the original Xla Optimization Pipeline on the HloModule to obtain a baseline reference against XLA.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloEnv.prepare_for_eval">
+<code class="descname">prepare_for_eval</code><span class="sig-paren">(</span><em>self: hloenv.HloEnv</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloEnv.prepare_for_eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare the HloModule for IR emitting and evaluation. This step is automatically run during HloEnv.evaluate, unless the do_not_prep_for_eval parameter is set to True, hence in most cases you will not have to run this function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloEnv.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>self: hloenv.HloEnv</em>, <em>pass_pipeline: hloenv::PassInterface</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#hloenv.HloEnv.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the specified <code class="xref py py-class docutils literal notranslate"><span class="pre">Pass</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code> on the <a class="reference internal" href="#hloenv.HloModule" title="hloenv.HloModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloModule</span></code></a> loaded in the environment.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pass_pipeline</strong> (Union[<code class="xref py py-class docutils literal notranslate"><span class="pre">Pass</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code>]) – The Pass or Pipeline we wish to run on the <a class="reference internal" href="#hloenv.HloModule" title="hloenv.HloModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloModule</span></code></a> loaded in the environment.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if alternatives were generated (i.e. the pass or one of the passes in the pipeline is an AltPipeline), False otherwise. Note that if this returns True, it indicates that an apply_alternatives call must be run to pick the decisions at each alternative before the HloModule can be evaluated.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloGraph">
+<em class="property">class </em><code class="descclassname">hloenv.</code><code class="descname">HloGraph</code><span class="sig-paren">(</span><em>self: hloenv.HloGraph</em>, <em>arg0: xla::HloModule</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloGraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>The graph representation of a HloModule the describes its structure and individual instructions features. See <a class="reference internal" href="examples.html#playing-with-hlo-graph-features"><span class="std std-ref">Playing with HLO Graph Features</span></a> for more details.</p>
+<dl class="method">
+<dt id="hloenv.HloGraph.get_graph_load_errors">
+<code class="descname">get_graph_load_errors</code><span class="sig-paren">(</span><em>self: hloenv.HloGraph</em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#hloenv.HloGraph.get_graph_load_errors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloGraph.hash">
+<code class="descname">hash</code><span class="sig-paren">(</span><em>self: hloenv.HloGraph</em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#hloenv.HloGraph.hash" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloModule">
+<em class="property">class </em><code class="descclassname">hloenv.</code><code class="descname">HloModule</code><span class="sig-paren">(</span><em>self: hloenv.HloModule</em>, <em>input: str</em>, <em>format: str = 'path'</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>The class representing an XLA HloModule. Each HloModule can be loaded into the <a class="reference internal" href="#hloenv.HloEnv" title="hloenv.HloEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloEnv</span></code></a>, where we can evaluate it, obtain its hash, or run specific <code class="xref py py-class docutils literal notranslate"><span class="pre">Pass</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code> on it</p>
+<p>Creates a <a class="reference internal" href="#hloenv.HloEnv" title="hloenv.HloEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloEnv</span></code></a> and loads in a HloModule from a specified filepath.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>input</strong> (<em>str</em>) – The Hlo text input in the form of a string or filepath.</li>
+<li><strong>format</strong> (<em>str</em><em>, </em><em>optional</em>) – The format of the input. Can be either “path” for a filepath to a Hlo text file, or “txt” for the raw Hlo text string. Defaults to “path”.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="hloenv.HloModule.clone">
+<code class="descname">clone</code><span class="sig-paren">(</span><em>self: hloenv.HloModule</em><span class="sig-paren">)</span> &#x2192; hloenv.HloModule<a class="headerlink" href="#hloenv.HloModule.clone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clones the HloModule.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloModule.computation_count">
+<code class="descname">computation_count</code><a class="headerlink" href="#hloenv.HloModule.computation_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of computations in the HloModule.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloModule.config">
+<code class="descname">config</code><a class="headerlink" href="#hloenv.HloModule.config" title="Permalink to this definition">¶</a></dt>
+<dd><p>The config options of the HloModule</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloModule.cost_analysis">
+<code class="descname">cost_analysis</code><span class="sig-paren">(</span><em>self: hloenv.HloModule</em><span class="sig-paren">)</span> &#x2192; Dict[str, float]<a class="headerlink" href="#hloenv.HloModule.cost_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary containing the flops, transcendentals, bytes accessed and optimal seconds of the Hlo Module.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloModule.extract_fusions_as_module">
+<code class="descname">extract_fusions_as_module</code><span class="sig-paren">(</span><em>self: hloenv.HloModule</em>, <em>arg0: int</em><span class="sig-paren">)</span> &#x2192; List[hloenv.HloModule]<a class="headerlink" href="#hloenv.HloModule.extract_fusions_as_module" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloModule.extract_instructions_as_module">
+<code class="descname">extract_instructions_as_module</code><span class="sig-paren">(</span><em>self: hloenv.HloModule</em>, <em>arg0: int</em><span class="sig-paren">)</span> &#x2192; List[Tuple[str, hloenv.HloModule]]<a class="headerlink" href="#hloenv.HloModule.extract_instructions_as_module" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloModule.extract_random_submodule">
+<code class="descname">extract_random_submodule</code><span class="sig-paren">(</span><em>self: hloenv.HloModule</em>, <em>arg0: int</em>, <em>arg1: int</em><span class="sig-paren">)</span> &#x2192; hloenv.HloModule<a class="headerlink" href="#hloenv.HloModule.extract_random_submodule" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloModule.hash">
+<code class="descname">hash</code><span class="sig-paren">(</span><em>self: hloenv.HloModule</em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#hloenv.HloModule.hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>The DAGHash of the HloModule. This DAGHash is a custom hash implementation that differs from Tensorflow’s existing HloModule hash implementation to better account for the structure and parameters of the Hlo Instructions.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloModule.instruction_count">
+<code class="descname">instruction_count</code><a class="headerlink" href="#hloenv.HloModule.instruction_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of instructions in the HloModule.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloModule.is_bef_enabled">
+<code class="descname">is_bef_enabled</code><span class="sig-paren">(</span><em>self: hloenv.HloModule</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#hloenv.HloModule.is_bef_enabled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whethe Binary Executable Format (BEF) is enabled for the executable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hloenv.HloModule.to_string">
+<code class="descname">to_string</code><span class="sig-paren">(</span><em>self: hloenv.HloModule</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#hloenv.HloModule.to_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the HloModule to a string representation. This string representation can also used to initialize a new HloEnv or loaded into an existing one.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hloenv.EvaluationResult">
+<em class="property">class </em><code class="descclassname">hloenv.</code><code class="descname">EvaluationResult</code><a class="headerlink" href="#hloenv.EvaluationResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>A structure containing the duration and output of the HloModule evaluation.</p>
+<dl class="attribute">
+<dt id="hloenv.EvaluationResult.compute_durations">
+<code class="descname">compute_durations</code><a class="headerlink" href="#hloenv.EvaluationResult.compute_durations" title="Permalink to this definition">¶</a></dt>
+<dd><p>The duration in nanoseconds of the computation, without data transfer, as measured on the device.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.EvaluationResult.durations">
+<code class="descname">durations</code><a class="headerlink" href="#hloenv.EvaluationResult.durations" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default duration in nanoseconds. This returns the execution duration as measured within the Tensorflow evaluation code, starting from the point when the executable has been enqueued on the compute stream till the completion of the executable.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.EvaluationResult.full_durations">
+<code class="descname">full_durations</code><a class="headerlink" href="#hloenv.EvaluationResult.full_durations" title="Permalink to this definition">¶</a></dt>
+<dd><p>The full duration in nanoseconds as measured within HloEnv.evaluate(). This captures the entire execution process including processes such as enqueueing the computation on the compute stream, and is hence more subject to timing noise.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.EvaluationResult.output">
+<code class="descname">output</code><a class="headerlink" href="#hloenv.EvaluationResult.output" title="Permalink to this definition">¶</a></dt>
+<dd><p>The output of the HloModule.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="examples.html" class="btn btn-neutral float-left" title="Examples Using HloEnv" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="xla_passes.html" class="btn btn-neutral float-right" title="List of Enabled XLA Hlo Passes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Chin Yang Oh, Kunhao Zheng, Bingyi Kang, Xinyi Wan, Zhongwen Xu, Shuicheng Yan, Min Lin, Yangzihao Wang.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

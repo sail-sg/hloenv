@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Examples Using HloEnv &mdash; HloEnv 0.0.1 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="reference.html" />
+    <link rel="prev" title="About This Project" href="intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> HloEnv
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">About This Project</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples Using HloEnv</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#playing-with-hlo-graph-features">Playing with HLO Graph Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-a-custom-pipeline">Defining a Custom Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#a-simple-decision-making-agent">A Simple Decision-making Agent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#other-features">Other Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xla_passes.html">List of Enabled XLA Hlo Passes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HloEnv</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Examples Using HloEnv</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/examples.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="examples-using-hloenv">
+<span id="examples"></span><h1>Examples Using HloEnv<a class="headerlink" href="#examples-using-hloenv" title="Permalink to this headline">¶</a></h1>
+<p>This documentation only covers the Python interface. We will walk through two simple examples that make use of several HloEnv features. We first show how to read in an HLO text file and turn it into HLO graph features which can be used for implementing a user-defined decision-making agent. We then present a very simple decision-making agent where the policy randomly choose from available actions.</p>
+<div class="section" id="playing-with-hlo-graph-features">
+<h2>Playing with HLO Graph Features<a class="headerlink" href="#playing-with-hlo-graph-features" title="Permalink to this headline">¶</a></h2>
+<p>First make sure your current working directory is correct.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ <span class="nb">cd</span> /path/to/hloenv/examples
+</pre></div>
+</div>
+<p>The HloEnv module holds most functionality, so we usually import it first.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pathlib</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">hloenv</span> <span class="kn">import</span> <span class="n">HloEnv</span>
+</pre></div>
+</div>
+<p>Pick one hlo text file that we want to take a closer look.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hlo_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+<span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">(),</span>
+  <span class="s2">&quot;hlo_texts/jax-md/module_0013.jit__lambda_.7.before_optimizations.txt&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we are ready to create a basic hlo env object on GPU backend. We haven’t worked on other ML hardwares so current GPU is the only backend HloEnv supports.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hlo_env</span> <span class="o">=</span> <span class="n">HloEnv</span><span class="p">(</span><span class="n">hlo_path</span><span class="p">,</span> <span class="s2">&quot;gpu&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The hlo env can automatically extract features from hlo text files and organize them into another class HloGraph.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hlo_graph</span> <span class="o">=</span> <span class="n">hlo_env</span><span class="o">.</span><span class="n">get_hlo_graph</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>To make the features more array programming friendly, all the graph features in HloGraph are organized in the form of <a class="reference external" href="https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_row_(CSR,_CRS_or_Yale_format)">CSR</a>. There are three types of features: global graph feature, node feature, and in/out edge feature, all serve as the accessible members of HloGraph object. Details are in the following table:</p>
+<table border="1" class="colwidths-given docutils" id="id1">
+<caption><span class="caption-text"><strong>Global Graph Features</strong></span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Feature Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>out_edge_offsets</td>
+<td>The offset index to the actual out edge node ID indices array</td>
+</tr>
+<tr class="row-odd"><td>out_edge_indices</td>
+<td>The out edge node ID indices array</td>
+</tr>
+<tr class="row-even"><td>in_edge_offsets</td>
+<td>The offset index to the actual in edge node ID indices array</td>
+</tr>
+<tr class="row-odd"><td>in_edge_indices</td>
+<td>The in edge node ID indices array</td>
+</tr>
+<tr class="row-even"><td>alternative_indices</td>
+<td>The indices to all the <em>kAlternative</em> nodes</td>
+</tr>
+<tr class="row-odd"><td>opcode_attr_counts</td>
+<td>Number of attributes in HLO opcode</td>
+</tr>
+</tbody>
+</table>
+<p>All edge features are vectors of the length of number of edges in the HLO graph. In/Out edge features share the same feature set as follows.</p>
+<table border="1" class="colwidths-given docutils" id="id2">
+<caption><span class="caption-text"><strong>In and Out Edge Features</strong></span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Feature Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>uids</td>
+<td>Unique ID of the edge, a concatination of source and destination nodes uids</td>
+</tr>
+<tr class="row-odd"><td>srcs</td>
+<td>Node index of source node</td>
+</tr>
+<tr class="row-even"><td>dsts</td>
+<td>Node index of destination node</td>
+</tr>
+<tr class="row-odd"><td>dims</td>
+<td>Dimension of the tensor flows by this edge</td>
+</tr>
+<tr class="row-even"><td>layout</td>
+<td>Layout of the tensor flows by this edge</td>
+</tr>
+<tr class="row-odd"><td>lehmercodes</td>
+<td>The <a class="reference external" href="https://en.wikipedia.org/wiki/Lehmer_code">Lehmer code</a> (a better embedding) of the tensor layout</td>
+</tr>
+<tr class="row-even"><td>types</td>
+<td>Edge type is one of the following: outside any fusion, inside fusion, and cross fusion</td>
+</tr>
+<tr class="row-odd"><td>dtypes</td>
+<td>Data type of the tensor flows by this edge</td>
+</tr>
+</tbody>
+</table>
+<p>All node features are vectors of the length of number of HloInstructions (nodes) in the HloModule (HloGraph).</p>
+<table border="1" class="colwidths-given docutils" id="id3">
+<caption><span class="caption-text"><strong>Node Features</strong></span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Feature Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>uids</td>
+<td>Unique ID of an HloInstruction</td>
+</tr>
+<tr class="row-odd"><td>gids</td>
+<td>Sub computation ID the HloInstruction belongs to, 0 means in main computation.</td>
+</tr>
+<tr class="row-even"><td>normalized_num_group_inst</td>
+<td>If an HloInstruction is inside a sub-computation, normalized_num_group_inst is the reciprocal of the total number of instructions in a sub-computation. This can serve as a weighting parameter for an instruction’s impact</td>
+</tr>
+<tr class="row-odd"><td>num_users</td>
+<td>Number of HloInstructions that uses the result of this HloInstruction</td>
+</tr>
+<tr class="row-even"><td>num_operands</td>
+<td>Number of HloInstructions whose results this HloInstruction uses</td>
+</tr>
+<tr class="row-odd"><td>opcodes</td>
+<td>HLO opcode index, as defined <a class="reference external" href="https://github.com/tensorflow/tensorflow/blob/master/tensorflow/compiler/xla/hlo/ir/hlo_opcode.h#L50">here</a></td>
+</tr>
+<tr class="row-even"><td>opcode_attrs</td>
+<td>Unique attribute embeddings for each opcode</td>
+</tr>
+<tr class="row-odd"><td>num_opcode_attrs</td>
+<td>List of pairs, each pair contains the number of integer attribute and the number of enum attribute in opcode_attrs</td>
+</tr>
+<tr class="row-even"><td>is_alternative</td>
+<td>List of boolean that shows if the HloInstruction is <em>kAlternative</em></td>
+</tr>
+<tr class="row-odd"><td>is_in_fusion</td>
+<td>List of boolean that shows if the HloInstruction is inside a fused computation</td>
+</tr>
+<tr class="row-even"><td>in_tensor_sizes</td>
+<td>The total input tensor size from all operands of this HloInstruction</td>
+</tr>
+<tr class="row-odd"><td>out_tensor_sizes</td>
+<td>The output tensor size of this HloInstruction</td>
+</tr>
+<tr class="row-even"><td>has_max_in_tensor</td>
+<td>List of boolean that shows if one of the operands contains the max input tensor size</td>
+</tr>
+<tr class="row-odd"><td>has_max_out_tensor</td>
+<td>List of boolean that shows if the output tensor size has the maximum size</td>
+</tr>
+<tr class="row-even"><td>names</td>
+<td>List of strings that shows the names of the HloInstruction</td>
+</tr>
+</tbody>
+</table>
+<p>The full-size code can be found <a class="reference external" href="https://github.com/sail-sg/hloenv/blob/altgraph-refactor-open/examples/hlo_play.py">here</a>. In our second example, we will show you how to use these features to create a simple decision-making agent and run XLA optimizations using it.</p>
+</div>
+<div class="section" id="defining-a-custom-pipeline">
+<h2>Defining a Custom Pipeline<a class="headerlink" href="#defining-a-custom-pipeline" title="Permalink to this headline">¶</a></h2>
+<p>All of the passes that were initially defined in the full XLA optimization pipeline for compilation for GPU have been included in <a class="reference internal" href="reference.html#hloenv.HloEnv" title="hloenv.HloEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloEnv</span></code></a>. A list of all of these passes can be found in <a class="reference internal" href="xla_passes.html#xla-passes"><span class="std std-ref">List of Enabled XLA Hlo Passes</span></a>.</p>
+<p>A pass can be created by wrapping a <a class="reference internal" href="xla_passes.html#module-hloenv.HloPass" title="hloenv.HloPass"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloPass</span></code></a> object within a <code class="xref py py-class docutils literal notranslate"><span class="pre">Pass</span></code> object. This Pass can then be run within the <a class="reference internal" href="reference.html#hloenv.HloEnv" title="hloenv.HloEnv"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloEnv</span></code></a> to modify the <a class="reference internal" href="reference.html#hloenv.HloModule" title="hloenv.HloModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">HloModule</span></code></a> object loaded in the HloEnv.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hlo_env</span> <span class="o">=</span> <span class="n">HloEnv</span><span class="p">(</span><span class="s2">&quot;path/to/hlo.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;gpu&quot;</span><span class="p">)</span>
+<span class="n">fusion_pass</span> <span class="o">=</span> <span class="n">Pass</span><span class="p">(</span><span class="n">HloPass</span><span class="o">.</span><span class="n">GpuInstructionFusion</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
+<span class="n">hlo_env</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">fusion_pass</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Passes can be organized into <code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code> objects, which can also be run by the HloEnv.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">op_splitter_pass</span> <span class="o">=</span> <span class="n">Pass</span><span class="p">(</span><span class="n">HloPass</span><span class="o">.</span><span class="n">VariadicOpSplitter</span><span class="p">())</span>
+
+<span class="n">fusion_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="s2">&quot;fusion-pre&quot;</span><span class="p">)</span>
+<span class="n">fusion_pipeline</span><span class="o">.</span><span class="n">add_pass</span><span class="p">(</span><span class="n">op_splitter_pass</span><span class="p">)</span>
+
+<span class="c1"># You can also add a HloPass directly without first wrapping it in Pass</span>
+<span class="n">fusion_pipeline</span><span class="o">.</span><span class="n">add_pass</span><span class="p">(</span><span class="n">HloPass</span><span class="o">.</span><span class="n">GpuInstructionFusion</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
+
+<span class="n">hlo_env</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">fusion_pipeline</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A Pipeline can contain other Pipelines and Passes recursively, for example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fusion_pipeline_pre</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="s2">&quot;fusion-pre&quot;</span><span class="p">)</span>
+<span class="n">fusion_pipeline_pre</span><span class="o">.</span><span class="n">add_pass</span><span class="p">(</span><span class="n">HloPass</span><span class="o">.</span><span class="n">VariadicOpSplitter</span><span class="p">())</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">fusion_pipeline_full</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="s2">&quot;fusion&quot;</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">fusion_pipeline_full</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fusion_pipeline_pre</span><span class="p">)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">fusion_pipeline_full</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">HloPass</span><span class="o">.</span><span class="n">GpuInstructionFusion</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>To convert a pass into a <cite>dry pass</cite> we wrap it in an <code class="xref py py-class docutils literal notranslate"><span class="pre">AltPipeline</span></code>. All rewrites performed by an AltPiplines are captures and converted into alternatives. If you wrap multiple passes or pipelines with this AltPipeline wrapper, <cite>all</cite> modifcations performed by each of those passes/pipelines will be in dry mode.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Wrapping a single pass in an AltPipeline</span>
+<span class="n">fusion_dry_pass</span> <span class="o">=</span> <span class="n">AltPipeline</span><span class="p">(</span>
+  <span class="n">Pass</span><span class="p">(</span>
+    <span class="n">HloPass</span><span class="o">.</span><span class="n">GpuInstructionFusion</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span>  <span class="c1"># may_duplicate</span>
+  <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">fusion_pipeline_post</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="s2">&quot;fusion-post&quot;</span><span class="p">)</span>
+<span class="n">fusion_pipeline_post</span><span class="o">.</span><span class="n">add_pass</span><span class="p">(</span><span class="n">HloPass</span><span class="o">.</span><span class="n">FusionMerger</span><span class="p">())</span>
+<span class="n">fusion_pipeline_post</span><span class="o">.</span><span class="n">add_pass</span><span class="p">(</span><span class="n">HloPass</span><span class="o">.</span><span class="n">GpuMultiOutputFusion</span><span class="p">())</span>
+<span class="n">fusion_pipeline_post</span><span class="o">.</span><span class="n">add_pass</span><span class="p">(</span><span class="n">HloPass</span><span class="o">.</span><span class="n">HloCSE</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+
+<span class="c1"># Wrapping multiple passes in an AltPipeline</span>
+<span class="n">fusion_pipeline_post_dry</span> <span class="o">=</span> <span class="n">AltPipeline</span><span class="p">(</span><span class="n">fusion_pipeline_post</span><span class="p">)</span>
+
+<span class="c1"># Adding a pass directly to an AltPipeline</span>
+<span class="n">fusion_pipeline_post_dry</span><span class="o">.</span><span class="n">add_pass</span><span class="p">(</span><span class="n">HloPass</span><span class="o">.</span><span class="n">HloDCE</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>A sample General Fusion Pipeline can be found in <cite>examples/general_fusion_pipeline.py</cite> which contains the full XLA optimization pipeline, except we replace the vertical fusion pipeline with our custom General Fusion pass.</p>
+</div>
+<div class="section" id="a-simple-decision-making-agent">
+<h2>A Simple Decision-making Agent<a class="headerlink" href="#a-simple-decision-making-agent" title="Permalink to this headline">¶</a></h2>
+<p>We here present a very simple decision-making agent that randomly chooses from available actions in an optimization loop.
+The loop will isolate out the graph rewrite in an XLA pass, and layout the decisions to choose.
+At a high level, the optimization loop follows these steps:</p>
+<ul class="simple">
+<li>run <cite>pre_pass_optimizations</cite></li>
+<li><dl class="first docutils">
+<dt>enter optimization loop</dt>
+<dd><ul class="first last">
+<li>run <cite>pre_dry_pass_passes</cite></li>
+<li>open <cite>pass_dry_run</cite></li>
+<li>choose an action</li>
+<li>apply the action</li>
+<li>run <cite>post_dry_pass_passes</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li>run <cite>post_pass_optimizations</cite></li>
+</ul>
+<p>We can regard the <cite>pre_pass_optimizations</cite> as the <cite>pre-processing</cite> stage and <cite>post_pass_optimizations</cite> as the <cite>post-processing</cite> stage.
+So they are not included in the optimization loop.</p>
+<p>Every step of <cite>pass_dry_run</cite> will expose the alternatives (i.e. action space) to users.
+Note that it is also surrounded by <cite>pre_dry_pass_passes</cite> and <cite>post_dry_pass_passes</cite> for some pre/post processing. They are included in the optimization loop.</p>
+<p>Here we are interested in <cite>GeneralFusion</cite> pipeline. All the above described steps are implemented and scheduled in the <cite>GeneralFusionPipeline</cite> class, which is a sample pipeline that we have provided in examples/general_fusion_pipeline.py</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">general_fusion_pipeline</span> <span class="kn">import</span> <span class="n">GeneralFusionPipeline</span>
+<span class="kn">from</span> <span class="nn">hloenv</span> <span class="kn">import</span> <span class="n">AltPipeline</span><span class="p">,</span> <span class="n">HloEnv</span><span class="p">,</span> <span class="n">HloPass</span><span class="p">,</span> <span class="n">Pass</span><span class="p">,</span> <span class="n">Pipeline</span>
+
+<span class="n">hlo_env</span> <span class="o">=</span> <span class="n">HloEnv</span><span class="p">(</span><span class="n">hlo_path</span><span class="p">,</span> <span class="s2">&quot;gpu&quot;</span><span class="p">)</span>
+<span class="n">general_fusion_pipeline</span> <span class="o">=</span> <span class="n">GeneralFusionPipeline</span><span class="p">(</span><span class="n">hlo_env</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The code of the optimization loop looks like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hlo_env</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">general_fusion_pipeline</span><span class="o">.</span><span class="n">pre_pass_optimizations</span><span class="p">)</span>
+
+<span class="n">num_alts</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="k">while</span> <span class="n">num_alts</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+  <span class="n">hlo_env</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">general_fusion_pipeline</span><span class="o">.</span><span class="n">pre_dry_pass_passes</span><span class="p">)</span>
+  <span class="c1"># Open up the action space</span>
+  <span class="n">hlo_env</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">general_fusion_pipeline</span><span class="o">.</span><span class="n">pass_dry_run</span><span class="p">)</span>
+
+  <span class="c1"># Get features from hlo_env</span>
+  <span class="n">hlo_graph</span> <span class="o">=</span> <span class="n">hlo_env</span><span class="o">.</span><span class="n">get_hlo_graph</span><span class="p">(</span><span class="n">do_hash_verification</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+  <span class="n">num_alts</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hlo_graph</span><span class="o">.</span><span class="n">alternative_indices</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="n">num_alts</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="c1"># Obtain a probablity distribution over the action space</span>
+    <span class="n">probablity</span> <span class="o">=</span> <span class="n">uniform_policy</span><span class="p">(</span><span class="n">hlo_graph</span><span class="p">)</span>
+    <span class="c1"># Sample an action</span>
+    <span class="n">decisions</span> <span class="o">=</span> <span class="n">argmax_sample</span><span class="p">(</span><span class="n">probablity</span><span class="p">,</span> <span class="n">hlo_graph</span><span class="p">)</span>
+    <span class="n">decisions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">decisions</span><span class="p">)</span>
+    <span class="c1"># Apply action to the hlo_env</span>
+    <span class="n">hlo_env</span><span class="o">.</span><span class="n">apply_alternatives</span><span class="p">(</span><span class="n">decisions</span><span class="p">)</span>
+    <span class="n">hlo_env</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">general_fusion_pipeline</span><span class="o">.</span><span class="n">post_dry_pass_passes</span><span class="p">)</span>
+
+<span class="n">hlo_env</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">general_fusion_pipeline</span><span class="o">.</span><span class="n">post_pass_optimizations</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <cite>hlo_graph</cite> is the entry point of all available features. The <cite>num_alts</cite> is the number of alternatives (i.e. actions) available in the current state. When <cite>num_alts</cite> is 0, it means there is no more action to choose, and the optimization loop will terminate.</p>
+<p>Next, we details how we implement the <cite>uniform_policy</cite> and <cite>argmax_sample</cite> functions.</p>
+<p>The goal of <cite>uniform_policy</cite> is to output a probability distribution at each kAlternative node over all its operands (i.e. predecessors in HLO graph).
+The probability distribution is a tf.RaggedTensor, where the outer dimension is the number of kAlternative nodes, and the inner dimension is the number of operands of each kAlternative node.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">uniform_policy</span><span class="p">(</span><span class="n">hlo_graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">RaggedTensor</span><span class="p">:</span>
+  <span class="sd">&quot;&quot;&quot;Produce a uniform policy for the given hlo graph.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    hlo_graph: the hlo graph</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    a tf.RaggedTensor with shape [num_alt_idx, None]. The outer dimension</span>
+<span class="sd">    is the alternative index, and the inner dimension is the operand index.</span>
+<span class="sd">    Each row is a list of probability to operand indices for the</span>
+<span class="sd">    corresponding alternative.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># get graph structures</span>
+  <span class="n">operands</span><span class="p">,</span> <span class="n">users</span> <span class="o">=</span> <span class="n">get_ragged_tensor_from_hlo</span><span class="p">(</span><span class="n">hlo_graph</span><span class="p">)</span>
+  <span class="c1"># get the indices of kAlternative nodes</span>
+  <span class="n">alternative_idx</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">convert_to_tensor</span><span class="p">(</span><span class="n">hlo_graph</span><span class="o">.</span><span class="n">alternative_indices</span><span class="p">)</span>
+  <span class="c1"># get the indices of operands for each kAlternative node</span>
+  <span class="n">alt_oprnd_idx</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">RaggedTensor</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">operands</span><span class="p">,</span> <span class="n">alternative_idx</span><span class="p">)</span>
+
+  <span class="c1"># assign random score to each operand</span>
+  <span class="n">alt_oprnd_prob</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">map_fn</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">minval</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxval</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">alt_oprnd_idx</span><span class="p">,</span>
+    <span class="n">fn_output_signature</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">RaggedTensorSpec</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+  <span class="p">)</span>
+
+<span class="k">return</span> <span class="n">alt_oprnd_prob</span>
+</pre></div>
+</div>
+<p>The action space is defined as a 2d-array of dimension [num_alt_idx, 2]. The first column is the index of the kAlternative node, and the second column is the index of the operand to choose.</p>
+<p>To output an action, we implement the <cite>argmax_sample</cite> to choose the operand with the highest score for each kAlternative node.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">argmax_sample</span><span class="p">(</span><span class="n">probability</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">RaggedTensor</span><span class="p">,</span> <span class="n">hlo_graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+  <span class="sd">&quot;&quot;&quot;Select the operand with the highest score for each alternative.</span>
+
+<span class="sd">  Args:</span>
+<span class="sd">    probability: a tf.RaggedTensor with shape [num_alt_idx, None].</span>
+<span class="sd">      The outer dimension is the alternative index, and the inner</span>
+<span class="sd">      dimension is the operand index.</span>
+
+<span class="sd">    hlo_graph: the hlo graph</span>
+
+<span class="sd">  Returns:</span>
+<span class="sd">    a tf.Tensor with shape [num_alt_idx, 2], the 1st column is</span>
+<span class="sd">    the uids of alt_idx, the 2nd column is the operand_idx to be selected.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">alt_uids</span> <span class="o">=</span> <span class="n">hlo_graph</span><span class="o">.</span><span class="n">node_features</span><span class="o">.</span><span class="n">uids</span><span class="p">[</span><span class="n">hlo_graph</span><span class="o">.</span><span class="n">alternative_indices</span><span class="p">]</span>
+
+  <span class="n">alt_uids</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">convert_to_tensor</span><span class="p">(</span><span class="n">alt_uids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+
+  <span class="n">alt_choice</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">map_fn</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="n">probability</span><span class="p">,</span>
+    <span class="n">fn_output_signature</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">TensorSpec</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+  <span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">alt_uids</span><span class="p">,</span> <span class="n">alt_choice</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The full-size code can be found <a class="reference external" href="https://github.com/sail-sg/hloenv/blob/hloenv-refactor-open/examples/uniform_policy.py">here</a>.</p>
+</div>
+<div class="section" id="other-features">
+<h2>Other Features<a class="headerlink" href="#other-features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Saving and Loading HLO module</li>
+</ul>
+<p>At any stage of the optimization pipeline, we can export the current Hlo text to a string object for inspection.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">init_hlo_str</span> <span class="o">=</span> <span class="n">hlo_env</span><span class="o">.</span><span class="n">export_hlo_to_str</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>We can also save the snapshot of an HloEnv object at any stage and restore at a later stage.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">saved_hlo_module</span> <span class="o">=</span> <span class="n">hlo_env</span><span class="o">.</span><span class="n">save_hlo</span><span class="p">()</span>
+<span class="n">hlo_env</span><span class="o">.</span><span class="n">pre_fusion_optimizations</span><span class="p">()</span>
+<span class="n">post_fusion_hlo_str</span> <span class="o">=</span> <span class="n">hlo_env</span><span class="o">.</span><span class="n">export_hlo_to_str</span><span class="p">()</span>
+<span class="n">hlo_env</span><span class="o">.</span><span class="n">load_hlo</span><span class="p">(</span><span class="n">saved_hlo_module</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This can be useful when you want to explore different optimization actions from the same initial state.</p>
+<ul class="simple">
+<li>DAG Hash</li>
+</ul>
+<p>The existing hash implementation in XLA is lacking in two ways which increase the number of hash collisions: 1) It simply hashes the instructions in the HLO graph in post-order, and does not recursively consider the structure and connections of each HLO instruction and computation in the HLO graph; 2) Instruction specific parameters (e.g. the size and stride of an HLO Convolution instruction) are not considered in the hash of each instruction as well. Our custom HloDAGHash function builds upon XLA’s hash implementation, but is designed to be a more powerful hash that additionally accounts for graph topology and the parameters unique to each instruction. This reduces the chance of a hash collision when determining if a graph has been seen before, or is identical to another graph.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hlo_hash</span> <span class="o">=</span> <span class="n">hlo_env</span><span class="o">.</span><span class="n">get_hlo_module_hash</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This is useful for de-duplicating the dataset or uniquely labeling the state when performing a search over the state space.</p>
+<ul class="simple">
+<li>Profiling an HLO Graph</li>
+</ul>
+<p>To profile the runtime of an HLO graph we need to obtain both the executable and parameters. We obtain the executable by calling the standard compiler provided by XLA while setting <em>run_backend_only</em> to prevent the reinvocation of HLO passes. For parameters, we randomly generate N(0, 1) for floating-point parameters and fill const values for other types. A fixed random seed is used to keep the parameters consistent across the optimization process so that we can verify the correctness of optimizations. The only parameter for evaluate() is the repeated evaluation time.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">num_eval_iterations</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">eval_result</span> <span class="o">=</span> <span class="n">hlo_env</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">num_eval_iterations</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The above code will run the evaluation for 100 times and generate several metrics and output as shown below:</p>
+<table border="1" class="colwidths-given docutils" id="id4">
+<caption><span class="caption-text"><strong>Evaluation Results</strong></span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>durations</td>
+<td>The default duration in nanoseconds. This returns the execution duration as measured within the Tensorflow evaluation code, starting from the point when the executable has been enqueued on the compute stream till the completion of the executable.</td>
+</tr>
+<tr class="row-odd"><td>compute_durations</td>
+<td>The duration in nanoseconds of the computation, without data transfer, as measured on the device.</td>
+</tr>
+<tr class="row-even"><td>full_durations</td>
+<td>The full duration of the computation as measured within HloEnv.evaluate(). This captures the entire execution process including processes such as enqueueing the computation on the compute stream, and is hence more subject to timing noise.</td>
+</tr>
+<tr class="row-odd"><td>output</td>
+<td>The output of the HloModule.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="intro.html" class="btn btn-neutral float-left" title="About This Project" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="reference.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Chin Yang Oh, Kunhao Zheng, Bingyi Kang, Xinyi Wan, Zhongwen Xu, Shuicheng Yan, Min Lin, Yangzihao Wang.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

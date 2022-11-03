@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>List of Enabled XLA Hlo Passes &mdash; HloEnv 0.0.1 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Release Notes" href="release_notes.html" />
+    <link rel="prev" title="API Reference" href="reference.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> HloEnv
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">About This Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples Using HloEnv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">API Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">List of Enabled XLA Hlo Passes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HloEnv</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>List of Enabled XLA Hlo Passes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/xla_passes.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="module-hloenv.HloPass">
+<span id="list-of-enabled-xla-hlo-passes"></span><span id="xla-passes"></span><h1>List of Enabled XLA Hlo Passes<a class="headerlink" href="#module-hloenv.HloPass" title="Permalink to this headline">¶</a></h1>
+<p>Hlo Pass definitions</p>
+<dl class="class">
+<dt id="hloenv.HloPass.AlgebraicSimplifier">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">AlgebraicSimplifier</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.AlgebraicSimplifier</em>, <em>options: dict</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.AlgebraicSimplifier" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.AllGatherBroadcastReorder">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">AllGatherBroadcastReorder</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.AllGatherBroadcastReorder</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.AllGatherBroadcastReorder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.AllGatherCombiner">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">AllGatherCombiner</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.AllGatherCombiner</em>, <em>combine_threshold_in_bytes: int</em>, <em>combine_threshold_count: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.AllGatherCombiner" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.AllReduceBlueConnect">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">AllReduceBlueConnect</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.AllReduceBlueConnect</em>, <em>num_devices_per_host: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.AllReduceBlueConnect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.AllReduceCombiner">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">AllReduceCombiner</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.AllReduceCombiner</em>, <em>combine_threshold_in_bytes: int</em>, <em>combine_threshold_count: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.AllReduceCombiner" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.AllReduceContiguous">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">AllReduceContiguous</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.AllReduceContiguous</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.AllReduceContiguous" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.AllReduceFolder">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">AllReduceFolder</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.AllReduceFolder</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.AllReduceFolder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.AllReduceReassociate">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">AllReduceReassociate</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.AllReduceReassociate</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.AllReduceReassociate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.AllToAllDecomposer">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">AllToAllDecomposer</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.AllToAllDecomposer</em>, <em>decompose_to_tuple: bool = True</em>, <em>min_array_rank: int = 0</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.AllToAllDecomposer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.AsyncCollectiveCreator">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">AsyncCollectiveCreator</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.AsyncCollectiveCreator</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.AsyncCollectiveCreator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.BFloat16Normalization">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">BFloat16Normalization</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.BFloat16Normalization</em>, <em>arg0: bool</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.BFloat16Normalization" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.BatchNormExpander">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">BatchNormExpander</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.BatchNormExpander</em>, <em>rewrite_training_op: bool = False</em>, <em>rewrite_inference_op: bool = False</em>, <em>rewrite_grad_op: bool = False</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.BatchNormExpander" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.BitcastDtypesExpander">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">BitcastDtypesExpander</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.BitcastDtypesExpander</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.BitcastDtypesExpander" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.CallInliner">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">CallInliner</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.CallInliner</em>, <em>single_call_site: bool = False</em>, <em>update_domain: bool = False</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.CallInliner" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.CollectivesScheduleLinearizer">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">CollectivesScheduleLinearizer</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.CollectivesScheduleLinearizer</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.CollectivesScheduleLinearizer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.ComparisonExpander">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">ComparisonExpander</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.ComparisonExpander</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.ComparisonExpander" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.ConditionalCanonicalizer">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">ConditionalCanonicalizer</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.ConditionalCanonicalizer</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.ConditionalCanonicalizer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.ConditionalSimplifier">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">ConditionalSimplifier</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.ConditionalSimplifier</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.ConditionalSimplifier" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.Convolution4DExpander">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">Convolution4DExpander</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.Convolution4DExpander</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.Convolution4DExpander" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.CublasPadForGemms">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">CublasPadForGemms</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.CublasPadForGemms</em>, <em>datatype: xla::PrimitiveType</em>, <em>pad_to_multiple_of: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.BF16">
+<code class="descname">BF16</code><em class="property"> = &lt;PrimitiveType.BF16: 16&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.BF16" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.C128">
+<code class="descname">C128</code><em class="property"> = &lt;PrimitiveType.C128: 18&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.C128" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.C64">
+<code class="descname">C64</code><em class="property"> = &lt;PrimitiveType.C64: 15&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.C64" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.F16">
+<code class="descname">F16</code><em class="property"> = &lt;PrimitiveType.F16: 10&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.F16" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.F32">
+<code class="descname">F32</code><em class="property"> = &lt;PrimitiveType.F32: 11&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.F32" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.F64">
+<code class="descname">F64</code><em class="property"> = &lt;PrimitiveType.F64: 12&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.F64" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.OPAQUE_TYPE">
+<code class="descname">OPAQUE_TYPE</code><em class="property"> = &lt;PrimitiveType.OPAQUE_TYPE: 14&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.OPAQUE_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PRED">
+<code class="descname">PRED</code><em class="property"> = &lt;PrimitiveType.PRED: 1&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PRED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PRIMITIVE_TYPE_INVALID">
+<code class="descname">PRIMITIVE_TYPE_INVALID</code><em class="property"> = &lt;PrimitiveType.PRIMITIVE_TYPE_INVALID: 0&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PRIMITIVE_TYPE_INVALID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType">
+<em class="property">class </em><code class="descname">PrimitiveType</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.CublasPadForGemms.PrimitiveType</em>, <em>value: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Members:</p>
+<p>PRIMITIVE_TYPE_INVALID</p>
+<p>PRED</p>
+<p>S8</p>
+<p>S16</p>
+<p>S32</p>
+<p>S64</p>
+<p>U8</p>
+<p>U16</p>
+<p>U32</p>
+<p>U64</p>
+<p>F16</p>
+<p>F32</p>
+<p>BF16</p>
+<p>F64</p>
+<p>C64</p>
+<p>C128</p>
+<p>TUPLE</p>
+<p>OPAQUE_TYPE</p>
+<p>TOKEN</p>
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.BF16">
+<code class="descname">BF16</code><em class="property"> = &lt;PrimitiveType.BF16: 16&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.BF16" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.C128">
+<code class="descname">C128</code><em class="property"> = &lt;PrimitiveType.C128: 18&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.C128" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.C64">
+<code class="descname">C64</code><em class="property"> = &lt;PrimitiveType.C64: 15&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.C64" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.F16">
+<code class="descname">F16</code><em class="property"> = &lt;PrimitiveType.F16: 10&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.F16" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.F32">
+<code class="descname">F32</code><em class="property"> = &lt;PrimitiveType.F32: 11&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.F32" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.F64">
+<code class="descname">F64</code><em class="property"> = &lt;PrimitiveType.F64: 12&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.F64" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.OPAQUE_TYPE">
+<code class="descname">OPAQUE_TYPE</code><em class="property"> = &lt;PrimitiveType.OPAQUE_TYPE: 14&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.OPAQUE_TYPE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.PRED">
+<code class="descname">PRED</code><em class="property"> = &lt;PrimitiveType.PRED: 1&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.PRED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.PRIMITIVE_TYPE_INVALID">
+<code class="descname">PRIMITIVE_TYPE_INVALID</code><em class="property"> = &lt;PrimitiveType.PRIMITIVE_TYPE_INVALID: 0&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.PRIMITIVE_TYPE_INVALID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.S16">
+<code class="descname">S16</code><em class="property"> = &lt;PrimitiveType.S16: 3&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.S16" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.S32">
+<code class="descname">S32</code><em class="property"> = &lt;PrimitiveType.S32: 4&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.S32" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.S64">
+<code class="descname">S64</code><em class="property"> = &lt;PrimitiveType.S64: 5&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.S64" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.S8">
+<code class="descname">S8</code><em class="property"> = &lt;PrimitiveType.S8: 2&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.S8" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.TOKEN">
+<code class="descname">TOKEN</code><em class="property"> = &lt;PrimitiveType.TOKEN: 17&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.TOKEN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.TUPLE">
+<code class="descname">TUPLE</code><em class="property"> = &lt;PrimitiveType.TUPLE: 13&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.TUPLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.U16">
+<code class="descname">U16</code><em class="property"> = &lt;PrimitiveType.U16: 7&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.U16" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.U32">
+<code class="descname">U32</code><em class="property"> = &lt;PrimitiveType.U32: 8&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.U32" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.U64">
+<code class="descname">U64</code><em class="property"> = &lt;PrimitiveType.U64: 9&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.U64" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.U8">
+<code class="descname">U8</code><em class="property"> = &lt;PrimitiveType.U8: 6&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.U8" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.name">
+<code class="descname">name</code><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.PrimitiveType.value">
+<code class="descname">value</code><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.PrimitiveType.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.S16">
+<code class="descname">S16</code><em class="property"> = &lt;PrimitiveType.S16: 3&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.S16" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.S32">
+<code class="descname">S32</code><em class="property"> = &lt;PrimitiveType.S32: 4&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.S32" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.S64">
+<code class="descname">S64</code><em class="property"> = &lt;PrimitiveType.S64: 5&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.S64" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.S8">
+<code class="descname">S8</code><em class="property"> = &lt;PrimitiveType.S8: 2&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.S8" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.TOKEN">
+<code class="descname">TOKEN</code><em class="property"> = &lt;PrimitiveType.TOKEN: 17&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.TOKEN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.TUPLE">
+<code class="descname">TUPLE</code><em class="property"> = &lt;PrimitiveType.TUPLE: 13&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.TUPLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.U16">
+<code class="descname">U16</code><em class="property"> = &lt;PrimitiveType.U16: 7&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.U16" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.U32">
+<code class="descname">U32</code><em class="property"> = &lt;PrimitiveType.U32: 8&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.U32" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.U64">
+<code class="descname">U64</code><em class="property"> = &lt;PrimitiveType.U64: 9&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.U64" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.CublasPadForGemms.U8">
+<code class="descname">U8</code><em class="property"> = &lt;PrimitiveType.U8: 6&gt;</em><a class="headerlink" href="#hloenv.HloPass.CublasPadForGemms.U8" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.CudnnFusedConvRewriter">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">CudnnFusedConvRewriter</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.CudnnFusedConvRewriter</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.CudnnFusedConvRewriter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.CudnnPadForConvolutions">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">CudnnPadForConvolutions</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.CudnnPadForConvolutions</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.CudnnPadForConvolutions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.CudnnVectorizeConvolutions">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">CudnnVectorizeConvolutions</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.CudnnVectorizeConvolutions</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.CudnnVectorizeConvolutions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.DotDecomposer">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">DotDecomposer</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.DotDecomposer</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.DotDecomposer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.DotMerger">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">DotMerger</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.DotMerger</em>, <em>max_size_to_merge: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.DotMerger" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.DynamicDimensionSimplifier">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">DynamicDimensionSimplifier</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.DynamicDimensionSimplifier</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.DynamicDimensionSimplifier" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.DynamicIndexSplitter">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">DynamicIndexSplitter</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.DynamicIndexSplitter</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.DynamicIndexSplitter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.DynamicPadder">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">DynamicPadder</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.DynamicPadder</em>, <em>arg0: dict</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.DynamicPadder" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="class">
+<dt id="hloenv.HloPass.DynamicPadder.ShapeCheckMode">
+<em class="property">class </em><code class="descname">ShapeCheckMode</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.DynamicPadder.ShapeCheckMode</em>, <em>value: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.DynamicPadder.ShapeCheckMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Members:</p>
+<p>kInvalid</p>
+<p>kCompileTime</p>
+<p>kRuntimeTime</p>
+<p>kIgnore</p>
+<dl class="attribute">
+<dt id="hloenv.HloPass.DynamicPadder.ShapeCheckMode.kCompileTime">
+<code class="descname">kCompileTime</code><em class="property"> = &lt;ShapeCheckMode.kCompileTime: 1&gt;</em><a class="headerlink" href="#hloenv.HloPass.DynamicPadder.ShapeCheckMode.kCompileTime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.DynamicPadder.ShapeCheckMode.kIgnore">
+<code class="descname">kIgnore</code><em class="property"> = &lt;ShapeCheckMode.kIgnore: 3&gt;</em><a class="headerlink" href="#hloenv.HloPass.DynamicPadder.ShapeCheckMode.kIgnore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.DynamicPadder.ShapeCheckMode.kInvalid">
+<code class="descname">kInvalid</code><em class="property"> = &lt;ShapeCheckMode.kInvalid: 0&gt;</em><a class="headerlink" href="#hloenv.HloPass.DynamicPadder.ShapeCheckMode.kInvalid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.DynamicPadder.ShapeCheckMode.kRuntimeTime">
+<code class="descname">kRuntimeTime</code><em class="property"> = &lt;ShapeCheckMode.kRuntimeTime: 2&gt;</em><a class="headerlink" href="#hloenv.HloPass.DynamicPadder.ShapeCheckMode.kRuntimeTime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.DynamicPadder.ShapeCheckMode.name">
+<code class="descname">name</code><a class="headerlink" href="#hloenv.HloPass.DynamicPadder.ShapeCheckMode.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.DynamicPadder.ShapeCheckMode.value">
+<code class="descname">value</code><a class="headerlink" href="#hloenv.HloPass.DynamicPadder.ShapeCheckMode.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.DynamicPadder.kCompileTime">
+<code class="descname">kCompileTime</code><em class="property"> = &lt;ShapeCheckMode.kCompileTime: 1&gt;</em><a class="headerlink" href="#hloenv.HloPass.DynamicPadder.kCompileTime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.DynamicPadder.kIgnore">
+<code class="descname">kIgnore</code><em class="property"> = &lt;ShapeCheckMode.kIgnore: 3&gt;</em><a class="headerlink" href="#hloenv.HloPass.DynamicPadder.kIgnore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.DynamicPadder.kInvalid">
+<code class="descname">kInvalid</code><em class="property"> = &lt;ShapeCheckMode.kInvalid: 0&gt;</em><a class="headerlink" href="#hloenv.HloPass.DynamicPadder.kInvalid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.DynamicPadder.kRuntimeTime">
+<code class="descname">kRuntimeTime</code><em class="property"> = &lt;ShapeCheckMode.kRuntimeTime: 2&gt;</em><a class="headerlink" href="#hloenv.HloPass.DynamicPadder.kRuntimeTime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.EighExpander">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">EighExpander</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.EighExpander</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.EighExpander" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.FlattenCallGraph">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">FlattenCallGraph</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.FlattenCallGraph</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.FlattenCallGraph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.FusionBitcastLift">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">FusionBitcastLift</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.FusionBitcastLift</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.FusionBitcastLift" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.FusionMerger">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">FusionMerger</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.FusionMerger</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.FusionMerger" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.GatherExpander">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">GatherExpander</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.GatherExpander</em>, <em>m: xla::GatherExpander::Mode</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.GatherExpander" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="class">
+<dt id="hloenv.HloPass.GatherExpander.Mode">
+<em class="property">class </em><code class="descname">Mode</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.GatherExpander.Mode</em>, <em>value: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.GatherExpander.Mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Members:</p>
+<p>kEliminateAllGathers</p>
+<p>kEliminateSimpleGathers</p>
+<dl class="attribute">
+<dt id="hloenv.HloPass.GatherExpander.Mode.kEliminateAllGathers">
+<code class="descname">kEliminateAllGathers</code><em class="property"> = &lt;Mode.kEliminateAllGathers: 0&gt;</em><a class="headerlink" href="#hloenv.HloPass.GatherExpander.Mode.kEliminateAllGathers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.GatherExpander.Mode.kEliminateSimpleGathers">
+<code class="descname">kEliminateSimpleGathers</code><em class="property"> = &lt;Mode.kEliminateSimpleGathers: 1&gt;</em><a class="headerlink" href="#hloenv.HloPass.GatherExpander.Mode.kEliminateSimpleGathers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.GatherExpander.Mode.name">
+<code class="descname">name</code><a class="headerlink" href="#hloenv.HloPass.GatherExpander.Mode.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.GatherExpander.Mode.value">
+<code class="descname">value</code><a class="headerlink" href="#hloenv.HloPass.GatherExpander.Mode.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.GatherExpander.kEliminateAllGathers">
+<code class="descname">kEliminateAllGathers</code><em class="property"> = &lt;Mode.kEliminateAllGathers: 0&gt;</em><a class="headerlink" href="#hloenv.HloPass.GatherExpander.kEliminateAllGathers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.GatherExpander.kEliminateSimpleGathers">
+<code class="descname">kEliminateSimpleGathers</code><em class="property"> = &lt;Mode.kEliminateSimpleGathers: 1&gt;</em><a class="headerlink" href="#hloenv.HloPass.GatherExpander.kEliminateSimpleGathers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.GemmAlgorithmPicker">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">GemmAlgorithmPicker</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.GemmAlgorithmPicker</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.GemmAlgorithmPicker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.GemmBroadcastFoldingRewriter">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">GemmBroadcastFoldingRewriter</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.GemmBroadcastFoldingRewriter</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.GemmBroadcastFoldingRewriter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.GemmRewriter">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">GemmRewriter</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.GemmRewriter</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.GemmRewriter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.GeneralFusion">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">GeneralFusion</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.GeneralFusion</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.GeneralFusion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.GpuConvAlgorithmPicker">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">GpuConvAlgorithmPicker</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.GpuConvAlgorithmPicker</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.GpuConvAlgorithmPicker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.GpuConvPaddingLegalization">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">GpuConvPaddingLegalization</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.GpuConvPaddingLegalization</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.GpuConvPaddingLegalization" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.GpuConvRewriter">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">GpuConvRewriter</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.GpuConvRewriter</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.GpuConvRewriter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.GpuHorizontalInputFusion">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">GpuHorizontalInputFusion</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.GpuHorizontalInputFusion</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.GpuHorizontalInputFusion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.GpuHorizontalLoopFusion">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">GpuHorizontalLoopFusion</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.GpuHorizontalLoopFusion</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.GpuHorizontalLoopFusion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.GpuInstructionFusion">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">GpuInstructionFusion</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.GpuInstructionFusion</em>, <em>may_duplicate: bool</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.GpuInstructionFusion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.GpuLayoutAssignment">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">GpuLayoutAssignment</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.GpuLayoutAssignment</em>, <em>arg0: hloenv.HloModule</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.GpuLayoutAssignment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.GpuMultiOutputFusion">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">GpuMultiOutputFusion</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.GpuMultiOutputFusion</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.GpuMultiOutputFusion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.GpuScatterExpander">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">GpuScatterExpander</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.GpuScatterExpander</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.GpuScatterExpander" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.GpuTreeReductionRewriter">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">GpuTreeReductionRewriter</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.GpuTreeReductionRewriter</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.GpuTreeReductionRewriter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.GpusolverRewriter">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">GpusolverRewriter</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.GpusolverRewriter</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.GpusolverRewriter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.HloCSE">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">HloCSE</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.HloCSE</em>, <em>is_layout_sensitive: bool</em>, <em>only_fusion_computations: bool = False</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.HloCSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.HloConstantFolding">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">HloConstantFolding</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.HloConstantFolding</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.HloConstantFolding" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.HloDCE">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">HloDCE</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hloenv.HloPass.HloDCE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li>__init__(self: hloenv.hlo_pass.HloDCE) -&gt; None</li>
+<li>__init__(self: hloenv.hlo_pass.HloDCE, remove_cross_partition_collective_ops: bool) -&gt; None</li>
+</ol>
+</dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.HloPassInterface">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">HloPassInterface</code><a class="headerlink" href="#hloenv.HloPass.HloPassInterface" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.HloVerifier">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">HloVerifier</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.HloVerifier</em>, <em>layout_sensitive: bool</em>, <em>allow_mixed_precision: bool</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.HloVerifier" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.LogisticExpander">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">LogisticExpander</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.LogisticExpander</em>, <em>expansion_type: xla::LogisticExpansionType</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.LogisticExpander" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="class">
+<dt id="hloenv.HloPass.LogisticExpander.LogisticExpansionType">
+<em class="property">class </em><code class="descname">LogisticExpansionType</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.LogisticExpander.LogisticExpansionType</em>, <em>value: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.LogisticExpander.LogisticExpansionType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Members:</p>
+<p>kTanh</p>
+<p>kExp</p>
+<dl class="attribute">
+<dt id="hloenv.HloPass.LogisticExpander.LogisticExpansionType.kExp">
+<code class="descname">kExp</code><em class="property"> = &lt;LogisticExpansionType.kExp: 1&gt;</em><a class="headerlink" href="#hloenv.HloPass.LogisticExpander.LogisticExpansionType.kExp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.LogisticExpander.LogisticExpansionType.kTanh">
+<code class="descname">kTanh</code><em class="property"> = &lt;LogisticExpansionType.kTanh: 0&gt;</em><a class="headerlink" href="#hloenv.HloPass.LogisticExpander.LogisticExpansionType.kTanh" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.LogisticExpander.LogisticExpansionType.name">
+<code class="descname">name</code><a class="headerlink" href="#hloenv.HloPass.LogisticExpander.LogisticExpansionType.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.LogisticExpander.LogisticExpansionType.value">
+<code class="descname">value</code><a class="headerlink" href="#hloenv.HloPass.LogisticExpander.LogisticExpansionType.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.LogisticExpander.kExp">
+<code class="descname">kExp</code><em class="property"> = &lt;LogisticExpansionType.kExp: 1&gt;</em><a class="headerlink" href="#hloenv.HloPass.LogisticExpander.kExp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.LogisticExpander.kTanh">
+<code class="descname">kTanh</code><em class="property"> = &lt;LogisticExpansionType.kTanh: 0&gt;</em><a class="headerlink" href="#hloenv.HloPass.LogisticExpander.kTanh" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.OperandUpcaster">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">OperandUpcaster</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.OperandUpcaster</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.OperandUpcaster" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.OptimizationBarrierExpander">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">OptimizationBarrierExpander</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.OptimizationBarrierExpander</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.OptimizationBarrierExpander" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.QrExpander">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">QrExpander</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.QrExpander</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.QrExpander" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.RealImagExpander">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">RealImagExpander</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.RealImagExpander</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.RealImagExpander" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.ReduceScatterCombiner">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">ReduceScatterCombiner</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.ReduceScatterCombiner</em>, <em>combine_threshold_in_bytes: int</em>, <em>combine_threshold_count: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.ReduceScatterCombiner" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.ReduceScatterCreator">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">ReduceScatterCreator</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.ReduceScatterCreator</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.ReduceScatterCreator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.ReductionDegenerateDimRemover">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">ReductionDegenerateDimRemover</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.ReductionDegenerateDimRemover</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.ReductionDegenerateDimRemover" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.ReductionDimensionGrouper">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">ReductionDimensionGrouper</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.ReductionDimensionGrouper</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.ReductionDimensionGrouper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.ReductionLayoutNormalizer">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">ReductionLayoutNormalizer</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.ReductionLayoutNormalizer</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.ReductionLayoutNormalizer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.ReductionSplitter">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">ReductionSplitter</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.ReductionSplitter</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.ReductionSplitter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.ReshapeMover">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">ReshapeMover</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.ReshapeMover</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.ReshapeMover" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.ResultCaster">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">ResultCaster</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.ResultCaster</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.ResultCaster" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.RngBitGeneratorExpander">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">RngBitGeneratorExpander</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.RngBitGeneratorExpander</em>, <em>default_algorithm: xla::RandomAlgorithm</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.RngBitGeneratorExpander" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="hloenv.HloPass.RngBitGeneratorExpander.RNG_DEFAULT">
+<code class="descname">RNG_DEFAULT</code><em class="property"> = &lt;RandomAlgorithm.RNG_DEFAULT: 0&gt;</em><a class="headerlink" href="#hloenv.HloPass.RngBitGeneratorExpander.RNG_DEFAULT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.RngBitGeneratorExpander.RNG_PHILOX">
+<code class="descname">RNG_PHILOX</code><em class="property"> = &lt;RandomAlgorithm.RNG_PHILOX: 2&gt;</em><a class="headerlink" href="#hloenv.HloPass.RngBitGeneratorExpander.RNG_PHILOX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.RngBitGeneratorExpander.RNG_THREE_FRY">
+<code class="descname">RNG_THREE_FRY</code><em class="property"> = &lt;RandomAlgorithm.RNG_THREE_FRY: 1&gt;</em><a class="headerlink" href="#hloenv.HloPass.RngBitGeneratorExpander.RNG_THREE_FRY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.RngBitGeneratorExpander.RandomAlgorithm">
+<em class="property">class </em><code class="descname">RandomAlgorithm</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.RngBitGeneratorExpander.RandomAlgorithm</em>, <em>value: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.RngBitGeneratorExpander.RandomAlgorithm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Members:</p>
+<p>RNG_DEFAULT</p>
+<p>RNG_THREE_FRY</p>
+<p>RNG_PHILOX</p>
+<dl class="attribute">
+<dt id="hloenv.HloPass.RngBitGeneratorExpander.RandomAlgorithm.RNG_DEFAULT">
+<code class="descname">RNG_DEFAULT</code><em class="property"> = &lt;RandomAlgorithm.RNG_DEFAULT: 0&gt;</em><a class="headerlink" href="#hloenv.HloPass.RngBitGeneratorExpander.RandomAlgorithm.RNG_DEFAULT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.RngBitGeneratorExpander.RandomAlgorithm.RNG_PHILOX">
+<code class="descname">RNG_PHILOX</code><em class="property"> = &lt;RandomAlgorithm.RNG_PHILOX: 2&gt;</em><a class="headerlink" href="#hloenv.HloPass.RngBitGeneratorExpander.RandomAlgorithm.RNG_PHILOX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.RngBitGeneratorExpander.RandomAlgorithm.RNG_THREE_FRY">
+<code class="descname">RNG_THREE_FRY</code><em class="property"> = &lt;RandomAlgorithm.RNG_THREE_FRY: 1&gt;</em><a class="headerlink" href="#hloenv.HloPass.RngBitGeneratorExpander.RandomAlgorithm.RNG_THREE_FRY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.RngBitGeneratorExpander.RandomAlgorithm.name">
+<code class="descname">name</code><a class="headerlink" href="#hloenv.HloPass.RngBitGeneratorExpander.RandomAlgorithm.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.RngBitGeneratorExpander.RandomAlgorithm.value">
+<code class="descname">value</code><a class="headerlink" href="#hloenv.HloPass.RngBitGeneratorExpander.RandomAlgorithm.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.RngExpander">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">RngExpander</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.RngExpander</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.RngExpander" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.ScatterExpander">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">ScatterExpander</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.ScatterExpander</em>, <em>m: xla::ScatterExpander::Mode</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.ScatterExpander" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="class">
+<dt id="hloenv.HloPass.ScatterExpander.Mode">
+<em class="property">class </em><code class="descname">Mode</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.ScatterExpander.Mode</em>, <em>value: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.ScatterExpander.Mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Members:</p>
+<p>kEliminateAllScatters</p>
+<p>kEliminateSimpleScatters</p>
+<dl class="attribute">
+<dt id="hloenv.HloPass.ScatterExpander.Mode.kEliminateAllScatters">
+<code class="descname">kEliminateAllScatters</code><em class="property"> = &lt;Mode.kEliminateAllScatters: 0&gt;</em><a class="headerlink" href="#hloenv.HloPass.ScatterExpander.Mode.kEliminateAllScatters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.ScatterExpander.Mode.kEliminateSimpleScatters">
+<code class="descname">kEliminateSimpleScatters</code><em class="property"> = &lt;Mode.kEliminateSimpleScatters: 1&gt;</em><a class="headerlink" href="#hloenv.HloPass.ScatterExpander.Mode.kEliminateSimpleScatters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.ScatterExpander.Mode.name">
+<code class="descname">name</code><a class="headerlink" href="#hloenv.HloPass.ScatterExpander.Mode.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.ScatterExpander.Mode.value">
+<code class="descname">value</code><a class="headerlink" href="#hloenv.HloPass.ScatterExpander.Mode.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.ScatterExpander.kEliminateAllScatters">
+<code class="descname">kEliminateAllScatters</code><em class="property"> = &lt;Mode.kEliminateAllScatters: 0&gt;</em><a class="headerlink" href="#hloenv.HloPass.ScatterExpander.kEliminateAllScatters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="hloenv.HloPass.ScatterExpander.kEliminateSimpleScatters">
+<code class="descname">kEliminateSimpleScatters</code><em class="property"> = &lt;Mode.kEliminateSimpleScatters: 1&gt;</em><a class="headerlink" href="#hloenv.HloPass.ScatterExpander.kEliminateSimpleScatters" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.ShardingPropagation">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">ShardingPropagation</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.ShardingPropagation</em>, <em>is_spmd: bool = False</em>, <em>propagate_metadata: bool = False</em>, <em>allow_spmd_sharding_propagation_to_output: bool = False</em>, <em>cse_prevention_only: bool = False</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.ShardingPropagation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.ShardingRemover">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">ShardingRemover</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.ShardingRemover</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.ShardingRemover" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.SliceSinker">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">SliceSinker</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.SliceSinker</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.SliceSinker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.SortSimplifier">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">SortSimplifier</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.SortSimplifier</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.SortSimplifier" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.StableSortExpander">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">StableSortExpander</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.StableSortExpander</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.StableSortExpander" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.StatefulRngSpmdPartitioner">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">StatefulRngSpmdPartitioner</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.StatefulRngSpmdPartitioner</em>, <em>num_partitions: int</em>, <em>num_replicas: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.StatefulRngSpmdPartitioner" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.TransposeFolding">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">TransposeFolding</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.TransposeFolding</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.TransposeFolding" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.TriangularSolveRewriter">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">TriangularSolveRewriter</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.TriangularSolveRewriter</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.TriangularSolveRewriter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.TupleSimplifier">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">TupleSimplifier</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hloenv.HloPass.TupleSimplifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li>__init__(self: hloenv.hlo_pass.TupleSimplifier) -&gt; None</li>
+<li>__init__(self: hloenv.hlo_pass.TupleSimplifier, exclude_entry_computation: bool) -&gt; None</li>
+</ol>
+</dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.VariadicOpSplitter">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">VariadicOpSplitter</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.VariadicOpSplitter</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.VariadicOpSplitter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.WhileLoopConstantSinking">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">WhileLoopConstantSinking</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.WhileLoopConstantSinking</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.WhileLoopConstantSinking" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.WhileLoopSimplifier">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">WhileLoopSimplifier</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.WhileLoopSimplifier</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.WhileLoopSimplifier" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.WhileLoopTripCountAnnotator">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">WhileLoopTripCountAnnotator</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.WhileLoopTripCountAnnotator</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.WhileLoopTripCountAnnotator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="hloenv.HloPass.ZeroSizedHloElimination">
+<em class="property">class </em><code class="descclassname">hloenv.HloPass.</code><code class="descname">ZeroSizedHloElimination</code><span class="sig-paren">(</span><em>self: hloenv.hlo_pass.ZeroSizedHloElimination</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#hloenv.HloPass.ZeroSizedHloElimination" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="reference.html" class="btn btn-neutral float-left" title="API Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="release_notes.html" class="btn btn-neutral float-right" title="Release Notes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Chin Yang Oh, Kunhao Zheng, Bingyi Kang, Xinyi Wan, Zhongwen Xu, Shuicheng Yan, Min Lin, Yangzihao Wang.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
