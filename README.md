@@ -47,7 +47,7 @@ HloEnv is described in details in the following paper:
 
 ## Docs
 
-The full documentation for HloEnv can be found at [this link](https://hloenv.readthedocs.io/).
+The full documentation for HloEnv can be found at [this link](https://sail-sg.github.io/hloenv/).
 
 ## Quick Start
 
