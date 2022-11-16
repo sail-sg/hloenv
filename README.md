@@ -13,7 +13,7 @@ HloEnv has the following major features:
 
     HloEnv frames the graph optimization problem as a sequential
     rewrite decision problem, serving as a single-player game engine. 
-    See [always_pick_first](examples/alway_pick_first.py) and
+    See [always_pick_first](examples/always_pick_first.py) and
     [uniform_policy](examples/uniform_policy.py) for examples of interacting with
     HloEnv and optimizing a HLO computation grpah.
 
