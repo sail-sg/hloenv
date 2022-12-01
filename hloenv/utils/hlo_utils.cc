@@ -185,6 +185,8 @@ void GetInstructionAttributesAndCounts(HloInstruction* inst,
       attrs->at(idx++) = gather_dims.index_vector_dim();
       for (auto d : gather_inst->gather_slice_sizes()) {
         attrs->at(idx++) = d;
+        // ignore the 7th slice sizes if any.
+        if (idx == 7) break;
       }
       for (auto offset_dim : gather_dims.offset_dims()) {
         add_enum(/*item=*/offset_dim, /*count=*/kDimEnumSize);
