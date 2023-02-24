@@ -1,3 +1,16 @@
+diff --git a/.gitignore b/.gitignore
+index 0cfe6fca30e..1288c55e69e 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -26,6 +26,8 @@ tensorflow/contrib/cmake/_build/
+ /api_init_files_list.txt
+ /estimator_api_init_files_list.txt
+ *.whl
++/dist
++sftp-config.json
+ 
+ # Android
+ .gradle
 diff --git a/WORKSPACE b/WORKSPACE
 deleted file mode 100644
 index 1286ef9ac03..00000000000
@@ -379,10 +392,10 @@ index 55e9d83e565..beec11f9685 100644
    Status FinishVisit(HloInstructionPtr /*root*/) override {
 diff --git a/tensorflow/compiler/xla/service/dry_mode.cc b/tensorflow/compiler/xla/service/dry_mode.cc
 new file mode 100644
-index 00000000000..2e713146296
+index 00000000000..7ec0d7c1064
 --- /dev/null
 +++ b/tensorflow/compiler/xla/service/dry_mode.cc
-@@ -0,0 +1,50 @@
+@@ -0,0 +1,51 @@
 +#include "tensorflow/compiler/xla/service/dry_mode.h"
 +
 +#include <fstream>
@@ -428,6 +441,7 @@ index 00000000000..2e713146296
 +    }
 +    // Remove the residues
 +    computation->Prune();
++    computation->Cleanup();
 +  }
 +  return changed;
 +}
@@ -537,10 +551,10 @@ index 4280b3bf5cf..c4964f6d24a 100644
  cc_library(
 diff --git a/tensorflow/compiler/xla/service/gpu/general_fusion.cc b/tensorflow/compiler/xla/service/gpu/general_fusion.cc
 new file mode 100644
-index 00000000000..0d1dba67b51
+index 00000000000..db57891e2f2
 --- /dev/null
 +++ b/tensorflow/compiler/xla/service/gpu/general_fusion.cc
-@@ -0,0 +1,450 @@
+@@ -0,0 +1,727 @@
 +/* Copyright 2022 The TensorFlow Authors. All Rights Reserved.
 +
 +Licensed under the Apache License, Version 2.0 (the "License");
@@ -606,6 +620,169 @@ index 00000000000..0d1dba67b51
 +
 +bool IsRoot(const HloInstruction* inst) {
 +  return inst->parent()->root_instruction() == inst;
++}
++
++void FuseTwoSiblings(HloInstruction* left_sibling, HloInstruction* right_sibling) {
++  LOG(INFO) << "Fusing... " << left_sibling->name() << " and " << right_sibling->name();
++
++  // Create the replacement map
++  // replace parameter with the real external input
++  std::unordered_map<HloInstruction*, HloInstruction*> real_external;
++  for (int i = 0; i < left_sibling->operand_count(); ++i) {
++    HloInstruction* operand = left_sibling->mutable_operand(i);
++    if (IsFusion(left_sibling)) {
++      HloComputation* left_comp = left_sibling->fused_instructions_computation();
++      real_external[left_comp->parameter_instruction(i)] = operand;
++    }
++    else {
++      real_external[operand] = operand;
++    }
++  }
++  for (int i = 0; i < right_sibling->operand_count(); ++i) {
++    HloInstruction* operand = right_sibling->mutable_operand(i);
++    if (IsFusion(right_sibling)) {
++      HloComputation* right_comp = right_sibling->fused_instructions_computation();
++      real_external[right_comp->parameter_instruction(i)] = operand;
++    }
++    else {
++      real_external[operand] = operand;
++    }    
++  }
++
++  std::vector<HloInstruction*> post_order;
++  // Get list of new tuple operand params
++  std::vector<HloInstruction*> tuple_operands;
++  // extern_rep represents the instruction that external users connect to. 
++  // Usually it's just the instruction, but for a fusion, it refers to the 
++  // gte for that tuple operand.  
++  std::unordered_map<HloInstruction*, HloInstruction*> extern_rep; 
++
++  auto process_sibling = [&](HloInstruction* sibling) {
++    // Put everything in top order
++    if (IsFusion(sibling)) {
++      auto sibling_post_order =
++          sibling->fused_instructions_computation()->MakeInstructionPostOrder();
++      post_order.insert(post_order.end(),
++                        std::make_move_iterator(sibling_post_order.begin()),
++                        std::make_move_iterator(sibling_post_order.end()));
++    } else {
++      post_order.push_back(sibling);
++    }
++
++    // Assemble new tuple operands and get the external rep of the tuple operand
++    // external rep = what users of that operand actually connect to, e.g. a 
++    //                GTE that accesses that tuple operand if it's multi
++    //                output, else just the instruction itself
++    if (IsFusion(sibling)) {
++      HloInstruction* sibling_root = sibling->fused_expression_root();
++
++      if (IsTuple(sibling_root)) {
++        // Get external users
++        for (auto* user_inst : sibling->users()) {
++          auto* gte_inst = Cast<HloGetTupleElementInstruction>(user_inst);
++          auto* tuple_operand = sibling_root->mutable_operand(gte_inst->tuple_index());
++          extern_rep[tuple_operand] = gte_inst;
++        }
++
++        for (int i = 0; i < sibling_root->operand_count(); ++i) {
++          HloInstruction* tuple_operand = sibling_root->mutable_operand(i);
++          tuple_operands.push_back(tuple_operand);
++        }
++      }
++      else {
++        tuple_operands.push_back(sibling_root);
++        extern_rep[sibling_root] = sibling;
++      }
++    }
++    else {
++      tuple_operands.push_back(sibling);
++      extern_rep[sibling] = sibling;
++    }
++  };
++
++  process_sibling(left_sibling);
++  process_sibling(right_sibling);
++
++  // now make params and clone instrutions
++  HloComputation::Builder builder("fuse_two_siblings");
++  int param_index = 0;
++  std::vector<HloInstruction*> uniq_extern_operands;
++  std::unordered_map<HloInstruction*, HloInstruction*> extern_operand_param_map;
++  std::unordered_map<HloInstruction*, HloInstruction*> old_to_new;
++
++  for (auto* inst : post_order) {
++    // don't clone parameter & tuple
++    if (IsParameter(inst) || IsTuple(inst)) {
++      continue;
++    }
++
++    const auto& operands = inst->operands();
++    std::vector<HloInstruction*> new_operands;
++    HloInstruction* new_operand;
++    for (auto* operand : operands) {
++      if (old_to_new.find(operand) != old_to_new.end()) {
++        // Then replace with the newly cloned instructions
++        new_operand = old_to_new[operand];
++      } 
++      // Because we are in post order, if we haven't seen it yet then that 
++      // means that this is an external instruction
++      else {
++        HloInstruction* external_inst = real_external[operand];
++        if (extern_operand_param_map.find(external_inst) != extern_operand_param_map.end()) {
++          new_operand = extern_operand_param_map[external_inst];
++        }
++        else {
++          // Otherwise create a new param for it
++          auto* param = builder.AddInstruction(HloInstruction::CreateParameter(
++              param_index, external_inst->shape(),
++              "param" + std::to_string(param_index)));
++          extern_operand_param_map[external_inst] = param;
++
++          uniq_extern_operands.push_back(external_inst);
++          
++          new_operand = param;
++          param_index++;
++        }
++      } 
++      new_operands.push_back(new_operand);
++    }
++    old_to_new[inst] = builder.AddInstruction(
++        inst->CloneWithNewOperands(inst->shape(), new_operands));
++  }
++
++  std::vector<HloInstruction*> cloned_tuple_operands;
++  for (auto* inst : tuple_operands) {
++    cloned_tuple_operands.push_back(old_to_new[inst]);
++  }
++
++
++  HloInstruction* root = nullptr;
++  CHECK_GT(tuple_operands.size(), 1);
++  root = builder.AddInstruction(HloInstruction::CreateTuple(cloned_tuple_operands));
++
++  HloInstruction::FusionKind fusion_kind = (IsInputFusible(*left_sibling) || IsInputFusible(*right_sibling))
++                                                ? HloInstruction::FusionKind::kInput
++                                                : HloInstruction::FusionKind::kLoop;
++
++  HloComputation* comp =
++      left_sibling->parent()->parent()->AddEmbeddedComputation(builder.Build(root));
++
++  HloInstruction* fusion =
++      left_sibling->parent()->AddInstruction(HloInstruction::CreateFusion(
++          root->shape(), fusion_kind,
++          uniq_extern_operands, comp));
++
++  LOG(INFO) << "Sibling Fused into new fusion: " << fusion->name();
++
++  for (int i = 0; i < tuple_operands.size(); ++i) {
++    auto* tuple_operand = tuple_operands[i];
++
++    if (extern_rep.find(tuple_operand) != extern_rep.end()) {
++      HloInstruction* new_gte = left_sibling->parent()->AddInstruction(
++          HloInstruction::CreateGetTupleElement(fusion, i));
++      extern_rep[tuple_operand]->ReplaceAllUsesWith(new_gte);
++    }
++  }
 +}
 +
 +void FuseTwo(HloInstruction* consumer, HloInstruction* producer) {
@@ -680,7 +857,7 @@ index 00000000000..0d1dba67b51
 +        users.reserve(to_replace->user_count());
 +        if (for_producer) {
 +          for (auto* u : to_replace->users()) {
-+            if (u != consumer && u->dry()) {
++            if (u != consumer && (u->dry() || u->rewrite())) {
 +              users.push_back(u);
 +              LOG(ERROR) << "inst: " << inst->name() << " user " << u->name();
 +            }
@@ -700,7 +877,7 @@ index 00000000000..0d1dba67b51
 +          std::vector<HloInstruction*> users;
 +          std::copy_if(to_replace->users().begin(), to_replace->users().end(),
 +                       std::back_inserter(users),
-+                       [](HloInstruction* inst) { return inst->dry(); });
++                       [](HloInstruction* inst) { return inst->dry() || inst->rewrite(); });
 +          replace_users[inst][to_replace] = users;
 +        }
 +      };
@@ -714,7 +891,7 @@ index 00000000000..0d1dba67b51
 +      if (IsTuple(root)) {
 +        std::vector<bool> not_seen(root->mutable_operands().size(), true);
 +        for (auto* gte : inst->users()) {
-+          if (!gte->dry()) {
++          if (!(gte->dry() || gte->rewrite())) {
 +            continue;
 +          }
 +          auto* key = root->mutable_operand(gte->tuple_index());
@@ -831,6 +1008,7 @@ index 00000000000..0d1dba67b51
 +      consumer->parent()->AddInstruction(HloInstruction::CreateFusion(
 +          root->shape(), ChooseFusionKind(*producer, *consumer),
 +          kfusion_operands, comp));
++  LOG(INFO) << "Fused into new fusion: " << fusion->name();
 +
 +  for (int i = 0; i < new_fused_root.size(); ++i) {
 +    auto* inst = new_fused_root[i];
@@ -906,7 +1084,6 @@ index 00000000000..0d1dba67b51
 +  bool fusible = true;
 +
 +  int external_user_count = 0;
-+  HloInstruction* actual_user;
 +  // We need to check only for users that aren't parameters in the consumer.
 +  for (auto* user : producer->users()) {
 +    if (IsGTE(user)) {
@@ -940,11 +1117,71 @@ index 00000000000..0d1dba67b51
 +  return fusible;
 +}
 +
++bool IsSiblingFusionValidCandidate(HloInstruction* candidate) {
++  if (candidate->opcode() == HloOpcode::kFusion) {
++    if (candidate->fused_expression_root()->opcode() ==
++          HloOpcode::kDynamicUpdateSlice) {
++      return false;
++    }
++  }
++
++  if (!IsFusibleAsMultiOutputFusionRoot(*candidate)) {
++    return false;
++  }
++
++  if (candidate->opcode() == HloOpcode::kCustomCall) {
++    return false;
++  }
++
++  return true;
++}
++
++// Checks if its legal to fuse when left <-> right, specific to left/right order
++// 
++bool LegalToSiblingFuse(HloInstruction* left, HloInstruction* right) {
++  // If we're fusing fusions only do it if the fusion kind matches. Loop fusions
++  // merge into bigger loop fusions and input (reduce) fusions become fusions
++  // with multiple reduce outputs. We could fuse reduce and loop fusions
++  // together too (the result being an input fusion) if we find cases where this
++  // improves things. Also disable fusing standalone input-fusible reduces into
++  // loop fusions.
++  if (!IsSiblingFusionValidCandidate(left) || 
++      !IsSiblingFusionValidCandidate(right)) {
++    return false;
++  }
++
++  if (left->opcode() == HloOpcode::kFusion && 
++      right->opcode() == HloOpcode::kFusion &&
++      left->fusion_kind() != right->fusion_kind()) {
++    return false;
++  }
++
++  if (IsReductionFromOrToContiguousDimensions(*right) &&
++       left->IsLoopFusion()) {
++    return false;
++  }
++  if (IsReductionFromOrToContiguousDimensions(*left) &&
++       right->IsLoopFusion()) {
++    return false;
++  }
++
++  if (!ShapesCompatibleForMultiOutputFusion(*left, *right)) {
++    return false;
++  }
++
++  if (left == right) {
++    return false;
++  }
++
++  return true;
++}
++
 +bool GeneralFusion::DoGeneralFusion(HloComputation* comp) {
 +  reachability_.reset();
 +  reachability_ = HloReachabilityMap::Build(comp);
 +  std::vector<HloInstruction*> post_order = comp->MakeInstructionPostOrder();
 +  int count = 0;
++  LOG(INFO) << "Performing Vertical fusion for comp " << comp->name();
 +  while (!post_order.empty()) {
 +    HloInstruction* inst = post_order.back();
 +    post_order.pop_back();
@@ -975,6 +1212,60 @@ index 00000000000..0d1dba67b51
 +      count++;
 +    }
 +  }
++
++  LOG(INFO) << "Performing Sibling fusion for comp " << comp->name();
++  post_order = comp->MakeInstructionPostOrder();
++  while (!post_order.empty()) {
++    HloInstruction* inst = post_order.back();
++    post_order.pop_back();
++
++    if (!(inst->dry() || inst->rewrite())) {
++      continue;
++    }
++
++    if (inst->IsDead()) {
++      continue;
++    }
++    std::vector<HloInstruction*> siblings;
++    for (auto* user : inst->users()) {
++      if (IsGTE(user)) {
++        LOG(INFO) << "Collecting siblings: GTE user " << user->name();
++        // If GTE, trace back one more step
++        if (user->users().size() > 0) {
++          HloInstruction* actual_sibling = user->users()[0];
++          if (actual_sibling->dry() || actual_sibling->rewrite()) {
++            siblings.push_back(actual_sibling);
++          }
++        }
++      } else {
++        LOG(INFO) << "Collecting siblings: normal user " << user->name();
++        if (user->dry() || user->rewrite()) {
++          siblings.push_back(user);
++        }
++      }
++    }
++
++    for (auto i = siblings.begin(); i != siblings.end(); ++i) {
++      for (auto j = i + 1; j != siblings.end(); ++j) {
++        HloInstruction* left = *i;
++        HloInstruction* right = *j;
++
++        CHECK(left->dry() || left->rewrite());
++        CHECK(right->dry() || right->rewrite());
++
++        LOG(INFO) << "Considering " << left->name() << " and " << right->name();
++        if (reachability_->IsConnected(left, right) || 
++            !LegalToSiblingFuse(left, right)) {
++          continue;
++        }
++        FuseTwoSiblings(/*left_sibling=*/left, /*right_sibling=*/right);
++        count++;
++      }
++    }    
++
++  }
++  LOG(INFO) << "Done with General Fusion for " << comp->name();
++
 +  return count > 0;
 +}
 +
@@ -1845,7 +2136,7 @@ index b6ebbf3d567..7897456a2d3 100644
  
    std::vector<std::vector<HloInstruction*>> ret;
 diff --git a/tensorflow/compiler/xla/service/hlo_computation.cc b/tensorflow/compiler/xla/service/hlo_computation.cc
-index bcfb0937468..a2b108ebcce 100644
+index bcfb0937468..31caace114a 100644
 --- a/tensorflow/compiler/xla/service/hlo_computation.cc
 +++ b/tensorflow/compiler/xla/service/hlo_computation.cc
 @@ -35,9 +35,12 @@ limitations under the License.
@@ -1861,7 +2152,7 @@ index bcfb0937468..a2b108ebcce 100644
  #include "tensorflow/compiler/xla/shape_util.h"
  #include "tensorflow/compiler/xla/status_macros.h"
  #include "tensorflow/compiler/xla/types.h"
-@@ -126,8 +129,13 @@ HloInstruction* HloComputation::AddInstructionInternal(
+@@ -126,8 +129,20 @@ HloInstruction* HloComputation::AddInstructionInternal(
    }
    instruction->set_parent(this);
    HloInstruction* pinst = instruction.get();
@@ -1870,14 +2161,21 @@ index bcfb0937468..a2b108ebcce 100644
 +  if (dry_) {
 +    dry_new_instruction_iterators_[pinst] = dry_new_instructions_.insert(
 +        dry_new_instructions_.end(), std::move(instruction));
-+  } else {
++  } else if (rewrite_) {
++    // TODO(ohcy) Do this in ReplaceUserWith? Or in set 
++    rewrite_new_instruction_iterators_[pinst] = 
++      rewrite_new_instructions_.insert(
++        rewrite_new_instructions_.end(), std::move(instruction)
++      );    
++  }
++  else {
 +    instruction_iterators_[pinst] =
 +        instructions_.insert(instructions_.end(), std::move(instruction));
 +  }
    return pinst;
  }
  
-@@ -233,6 +241,7 @@ Status HloComputation::RemoveUnusedParametersFromAnyComputation() {
+@@ -233,6 +248,7 @@ Status HloComputation::RemoveUnusedParametersFromAnyComputation() {
  
  Status HloComputation::RemoveUnusedParametersImpl(bool allow_non_fusion) {
    CHECK(allow_non_fusion || IsFusionComputation());
@@ -1885,7 +2183,7 @@ index bcfb0937468..a2b108ebcce 100644
    int64_t removed = 0;
    for (int64_t i = 0; i < param_instructions_.size(); ++i) {
      HloInstruction* param_instruction = param_instructions_[i];
-@@ -290,6 +299,15 @@ bool HloComputation::IsMarkedAsDead(const HloInstruction* inst) {
+@@ -290,6 +306,15 @@ bool HloComputation::IsMarkedAsDead(const HloInstruction* inst) {
  
  Status HloComputation::RemoveInstructionAndUnusedOperands(
      HloInstruction* instruction, std::function<void(HloInstruction*)> cleanup) {
@@ -1901,7 +2199,7 @@ index bcfb0937468..a2b108ebcce 100644
    TF_RET_CHECK(root_instruction() != instruction);
  
    TF_RET_CHECK(instruction->IsDead());
-@@ -313,7 +331,15 @@ Status HloComputation::RemoveInstructionAndUnusedOperands(
+@@ -313,7 +338,15 @@ Status HloComputation::RemoveInstructionAndUnusedOperands(
      if (cleanup) {
        cleanup(item);
      }
@@ -1918,7 +2216,7 @@ index bcfb0937468..a2b108ebcce 100644
      removed.insert(item);
    }
    return Status::OK();
-@@ -329,6 +355,10 @@ Status HloComputation::ForceRemoveInstruction(HloInstruction* instruction) {
+@@ -329,6 +362,10 @@ Status HloComputation::ForceRemoveInstruction(HloInstruction* instruction) {
  
  Status HloComputation::RemoveInstructionImpl(HloInstruction* instruction,
                                               bool ignore_safety_check) {
@@ -1929,7 +2227,7 @@ index bcfb0937468..a2b108ebcce 100644
    VLOG(2) << "Removing instruction " << instruction->name()
            << " from computation " << name();
    TF_RET_CHECK(ignore_safety_check || IsSafelyRemovable(instruction))
-@@ -358,6 +388,15 @@ Status HloComputation::RemoveInstructionImpl(HloInstruction* instruction,
+@@ -358,6 +395,27 @@ Status HloComputation::RemoveInstructionImpl(HloInstruction* instruction,
  
  void HloComputation::set_root_instruction(HloInstruction* new_root_instruction,
                                            bool accept_different_shape) {
@@ -1942,10 +2240,22 @@ index bcfb0937468..a2b108ebcce 100644
 +    RecordAlternatives(root_instruction_, new_root_instruction);
 +    return;
 +  }
++  if (rewrite_) {
++    CHECK(new_root_instruction->shape() == root_instruction_->shape())
++        << "HloPass is changing the root instruction "
++           "shape, which conflicts with rewrite "
++        << new_root_instruction->shape() << " vs "
++        << root_instruction_->shape();
++
++    root_instruction_->CreateRewrite(new_root_instruction);
++    return;
++  }
++
++
    // The shape of the root (ignoring layout) is an invariant of the computation
    // for non-fusion cases.
    if (!IsFusionComputation() && !accept_different_shape) {
-@@ -947,7 +986,8 @@ StatusOr<bool> HloComputation::ReplaceInstructionWithDifferentShape(
+@@ -947,7 +1005,8 @@ StatusOr<bool> HloComputation::ReplaceInstructionWithDifferentShape(
        (old_instruction->opcode() != HloOpcode::kCustomCall ||
         old_instruction->custom_call_target() ==
             new_instruction->custom_call_target())) {
@@ -1955,7 +2265,7 @@ index bcfb0937468..a2b108ebcce 100644
    }
  
    TF_RETURN_IF_ERROR(RemoveInstructionAndUnusedOperands(old_instruction));
-@@ -1105,7 +1145,7 @@ std::unique_ptr<HloComputation> HloComputation::CloneWithReplacements(
+@@ -1105,7 +1164,7 @@ std::unique_ptr<HloComputation> HloComputation::CloneWithReplacements(
          }
        }
      }
@@ -1964,7 +2274,23 @@ index bcfb0937468..a2b108ebcce 100644
  
    std::vector<std::unique_ptr<HloInstruction>> instructions;
    // First add the extra parameters to 'instructions'.
-@@ -1171,4 +1211,461 @@ HloInstruction* HloComputation::GetInstructionWithName(absl::string_view name) {
+@@ -1136,6 +1195,7 @@ std::unique_ptr<HloComputation> HloComputation::CloneWithReplacements(
+   for (auto& instr : instructions) {
+     builder.AddInstruction(std::move(instr));
+   }
++
+   auto result = builder.Build(
+       /*root_instruction=*/context->GetInstruction(replace(new_root)));
+ 
+@@ -1153,6 +1213,7 @@ std::unique_ptr<HloComputation> HloComputation::CloneWithReplacements(
+     }
+   }
+   context->MapComputation(this, result.get());
++
+   return result;
+ }
+ 
+@@ -1171,4 +1232,513 @@ HloInstruction* HloComputation::GetInstructionWithName(absl::string_view name) {
  bool HloComputation::IsEntryComputation() const {
    return parent()->entry_computation() == this;
  }
@@ -1979,6 +2305,27 @@ index bcfb0937468..a2b108ebcce 100644
 +bool HloComputation::HasCycle() {
 +  return HasCycle(root_instruction());
 +};
++
++void HloComputation::set_rewrite(bool value) {
++  if (rewrite_ == value) {
++    return;
++  }
++  else {
++    if (value == false) {
++      // We must make sure to compute the rewrites before setting rewrite to
++      // false, since we utilize that to determine whether an instruction
++      // is a newly created one.
++      for (HloInstruction* inst : instructions()) {
++        inst->compute_rewrites();
++      }      
++    }
++
++    for (HloInstruction* inst : instructions()) {
++      inst->set_rewrite(value);
++    }
++    rewrite_ = value;
++  }
++}
 +
 +void HloComputation::set_dry(bool value) {
 +  if (dry_ == value) {
@@ -2003,7 +2350,7 @@ index bcfb0937468..a2b108ebcce 100644
 +    // check the number of new instructions
 +    int num = dry_new_instructions_.size();
 +    if (num > 0) {
-+      LOG(ERROR) << num << " instructions added in dry mode, original ("
++      LOG(INFO) << num << " instructions added in dry mode, original ("
 +                 << instruction_count() << ")";
 +    }
 +    // append dry mode added instructions to this computation
@@ -2020,28 +2367,24 @@ index bcfb0937468..a2b108ebcce 100644
 +    std::vector<HloInstruction*> to_delete;
 +    // Convert alternatives to instructions
 +    // to keep everyone alive
-+    for (const auto& kv : alternatives_) {
-+      HloInstruction* original = kv.first;
-+      for (const auto& kv2 : kv.second) {
-+        HloInstruction* use = kv2.first;
-+        const HloInstructionSet& alts = kv2.second;
-+        std::vector<HloInstruction*> all = {original};
-+        all.insert(all.end(), alts.begin(), alts.end());
-+        HloInstruction* kalt = AddInstruction(
-+            HloInstruction::CreateAlternatives(original->shape(), all));
-+        if (use != nullptr) {
-+          original->ReplaceUseWith(use, kalt);
-+        } else {
-+          CHECK_EQ(original->parent()->root_instruction(), original);
-+          original->parent()->set_root_instruction(kalt);
-+        }
-+        if (HasCycle(kalt)) {
-+          // Deconnect kalt and select Original, but defer deletion of itself
-+          // and unused operands till the end, since some of its operands
-+          // may be used by new alternative nodes added further down this loop
-+          to_delete.push_back(kalt);
-+          static_cast<HloAlternatives*>(kalt)->Select(0);
-+        }
++    for (const auto& alts_kv : alternatives_) {
++      HloInstruction* original = alts_kv.first;
++      std::vector<HloInstruction*> users_without_kalt(original->users());
++      HloInstructionSet alternatives = alts_kv.second;
++      std::vector<HloInstruction*> all = {original};
++      all.insert(all.end(), alternatives.begin(), alternatives.end());
++      HloInstruction* alt = AddInstruction(
++          HloInstruction::CreateAlternatives(original->shape(), all));
++      original->ReplaceUsesWith(users_without_kalt, alt);
++      if (original == root_instruction()) {
++        set_root_instruction(alt);
++      }
++      if (HasCycle(alt)) {
++        // Deconnect kalt and select Original, but defer deletion of itself
++        // and unused operands till the end, since some of its operands
++        // may be used by new alternative nodes added further down this loop
++        to_delete.push_back(alt);
++        static_cast<HloAlternatives*>(alt)->Select(0);
 +      }
 +    }
 +
@@ -2054,29 +2397,14 @@ index bcfb0937468..a2b108ebcce 100644
 +  }
 +}
 +
-+void HloComputation::RecordAlternatives(
-+    HloInstruction* original, HloInstruction* alt,
-+    const std::vector<HloInstruction*>& uses) {
++void HloComputation::RecordAlternatives(HloInstruction* original,
++                                        HloInstruction* alt) {
 +  // E.g. in fusion, the fused node will be fused again.
 +  while (originals_.contains(original)) {
 +    original = originals_[original];
 +  }
-+  for (auto* use : uses) {
-+    alternatives_[original][use].insert(alt);
-+  }
++  alternatives_[original].insert(alt);
 +  originals_[alt] = original;
-+}
-+
-+void HloComputation::RecordAlternatives(HloInstruction* original,
-+                                        HloInstruction* alt) {
-+  if (original->users().size() > 0) {
-+    RecordAlternatives(original, alt, original->users());
-+  } else {
-+    // If there's no user for original, it is likely that original is the root
-+    // instruction
-+    CHECK_EQ(original->parent()->root_instruction(), original);
-+    RecordAlternatives(original, alt, {nullptr});
-+  }
 +}
 +
 +/**
@@ -2117,13 +2445,11 @@ index bcfb0937468..a2b108ebcce 100644
 +    }
 +    for (auto inst : to_delete) {
 +      if (inst->opcode() != xla::HloOpcode::kParameter) {
-+        LOG(ERROR) << "Removing side branch at " << inst->name();
++        LOG(INFO) << "Removing side branch at " << inst->name();
 +        RemoveInstructionAndUnusedOperands(inst);
 +      }
 +    }
 +  }
-+  LOG(ERROR) << instruction_count() << " instructions remaining.";
-+  Cleanup();
 +}
 +
 +/**
@@ -2379,8 +2705,8 @@ index bcfb0937468..a2b108ebcce 100644
 +
 +      // Update the GTE to the new representative index
 +      int new_tuple_idx;
-+      for (auto user_inst : inst->users()) {
-+        auto gte = Cast<HloGetTupleElementInstruction>(user_inst);
++      for (auto* user_inst : inst->users()) {
++        auto* gte = Cast<HloGetTupleElementInstruction>(user_inst);
 +        new_tuple_idx = old_to_new_tuple_idx[gte->tuple_index()];
 +        gte->set_tuple_index(new_tuple_idx);
 +      }
@@ -2424,22 +2750,75 @@ index bcfb0937468..a2b108ebcce 100644
 +  Cleanup();
 +}
 +
++// Move a newly created instruction over to the computations instructions_ 
++// array once we apply its associated rewrite plan
++void HloComputation::AddRewriteInstruction(HloInstruction* instruction) {
++  auto inst_it = rewrite_new_instruction_iterators_.find(instruction);
++
++  if (inst_it != rewrite_new_instruction_iterators_.end()) {
++    // Only insert if we are seeing it for the first time, since multiple rewrites
++    // can point to the same newly created instructions (e.g. multi output fusion)
++    if (!instruction_iterators_.contains(inst_it->first)) {
++      instruction_iterators_[inst_it->first] =
++          instructions_.insert(instructions_.end(), std::move(*inst_it->second));
++    } 
++  }
++}
++
++void HloComputation::DetachRewriteInstructions() {
++  for (const auto &inst_it : rewrite_new_instruction_iterators_ ) {
++    HloInstruction* inst = (*(inst_it.second)).get();
++
++    // if inst == nullptr, it means this newly created instruction was added 
++    // as a result of the rewrite being applied, so it's no longer held in
++    // rewrite_new_instruction_iterators_
++    if (inst != nullptr) {
++      LOG(INFO) << "Deleting: " << inst->name();
++      inst->set_parent(nullptr);
++      inst->DetachFromOperandsAndUsers();
++      // Clear all operands to avoid Null operands.
++      inst->RemoveAllOperands();
++      inst->ClearCalledComputations();
++      inst->MarkAsDead();
++    }
++    else {
++      LOG(INFO) << "Already added: " << inst_it.first->name();
++    }
++  }  
++}
++
++// TODO(ohcy): When do we want to call this? Do we want to leave rewrite plans
++// in-between calls to apply? Or clear everything. If it's the former, then 
++// when we apply we should delete any other rewrite plans that have common
++// affected_edges
++//
++// Move any unused newly created instructions over to to_be_deleted 
++// for deletion in Cleanup
++void HloComputation::RewriteCleanup() {
++  for (HloInstruction* inst : instructions()) {
++    inst->RewriteCleanup();
++  }
++
++  rewrite_new_instructions_.clear();
++  rewrite_new_instruction_iterators_.clear();
++}
 +
  }  // namespace xla
 diff --git a/tensorflow/compiler/xla/service/hlo_computation.h b/tensorflow/compiler/xla/service/hlo_computation.h
-index c1fa03e016c..d4997d28882 100644
+index c1fa03e016c..d9019d164ea 100644
 --- a/tensorflow/compiler/xla/service/hlo_computation.h
 +++ b/tensorflow/compiler/xla/service/hlo_computation.h
-@@ -584,6 +584,24 @@ class HloComputation {
+@@ -584,6 +584,29 @@ class HloComputation {
    // Returns true if a given instruction is marked dead in this computation.
    bool IsMarkedAsDead(const HloInstruction* inst);
  
 +  bool dry() const { return dry_; }
 +  void set_dry(bool value);
 +
++  bool rewrite() const { return rewrite_; }
++  void set_rewrite(bool value);
++
 +  void RecordAlternatives(HloInstruction* original, HloInstruction* alt);
-+  void RecordAlternatives(HloInstruction* original, HloInstruction* alt,
-+                          const std::vector<HloInstruction*>& uses);
 +
 +  void Prune();
 +
@@ -2452,18 +2831,28 @@ index c1fa03e016c..d4997d28882 100644
 +
 +  bool HasCycle();
 +
++  void AddRewriteInstruction(HloInstruction* instruction);
++  void DetachRewriteInstructions();
++  void RewriteCleanup();
++
   private:
    explicit HloComputation(
        const std::string& name, int parameter_count,
-@@ -676,6 +694,14 @@ class HloComputation {
+@@ -676,6 +699,20 @@ class HloComputation {
  
    std::vector<HloInstruction*> param_instructions_;
  
 +  bool dry_ = false;
++  bool rewrite_ = false;
 +  InstructionList dry_new_instructions_;
++  InstructionList rewrite_new_instructions_;
++  HloInstructionSet applied_rewrite_instructions_;
++
 +  absl::flat_hash_map<const HloInstruction*, InstructionList::iterator>
 +      dry_new_instruction_iterators_;
-+  HloInstructionMap<HloInstructionMap<HloInstructionSet>> alternatives_;
++  absl::flat_hash_map<const HloInstruction*, InstructionList::iterator>
++      rewrite_new_instruction_iterators_;      
++  HloInstructionMap<HloInstructionSet> alternatives_;
 +
 +  absl::flat_hash_map<HloInstruction*, HloInstruction*> originals_;
 +
@@ -2511,16 +2900,17 @@ index 51981ddd5f2..275eca9f7c9 100644
  }
  
 diff --git a/tensorflow/compiler/xla/service/hlo_dce.cc b/tensorflow/compiler/xla/service/hlo_dce.cc
-index b637ab0878e..45e70dfbe5c 100644
+index b637ab0878e..935961d5fc4 100644
 --- a/tensorflow/compiler/xla/service/hlo_dce.cc
 +++ b/tensorflow/compiler/xla/service/hlo_dce.cc
-@@ -63,6 +63,9 @@ namespace xla {
+@@ -63,6 +63,10 @@ namespace xla {
          computation->RemoveInstructionAndUnusedOperands(dead_root));
      changed = true;
    }
 +  changed |= computation->RemoveUnusedTupleOps();
 +  computation->Prune();
-+
++  computation->Cleanup();
++  
    if (changed) {
      VLOG(3) << "After dce:";
      XLA_VLOG_LINES(3, computation->ToString());
@@ -2538,7 +2928,7 @@ index a3015d28913..495ef335c0c 100644
  }
  
 diff --git a/tensorflow/compiler/xla/service/hlo_instruction.cc b/tensorflow/compiler/xla/service/hlo_instruction.cc
-index 7fbf934817e..b847b43385d 100644
+index 7fbf934817e..d4b6cdcd1ed 100644
 --- a/tensorflow/compiler/xla/service/hlo_instruction.cc
 +++ b/tensorflow/compiler/xla/service/hlo_instruction.cc
 @@ -1139,6 +1139,11 @@ HloInstruction::CreateRngBitGenerator(const Shape& shape, HloInstruction* state,
@@ -2561,18 +2951,34 @@ index 7fbf934817e..b847b43385d 100644
        clone = CloneWithNewOperandsImpl(shape, new_operands, context);
        break;
      // Unary ops.
-@@ -2364,6 +2370,10 @@ void HloInstruction::AppendOperand(HloInstruction* operand) {
+@@ -2359,11 +2365,26 @@ void HloInstruction::AppendOperand(HloInstruction* operand) {
+         << "Operand " << operand->name() << " is already marked dead";
+   }
+   operands_.push_back(operand);
++
+   operand->AddUser(this);
++
++  // // We either want to set a user connection if both instructions are not 
++  // // dry, this can occur if a) the pass is operating in non dry mode or b) they 
++  // // are both newly created instructions while a pass is operating in dry mode
++  // if (!rewrite_dry_ && !operand->rewrite_dry()) {
++  //   operand->AddUser(this);
++  // }
+ }
  
  void HloInstruction::RemoveOperandsAtAscendingIndices(
      absl::Span<const int> ascending_indices) {
 +  if (dry_) {
 +    return;
 +  }
++  if (rewrite_) {
++    return;
++  }
 +
    if (ascending_indices.empty()) {
      return;
    }
-@@ -2559,6 +2569,12 @@ bool HloInstruction::IdenticalSlowPath(
+@@ -2559,6 +2580,15 @@ bool HloInstruction::IdenticalSlowPath(
  }
  
  void HloInstruction::RemoveUser(HloInstruction* user) {
@@ -2581,23 +2987,66 @@ index 7fbf934817e..b847b43385d 100644
 +  if (dry_ && user->dry()) {
 +    return;
 +  }
++  if (rewrite_ && user->rewrite()) {
++    return;
++  }
 +
    auto map_it = user_map_.find(user);
    CHECK(map_it != user_map_.end());
  
-@@ -2590,6 +2606,11 @@ Status HloInstruction::ReplaceUseWithDifferentShape(
+@@ -2585,22 +2615,50 @@ Status HloInstruction::ReplaceUseWith(HloInstruction* user,
+   return ReplaceUseWithDifferentShape(user, new_producer);
+ }
+ 
++void HloInstruction::CreateRewrite(HloInstruction* replacement) {
++    if (rewrite_map_.find(replacement) == rewrite_map_.end()) {
++      rewrite_map_[replacement] = 
++        std::make_unique<Rewrite>(this, replacement, 
++                                  this->parent()->parent()->pass_name(),
++                                  this->parent()->parent()->get_rewrite_idx());
++      rewrite_plans_.push_back(rewrite_map_[replacement].get());
++    }
++    return;
++}
++
+ Status HloInstruction::ReplaceUseWithDifferentShape(
+     HloInstruction* user, HloInstruction* new_producer) {
    VLOG(3) << "Replacing uses of " << name() << " in " << user->name()
            << " with " << new_producer->name();
++ 
++  if (rewrite_) {
++    this->CreateRewrite(new_producer);
++    // TODO(ohcy): Do we want to differentiate calls to this vs single calls
++    // to replaceUseWith? E.g. for single calls, we have one rewrite plan per 
++    // user, even if the replacement instr is the same.
++    // Currently here we just always add to the user set for a replacement inst 
++    // Same comment as above.
++    rewrite_map_[new_producer]->AddUser(user);
++    return Status::OK();
++  }
  
+-  RemoveUser(user);
 +  if (dry_) {
 +    parent_->RecordAlternatives(this, new_producer);
 +    return Status::OK();
 +  }
-+
-   RemoveUser(user);
  
++  RemoveUser(user);
    TF_RET_CHECK(absl::c_count(user->operands_, this) >= 0);
-@@ -2623,6 +2644,11 @@ Status HloInstruction::ReplaceOperandWithDifferentShape(
+   std::replace(user->operands_.begin(), user->operands_.end(), this,
+                new_producer);
+   new_producer->AddUser(user);
++
+   // Custom fusions may not be able to handle deduplicated operands.
+   if (user->opcode() == HloOpcode::kFusion) {
+     TF_RETURN_IF_ERROR(
+         Cast<HloFusionInstruction>(user)->DeduplicateFusionOperands());
+   }
++
+   return Status::OK();
+ }
+ 
+@@ -2623,6 +2681,17 @@ Status HloInstruction::ReplaceOperandWithDifferentShape(
      return Status::OK();
    }
  
@@ -2606,10 +3055,26 @@ index 7fbf934817e..b847b43385d 100644
 +    return Status::OK();
 +  }
 +
++  if (rewrite_) {
++    old_operand->CreateRewrite(new_operand);
++    rewrite_map_[new_operand]->AddUser(this);
++    return Status::OK();
++  }
++
    operands_[operand_num] = new_operand;
  
    VLOG(3) << "Replacing operand " << operand_num << " of " << name() << " with "
-@@ -2666,6 +2692,12 @@ Status HloInstruction::ReplaceAllUsesWith(HloInstruction* new_producer) {
+@@ -2643,6 +2712,9 @@ Status HloInstruction::ReplaceUsesWith(absl::Span<HloInstruction* const> users,
+   return ReplaceAllUsesWithDifferentShape(users, new_producer);
+ }
+ 
++// TODO(ohcy): Do we want to differentiate calls to this vs single calls
++// to replaceUseWith? E.g. for single calls, we have one rewrite plan per 
++// user, even if the replacement instr is the same.
+ Status HloInstruction::ReplaceAllUsesWithDifferentShape(
+     absl::Span<HloInstruction* const> users, HloInstruction* new_producer) {
+   for (HloInstruction* user : users) {
+@@ -2666,6 +2738,24 @@ Status HloInstruction::ReplaceAllUsesWith(HloInstruction* new_producer) {
  Status HloInstruction::ReplaceAllUsesWithDifferentShape(
      HloInstruction* new_producer) {
    bool new_producer_is_user = false;
@@ -2618,11 +3083,31 @@ index 7fbf934817e..b847b43385d 100644
 +    parent_->RecordAlternatives(this, new_producer);
 +    return Status::OK();
 +  }
++  if (rewrite_) {
++    this->CreateRewrite(new_producer);
++    // TODO(ohcy): Do we want to differentiate calls to this vs single calls
++    // to replaceUseWith? E.g. for single calls, we have one rewrite plan per 
++    // user, even if the replacement instr is the same.
++    // Currently here we just always add to the user set for a replacement inst 
++    // Same comment as above.
++    for (HloInstruction* user : users()) {
++      rewrite_map_[new_producer]->AddUser(user);
++    }
++    return Status::OK();
++  }
 +
    for (HloInstruction* user : users()) {
      if (user == new_producer) {
        // It's possible that new_producer is a user of this instruction as might
-@@ -3629,6 +3661,8 @@ Status HloInstruction::Visit(DfsHloVisitorBase<HloInstructionPtr>* visitor) {
+@@ -3387,6 +3477,7 @@ bool HloInstruction::IsFusible() const {
+ 
+ HloInstruction::HloInstruction(HloOpcode opcode, const Shape& shape)
+     : unique_id_(-1),
++      orig_unique_id_(-1),
+       opcode_(opcode),
+       shape_(shape),
+       name_(HloOpcodeString(opcode)),
+@@ -3629,6 +3720,8 @@ Status HloInstruction::Visit(DfsHloVisitorBase<HloInstructionPtr>* visitor) {
        return visitor->HandleCholesky(this);
      case HloOpcode::kOptimizationBarrier:
        return visitor->HandleOptimizationBarrier(this);
@@ -2631,11 +3116,217 @@ index 7fbf934817e..b847b43385d 100644
  
      // These opcodes are not handled here.
      case HloOpcode::kTrace:
+@@ -4232,6 +4325,17 @@ bool HloPtrComparator::operator()(const HloInstruction* const& lhs,
+   return lhs->unique_id() < rhs->unique_id();
+ }
+ 
++bool HloPtrPairComparator::operator()(const HloInstructionPair& lhs,
++                                      const HloInstructionPair& rhs) const {
++  HloPtrComparator cmp;
++  if (lhs.first == rhs.first) {
++    return cmp(lhs.second, rhs.second);
++  }
++  else {
++    return cmp(lhs.first, rhs.first);
++  }
++}
++
+ Status HloInstruction::GetBackendConfigInternal(
+     tensorflow::protobuf::Message* proto) const {
+   proto->Clear();
+@@ -4773,4 +4877,179 @@ const CholeskyOptions& HloInstruction::cholesky_options() const {
+   return Cast<HloCholeskyInstruction>(this)->cholesky_options();
+ }
+ 
++void HloInstruction::set_rewrite(bool value) { 
++  rewrite_ = value; 
++}
++
++void HloInstruction::compute_rewrites() {
++  for (auto* rewrite : rewrite_plans_) {
++    rewrite->ComputeRewrite();
++  }  
++}
++
++// void HloInstruction::ApplyRewrite(HloInstruction* replacement) {
++//   Rewrite* rewrite_plan = rewrite_map_[replacement].get();
++//   if (rewrite_plan->Applicable()) {
++//     rewrite_plan->Apply();
++//     rewrite_map_.clear();
++//     rewrite_plans_.clear();
++//   }
++//   else {
++//     LOG(FATAL) << "Rewrite cannot be applied!";
++//   }
++// }
++
++void Rewrite::ComputeRewrite() {
++  affected_edges_.clear();
++  rewrite_operands_.clear();
++
++  HloInstructionSet orig_descendants;
++
++  // Step 1, get all descendants of original node, since these are the potential
++  // operands of the rewrite plan
++  std::vector<HloInstruction*> dfs_stack = {original_};
++  while (!dfs_stack.empty()) {  
++    HloInstruction* current = dfs_stack.back();
++    auto result = orig_descendants.insert(current);
++
++    if (!result.second) {  // We've already seen this instruction.
++      dfs_stack.pop_back();
++      continue;
++    }
++
++    for (auto* operand : current->operands()) {
++      dfs_stack.push_back(operand);
++    }
++  }
++
++  // Step 2, get operands of rewrite
++  dfs_stack = {replacement_};
++  std::unordered_map<HloInstruction*, bool> visited;
++  while (!dfs_stack.empty()) {
++    HloInstruction* current = dfs_stack.back();
++    // This is a newly created instruction
++    if (!current->rewrite()) {
++      new_instructions_.insert(current);
++    }
++
++    auto result = visited.insert({current, true});
++    if (!result.second) {  // We've already seen this instruction.
++      dfs_stack.pop_back();
++      continue;
++    }
++
++    for (auto* operand : current->operands()) {
++      if (rewrite_operands_.find(operand) == rewrite_operands_.end()) {
++        // the highest common descendants of the original and replacement
++        // instructions are the operands of the rewrite plan
++        if (orig_descendants.find(operand) != orig_descendants.end()) {
++          rewrite_operands_.insert(operand);
++          continue;
++        }
++        else {
++          dfs_stack.push_back(operand);
++        }
++      }
++    }
++  }
++
++  // New rewrite plan
++  //
++  // affected_edges = []
++  //
++  // Make parental set of [users]
++  // Start from (original)
++
++  // def process(current):
++  //     for each user of current:
++  //        if user in parental set:
++  //           affected_edges.add(current->user edge)
++  //     if all of current's parents in parental_set and current not in operands_set:
++  //       parental_set.add(current)
++  //       for operand in current.operands
++  //         process(operand)
++  //       
++
++  affected_insts_.insert(rewrite_users_.begin(), rewrite_users_.end());
++  dfs_stack = {original_};
++  while (!dfs_stack.empty()) {
++    HloInstruction* current = dfs_stack.back();
++
++    // Note, unlike the loop above we do NOT want to check whether a node 
++    // has been visited. This is because if the following pattern happens
++    //
++    //    A
++    //    ^
++    //    | \
++    //    |  C
++    //    |  ^
++    //    | / 
++    //    B
++    // 
++    // And B is processed before C, C will not have been added to the user set
++    // yet, so it will be counted as having an additional user. However, later 
++    // when B is added as an operand of C, it will be proceesed again and this
++    // time C will have been in the user set, so B will be part of the rewrite
++    // plan affected nodes
++    dfs_stack.pop_back();
++
++    // Whether or not a node has a user that's not in the rewrite pattern
++    // replacement
++    bool has_other_user = false;
++    for (auto& user : current->users()) {
++      if (affected_insts_.find(user) != affected_insts_.end()) {
++        affected_edges_.insert(std::make_pair(current, user));
++      } 
++      // else {
++      //   has_other_user = true;
++      // }
++    }
++
++    // If this node has no users outside of the rewrite pattern, and it is not
++    // one of the rewrite operands, continue processing its children
++    // if (!has_other_user && 
++    //     rewrite_operands_.find(current) == rewrite_operands_.end()) {
++    if (rewrite_operands_.find(current) == rewrite_operands_.end()) {      
++      affected_insts_.insert(current);
++      for (auto* operand : current->operands()) {
++        dfs_stack.push_back(operand);
++      }
++    }
++  }
++  // TODO(ohcy) do we need to add channel dependencies and control predecessors?
++}
++
++RewriteStatus Rewrite::Apply() {
++  if (original_->IsDead()) {
++    return RewriteStatus::ORIG_INST_DELETED;
++  }
++  else if (applied_) {
++    return RewriteStatus::ALREADY_APPLIED;
++  }
++  else {
++    // Note that we cannot just call ReplaceAllUsesWith because sometimes the 
++    // user replacement is done only for selective users
++    for (auto* user : rewrite_users_) {
++      original_->ReplaceUseWith(user, replacement_);
++    }
++    // Cycle detected, cancel application of rewrite
++    if (original_->parent()->HasCycle()) {
++      for (auto* user : rewrite_users_) {
++        replacement_->ReplaceUseWith(user, original_);
++      }
++      std::cout << "Cycle detected after Rewrite Application! Rolling back" << std::endl;
++      return RewriteStatus::CYCLE;
++    }
++
++    for (auto* instr : new_instructions_) {
++      original_->parent()->AddRewriteInstruction(instr);
++    }
++    if (original_->parent()->root_instruction() == original_) {
++      original_->parent()->set_root_instruction(replacement_);
++    }
++    applied_ = true;
++    return RewriteStatus::OK;
++  }
++}
++
+ }  // namespace xla
 diff --git a/tensorflow/compiler/xla/service/hlo_instruction.h b/tensorflow/compiler/xla/service/hlo_instruction.h
-index 6c5555dda69..49bfad03303 100644
+index 6c5555dda69..09181f0e089 100644
 --- a/tensorflow/compiler/xla/service/hlo_instruction.h
 +++ b/tensorflow/compiler/xla/service/hlo_instruction.h
-@@ -603,6 +603,9 @@ class HloInstruction {
+@@ -62,6 +62,7 @@ namespace xla {
+ 
+ class HloComputation;
+ class HloModule;
++class Rewrite;
+ 
+ std::string PrintName(const std::string& name, bool print_ids);
+ 
+@@ -603,6 +604,9 @@ class HloInstruction {
        const Shape& shape, HloOpcode opcode,
        absl::Span<HloInstruction* const> operands);
  
@@ -2645,7 +3336,7 @@ index 6c5555dda69..49bfad03303 100644
    // Creates a map instruction, where the computation (given by the handle) is
    // applied element-wise to every element in operands (across the operands,
    // at a given index)
-@@ -1206,6 +1209,11 @@ class HloInstruction {
+@@ -1206,6 +1210,11 @@ class HloInstruction {
    // Returns the number of users of this instruction.
    int64_t user_count() const { return users_.size(); }
  
@@ -2657,17 +3348,63 @@ index 6c5555dda69..49bfad03303 100644
    // Returns the users of this instruction.
    const std::vector<HloInstruction*>& users() const { return users_; }
  
-@@ -1510,6 +1518,9 @@ class HloInstruction {
+@@ -1510,6 +1519,13 @@ class HloInstruction {
  
    bool IsCustomCall(absl::string_view target) const;
  
 +  bool dry() const { return dry_; }
 +  void set_dry(bool value) { dry_ = value; }
 +
++  bool rewrite() const { return rewrite_; }
++  void set_rewrite(bool value);
++  void compute_rewrites();
++
    // Returns the sharding applied to this operator.
    // REQUIRES: has_sharding() is true.
    const HloSharding& sharding() const {
-@@ -2109,6 +2120,9 @@ class HloInstruction {
+@@ -1671,6 +1687,13 @@ class HloInstruction {
+   // as for the purpose of compacting the instruction unique IDs.
+   void ClearUniqueIdInternal() { unique_id_ = -1; }
+ 
++  // Set the unique id that this instruction was cloned from
++  void SetOriginalId(int id) {
++    CHECK_EQ(orig_unique_id_, -1);  // Should not be assigned already
++    CHECK_GE(id, 0);
++    orig_unique_id_ = id;
++  }
++
+   // Set the unique id for this instruction to "id"
+   void SetUniqueId(int id) {
+     CHECK_EQ(unique_id_, -1);  // Should not be assigned already
+@@ -1682,6 +1705,8 @@ class HloInstruction {
+   // if no id has been assigned yet).
+   int unique_id() const { return unique_id_; }
+ 
++  int orig_unique_id() const { return orig_unique_id_; }
++
+   template <typename T>
+   using EnableIfProto = typename std::enable_if_t<
+       std::is_base_of<tensorflow::protobuf::Message, T>::value>;
+@@ -2101,6 +2126,18 @@ class HloInstruction {
+ 
+   // Old methods kept for smooth subclassing transition END.
+ 
++  // Returns the map of rewrite plans
++  const std::vector<Rewrite*>& rewrite_plans() const {
++    return rewrite_plans_;
++  }
++
++  void RewriteCleanup() {
++    rewrite_plans_.clear();
++    rewrite_map_.clear();
++  }
++
++  void CreateRewrite(HloInstruction* replacement);
++ 
+  protected:
+   // Internal constructor for a given opcode/shape, other fields must be filled
+   // by factory methods.
+@@ -2109,6 +2146,9 @@ class HloInstruction {
    void RemoveAllOperands() { operands_.clear(); }
  
    void RemoveOperandAt(int index) {
@@ -2677,14 +3414,153 @@ index 6c5555dda69..49bfad03303 100644
      operands_.erase(operands_.begin() + index);
    }
  
-@@ -2323,6 +2337,7 @@ class HloInstruction {
+@@ -2241,6 +2281,9 @@ class HloInstruction {
+ 
+   int unique_id_;  // Unique to this HloInstruction within a HloModule
+ 
++  int orig_unique_id_;  // Unique id of the instruction this instruction was 
++                        // cloned from, (-1 otherwise)
++
+   // Opcode for this instruction.
+   HloOpcode opcode_;
+ 
+@@ -2323,6 +2366,13 @@ class HloInstruction {
    // Intrusive flag used by HloComputation, whether this instruction has
    // been marked as dead.
    bool marked_as_dead_;
++  
 +  bool dry_ = false;
++  bool rewrite_ = false;
++
++  // Key is the new producer of the rewrite plan
++  std::unordered_map<HloInstruction*, std::unique_ptr<Rewrite>> rewrite_map_;
++  std::vector<Rewrite*> rewrite_plans_;
  
    HloInstruction(const HloInstruction&) = delete;
    HloInstruction& operator=(const HloInstruction&) = delete;
+@@ -2383,6 +2433,122 @@ using HloInstructionSet = std::set<HloInstruction*, HloPtrComparator>;
+ using ConstHloInstructionSet =
+     std::set<const HloInstruction*, HloPtrComparator>;
+ 
++using HloInstructionPair = std::pair<HloInstruction*, HloInstruction*>;
++struct HloPtrPairComparator {
++  bool operator()(const HloInstructionPair& lhs,
++                  const HloInstructionPair& rhs) const;
++};
++using HloInstructionPairSet = std::set<HloInstructionPair, HloPtrPairComparator>;
++template <typename ValueT>
++using HloInstructionPairMap = std::map<HloInstructionPair, ValueT, HloPtrPairComparator>;
++
++
++// TODOS (ohcy):
++// For pruning/applicability of rewrites after application of other rewrites:
++//   Need to enforce on client side using rewrite graph
++//   Also need to have check on TF side
++
++// After we apply rewrites, prune everything
++
++// Only compute rewrite when "all uses" are replaced
++//   Cannot just hook on ReplaceAllUsers, cos indiv ReplaceUser calls might do same thing
++//   Still need a rewrite plan, just that either:
++//     It replaces empty subgraph
++//     Replaces same subgraph, but affected nodes is calculated differently+
++
++// instructions_
++//   Need to remove when adding
++//   Add it back when applying
++//   see:
++//     HloInstruction* HloComputation::AddInstructionInternal(
++
++enum class RewriteStatus {
++  OK = 0,
++  ADJACENCY = 1,
++  CYCLE = 2,
++  PRUNED = 3,
++  ORIG_INST_DELETED = 4,
++  ALREADY_APPLIED = 5,
++};
++
++class Rewrite {
++
++ private:
++  // std::string name;
++  // std::map<HloInstructionPair, HloInstruction*> replacements;
++  // std::vector<std::unique_ptr<HloInstruction>> new_insts;
++  // HloComputation* comp;
++  // std::set<HloInstruction*> to_add;
++  // std::set<HloInstruction*> to_remove;
++  // std::map<HloInstruction*, std::vector<HloInstruction*>> operands;
++
++  HloInstruction* original_;
++  HloInstruction* replacement_;
++
++  HloInstructionSet rewrite_operands_;
++  HloInstructionSet rewrite_users_;
++  HloInstructionPairSet affected_edges_;
++  HloInstructionSet affected_insts_;
++
++  HloInstructionSet new_instructions_;
++
++  std::string pass_name_;
++  bool applied_ = false;
++
++  int idx_;
++
++ public:
++  Rewrite(HloInstruction* original, HloInstruction* replacement,
++          const std::string& pass_name, int idx)
++      : original_(original), replacement_(replacement), 
++        pass_name_(pass_name), idx_(idx) {
++  }
++
++  void AddUser(HloInstruction* user) {
++    rewrite_users_.insert(user);
++  }
++
++  HloInstruction* original() {
++    return original_;
++  }
++
++  HloInstruction* replacement() {
++    return replacement_;
++  }
++
++  const HloInstructionSet& users() const {
++    return rewrite_users_;
++  }
++
++  const HloInstructionSet& operands() const {
++    return rewrite_operands_;
++  }
++
++  const HloInstructionSet& affected_insts() const {
++    return affected_insts_;
++  }
++
++  const HloInstructionPairSet& affected_edges() const {
++    return affected_edges_;
++  }
++
++  const std::string& pass_name() const { return pass_name_; }
++
++  const int create_order() const { return idx_; }
++
++  // Given the original instruction and its replacement, compute the users,
++  // operands and affected instructions of this rewrite
++  void ComputeRewrite();
++
++  // Apply the rewrite, returns whether or not the rewrite was applied
++  // successfully
++  RewriteStatus Apply();
++
++  // Return whether or not the rewrite is still appliable  
++  bool Applicable();
++};
++
++
+ }  // namespace xla
+ 
+ #endif  // TENSORFLOW_COMPILER_XLA_SERVICE_HLO_INSTRUCTION_H_
 diff --git a/tensorflow/compiler/xla/service/hlo_instructions.cc b/tensorflow/compiler/xla/service/hlo_instructions.cc
 index e60dc6985f1..af9f9515148 100644
 --- a/tensorflow/compiler/xla/service/hlo_instructions.cc
@@ -2779,7 +3655,7 @@ index 38f2b90adb8..38fffde0e01 100644
  
  #endif  // TENSORFLOW_COMPILER_XLA_SERVICE_HLO_INSTRUCTIONS_H_
 diff --git a/tensorflow/compiler/xla/service/hlo_module.cc b/tensorflow/compiler/xla/service/hlo_module.cc
-index ec800ff7b1e..03658189fd6 100644
+index ec800ff7b1e..ac5259f8b8d 100644
 --- a/tensorflow/compiler/xla/service/hlo_module.cc
 +++ b/tensorflow/compiler/xla/service/hlo_module.cc
 @@ -796,6 +796,15 @@ std::vector<HloComputation*> HloModule::MakeNonfusionComputationsSorted()
@@ -2798,7 +3674,15 @@ index ec800ff7b1e..03658189fd6 100644
  std::unique_ptr<HloModule> HloModule::Clone(const std::string& suffix) const {
    return Clone(config(), suffix);
  }
-@@ -886,6 +895,33 @@ HloComputation* HloModule::GetComputationWithName(absl::string_view name) {
+@@ -841,6 +850,7 @@ std::unique_ptr<HloModule> HloModule::Clone(const HloModuleConfig& config,
+ 
+ Status HloModule::RemoveUnusedComputations() {
+   std::string suffix = "tmp";
++
+   auto module = absl::make_unique<HloModule>(
+       absl::StrCat(name_, suffix.empty() ? "" : "-", suffix), config());
+   HloCloneContext context(module.get(), suffix);
+@@ -886,6 +896,53 @@ HloComputation* HloModule::GetComputationWithName(absl::string_view name) {
    return it == computations_in_module.end() ? nullptr : *it;
  }
  
@@ -2829,11 +3713,31 @@ index ec800ff7b1e..03658189fd6 100644
 +  }
 +}
 +
++void HloModule::SetRewrite(bool rewrite_mode) {
++  if (rewrite_mode != rewrite_mode_) {
++
++    if (rewrite_mode) {
++      curr_rewrite_idx_ = 0;
++    }
++
++    for (xla::HloComputation* computation : MakeNonfusionComputations()) {
++      computation->set_rewrite(rewrite_mode);
++    }
++    rewrite_mode_ = rewrite_mode;
++    // // Remove unused computations that might been orphaned during the
++    // // set rewrite_off processes (e.g. alternatives deleted due to generating
++    // // a cycle)
++    // if (!rewrite_mode_) {
++    //   RemoveUnusedComputations();
++    // }
++  }
++}
++
  /* static */ std::atomic<int> HloModule::next_unique_module_id_(0);
  
  }  // namespace xla
 diff --git a/tensorflow/compiler/xla/service/hlo_module.h b/tensorflow/compiler/xla/service/hlo_module.h
-index a20f6cd383c..6ff756a5645 100644
+index a20f6cd383c..01cc99fb858 100644
 --- a/tensorflow/compiler/xla/service/hlo_module.h
 +++ b/tensorflow/compiler/xla/service/hlo_module.h
 @@ -167,6 +167,10 @@ class HloModule {
@@ -2847,7 +3751,28 @@ index a20f6cd383c..6ff756a5645 100644
    // Gets the computations in this module.
    //
    // Returns a view of HloComputation*s, so you can iterate over this in the
-@@ -210,6 +214,10 @@ class HloModule {
+@@ -203,6 +207,20 @@ class HloModule {
+   // Gets the number of instructions in this module.
+   int64_t instruction_count() const;
+ 
++  // Detach newly reconstructed rewrite instructions
++  void DetachRewriteInstructions() {
++    for (auto& comp : computations_) {
++      comp->DetachRewriteInstructions();
++    }
++  }
++
++  // Deallocate unused RewriteInstructions and delete rewrite plans
++  void RewriteCleanup() {
++    for (auto& comp : computations_) {
++      comp->RewriteCleanup();
++    }
++  }
++
+   // Deallocate removed instructions in each computation.
+   void Cleanup() {
+     for (auto& comp : computations_) {
+@@ -210,6 +228,16 @@ class HloModule {
      }
    }
  
@@ -2855,10 +3780,16 @@ index a20f6cd383c..6ff756a5645 100644
 +
 +  void SetDry(bool dry_mode);
 +
++  void SetRewrite(bool rewrite_mode);
++
++  void SetCurrentPassName(absl::string_view pass_name) {
++    pass_name_ = std::string(pass_name);
++  }
++
    // Compute and return a post order of all computations in the module. The sort
    // is defined like so: if computation A has an instruction which calls
    // computation B, then A will appear after B in the sort.
-@@ -235,6 +243,8 @@ class HloModule {
+@@ -235,6 +263,8 @@ class HloModule {
    // MakeNonfusionComputations().
    std::vector<HloComputation*> MakeNonfusionComputations() const;
  
@@ -2867,15 +3798,17 @@ index a20f6cd383c..6ff756a5645 100644
    // Same as MakeNonfusionComputations() but sorting computations by content.
    std::vector<HloComputation*> MakeNonfusionComputationsSorted() const;
  
-@@ -355,6 +365,20 @@ class HloModule {
+@@ -355,6 +385,22 @@ class HloModule {
  
    Status CheckUniqueNamesAndIdsForComputationsAndInstructions() const;
  
 +  // Dedup duplicate operands in Tuple instructions
-+  void RemoveUnusedTupleOps() {
++  bool RemoveUnusedTupleOps() {
++    bool changed = false;
 +    for (HloComputation* computation : computations()) {
-+      computation->RemoveUnusedTupleOps();
++      changed |= computation->RemoveUnusedTupleOps();
 +    }
++    return changed;
 +  }
 +
 +  // Dedup duplicate operands in Tuple instructions
@@ -2888,22 +3821,31 @@ index a20f6cd383c..6ff756a5645 100644
    // Checks if this config has a list of entry parameters' HLO shardings for
    // SPMD.
    bool has_spmd_parameters_shardings() const {
-@@ -427,6 +451,8 @@ class HloModule {
+@@ -427,6 +473,11 @@ class HloModule {
      return profile_info_list_;
    }
  
 +  bool dry_mode() const { return dry_mode_; }
++  bool rewrite_mode() const { return rewrite_mode_; }
++  const std::string& pass_name() const { return pass_name_; }
++  int get_rewrite_idx() { return curr_rewrite_idx_++; } 
 +
    void set_relative_speedup(double relative_speedup) {
      relative_speedup_ = relative_speedup;
    }
-@@ -508,6 +534,9 @@ class HloModule {
+@@ -508,6 +559,15 @@ class HloModule {
  
    // The unoptimized module fingerprint.
    std::string autofdo_fingerprint_;
 +
 +  // Whether or not the module is currently in dry_mode
-+  bool dry_mode_ = false;;
++  bool dry_mode_ = false;
++  // Whether or not the module is currently in rewrite_mode
++  bool rewrite_mode_ = false;
++  // Pass name of the current pass the is operating on this module
++  std::string pass_name_;
++  // Current rewrite idx, used to keep track of rewrite creation ordering
++  int curr_rewrite_idx_;
  };
  
  }  // namespace xla
@@ -3260,6 +4202,215 @@ index cc358660c72..a9a6add9175 100644
      deps = [
          "//tensorflow/compiler/xla:debug_options_flags",
          "//tensorflow/compiler/xla:statusor",
+diff --git a/tensorflow/compiler/xla/tools/hlo_extractor.cc b/tensorflow/compiler/xla/tools/hlo_extractor.cc
+index 469b5bf3050..5f11de8516a 100644
+--- a/tensorflow/compiler/xla/tools/hlo_extractor.cc
++++ b/tensorflow/compiler/xla/tools/hlo_extractor.cc
+@@ -18,96 +18,9 @@ limitations under the License.
+ #include <stdio.h>
+ #include <unistd.h>
+ 
+-#include "absl/container/flat_hash_map.h"
+-#include "absl/container/flat_hash_set.h"
+-#include "absl/memory/memory.h"
+-#include "tensorflow/compiler/xla/service/dfs_hlo_visitor_with_default.h"
+-#include "tensorflow/compiler/xla/service/hlo_clone_context.h"
+-#include "tensorflow/compiler/xla/service/hlo_computation.h"
+-#include "tensorflow/compiler/xla/service/hlo_verifier.h"
+-#include "tensorflow/compiler/xla/status.h"
+-
+ namespace xla {
+ namespace {
+ 
+-// Visitor that build a new HLO module with an entry computation and a root that
+-// is provided to the visit function. Only HLOs that are reachable from the new
+-// root instruction are included in the new module.
+-//
+-// The constructor allows specifying a set of boundary HLOs to prune the HLO
+-// graph. HLOs at the boundary are replaced with parameters. Can be nullptr
+-// which means no boundary, i.e. no HLOs are replaced with parameters.
+-class ExtractionVisitor : public ConstDfsHloVisitorWithDefault {
+- public:
+-  explicit ExtractionVisitor(
+-      const HloModule& old_module,
+-      absl::flat_hash_set<const HloInstruction*>* boundary)
+-      : old_module_(old_module),
+-        module_(absl::make_unique<HloModule>("extracted", config_)),
+-        clone_context_(module_.get()),
+-        builder_("entry_computation"),
+-        boundary_(boundary) {}
+-
+-  Status HandleParameter(const HloInstruction* parameter) override {
+-    // Entry parameters need renumbering.
+-    auto new_parameter = HloInstruction::CreateParameter(
+-        parameter_number_++, parameter->shape(), parameter->name());
+-    clone_context_.MapInstruction(parameter, new_parameter.get());
+-    builder_.AddInstruction(std::move(new_parameter));
+-    return Status::OK();
+-  }
+-
+-  Status DefaultAction(const HloInstruction* hlo) override {
+-    // Replace instructions at the boundary with parameters, but leave constants
+-    // untouched.
+-    if (boundary_ != nullptr && boundary_->count(hlo) > 0) {
+-      auto new_parameter = HloInstruction::CreateParameter(
+-          parameter_number_, hlo->shape(), hlo->name());
+-      parameter_number_++;
+-      clone_context_.MapInstruction(hlo, new_parameter.get());
+-      builder_.AddInstruction(std::move(new_parameter));
+-      return Status::OK();
+-    }
+-    std::vector<HloInstruction*> new_operands;
+-    for (auto operand : hlo->operands()) {
+-      new_operands.push_back(clone_context_.GetInstruction(operand));
+-    }
+-    auto instruction =
+-        hlo->CloneWithNewOperands(hlo->shape(), new_operands, &clone_context_);
+-    builder_.AddInstruction(std::move(instruction));
+-    return Status::OK();
+-  }
+-
+-  Status FinishVisit(const HloInstruction* /*root*/) override {
+-    module_->AddEntryComputation(builder_.Build());
+-    // Rename HLOs so that their name matches the original. By default,
+-    // HLOs get new unique names when adding a new entry computation to
+-    // a module.
+-    for (auto computation : old_module_.MakeComputationPostOrder()) {
+-      for (auto old_instruction : computation->MakeInstructionPostOrder()) {
+-        if (auto new_instruction =
+-                clone_context_.FindInstruction(old_instruction)) {
+-          new_instruction->SetAndSanitizeName(old_instruction->name());
+-        }
+-      }
+-    }
+-    return Status::OK();
+-  }
+-
+-  HloModule* module() { return module_.get(); }
+-
+-  std::unique_ptr<HloModule> ConsumeModule() { return std::move(module_); }
+-
+- private:
+-  const HloModule& old_module_;
+-  HloModuleConfig config_;
+-  std::unique_ptr<HloModule> module_;
+-  HloCloneContext clone_context_;
+-  HloComputation::Builder builder_;
+-  absl::flat_hash_set<const HloInstruction*>* boundary_;
+-  int64_t parameter_number_ = 0;
+-};
+-
+ void ComputeBoundary(const HloInstruction* root, int64_t limit,
+                      absl::flat_hash_set<const HloInstruction*>* boundary) {
+   std::deque<const HloInstruction*> worklist;
+diff --git a/tensorflow/compiler/xla/tools/hlo_extractor.h b/tensorflow/compiler/xla/tools/hlo_extractor.h
+index c4216168caf..7cfb69a9065 100644
+--- a/tensorflow/compiler/xla/tools/hlo_extractor.h
++++ b/tensorflow/compiler/xla/tools/hlo_extractor.h
+@@ -19,8 +19,103 @@ limitations under the License.
+ #include "tensorflow/compiler/xla/service/hlo_instruction.h"
+ #include "tensorflow/compiler/xla/service/hlo_module.h"
+ 
++#include "absl/container/flat_hash_map.h"
++#include "absl/container/flat_hash_set.h"
++#include "absl/memory/memory.h"
++#include "tensorflow/compiler/xla/service/dfs_hlo_visitor_with_default.h"
++#include "tensorflow/compiler/xla/service/hlo_clone_context.h"
++#include "tensorflow/compiler/xla/service/hlo_computation.h"
++#include "tensorflow/compiler/xla/service/hlo_verifier.h"
++#include "tensorflow/compiler/xla/status.h"
++
+ namespace xla {
+ 
++// Visitor that build a new HLO module with an entry computation and a root that
++// is provided to the visit function. Only HLOs that are reachable from the new
++// root instruction are included in the new module.
++//
++// The constructor allows specifying a set of boundary HLOs to prune the HLO
++// graph. HLOs at the boundary are replaced with parameters. Can be nullptr
++// which means no boundary, i.e. no HLOs are replaced with parameters.
++class ExtractionVisitor : public ConstDfsHloVisitorWithDefault {
++ public:
++  explicit ExtractionVisitor(
++      const HloModule& old_module,
++      absl::flat_hash_set<const HloInstruction*>* boundary)
++      : old_module_(old_module),
++        module_(absl::make_unique<HloModule>("extracted", config_)),
++        clone_context_(module_.get()),
++        builder_("entry_computation"),
++        boundary_(boundary) {}
++
++  Status HandleParameter(const HloInstruction* parameter) override {
++    // Entry parameters need renumbering.
++    auto new_parameter = HloInstruction::CreateParameter(
++        parameter_number_++, parameter->shape(), parameter->name());
++    clone_context_.MapInstruction(parameter, new_parameter.get());
++    builder_.AddInstruction(std::move(new_parameter));
++    return Status::OK();
++  }
++
++  Status DefaultAction(const HloInstruction* hlo) override {
++    // Replace instructions at the boundary with parameters, but leave constants
++    // untouched.
++    if (boundary_ != nullptr && boundary_->count(hlo) > 0) {
++      auto new_parameter = HloInstruction::CreateParameter(
++          parameter_number_, hlo->shape(), hlo->name());
++      parameter_number_++;
++      clone_context_.MapInstruction(hlo, new_parameter.get());
++      builder_.AddInstruction(std::move(new_parameter));
++      return Status::OK();
++    }
++    std::vector<HloInstruction*> new_operands;
++    for (auto operand : hlo->operands()) {
++      new_operands.push_back(clone_context_.GetInstruction(operand));
++    }
++    auto instruction =
++        hlo->CloneWithNewOperands(hlo->shape(), new_operands, &clone_context_);
++    builder_.AddInstruction(std::move(instruction));
++    return Status::OK();
++  }
++
++  Status FinishVisit(const HloInstruction* /*root*/) override {
++    module_->AddEntryComputation(builder_.Build());
++    // Rename HLOs so that their name matches the original. By default,
++    // HLOs get new unique names when adding a new entry computation to
++    // a module.
++    for (auto computation : old_module_.MakeComputationPostOrder()) {
++      for (auto old_instruction : computation->MakeInstructionPostOrder()) {
++        if (auto new_instruction =
++                clone_context_.FindInstruction(old_instruction)) {
++          new_instruction->SetAndSanitizeName(old_instruction->name());
++          // If this has already been cloned before by an extraction, then
++          // utilize the cloned instructions orig_unique_id.
++          // This way even if an instruction gets cloned multiple time it still
++          // gets set to the original instructions id 
++          int orig_id = old_instruction->orig_unique_id() == -1 ? 
++                        old_instruction->unique_id() : 
++                        old_instruction->orig_unique_id();
++          new_instruction->SetOriginalId(orig_id);
++        }
++      }
++    }
++    return Status::OK();
++  }
++
++  HloModule* module() { return module_.get(); }
++
++  std::unique_ptr<HloModule> ConsumeModule() { return std::move(module_); }
++
++ private:
++  const HloModule& old_module_;
++  HloModuleConfig config_;
++  std::unique_ptr<HloModule> module_;
++  HloCloneContext clone_context_;
++  HloComputation::Builder builder_;
++  absl::flat_hash_set<const HloInstruction*>* boundary_;
++  int64_t parameter_number_ = 0;
++};
++
+ // Creates a new HLO module rooted with an entry computation rooted at the given
+ // instruction.
+ //
 diff --git a/tensorflow/core/BUILD b/tensorflow/core/BUILD
 index 93bdd8402ac..255b3d8db43 100644
 --- a/tensorflow/core/BUILD
