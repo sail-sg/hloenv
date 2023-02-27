@@ -163,7 +163,7 @@ std::shared_ptr<AltHloModule> HloEnv::CloneHloModule() {
 }
 
 void HloEnv::LoadHloModule(std::shared_ptr<AltHloModule> saved_hlo_module) {
-  alt_hlo_module_ = saved_hlo_module;
+  alt_hlo_module_ = saved_hlo_module->Clone();
 }
 
 void HloEnv::LoadHloModule(const std::string& hlo_input,
