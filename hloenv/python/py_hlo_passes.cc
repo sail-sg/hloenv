@@ -211,8 +211,8 @@ void py_init_hlo_passes(const py::module& m) {
     }
     return std::make_shared<xla::DynamicPadder>(options);
   }));
-  py::enum_<xla::DynamicDimensionInference::ShapeCheckMode>(dynamic_padder,
-                                                            "ShapeCheckMode")
+  py::enum_<xla::DynamicDimensionInference::ShapeCheckMode>(
+      dynamic_padder, "ShapeCheckMode", py::module_local())
       .value("kInvalid",
              xla::DynamicDimensionInference::ShapeCheckMode::kInvalid)
       .value("kCompileTime",
@@ -289,7 +289,8 @@ void py_init_hlo_passes(const py::module& m) {
              xla::HloPassInterface>
       gather_expander(m, "GatherExpander");
   gather_expander.def(py::init<xla::GatherExpander::Mode>(), py::arg("m"));
-  py::enum_<xla::GatherExpander::Mode>(gather_expander, "Mode")
+  py::enum_<xla::GatherExpander::Mode>(gather_expander, "Mode",
+                                       py::module_local())
       .value("kEliminateAllGathers",
              xla::GatherExpander::Mode::kEliminateAllGathers)
       .value("kEliminateSimpleGathers",
@@ -301,8 +302,8 @@ void py_init_hlo_passes(const py::module& m) {
       logistic_expander(m, "LogisticExpander");
   logistic_expander.def(py::init<xla::LogisticExpansionType>(),
                         py::arg("expansion_type"));
-  py::enum_<xla::LogisticExpansionType>(logistic_expander,
-                                        "LogisticExpansionType")
+  py::enum_<xla::LogisticExpansionType>(
+      logistic_expander, "LogisticExpansionType", py::module_local())
       .value("kTanh", xla::LogisticExpansionType::kTanh)
       .value("kExp", xla::LogisticExpansionType::kExp)
       .export_values();
@@ -362,7 +363,8 @@ void py_init_hlo_passes(const py::module& m) {
       rng_bit_generator_expander(m, "RngBitGeneratorExpander");
   rng_bit_generator_expander.def(py::init<xla::RandomAlgorithm>(),
                                  py::arg("default_algorithm"));
-  py::enum_<xla::RandomAlgorithm>(rng_bit_generator_expander, "RandomAlgorithm")
+  py::enum_<xla::RandomAlgorithm>(rng_bit_generator_expander, "RandomAlgorithm",
+                                  py::module_local())
       .value("RNG_DEFAULT", xla::RandomAlgorithm::RNG_DEFAULT)
       .value("RNG_THREE_FRY", xla::RandomAlgorithm::RNG_THREE_FRY)
       .value("RNG_PHILOX", xla::RandomAlgorithm::RNG_PHILOX)
@@ -376,7 +378,8 @@ void py_init_hlo_passes(const py::module& m) {
              xla::HloPassInterface>
       scatter_expander(m, "ScatterExpander");
   scatter_expander.def(py::init<xla::ScatterExpander::Mode>(), py::arg("m"));
-  py::enum_<xla::ScatterExpander::Mode>(scatter_expander, "Mode")
+  py::enum_<xla::ScatterExpander::Mode>(scatter_expander, "Mode",
+                                        py::module_local())
       .value("kEliminateAllScatters",
              xla::ScatterExpander::Mode::kEliminateAllScatters)
       .value("kEliminateSimpleScatters",
@@ -545,7 +548,8 @@ void py_init_hlo_passes(const py::module& m) {
       cublas_pad_for_gemms(m, "CublasPadForGemms");
   cublas_pad_for_gemms.def(py::init<xla::PrimitiveType, int32_t>(),
                            py::arg("datatype"), py::arg("pad_to_multiple_of"));
-  py::enum_<xla::PrimitiveType>(cublas_pad_for_gemms, "PrimitiveType")
+  py::enum_<xla::PrimitiveType>(cublas_pad_for_gemms, "PrimitiveType",
+                                py::module_local())
       .value("PRIMITIVE_TYPE_INVALID",
              xla::PrimitiveType::PRIMITIVE_TYPE_INVALID)
       .value("PRED", xla::PrimitiveType::PRED)

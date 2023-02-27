@@ -91,7 +91,7 @@ PYBIND11_MODULE(py_hlo_env, m) {
       .def_readonly("output", &PyHloEnv::EvaluationResult::output,
                     "The output of the HloModule.");
 
-  py::class_<xla::DebugOptions>(m, "DebugOptions")
+  py::class_<xla::DebugOptions>(m, "DebugOptions", py::module_local())
       .def_property_readonly(
           "xla_llvm_enable_alias_scope_metadata",
           &xla::DebugOptions::xla_llvm_enable_alias_scope_metadata)
@@ -203,7 +203,7 @@ PYBIND11_MODULE(py_hlo_env, m) {
           "xla_gpu_redzone_scratch_max_megabytes",
           &xla::DebugOptions::xla_gpu_redzone_scratch_max_megabytes);
 
-  py::class_<xla::HloModuleConfig>(m, "HloModuleConfig")
+  py::class_<xla::HloModuleConfig>(m, "HloModuleConfig", py::module_local())
       .def(py::init<>())
       .def_property_readonly("debug_options",
                              &xla::HloModuleConfig::debug_options)
@@ -235,7 +235,8 @@ PYBIND11_MODULE(py_hlo_env, m) {
           "allow_spmd_sharding_propagation_to_output",
           &xla::HloModuleConfig::allow_spmd_sharding_propagation_to_output);
 
-  py::class_<xla::HloCostAnalysis::Properties>(m, "CostAnalysisProperties");
+  py::class_<xla::HloCostAnalysis::Properties>(m, "CostAnalysisProperties",
+                                               py::module_local());
 
   py::class_<AltHloModule, std::shared_ptr<AltHloModule>>(
       m, "HloModule",
@@ -420,7 +421,8 @@ Args:
              xla::se::CudaComputeCapability::CudaComputeCapabilities::AMPERE)
       .export_values();
 
-  py::class_<xla::Literal, std::shared_ptr<xla::Literal>>(m, "Literal")
+  py::class_<xla::Literal, std::shared_ptr<xla::Literal>>(m, "Literal",
+                                                          py::module_local())
       .def("__repr__", &xla::Literal::ToString);
 
   // Bindings for Hlo Passes
