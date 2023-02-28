@@ -24,6 +24,15 @@ pybind_library(
 )
 
 pybind_library(
+    name = "py_hlo_rewrite_graph",
+    srcs = ["py_hlo_rewrite_graph.h"],
+    deps = [
+        "//hloenv:hlo_rewrite_graph",
+        ":py_hlo_graph",
+    ],
+)
+
+pybind_library(
     name = "py_hlo_pass",
     srcs = ["py_hlo_passes.cc"],
     hdrs = ["py_hlo_passes.h"],
@@ -49,6 +58,7 @@ pybind_extension(
     deps = [
         ":py_hlo_graph",
         ":py_hlo_pass",
+        ":py_hlo_rewrite_graph",
         "//hloenv:hlo_env",
     ],
 )

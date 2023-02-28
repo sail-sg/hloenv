@@ -56,6 +56,23 @@ cc_library(
     ],
 )
 
+cc_library(
+    name = "hlo_rewrite_graph",
+    srcs = ["hlo_rewrite_graph.cc"],
+    hdrs = ["hlo_rewrite_graph.h"],
+    deps = [
+        "//hloenv/utils:hlo_utils",
+        "@org_tensorflow//tensorflow/compiler/xla/service:hlo",
+        "@org_tensorflow//tensorflow/compiler/xla:types",
+        "@org_tensorflow//tensorflow/compiler/xla:util",
+        "@org_tensorflow//tensorflow/core:lib",
+        "@org_tensorflow//tensorflow/core:lib_internal",
+        "@com_google_absl//absl/base",
+        "@com_google_absl//absl/container:flat_hash_map",
+        "@org_tensorflow//tensorflow/python:pybind11_lib",
+    ],
+)
+
 
 cc_library(
     name = "hlo_module",
@@ -107,6 +124,7 @@ cc_library(
     deps = [
         ":gpu_backend",
         ":hlo_graph",
+        ":hlo_rewrite_graph",
         ":hlo_module",
         ":schedule",
         "//hloenv/evaluation:evaluator",

@@ -28,6 +28,7 @@
 #include "hloenv/gpu_backend.h"
 #include "hloenv/hlo_graph.h"
 #include "hloenv/hlo_module.h"
+#include "hloenv/hlo_rewrite_graph.h"
 #include "hloenv/schedule.h"
 #include "tensorflow/compiler/xla/literal.h"
 #include "tensorflow/compiler/xla/literal_comparison.h"
@@ -109,7 +110,14 @@ class HloEnv {
 
   void ApplyAlternatives(py::array_t<size_t> decisions);
 
+  std::vector<std::pair<int, xla::RewriteStatus>> ApplyRewrites(
+      py::array_t<size_t> decisions);
+
+  void ApplyAllRewritesDebug();
+
   void OriginalOptimizeHloModule();
+
+  bool VerifyModule();
 };
 
 }  // namespace hloenv

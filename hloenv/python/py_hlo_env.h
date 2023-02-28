@@ -23,6 +23,7 @@
 #include "hloenv/hlo_env.h"
 #include "hloenv/python/py_hlo_graph.h"
 #include "hloenv/python/py_hlo_passes.h"
+#include "hloenv/python/py_hlo_rewrite_graph.h"
 
 namespace py = pybind11;
 
@@ -45,6 +46,10 @@ class PyHloEnv : public HloEnv {
                          bool do_hash_verification) {
     return PyHloGraph(GetHloModule()->hlo_module_ptr(), debug,
                       inline_fused_comp, do_hash_verification);
+  }
+
+  PyHloRewriteGraph GetHloRewriteGraph() {
+    return PyHloRewriteGraph(GetHloModule()->hlo_module_ptr());
   }
 };
 

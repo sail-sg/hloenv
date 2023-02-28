@@ -136,6 +136,7 @@ class Pass : public PassInterface {
 
  private:
   RunHelperResults RunHelper(xla::HloModule* hlo_module) override {
+    hlo_module->SetCurrentPassName(hlo_pass_->name());
     // Single pass never creates alternatives, that's done in the outer Run loop
     return {false, hlo_pass_->Run(hlo_module).ValueOrDie(), true};
   }
@@ -248,6 +249,40 @@ class AltPipeline : public Pipeline {
       changed_this_run_ |= pass->changed();
     }
     hlo_module->SetDry(false);
+    bool generated_alts = changed_this_run_;
+    return {generated_alts, changed_this_run_, true};
+  }
+};
+
+class RewritePipeline : public Pipeline {
+ public:
+  explicit RewritePipeline(std::shared_ptr<PassInterface> pass,
+                           int loop_count = 1)
+      : Pipeline("alt_" + std::string(pass->name()), loop_count) {
+    flatten_and_copy(std::move(pass));
+  }
+
+  void flatten_and_copy(std::shared_ptr<PassInterface> pass) {
+    if (pass->IsPipeline()) {
+      Pipeline* pipeline = dynamic_cast<Pipeline*>(pass.get());
+      for (auto& sub_pass : pipeline->passes()) {
+        flatten_and_copy(std::move(sub_pass));
+      }
+    } else {
+      // Make a copy here, since we may want to run the original
+      // pass/pipeline separate of this RewritePipeline
+      passes_.push_back(pass);
+    }
+  }
+
+  RunHelperResults RunHelper(xla::HloModule* hlo_module) override {
+    changed_this_run_ = false;
+    hlo_module->SetRewrite(true);
+    for (auto& pass : passes_) {
+      pass->Run(hlo_module);
+      changed_this_run_ |= pass->changed();
+    }
+    hlo_module->SetRewrite(false);
     bool generated_alts = changed_this_run_;
     return {generated_alts, changed_this_run_, true};
   }

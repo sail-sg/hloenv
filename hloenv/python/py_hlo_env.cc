@@ -17,8 +17,7 @@
 namespace hloenv {
 
 PYBIND11_MODULE(py_hlo_env, m) {
-  // TODO(ohcy) Change PyHloGraph and PyHloEnv names to remove the Py prefix
-  py::class_<PyHloGraph> py_hlo_graph(
+  py::class_<PyHloGraph, std::shared_ptr<PyHloGraph>> py_hlo_graph(
       m, "HloGraph",
       "The graph representation of a HloModule the describes its structure and "
       "individual instructions features. See :ref:`Playing with HLO graph "
@@ -37,7 +36,6 @@ PYBIND11_MODULE(py_hlo_env, m) {
       .DEF_PYBIND_READONLY(PyHloGraph, in_edge_features)
       .DEF_PYBIND_READONLY(PyHloGraph, out_edge_features);
 
-  // TODO(ohcy): write this without copy as nparray
   py::class_<PyNodeFeats>(m, "NodeFeats")
       .DEF_PYBIND_READONLY(PyNodeFeats, uids)
       .DEF_PYBIND_READONLY(PyNodeFeats, names)
@@ -56,7 +54,6 @@ PYBIND11_MODULE(py_hlo_env, m) {
       .DEF_PYBIND_READONLY(PyNodeFeats, has_max_out_tensor)
       .DEF_PYBIND_READONLY(PyNodeFeats, normalized_num_group_inst);
 
-  // TODO(ohcy): write this without copy as nparray
   py::class_<PyEdgeFeats>(m, "EdgeFeats")
       .def("get_tensor_size", &PyEdgeFeats::GetTensorSize)
       .DEF_PYBIND_READONLY(PyEdgeFeats, uids)
@@ -67,6 +64,37 @@ PYBIND11_MODULE(py_hlo_env, m) {
       .DEF_PYBIND_READONLY(PyEdgeFeats, lehmercodes)
       .DEF_PYBIND_READONLY(PyEdgeFeats, types)
       .DEF_PYBIND_READONLY(PyEdgeFeats, dtypes);
+
+  py::class_<PyRewrite, std::shared_ptr<PyRewrite>>(m, "Rewrite",
+                                                    "To Be Filled In")
+      .def_property_readonly("pass_name", &PyRewrite::pass_name)
+      .def_property_readonly("orig_subgraph", &PyRewrite::orig_subgraph)
+      .def_property_readonly("orig_subgraph_uids",
+                             &PyRewrite::orig_subgraph_uids)
+      .def_property_readonly("replacement_subgraph",
+                             &PyRewrite::replacement_subgraph)
+      .def_property_readonly("order_idx", &PyRewrite::order_idx)
+      .def("orig_subgraph_to_str", &PyRewrite::orig_subgraph_str)
+      .def("replacement_subgraph_to_str", &PyRewrite::replacement_subgraph_str);
+
+  py::enum_<xla::RewriteStatus>(m, "RewriteStatus")
+      .value("OK", xla::RewriteStatus::OK)
+      .value("ADJACENCY", xla::RewriteStatus::ADJACENCY)
+      .value("CYCLE", xla::RewriteStatus::CYCLE)
+      .value("PRUNED", xla::RewriteStatus::PRUNED)
+      .value("ORIG_INST_DELETED", xla::RewriteStatus::ORIG_INST_DELETED)
+      .value("ALREADY_APPLIED", xla::RewriteStatus::ALREADY_APPLIED)
+      .export_values();
+
+  py::class_<PyHloRewriteGraph>(
+      m, "HloRewriteGraph",
+      "The graph representation of all the HloRewrites in the HloModule. "
+      "Rewrites that share affected edges are connected in the graph.")
+      .def("log", &PyHloRewriteGraph::Log)
+      .def_property_readonly("rewrite_data", &PyHloRewriteGraph::rewrite_data)
+      .def_property_readonly("num_rewrites", &PyHloRewriteGraph::num_rewrites)
+      .def_property_readonly("adjacency_matrix",
+                             &PyHloRewriteGraph::adjacency_matrix);
 
   py::class_<PyHloEnv::EvaluationResult>(
       m, "EvaluationResult",
@@ -366,6 +394,8 @@ Args:
            "that describes the features and structure of the HloModule.",
            py::arg("inline_fused_comp") = false,
            py::arg("do_hash_verification") = false)
+      .def("get_hlo_rewrite_graph", &PyHloEnv::GetHloRewriteGraph)
+      .def("verify_module", &PyHloEnv::VerifyModule)
       .def("optimize_hlo_module", &PyHloEnv::OriginalOptimizeHloModule,
            "Runs the original Xla Optimization Pipeline on the HloModule to "
            "obtain a baseline reference against XLA.")
@@ -388,6 +418,17 @@ Args:
       .def("get_hlo_module_hash", &PyHloEnv::GetHloModuleHash,
            "Returns the HloDagHash of the class:`HloModule` loaded in the "
            "environment.")
+      .def("get_hlo_rewrite_graph", &PyHloEnv::GetHloRewriteGraph,
+           "Extracts all :class:`Rewrite` from the :class:`HloModule`.")
+      .def("apply_all_rewrites_debug", &PyHloEnv::ApplyAllRewritesDebug)
+      .def("apply_rewrites", &PyHloEnv::ApplyRewrites,
+           R"hloenvdoc(
+              Applies the specified rewrites to the HloModule graph, and prunes the resulting graph.
+
+              Args:
+                  decisions (ndarray): 1D array of rewrite_id corresponding to the rewrites we wish to apply.
+           )hloenvdoc",
+           py::arg("decisions"))
       .def("apply_alternatives", &PyHloEnv::ApplyAlternatives,
            R"hloenvdoc(
               Applies the specified decisions to the alternative nodes in the HloModule graph, and prunes the resulting graph.
@@ -490,6 +531,13 @@ Args:
            py::arg("loop_count") = 1)
       .def_property_readonly("name", &AltPipeline::name)
       .def_property_readonly("changed", &AltPipeline::changed);
+
+  py::class_<RewritePipeline, PassInterface, std::shared_ptr<RewritePipeline>>(
+      m, "RewritePipeline")
+      .def(py::init<std::shared_ptr<PassInterface>, int>(), py::arg("pass"),
+           py::arg("loop_count") = 1)
+      .def_property_readonly("name", &RewritePipeline::name)
+      .def_property_readonly("changed", &RewritePipeline::changed);
 }
 
 }  // namespace hloenv

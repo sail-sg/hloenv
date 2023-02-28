@@ -184,6 +184,12 @@ void HloEnv::PrepareForEvaluation() {
   }
 }
 
+bool HloEnv::VerifyModule() {
+  xla::HloVerifier verifier(/*layout_sensitive=*/false,
+                            /*allow_mixed_precision=*/true);
+  return verifier.Run(alt_hlo_module_->hlo_module_ptr()).status().ok();
+}
+
 void HloEnv::OriginalOptimizeHloModule() {
   if (platform_ == "gpu") {
     HloEnvGpuBackend::GpuCompiler()->OptimizeHloModule(
@@ -205,6 +211,32 @@ bool HloEnv::Run(std::shared_ptr<PassInterface> pass) {
 }
 
 std::shared_ptr<AltHloModule> HloEnv::GetHloModule() { return alt_hlo_module_; }
+
+std::vector<std::pair<int, xla::RewriteStatus>> HloEnv::ApplyRewrites(
+    py::array_t<size_t> decisions) {
+  if (platform_ == "gpu") {
+    // TODO(ohcy) safer to regenerate this each time, but can consider allowing
+    // for second optional argument with the HloRewriteGraph so we do not
+    // need to recreate it.
+    // Or alternatively, let the HloRewriteGraph be the one to apply -> this
+    // is less clean though.
+    HloRewriteGraph rewrite_graph =
+        HloRewriteGraph(alt_hlo_module_->hlo_module_ptr());
+    return rewrite_graph.ApplyRewrites(decisions);
+  } else if (platform_ == "cpu") {
+    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
+  }
+}
+
+void HloEnv::ApplyAllRewritesDebug() {
+  if (platform_ == "gpu") {
+    HloRewriteGraph rewrite_graph =
+        HloRewriteGraph(alt_hlo_module_->hlo_module_ptr());
+    rewrite_graph.ApplyAllRewritesDebug();
+  } else if (platform_ == "cpu") {
+    LOG(FATAL) << "HloEnv currently not enabled for platform == cpu";
+  }
+}
 
 void HloEnv::ApplyAlternatives(py::array_t<size_t> decisions) {
   if (platform_ == "gpu") {
