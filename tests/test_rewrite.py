@@ -49,59 +49,57 @@ def test_file(filepath):
       print("**********************************************")
 
     print("\nExample applying rewrites...")
+    rewrites = rewrite_graph.rewrite_data
+    print("num_rewrites: %d" % num_rewrites)
+    assert(num_rewrites == len(rewrites))
     # Simplistic algorithm where we start with first rewrite, and walk through
     # and add any rewrites that aren't adjacent to already added rewrites
     # to our decisions
     start_idx = 0
     rewrite_applied = False
-    applicable = [True for i in range(num_rewrites)]
-    while (True):
+    while (start_idx < num_rewrites):
+      applicable = [True for i in range(num_rewrites)]
       decisions = []
       for i in range(start_idx, num_rewrites):
+        # do_anyway = random.randint(0,10) == 0
+        # if applicable[i] or do_anyway:
         if applicable[i]:
           decisions.append(i)
-          for other_idx in range(num_rewrites):
+          for other_idx in range(i, num_rewrites):
             is_adj = adjacency_matrix[i][other_idx]
             if is_adj:
               applicable[other_idx] = False
 
       results = hlo_env.apply_rewrites(decisions)
-      applied = [
-        1 for (idx, applied) in results if applied == RewriteStatus.OK
-      ]
-      any_applied = sum(applied) > 0
+      any_applied = sum([1 for (idx, applied) in results if applied == RewriteStatus.OK]) > 0
+
+      not_applied = [(idx, applied) for (idx, applied) in results if applied != RewriteStatus.OK]
+      num_not_applied = len(not_applied)
+      if num_not_applied > 0:
+        print("%d out of %d rewrites not applied" % (num_not_applied, len(results)))
+        print(not_applied)
 
       # If we successfully applied at least 1 rewrite, good! we're happy
-      # Otherwise let's try again and ignore rewrites we've already tried to
+      # Otherwise let's try again and ignore rewrites we've already tried to 
       # apply
       # [1, 2, 5]
       if any_applied:
+        # print(results)
         rewrite_applied = True
         break
-      elif sum(applicable) == 0:
-        # Nothing else left to apply
-        break
+      else:
+        start_idx += 1
 
-    # rewrite_applied = hlo_env.apply_all_rewrites_debug()
+    hlo_env.run(general_fusion_pipeline.post_dry_pass_passes)
     hlo_env.run(general_fusion_pipeline.post_dry_pass_passes)
 
     count += 1
 
   hlo_env.run(general_fusion_pipeline.post_pass_optimizations)
-  print(hlo_env.export_hlo_to_str())
-
-  # print("./output/mod/modA03.txt")
-  # with open("./output/mod/modA03.txt", "w") as text_file:
-  #   text_file.write(hlo_env.export_hlo_to_str())
-
   rewrite_mod = hlo_env.clone_hlo()
 
   hlo_env = HloEnv(filepath, "gpu")
   hlo_env.run(general_fusion_pipeline.xla_pipeline)
-
-  # print("./output/mod/modA04.txt")
-  # with open("./output/mod/modA04.txt", "w") as text_file:
-  #   text_file.write(hlo_env.export_hlo_to_str())
 
   assert (hlo_env.has_equal_output_as(rewrite_mod))
   return
@@ -123,7 +121,3 @@ for root, dirs, files in os.walk(hlo_base_dir):
     # count += 1
     # if count > 10:
     #   break
-
-# Notes for rewrite:
-# 1) Original subgraph
-# 2) Pass label
