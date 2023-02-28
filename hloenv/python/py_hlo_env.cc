@@ -66,7 +66,7 @@ PYBIND11_MODULE(py_hlo_env, m) {
       .DEF_PYBIND_READONLY(PyEdgeFeats, dtypes);
 
   py::class_<PyRewrite, std::shared_ptr<PyRewrite>>(m, "Rewrite",
-                                                    "To Be Filled In")
+      "A Rewrite object describing a subgraph replacement enacted by a pass.")
       .def_property_readonly("pass_name", &PyRewrite::pass_name)
       .def_property_readonly("orig_subgraph", &PyRewrite::orig_subgraph)
       .def_property_readonly("orig_subgraph_uids",
@@ -77,7 +77,9 @@ PYBIND11_MODULE(py_hlo_env, m) {
       .def("orig_subgraph_to_str", &PyRewrite::orig_subgraph_str)
       .def("replacement_subgraph_to_str", &PyRewrite::replacement_subgraph_str);
 
-  py::enum_<xla::RewriteStatus>(m, "RewriteStatus")
+  py::enum_<xla::RewriteStatus>(m, "RewriteStatus",
+           "The outcome of applying a rewrite. See "
+           ":ref:`Utilizing the Rewrite Mechanism` for more details.")
       .value("OK", xla::RewriteStatus::OK)
       .value("ADJACENCY", xla::RewriteStatus::ADJACENCY)
       .value("CYCLE", xla::RewriteStatus::CYCLE)
@@ -89,12 +91,16 @@ PYBIND11_MODULE(py_hlo_env, m) {
   py::class_<PyHloRewriteGraph>(
       m, "HloRewriteGraph",
       "The graph representation of all the HloRewrites in the HloModule. "
-      "Rewrites that share affected edges are connected in the graph.")
+      "Rewrites that share affected edges are connected in the graph, and this "
+      "graph is described via an adjacency matrix.")
       .def("log", &PyHloRewriteGraph::Log)
-      .def_property_readonly("rewrite_data", &PyHloRewriteGraph::rewrite_data)
-      .def_property_readonly("num_rewrites", &PyHloRewriteGraph::num_rewrites)
+      .def_property_readonly("rewrite_data", &PyHloRewriteGraph::rewrite_data,
+                             "The list of :class:`Rewrite` objects.")
+      .def_property_readonly("num_rewrites", &PyHloRewriteGraph::num_rewrites,
+                             "The number of rewrites in the graph.")
       .def_property_readonly("adjacency_matrix",
-                             &PyHloRewriteGraph::adjacency_matrix);
+                             &PyHloRewriteGraph::adjacency_matrix,
+                             "The adjacency matrix for the graph.");
 
   py::class_<PyHloEnv::EvaluationResult>(
       m, "EvaluationResult",
@@ -439,7 +445,9 @@ Args:
            py::arg("decisions"));
 
   py::class_<HloEnvGpuBackend, std::unique_ptr<HloEnvGpuBackend, py::nodelete>>
-      gpu_backend(m, "GpuBackend");
+      gpu_backend(m, "GpuBackend",
+                  "Provides GpuBackend properties for a HloModule that are "
+                  "sometimes needed when initializing a Pass or Pipeline");
   gpu_backend
       .def(py::init([]() {
         return std::unique_ptr<HloEnvGpuBackend, py::nodelete>(
@@ -482,10 +490,10 @@ Args:
   py::class_<Pass, PassInterface, std::shared_ptr<Pass>>(m, "Pass")
       .def(py::init<std::shared_ptr<xla::HloPassInterface>, int>(),
            R"hloenvdoc(
-              Creates a new Pipeline.
+              Creates a new Pass. Takes in an existing ':class:`HloPassInterface`.
 
               Args:
-                  hlo_pass (:class:`HloPassInterface`): The XLA Pass/Pipeline we wish to run. See :ref:`List of currently enabled XLA Hlo Passes` for more details.
+                  hlo_pass (:class:`HloPassInterface`): The XLA Pass/Pipeline we wish to run. See :ref:`List of Enabled XLA Hlo Passes` for more details.
                   name (loop_count): The number of times to run this Pipeline. Set this to -1 to run it until no further changes to the HloModule occur, up to a maximum of 25 times. Defaults to 1.
 
               Examples:
@@ -526,14 +534,20 @@ Args:
       .def_property_readonly("changed", &Pipeline::changed);
 
   py::class_<AltPipeline, PassInterface, std::shared_ptr<AltPipeline>>(
-      m, "AltPipeline")
+      m, "AltPipeline",
+      "A subclass of :class:`Pipeline`. Any pass or passes added to this "
+      "pipeline will generate alternative nodes for any graph rewrites "
+      "that the pass applies.")
       .def(py::init<std::shared_ptr<PassInterface>, int>(), py::arg("pass"),
            py::arg("loop_count") = 1)
       .def_property_readonly("name", &AltPipeline::name)
       .def_property_readonly("changed", &AltPipeline::changed);
 
   py::class_<RewritePipeline, PassInterface, std::shared_ptr<RewritePipeline>>(
-      m, "RewritePipeline")
+      m, "RewritePipeline",
+      "A subclass of :class:`Pipeline`. Any pass or passes added to this "
+      "pipeline will generate :class:`Rewrite` for any graph rewrites "
+      "that the pass applies.")
       .def(py::init<std::shared_ptr<PassInterface>, int>(), py::arg("pass"),
            py::arg("loop_count") = 1)
       .def_property_readonly("name", &RewritePipeline::name)

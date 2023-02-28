@@ -220,6 +220,8 @@ To convert a pass into a `dry pass` we wrap it in an :class:`~hloenv.AltPipeline
   # Adding a pass directly to an AltPipeline
   fusion_pipeline_post_dry.add_pass(HloPass.HloDCE())
 
+Similarly to make use of the Rewrite mechanism in stead of Alternatives, you can wrap it in :class:`~hloenv.RewritePipeline`. All rewrites performed by a RewritePipline are captured as subgraph Rewrites.
+
 A sample General Fusion Pipeline can be found in `examples/general_fusion_pipeline.py` which contains the full XLA optimization pipeline, except we replace the vertical fusion pipeline with our custom General Fusion pass.
 
 A Simple Decision-making Agent
@@ -352,6 +354,132 @@ To output an action, we implement the `argmax_sample` to choose the operand with
     return tf.stack([alt_uids, alt_choice], axis=1)
 
 The full-size code can be found `here <https://github.com/sail-sg/hloenv/blob/hloenv-refactor-open/examples/uniform_policy.py>`__.
+
+Utilizing the Rewrite Mechanism
+------------------------------
+
+Here we demonstrate how to utilize the Rewrite mechanism instead of the Alternative Graph to capture pass rewrites and selectively apply them. The steps are similar to the above example using Alternative based "Dry Passes", except we switch to using a :class:`RewritePipeline` to wrap the pass/passes instead of an :class:`AltPipeline`.
+
+.. code-block:: python
+
+  from general_fusion_pipeline import GeneralFusionPipeline
+  from hloenv import RewritePipeline, HloEnv, HloPass, Pass, Pipeline
+
+  hlo_env = HloEnv(hlo_path, "gpu")
+  general_fusion_pipeline = GeneralFusionPipeline(hlo_env)
+  rewrite_fusion_pass = RewritePipeline(Pass(HloPass.GeneralFusion(),))
+
+The code of the optimization loop looks like this:
+
+.. code-block:: python
+
+  hlo_env.run(general_fusion_pipeline.pre_pass_optimizations)
+
+  rewrite_applied = True
+  count = 0
+  while rewrite_applied:
+    hlo_env.run(general_fusion_pipeline.pre_dry_pass_passes)
+    hlo_env.run(rewrite_fusion_pass)
+
+    rewrite_graph = hlo_env.get_hlo_rewrite_graph()
+    adjacency_matrix = rewrite_graph.adjacency_matrix
+    num_rewrites = len(adjacency_matrix)
+
+    # Print rewrite data
+    rewrite_graph.log()
+
+    rewrites = rewrite_graph.rewrite_data
+    # Get individual rewrite data
+    print("\nGetting rewrite data (orig subgraph + pass name)")
+    for (idx, rewrite) in enumerate(rewrites):
+      print("**********************************************")
+      print("Rewrite %d:" % idx)
+      print("    Pass Name: " + rewrite.pass_name)
+      print("    Idx: %d" % rewrite.order_idx)
+      print("    Node uids: " + str(rewrite.orig_subgraph.node_features.uids))
+      print(
+        "    Node uids (repl): " +
+        str(rewrite.replacement_subgraph.node_features.uids)
+      )
+      print("Printing original subgraph:")
+      print(rewrite.orig_subgraph_to_str())
+      print("Printing rewrite subgraph:")
+      print(rewrite.replacement_subgraph_to_str())
+      print("**********************************************")
+
+    print("\nExample applying rewrites...")
+    # Simplistic algorithm where we start with first rewrite, and walk through
+    # and add any rewrites that aren't adjacent to already added rewrites
+    # to our decisions
+    start_idx = 0
+    rewrite_applied = False
+    while (start_idx < num_rewrites):
+      applicable = [True for i in range(num_rewrites)]
+      decisions = []
+      for i in range(start_idx, num_rewrites):
+        # do_anyway = random.randint(0,10) == 0
+        # if applicable[i] or do_anyway:
+        if applicable[i]:
+          decisions.append(i)
+          for other_idx in range(i, num_rewrites):
+            is_adj = adjacency_matrix[i][other_idx]
+            if is_adj:
+              applicable[other_idx] = False
+
+      results = hlo_env.apply_rewrites(decisions)
+      any_applied = sum([1 for (idx, applied) in results if applied == RewriteStatus.OK]) > 0
+
+      not_applied = [(idx, applied) for (idx, applied) in results if applied != RewriteStatus.OK]
+      num_not_applied = len(not_applied)
+      if num_not_applied > 0:
+        print("%d out of %d rewrites not applied" % (num_not_applied, len(results)))
+        print(not_applied)
+
+      # If we successfully applied at least 1 rewrite, good! we're happy
+      # Otherwise let's try again and ignore rewrites we've already tried to
+      # apply
+      # [1, 2, 5]
+      if any_applied:
+        # print(results)
+        rewrite_applied = True
+        break
+      else:
+        start_idx += 1
+
+    hlo_env.run(general_fusion_pipeline.post_dry_pass_passes)
+
+    count += 1
+
+  hlo_env.run(general_fusion_pipeline.post_pass_optimizations)
+
+For each Rewrite, the environment calculates a list of HloInstruction "edges" (instruction -> instruction_user pair) that the Rewrite will affect. Each Rewrite in the HloRewriteGraph is connected to all other Rewrites that share an affected instruction edge. This greatly minimizes the chance that one Rewrite can negate the application of another, e.g. by resulting in that part of the HloGraph being pruned away.
+
+The result of the application of a series of rewrites, is a list of (rewrite_idx, rewrite_status) tuples. If rewrite_status == HloEnv.RewriteStatus.OK, the rewrite has been successfully applied. See the table below for a description of all possible rewrite application statuses.
+
+.. list-table:: **Rewrite Status**
+    :widths: 42 42
+    :header-rows: 1
+
+    * - Enum Name
+      - Description
+
+    * - OK
+      - Rewrite was successfully applied.
+
+    * - ADJACENCY
+      - Rewrite was not applied as it is adjacent (i.e. shares affected edges with another applied Rewrite).
+
+    * - CYCLE
+      - Rewrite was not applied as it generated a cycle in the graph.
+
+    * - PRUNED
+      - Rewrite was applied, but eventually pruned out, likely due to other rewrites being applied.
+
+    * - ORIG_INST_DELETED
+      - Rewrite could not be applied as original instruction has been deleted. This should not occur.
+
+    * - ALREADY_APPLIED
+      - Rewrite not applied as it has already been applied
 
 Other Features
 --------------

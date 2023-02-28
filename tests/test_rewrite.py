@@ -91,7 +91,6 @@ def test_file(filepath):
         start_idx += 1
 
     hlo_env.run(general_fusion_pipeline.post_dry_pass_passes)
-    hlo_env.run(general_fusion_pipeline.post_dry_pass_passes)
 
     count += 1
 

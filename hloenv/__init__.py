@@ -23,6 +23,8 @@ from .python.py_hlo_env import Pass  # noqa F401,F403
 from .python.py_hlo_env import GpuBackend  # noqa F401,F403
 from .python.py_hlo_env import EvaluationResult  # noqa F401,F403
 from .python.py_hlo_env import RewriteStatus  # noqa F401,F403
+from .python.py_hlo_env import HloRewriteGraph  # noqa F401,F403
+from .python.py_hlo_env import Rewrite  # noqa F401,F403
 from .python.py_hlo_env import hlo_pass as HloPass
 
 __all__ = [
@@ -32,6 +34,8 @@ __all__ = [
   "AltPipeline",
   "RewritePipeline",
   "RewriteStatus",
+  "HloRewriteGraph",
+  "Rewrite",
   "Pipeline",
   "Pass",
   "HloPass",

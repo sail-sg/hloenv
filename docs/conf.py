@@ -228,7 +228,9 @@ def setup(app):
     hloenv.HloPass.__module__ = 'hloenv'
     hloenv.GpuBackend.__name__ = 'GpuBackend'
     hloenv.EvaluationResult.__name__ = 'EvaluationResult'
-
+    hloenv.RewriteStatus.__name__ = 'RewriteStatus'
+    hloenv.HloRewriteGraph.__name__ = 'HloRewriteGraph'
+    hloenv.Rewrite.__name__ = 'Rewrite'
 
     app.connect('autodoc-process-docstring', process_docstring)
     app.connect('autodoc-process-signature', process_signature)
