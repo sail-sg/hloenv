@@ -1,0 +1,7 @@
+altgraph
+========
+
+.. toctree::
+   :maxdepth: 4
+
+   altgraph

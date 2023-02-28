@@ -1,0 +1,10 @@
+altgraph.python package
+=======================
+
+Module contents
+---------------
+
+.. automodule:: altgraph.python
+    :members:
+    :undoc-members:
+    :show-inheritance:

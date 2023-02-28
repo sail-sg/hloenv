@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Reference (Custom Pass/Pipeline) &mdash; HloEnv 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="List of Enabled XLA Hlo Passes" href="xla_passes.html" />
+    <link rel="prev" title="API Reference" href="reference.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> HloEnv
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">About This Project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples Using HloEnv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">API Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference (Custom Pass/Pipeline)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#hloenv.Pass"><code class="docutils literal notranslate"><span class="pre">Pass</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hloenv.Pipeline"><code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hloenv.Pipeline.add_invariant_checker"><code class="docutils literal notranslate"><span class="pre">Pipeline.add_invariant_checker()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hloenv.Pipeline.add_pass"><code class="docutils literal notranslate"><span class="pre">Pipeline.add_pass()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#hloenv.AltPipeline"><code class="docutils literal notranslate"><span class="pre">AltPipeline</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hloenv.RewritePipeline"><code class="docutils literal notranslate"><span class="pre">RewritePipeline</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hloenv.GpuBackend"><code class="docutils literal notranslate"><span class="pre">GpuBackend</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hloenv.GpuBackend.CudaComputeCapability"><code class="docutils literal notranslate"><span class="pre">GpuBackend.CudaComputeCapability</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hloenv.GpuBackend.CudaComputeCapability.name"><code class="docutils literal notranslate"><span class="pre">GpuBackend.CudaComputeCapability.name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#hloenv.GpuBackend.cuda_is_at_least"><code class="docutils literal notranslate"><span class="pre">GpuBackend.cuda_is_at_least()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="xla_passes.html">List of Enabled XLA Hlo Passes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HloEnv</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>API Reference (Custom Pass/Pipeline)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/reference_pass.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="api-reference-custom-pass-pipeline">
+<h1>API Reference (Custom Pass/Pipeline)<a class="headerlink" href="#api-reference-custom-pass-pipeline" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="hloenv.Pass">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hloenv.</span></span><span class="sig-name descname"><span class="pre">Pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hloenv.Pass" title="hloenv.Pass"><span class="pre">hloenv.Pass</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">hlo_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hloenv.hlo_pass.HloPassInterface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hloenv.Pass" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a new Pass. Takes in an existing ‘<code class="xref py py-class docutils literal notranslate"><span class="pre">HloPassInterface</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hlo_pass</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">HloPassInterface</span></code>) – The XLA Pass/Pipeline we wish to run. See <a class="reference internal" href="xla_passes.html#module-hloenv.HloPass"><span class="std std-ref">List of Enabled XLA Hlo Passes</span></a> for more details.</p></li>
+<li><p><strong>name</strong> (<em>loop_count</em>) – The number of times to run this Pipeline. Set this to -1 to run it until no further changes to the HloModule occur, up to a maximum of 25 times. Defaults to 1.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>fusion_pass = hloenv.HloPass.GpuInstructionFusion(may_duplicate=True)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hloenv.Pipeline">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hloenv.</span></span><span class="sig-name descname"><span class="pre">Pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hloenv.Pipeline" title="hloenv.Pipeline"><span class="pre">hloenv.Pipeline</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hloenv.Pipeline" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a new Pipeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of this Pipeline.</p></li>
+<li><p><strong>loop_count</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of times to run this Pipeline. Set this to -1 to run it until no further changes to the HloModule occur, up to a maximum of 25 times. Defaults to 1.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="hloenv.Pipeline.add_invariant_checker">
+<span class="sig-name descname"><span class="pre">add_invariant_checker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hloenv.Pipeline.add_invariant_checker" title="Permalink to this definition"></a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>add_invariant_checker(self: hloenv.Pipeline, hlo_pass: hloenv.hlo_pass.HloPassInterface) -&gt; None</p></li>
+<li><p>add_invariant_checker(self: hloenv.Pipeline, arg0: hloenv.PassInterface) -&gt; None</p></li>
+</ol>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hloenv.Pipeline.add_pass">
+<span class="sig-name descname"><span class="pre">add_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hloenv.Pipeline.add_pass" title="Permalink to this definition"></a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>add_pass(self: hloenv.Pipeline, hlo_pass: hloenv.hlo_pass.HloPassInterface, loop_count: int = 1) -&gt; None</p></li>
+<li><p>add_pass(self: hloenv.Pipeline, arg0: hloenv.PassInterface) -&gt; None</p></li>
+</ol>
+<p>Add a <a class="reference internal" href="#hloenv.Pass" title="hloenv.Pass"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pass</span></code></a> or <a class="reference internal" href="#hloenv.Pipeline" title="hloenv.Pipeline"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code></a> to this Pipeline.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hloenv.AltPipeline">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hloenv.</span></span><span class="sig-name descname"><span class="pre">AltPipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self:</span> <span class="pre">hloenv.AltPipeline</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pass:</span> <span class="pre">hloenv.PassInterface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop_count:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hloenv.AltPipeline" title="Permalink to this definition"></a></dt>
+<dd><p>A subclass of <a class="reference internal" href="#hloenv.Pipeline" title="hloenv.Pipeline"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code></a>. Any pass or passes added to this pipeline will generate alternative nodes for any graph rewrites that the pass applies.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hloenv.RewritePipeline">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hloenv.</span></span><span class="sig-name descname"><span class="pre">RewritePipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self:</span> <span class="pre">hloenv.RewritePipeline</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pass:</span> <span class="pre">hloenv.PassInterface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop_count:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hloenv.RewritePipeline" title="Permalink to this definition"></a></dt>
+<dd><p>A subclass of <a class="reference internal" href="#hloenv.Pipeline" title="hloenv.Pipeline"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pipeline</span></code></a>. Any pass or passes added to this pipeline will generate <a class="reference internal" href="reference.html#hloenv.Rewrite" title="hloenv.Rewrite"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rewrite</span></code></a> for any graph rewrites that the pass applies.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hloenv.GpuBackend">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hloenv.</span></span><span class="sig-name descname"><span class="pre">GpuBackend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hloenv.GpuBackend" title="hloenv.GpuBackend"><span class="pre">hloenv.GpuBackend</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hloenv.GpuBackend" title="Permalink to this definition"></a></dt>
+<dd><p>Provides GpuBackend properties for a HloModule that are sometimes needed when initializing a Pass or Pipeline</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="hloenv.GpuBackend.CudaComputeCapability">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CudaComputeCapability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hloenv.GpuBackend.CudaComputeCapability" title="hloenv.GpuBackend.CudaComputeCapability"><span class="pre">hloenv.GpuBackend.CudaComputeCapability</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hloenv.GpuBackend.CudaComputeCapability" title="Permalink to this definition"></a></dt>
+<dd><p>Members:</p>
+<p>PASCAL</p>
+<p>VOLTA</p>
+<p>AMPERE</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="hloenv.GpuBackend.CudaComputeCapability.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#hloenv.GpuBackend.CudaComputeCapability.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hloenv.GpuBackend.cuda_is_at_least">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cuda_is_at_least</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other_major</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other_minor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#hloenv.GpuBackend.cuda_is_at_least" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="reference.html" class="btn btn-neutral float-left" title="API Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="xla_passes.html" class="btn btn-neutral float-right" title="List of Enabled XLA Hlo Passes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Chin Yang Oh, Kunhao Zheng, Bingyi Kang, Xinyi Wan, Zhongwen Xu, Shuicheng Yan, Min Lin, Yangzihao Wang.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

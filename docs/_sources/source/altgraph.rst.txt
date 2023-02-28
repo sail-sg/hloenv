@@ -1,0 +1,17 @@
+altgraph package
+================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    altgraph.python
+
+Module contents
+---------------
+
+.. automodule:: altgraph
+    :members:
+    :undoc-members:
+    :show-inheritance:

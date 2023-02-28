@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>altgraph package &mdash; AltGraph 2022 documentation</title><link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> AltGraph
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">altgraph package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#module-altgraph">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AltGraph</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>altgraph package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/source/altgraph.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="altgraph-package">
+<h1>altgraph package<a class="headerlink" href="#altgraph-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="altgraph.python.html">altgraph.python package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="altgraph.python.html#module-altgraph.python">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="module-altgraph">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-altgraph" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="altgraph.HloEnv">
+<em class="property">class </em><code class="descclassname">altgraph.</code><code class="descname">HloEnv</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#altgraph.HloEnv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pybind11_builtins.pybind11_object</span></code></p>
+<p>The class representing the HloEnv. Each HloEnv instance can be loaded with a single HloModule, and used to run Passes/Pipelines on that module, as well as extract features, evaluate and obtain the graph features for that HloModule.</p>
+<p>Overloaded function.</p>
+<ol class="arabic simple">
+<li>__init__(self: altgraph.python.py_hlo_env.HloEnv, hlo_filepath: str, platform: str) -&gt; None</li>
+</ol>
+<p>Initializes a HloEnv and loads in a HloModule from a specified filepath.</p>
+<ol class="arabic simple" start="2">
+<li>__init__(self: altgraph.python.py_hlo_env.HloEnv, hlo_data: str, format: str, platform: str) -&gt; None</li>
+</ol>
+<p>Initializes a HloEnv and loads in a HloModule from its string representation.</p>
+<ol class="arabic" start="3">
+<li><p class="first">__init__(self: altgraph.python.py_hlo_env.HloEnv, alt_hlo_module: altgraph.python.py_hlo_env.HloModule, platform: str) -&gt; None</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Args:</dt>
+<dd><p class="first last">path (str): The path of the file to wrap
+field_storage (FileStorage): The <code class="xref py py-class docutils literal notranslate"><span class="pre">FileStorage</span></code> instance to wrap
+temporary (bool): Whether or not to delete the file when the File instance is destructed</p>
+</dd>
+<dt>Returns:</dt>
+<dd><p class="first last">BufferedFileStorage: A buffered writable file descriptor</p>
+</dd>
+</dl>
+</div></blockquote>
+</li>
+</ol>
+<dl class="method">
+<dt id="altgraph.HloEnv.apply_alternatives">
+<code class="descname">apply_alternatives</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloEnv, arg0: numpy.ndarray[numpy.uint64]</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#altgraph.HloEnv.apply_alternatives" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloEnv.clone_hlo">
+<code class="descname">clone_hlo</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloEnv</em><span class="sig-paren">)</span> &#x2192; altgraph.python.py_hlo_env.HloModule<a class="headerlink" href="#altgraph.HloEnv.clone_hlo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloEnv.evaluate">
+<code class="descname">evaluate</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloEnv</em>, <em>times: int = 20</em>, <em>do_not_prep_for_eval: bool = False</em><span class="sig-paren">)</span> &#x2192; altgraph.python.py_hlo_env.EvaluationResult<a class="headerlink" href="#altgraph.HloEnv.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluates the</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloEnv.export_hlo_to_str">
+<code class="descname">export_hlo_to_str</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloEnv</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#altgraph.HloEnv.export_hlo_to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloEnv.get_hlo_graph">
+<code class="descname">get_hlo_graph</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloEnv</em>, <em>debug: bool = False</em>, <em>inline_fused_comp: bool = False</em>, <em>do_hash_verification: bool = False</em><span class="sig-paren">)</span> &#x2192; altgraph.python.py_hlo_env.HloGraph<a class="headerlink" href="#altgraph.HloEnv.get_hlo_graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloEnv.get_hlo_module">
+<code class="descname">get_hlo_module</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloEnv</em><span class="sig-paren">)</span> &#x2192; altgraph.python.py_hlo_env.HloModule<a class="headerlink" href="#altgraph.HloEnv.get_hlo_module" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloEnv.get_hlo_module_hash">
+<code class="descname">get_hlo_module_hash</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloEnv</em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#altgraph.HloEnv.get_hlo_module_hash" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloEnv.has_equal_output">
+<code class="descname">has_equal_output</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloEnv</em>, <em>first_module: altgraph.python.py_hlo_env.HloModule</em>, <em>second_module: altgraph.python.py_hlo_env.HloModule</em>, <em>times: int = 1</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#altgraph.HloEnv.has_equal_output" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloEnv.has_equal_output_as">
+<code class="descname">has_equal_output_as</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloEnv</em>, <em>other_module: altgraph.python.py_hlo_env.HloModule</em>, <em>times: int = 1</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#altgraph.HloEnv.has_equal_output_as" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloEnv.load_hlo">
+<code class="descname">load_hlo</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#altgraph.HloEnv.load_hlo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li>load_hlo(self: altgraph.python.py_hlo_env.HloEnv, arg0: altgraph.python.py_hlo_env.HloModule) -&gt; None</li>
+<li>load_hlo(self: altgraph.python.py_hlo_env.HloEnv, hlo_data: str, format: str = ‘path’) -&gt; None</li>
+</ol>
+</dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloEnv.optimize_hlo_module">
+<code class="descname">optimize_hlo_module</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloEnv</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#altgraph.HloEnv.optimize_hlo_module" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloEnv.prepare_for_eval">
+<code class="descname">prepare_for_eval</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloEnv</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#altgraph.HloEnv.prepare_for_eval" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloEnv.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloEnv</em>, <em>arg0: altgraph::PassInterface</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#altgraph.HloEnv.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="altgraph.HloModule">
+<em class="property">class </em><code class="descclassname">altgraph.</code><code class="descname">HloModule</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#altgraph.HloModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pybind11_builtins.pybind11_object</span></code></p>
+<p>Overloaded function.</p>
+<ol class="arabic simple">
+<li>__init__(self: altgraph.python.py_hlo_env.HloModule, arg0: str) -&gt; None</li>
+<li>__init__(self: altgraph.python.py_hlo_env.HloModule, arg0: str, arg1: str) -&gt; None</li>
+</ol>
+<dl class="method">
+<dt id="altgraph.HloModule.clone">
+<code class="descname">clone</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloModule</em><span class="sig-paren">)</span> &#x2192; altgraph.python.py_hlo_env.HloModule<a class="headerlink" href="#altgraph.HloModule.clone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clones the HloModule.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="altgraph.HloModule.computation_count">
+<code class="descname">computation_count</code><a class="headerlink" href="#altgraph.HloModule.computation_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of computations in the HloModule.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="altgraph.HloModule.config">
+<code class="descname">config</code><a class="headerlink" href="#altgraph.HloModule.config" title="Permalink to this definition">¶</a></dt>
+<dd><p>The config options of the HloModule</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloModule.cost_analysis">
+<code class="descname">cost_analysis</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloModule</em><span class="sig-paren">)</span> &#x2192; Dict[str, float]<a class="headerlink" href="#altgraph.HloModule.cost_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a structure containing the cost analysis of the Hlo Module.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloModule.extract_fusions_as_module">
+<code class="descname">extract_fusions_as_module</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloModule</em>, <em>arg0: int</em><span class="sig-paren">)</span> &#x2192; List[altgraph.python.py_hlo_env.HloModule]<a class="headerlink" href="#altgraph.HloModule.extract_fusions_as_module" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloModule.extract_instructions_as_module">
+<code class="descname">extract_instructions_as_module</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloModule</em>, <em>arg0: int</em><span class="sig-paren">)</span> &#x2192; List[Tuple[str, altgraph.python.py_hlo_env.HloModule]]<a class="headerlink" href="#altgraph.HloModule.extract_instructions_as_module" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloModule.extract_random_submodule">
+<code class="descname">extract_random_submodule</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloModule</em>, <em>arg0: int</em>, <em>arg1: int</em><span class="sig-paren">)</span> &#x2192; altgraph.python.py_hlo_env.HloModule<a class="headerlink" href="#altgraph.HloModule.extract_random_submodule" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloModule.hash">
+<code class="descname">hash</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloModule</em><span class="sig-paren">)</span> &#x2192; int<a class="headerlink" href="#altgraph.HloModule.hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>The DAGHash of the HloModule. This DAGHash is a custom hash implementation that differs from Tensorflow’s existing HloModule hash implementation to better account for the structure and parameters of the Hlo Instructions.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="altgraph.HloModule.instruction_count">
+<code class="descname">instruction_count</code><a class="headerlink" href="#altgraph.HloModule.instruction_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of instructions in the HloModule.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloModule.is_bef_enabled">
+<code class="descname">is_bef_enabled</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloModule</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#altgraph.HloModule.is_bef_enabled" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="altgraph.HloModule.to_string">
+<code class="descname">to_string</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.HloModule</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#altgraph.HloModule.to_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the HloModule to a string representation. This string representation can also used to initialize a new HloEnv or loaded into an existing one.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="altgraph.AltPipeline">
+<em class="property">class </em><code class="descclassname">altgraph.</code><code class="descname">AltPipeline</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.AltPipeline</em>, <em>pass: altgraph.python.py_hlo_env.PassInterface</em>, <em>loop_count: int = 1</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#altgraph.AltPipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">altgraph.python.py_hlo_env.PassInterface</span></code></p>
+<dl class="attribute">
+<dt id="altgraph.AltPipeline.changed">
+<code class="descname">changed</code><a class="headerlink" href="#altgraph.AltPipeline.changed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="altgraph.AltPipeline.name">
+<code class="descname">name</code><a class="headerlink" href="#altgraph.AltPipeline.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="altgraph.Pipeline">
+<em class="property">class </em><code class="descclassname">altgraph.</code><code class="descname">Pipeline</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.Pipeline</em>, <em>name: str</em>, <em>loop_count: int = 1</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#altgraph.Pipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">altgraph.python.py_hlo_env.PassInterface</span></code></p>
+<dl class="method">
+<dt id="altgraph.Pipeline.add_invariant_checker">
+<code class="descname">add_invariant_checker</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#altgraph.Pipeline.add_invariant_checker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li>add_invariant_checker(self: altgraph.python.py_hlo_env.Pipeline, hlo_pass: altgraph.python.py_hlo_env.hlo_pass.HloPassInterface) -&gt; None</li>
+<li>add_invariant_checker(self: altgraph.python.py_hlo_env.Pipeline, arg0: altgraph.python.py_hlo_env.PassInterface) -&gt; None</li>
+</ol>
+</dd></dl>
+
+<dl class="method">
+<dt id="altgraph.Pipeline.add_pass">
+<code class="descname">add_pass</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#altgraph.Pipeline.add_pass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li>add_pass(self: altgraph.python.py_hlo_env.Pipeline, hlo_pass: altgraph.python.py_hlo_env.hlo_pass.HloPassInterface, loop_count: int = 1) -&gt; None</li>
+<li>add_pass(self: altgraph.python.py_hlo_env.Pipeline, arg0: altgraph.python.py_hlo_env.PassInterface) -&gt; None</li>
+</ol>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="altgraph.Pipeline.changed">
+<code class="descname">changed</code><a class="headerlink" href="#altgraph.Pipeline.changed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="altgraph.Pipeline.name">
+<code class="descname">name</code><a class="headerlink" href="#altgraph.Pipeline.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="altgraph.Pass">
+<em class="property">class </em><code class="descclassname">altgraph.</code><code class="descname">Pass</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.Pass</em>, <em>hlo_pass: altgraph.python.py_hlo_env.hlo_pass.HloPassInterface</em>, <em>loop_count: int = 1</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#altgraph.Pass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">altgraph.python.py_hlo_env.PassInterface</span></code></p>
+<dl class="attribute">
+<dt id="altgraph.Pass.changed">
+<code class="descname">changed</code><a class="headerlink" href="#altgraph.Pass.changed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="altgraph.Pass.name">
+<code class="descname">name</code><a class="headerlink" href="#altgraph.Pass.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="altgraph.GpuBackend">
+<em class="property">class </em><code class="descclassname">altgraph.</code><code class="descname">GpuBackend</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.GpuBackend</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#altgraph.GpuBackend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pybind11_builtins.pybind11_object</span></code></p>
+<dl class="attribute">
+<dt id="altgraph.GpuBackend.AMPERE">
+<code class="descname">AMPERE</code><em class="property"> = &lt;CudaComputeCapability.AMPERE: 8&gt;</em><a class="headerlink" href="#altgraph.GpuBackend.AMPERE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="altgraph.GpuBackend.CudaComputeCapability">
+<em class="property">class </em><code class="descname">CudaComputeCapability</code><span class="sig-paren">(</span><em>self: altgraph.python.py_hlo_env.GpuBackend.CudaComputeCapability</em>, <em>value: int</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#altgraph.GpuBackend.CudaComputeCapability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pybind11_builtins.pybind11_object</span></code></p>
+<p>Members:</p>
+<p>PASCAL</p>
+<p>VOLTA</p>
+<p>AMPERE</p>
+<dl class="attribute">
+<dt id="altgraph.GpuBackend.CudaComputeCapability.AMPERE">
+<code class="descname">AMPERE</code><em class="property"> = &lt;CudaComputeCapability.AMPERE: 8&gt;</em><a class="headerlink" href="#altgraph.GpuBackend.CudaComputeCapability.AMPERE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="altgraph.GpuBackend.CudaComputeCapability.PASCAL">
+<code class="descname">PASCAL</code><em class="property"> = &lt;CudaComputeCapability.PASCAL: 6&gt;</em><a class="headerlink" href="#altgraph.GpuBackend.CudaComputeCapability.PASCAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="altgraph.GpuBackend.CudaComputeCapability.VOLTA">
+<code class="descname">VOLTA</code><em class="property"> = &lt;CudaComputeCapability.VOLTA: 7&gt;</em><a class="headerlink" href="#altgraph.GpuBackend.CudaComputeCapability.VOLTA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="altgraph.GpuBackend.CudaComputeCapability.name">
+<code class="descname">name</code><a class="headerlink" href="#altgraph.GpuBackend.CudaComputeCapability.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="altgraph.GpuBackend.CudaComputeCapability.value">
+<code class="descname">value</code><a class="headerlink" href="#altgraph.GpuBackend.CudaComputeCapability.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="altgraph.GpuBackend.PASCAL">
+<code class="descname">PASCAL</code><em class="property"> = &lt;CudaComputeCapability.PASCAL: 6&gt;</em><a class="headerlink" href="#altgraph.GpuBackend.PASCAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="altgraph.GpuBackend.VOLTA">
+<code class="descname">VOLTA</code><em class="property"> = &lt;CudaComputeCapability.VOLTA: 7&gt;</em><a class="headerlink" href="#altgraph.GpuBackend.VOLTA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="altgraph.GpuBackend.cuda_is_at_least">
+<em class="property">static </em><code class="descname">cuda_is_at_least</code><span class="sig-paren">(</span><em>other_major: int</em>, <em>other_minor: int = 1</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#altgraph.GpuBackend.cuda_is_at_least" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="altgraph.GpuBackend.stream_exec_platform">
+<code class="descname">stream_exec_platform</code><em class="property"> = 'CUDA'</em><a class="headerlink" href="#altgraph.GpuBackend.stream_exec_platform" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Chin Yang Oh, Kunhao Zheng, Bingyi Kang, Xinyi Wan, Zhongwen Xu, Shuicheng Yan, Min Lin, Yangzihao Wang.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
