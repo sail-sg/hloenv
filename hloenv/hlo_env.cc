@@ -163,7 +163,7 @@ std::shared_ptr<AltHloModule> HloEnv::CloneHloModule() {
 }
 
 void HloEnv::LoadHloModule(std::shared_ptr<AltHloModule> saved_hlo_module) {
-  alt_hlo_module_ = saved_hlo_module;
+  alt_hlo_module_ = saved_hlo_module->Clone();
 }
 
 void HloEnv::LoadHloModule(const std::string& hlo_input,
@@ -227,7 +227,7 @@ void HloEnv::ApplyAlternatives(py::array_t<size_t> decisions) {
         hlo_graph.get_uid_to_inst();
     for (size_t decisions_idx = 0; decisions_idx < num_decisions;
          decisions_idx++) {
-      size_t node_uid = decisions_ptr[decisions_idx * 2];
+      size_t node_uid = node_feats.uids->at(decisions_ptr[decisions_idx * 2]);
       size_t decision = decisions_ptr[decisions_idx * 2 + 1];
 
       xla::HloInstruction* instruction = uid_to_inst.at(node_uid);

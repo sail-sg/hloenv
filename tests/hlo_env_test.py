@@ -165,7 +165,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
           node_uid = node_features.uids[alt_idx]
-          decisions.append([node_uid, get_rand_action(num_operands[alt_idx])])
+          decisions.append([alt_idx, get_rand_action(num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
@@ -226,7 +226,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
           node_uid = node_features.uids[alt_idx]
-          decisions.append([node_uid, get_rand_action(num_operands[alt_idx])])
+          decisions.append([alt_idx, get_rand_action(num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
@@ -295,7 +295,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
           node_uid = node_features.uids[alt_idx]
-          decisions.append([node_uid, get_rand_action(num_operands[alt_idx])])
+          decisions.append([alt_idx, get_rand_action(num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
@@ -383,7 +383,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
           node_uid = node_features.uids[alt_idx]
-          decisions.append([node_uid, get_rand_action(num_operands[alt_idx])])
+          decisions.append([alt_idx, get_rand_action(num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         hlo_env.apply_alternatives(decisions)
@@ -458,7 +458,7 @@ class HloEnvTest(absltest.TestCase):
             for alt_idx in hlo_graph.alternative_indices:
               node_uid = node_features.uids[alt_idx]
               decisions.append(
-                [node_uid,
+                [alt_idx,
                  get_rand_action(num_operands[alt_idx], False)]
               )
 
@@ -537,7 +537,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
           node_uid = node_features.uids[alt_idx]
-          decisions.append([node_uid, get_rand_action(num_operands[alt_idx])])
+          decisions.append([alt_idx, get_rand_action(num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
@@ -619,7 +619,7 @@ class HloEnvTest(absltest.TestCase):
             for alt_idx in hlo_graph.alternative_indices:
               node_uid = node_features.uids[alt_idx]
               decisions.append(
-                [node_uid, get_rand_action(num_operands[alt_idx])]
+                [alt_idx, get_rand_action(num_operands[alt_idx])]
               )
 
             decisions = np.asarray(decisions)
@@ -668,7 +668,7 @@ class HloEnvTest(absltest.TestCase):
             decisions = []
             for alt_idx in hlo_graph.alternative_indices:
               node_uid = node_features.uids[alt_idx]
-              decisions.append([node_uid, 0])
+              decisions.append([alt_idx, 0])
 
             decisions = np.asarray(decisions)
             hlo_env.apply_alternatives(decisions)
@@ -756,7 +756,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
           node_uid = node_features.uids[alt_idx]
-          decisions.append([node_uid, min(1, num_operands[alt_idx])])
+          decisions.append([alt_idx, min(1, num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
@@ -786,7 +786,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
           node_uid = node_features.uids[alt_idx]
-          decisions.append([node_uid, min(1, num_operands[alt_idx])])
+          decisions.append([alt_idx, min(1, num_operands[alt_idx])])
 
         hlo_env.apply_alternatives(decisions)
         hlo_env.run(fusion_pipeline.post_dry_pass_passes)
@@ -848,7 +848,7 @@ class HloEnvTest(absltest.TestCase):
           decisions = []
           for alt_idx in hlo_graph.alternative_indices:
             node_uid = node_features.uids[alt_idx]
-            decisions.append([node_uid, min(1, num_operands[alt_idx])])
+            decisions.append([alt_idx, min(1, num_operands[alt_idx])])
 
           decisions = np.asarray(decisions)
           # pass the decision back to compilerp
@@ -879,7 +879,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
           node_uid = node_features.uids[alt_idx]
-          decisions.append([node_uid, min(1, num_operands[alt_idx])])
+          decisions.append([alt_idx, min(1, num_operands[alt_idx])])
 
         hlo_env.apply_alternatives(decisions)
         hlo_env.run(fusion_pipeline.post_dry_pass_passes)
@@ -933,7 +933,7 @@ class HloEnvTest(absltest.TestCase):
           decisions = []
           for alt_idx in hlo_graph.alternative_indices:
             node_uid = node_features.uids[alt_idx]
-            decisions.append([node_uid, min(1, num_operands[alt_idx])])
+            decisions.append([alt_idx, min(1, num_operands[alt_idx])])
 
           decisions = np.asarray(decisions)
           # pass the decision back to compilerp
@@ -960,7 +960,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
           node_uid = node_features.uids[alt_idx]
-          decisions.append([node_uid, min(1, num_operands[alt_idx])])
+          decisions.append([alt_idx, min(1, num_operands[alt_idx])])
 
         hlo_env.apply_alternatives(decisions)
         hlo_env.run(fusion_pipeline.post_dry_pass_passes)
@@ -1011,7 +1011,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
           node_uid = node_features.uids[alt_idx]
-          decisions.append([node_uid, min(1, num_operands[alt_idx])])
+          decisions.append([alt_idx, min(1, num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
@@ -1059,7 +1059,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
           node_uid = node_features.uids[alt_idx]
-          decisions.append([node_uid, min(1, num_operands[alt_idx])])
+          decisions.append([alt_idx, min(1, num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
@@ -1120,7 +1120,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
           node_uid = node_features.uids[alt_idx]
-          decisions.append([node_uid, min(1, num_operands[alt_idx])])
+          decisions.append([alt_idx, min(1, num_operands[alt_idx])])
 
         decisions = np.asarray(decisions)
         # pass the decision back to compilerp
@@ -1150,7 +1150,7 @@ class HloEnvTest(absltest.TestCase):
         decisions = []
         for alt_idx in hlo_graph.alternative_indices:
           node_uid = node_features.uids[alt_idx]
-          decisions.append([node_uid, min(1, num_operands[alt_idx])])
+          decisions.append([alt_idx, min(1, num_operands[alt_idx])])
 
         hlo_env.apply_alternatives(decisions)
         hlo_env.run(fusion_post_pipeline)  # So as to exclude MultiOutputFusion
@@ -1627,10 +1627,10 @@ class HloEnvTest(absltest.TestCase):
             for alt_idx in hlo_graph.alternative_indices:
               node_uid = node_features.uids[alt_idx]
               if is_large:
-                decisions.append([node_uid, 1])
+                decisions.append([alt_idx, 1])
               else:
                 decisions.append(
-                  [node_uid, get_rand_action(num_operands[alt_idx])]
+                  [alt_idx, get_rand_action(num_operands[alt_idx])]
                 )
 
             decisions = np.asarray(decisions)
@@ -1703,7 +1703,7 @@ class HloEnvTest(absltest.TestCase):
           decisions = []
           for alt_idx in hlo_graph.alternative_indices:
             node_uid = node_features.uids[alt_idx]
-            decisions.append([node_uid, 1])
+            decisions.append([alt_idx, 1])
 
           decisions = np.asarray(decisions)
           hlo_env.apply_alternatives(decisions)
