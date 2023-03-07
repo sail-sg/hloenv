@@ -66,9 +66,10 @@ To run examples, you need to install the following dependencies in your python p
 
 To build HloEnv and evaluate HLO graph runtime, you need to install the following dependencies:
 
-  - [Bazel](https://bazel.build/install?hl=en)
-  - liblapack-dev
-  - CUDA
+  - [Bazel 5.0.0](https://bazel.build/install?hl=en)
+  - liblapack-dev and liblapacke-dev
+  - CUDA 11.2 + cuDNN for CUDA 11.x (required by TensorFlow 2.9.0)
+  - GCC 9.x (required by CUDA 11.x)
 
 To clone HloEnv and install Tensorflow, run the following command:
 
@@ -82,12 +83,16 @@ python3 -m pip install tensorflow==2.9.0
 
 When met the minimum requirement, building HloEnv Python Wheels can be very simple. 
 
-In the root directory of HloEnv, run the following command:
+In the root directory of HloEnv, run the following command
 
 ```bash
 make build
 ```
-Will build the wheels file and put it under the folder *dist*.
+Will build the wheels file and put it under the folder *dist*. If encountered OOM issue while compiling, can add the following flag to Makefile's bazel run command:
+
+```bash
+--local_ram_resources={mem_size_in_MB}
+```
 
 ```bash
 make install
